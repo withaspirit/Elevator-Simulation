@@ -66,7 +66,7 @@ public class InputFileReader {
     }
 
     /**
-     * Reads an input file containing that simulate passengers
+     * Reads an input file containing events that simulate passengers
      * making requests to travel up or down a floor using an elevator.
      *
      * @return an ArrayList containing string events for the FloorSubsystem
