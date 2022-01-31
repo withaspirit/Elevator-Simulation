@@ -8,7 +8,12 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InputFileReaderTest {
+/**
+ * Test class for InputFileReader methods
+ *
+ * @author Ryan Dash
+ */
+public class InputFileReaderTest {
 
     InputFileReader inputFileReader;
     @BeforeEach
