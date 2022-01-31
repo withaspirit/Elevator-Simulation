@@ -84,22 +84,4 @@ public class InputFileReader {
         }
         return queue;
     }
-
-    public static void main(String[] args) {
-//        JSONObject queue = new JSONObject();
-//        queue.put("1", "hh:mm:ss.mmm 1 Up 2");
-//        queue.put("2", "14:05:15.0 2 Up 4");
-//
-//        try (FileWriter fileWriter = new FileWriter("inputs.json")){
-//            fileWriter.write(queue.toJSONString());
-//            fileWriter.flush();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-        InputFileReader inputFileReader = new InputFileReader();
-        for (String string: inputFileReader.readInputFile()){
-            System.out.println(string);
-        }
-    }
 }
