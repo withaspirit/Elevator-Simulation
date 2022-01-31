@@ -102,6 +102,5 @@ public class InputFileReader {
         for (String string: inputFileReader.readInputFile()){
             System.out.println(string);
         }
-
     }
 }
