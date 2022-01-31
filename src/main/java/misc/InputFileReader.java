@@ -80,7 +80,6 @@ public class InputFileReader {
             if (Integer.parseInt(data[1]) == 1 && data[2].equals("Down")){
                 System.err.println("There is no down button on the First floor");
             }
-            data[0] = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS"));
             queue.add(String.join(" ", data));
         }
         return queue;
