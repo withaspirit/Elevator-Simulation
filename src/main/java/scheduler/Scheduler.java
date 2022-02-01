@@ -2,21 +2,88 @@ package scheduler;
 
 import java.util.ArrayList;
 
-import elevatorsystem.Elevator;
+import misc.BoundedBuffer;
 
 /**
  * 
  * 
  * @author Liam Tripp
  */
-public class Scheduler {
+public class Scheduler implements Runnable{
 	
+	private BoundedBuffer schedulerElevatorsubBuffer;
+	private BoundedBuffer schedulerFloorsubBuffer;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
 	
-	public Scheduler() {
+	public Scheduler(BoundedBuffer buffer1, BoundedBuffer buffer2) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
+		this.schedulerElevatorsubBuffer = buffer1;
+		this.schedulerFloorsubBuffer = buffer2;
+		
+		
+	}
+	
+	public void run() 
+	{
+		
+		//Receiving Data from Floor Subsystem
+		if (receiveRequest(schedulerFloorsubBuffer)) 
+		{
+			System.out.println("Receive Request Successful");
+		} else {
+			System.out.println("Failed Successful");
+		}
+		
+		//Sending Data to Floor Subsystem
+		if (sendRequest("Turn Light On", schedulerFloorsubBuffer)) 
+		{
+			System.out.println("Send Request Successful");
+		} else {
+			System.out.println("Failed Successful");
+		}
+		
+		
+		//Receiving Data from Floor Subsystem
+		if (receiveRequest(schedulerElevatorsubBuffer)) 
+		{
+			System.out.println("Receive Request Successful");
+		} else {
+			System.out.println("Failed Successful");
+		}
+		
+		//Sending Data to Floor Subsystem
+		if (sendRequest("Motor Up", schedulerElevatorsubBuffer)) 
+		{
+			System.out.println("Send Request Successful");
+		} else {
+			System.out.println("Failed Successful");
+		}
+		
+	}
+
+	public boolean sendRequest(String request, BoundedBuffer buffer) {
+		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
+		buffer.addLast(request);
+		
+		try {
+			Thread.sleep(500);
+		}catch (InterruptedException e) {}
+		
+		return true;
+	}
+	
+	public boolean receiveRequest(BoundedBuffer buffer) {
+		String request = (String)buffer.removeFirst();
+		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+
+		
+		try {
+			Thread.sleep(500);
+		}catch (InterruptedException e) {}
+		
+		return true;
 	}
 
 }
