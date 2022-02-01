@@ -10,6 +10,7 @@ import scheduler.Scheduler;
 import misc.BoundedBuffer;
 
 /**
+ *	Test program to instantiate and start the subsystems threads
  * @author Julian
  *
  */

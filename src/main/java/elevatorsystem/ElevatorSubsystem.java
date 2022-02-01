@@ -9,13 +9,13 @@ import misc.BoundedBuffer;
 /**
  * 
  * 
- * @author Liam Tripp
+ * @author Liam Tripp, Julian
  */
 public class ElevatorSubsystem implements Runnable {
 	
 	// private Scheduler scheduler;
 
-	private BoundedBuffer schedulerElevatorsubBuffer;
+	private BoundedBuffer schedulerElevatorsubBuffer;		//Elevator Subsystem - Scheduler link
 	
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.schedulerElevatorsubBuffer = buffer;
@@ -28,7 +28,10 @@ public class ElevatorSubsystem implements Runnable {
 	
 	// readInputFile();
 	
-	
+	/**
+	 * Simple message requesting and sending between subsystems.
+	 * 
+	 */
 	public void run() 
 	{
 		
@@ -55,6 +58,14 @@ public class ElevatorSubsystem implements Runnable {
 		
 	}
 	
+	
+	/**
+	 * Puts the request message into the buffer
+	 * 
+	 * @param	request	the message being sent
+	 * @param 	buffer	the buffer used for sending the request
+	 * @return 			request success
+	 */
 	public boolean sendRequest(String request, BoundedBuffer buffer) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
 		buffer.addLast(request);
@@ -66,6 +77,13 @@ public class ElevatorSubsystem implements Runnable {
 		return true;
 	}
 	
+	
+	/**
+	 * Checks the buffer for messages
+	 * 
+	 * @param 	buffer	the buffer used for receiving the request
+	 * @return 			request success
+	 */
 	public boolean receiveRequest(BoundedBuffer buffer) {
 		String request = (String)buffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);

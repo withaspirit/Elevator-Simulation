@@ -7,12 +7,12 @@ import misc.BoundedBuffer;
 /**
  * 
  * 
- * @author Liam Tripp
+ * @author Liam Tripp, Julian
  */
 public class FloorSubsystem implements Runnable{
 	
 	// private Scheduler scheduler;
-	private BoundedBuffer schedulerFloorsubBuffer;
+	private BoundedBuffer schedulerFloorsubBuffer;		//Floor Subsystem- Scheduler link
 	
 	public FloorSubsystem(BoundedBuffer buffer) {
 		this.schedulerFloorsubBuffer = buffer;
@@ -20,6 +20,11 @@ public class FloorSubsystem implements Runnable{
 	
 	// readInputFile();
 	
+	
+	/**
+	 * Simple message requesting and sending between subsystems.
+	 * 
+	 */
 	public void run() 
 	{
 		
@@ -41,6 +46,13 @@ public class FloorSubsystem implements Runnable{
 		
 	}
 	
+	/**
+	 * Puts the request message into the buffer
+	 * 
+	 * @param	request	the message being sent
+	 * @param 	buffer	the buffer used for sending the request
+	 * @return 			request success
+	 */
 	public boolean sendRequest(String request, BoundedBuffer buffer) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
 		buffer.addLast(request);
@@ -52,11 +64,18 @@ public class FloorSubsystem implements Runnable{
 		return true;
 	}
 	
+	
+	/**
+	 * Checks the buffer for messages
+	 * 
+	 * @param 	buffer	the buffer used for receiving the request
+	 * @return 			request success
+	 */
 	public boolean receiveRequest(BoundedBuffer buffer) {
 		String request = (String)buffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
-		
+
 		try {
 			Thread.sleep(500);
 		}catch (InterruptedException e) {}
