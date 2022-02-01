@@ -29,19 +29,5 @@ public class InputFileReaderTest {
     void testReadInputFile() {
         ArrayList<String> queue = inputFileReader.readInputFile();
         assertEquals(queue.get(0),"hh:mm:ss.mmm 1 Up 2");
-        assertEquals(queue.get(1),"14:05:15.0 2 Up 4");
-    }
-
-    public static void main(String[] args) {
-//        JSONObject queue = new JSONObject();
-//        queue.put("1", "hh:mm:ss.mmm 1 Up 2");
-//        queue.put("2", "14:05:15.0 2 Up 4");
-//
-//        try (FileWriter fileWriter = new FileWriter("inputs.json")){
-//            fileWriter.write(queue.toJSONString());
-//            fileWriter.flush();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 }
