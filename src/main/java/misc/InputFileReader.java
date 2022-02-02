@@ -1,17 +1,15 @@
 package misc;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import systemwide.Direction;
 
 /**
  * InputFileReader creates takes a given file name and returns the file as a usable object.
@@ -69,19 +67,48 @@ public class InputFileReader {
      * Reads an input file containing events that simulate passengers
      * making requests to travel up or down a floor using an elevator.
      *
-     * @return an ArrayList containing string events for the FloorSubsystem
+     * @param name the name of the file for reading inputs
+     * @return an ArrayList containing ElevatorRequests for the FloorSubsystem
      */
-    public ArrayList<String> readInputFile(){
-        ArrayList<String> queue = new ArrayList<>();
+    public ArrayList<ElevatorRequest> readInputFile(String name){
+        ArrayList<ElevatorRequest> queue = new ArrayList<>();
+        JSONObject jsonObject = getJSONFileAsObject(name);
+        JSONArray jsonArray = (JSONArray) jsonObject.get("inputs");
         String[] data;
-        JSONObject jsonObject = getJSONFileAsObject("inputs");
-        for (Object event: jsonObject.keySet()){
-            data = ((String)jsonObject.get(event)).split(" ");
-            if (Integer.parseInt(data[1]) == 1 && data[2].equals("Down")){
-                System.err.println("There is no down button on the First floor");
-            }
-            queue.add(String.join(" ", data));
+
+        for (Object obj: jsonArray) {
+            JSONObject inputObject = (JSONObject) obj;
+            data = convertJSONToStringArray(inputObject);
+            ElevatorRequest elevatorRequest = createElevatorRequest(data);
+            queue.add(elevatorRequest);
         }
         return queue;
     }
+
+    /**
+     * Creates an ElevatorRequest from a given String array.
+     *
+     * @param data a String array containing information for the ElevatorRequest
+     * @return elevatorRequest and
+     */
+    public ElevatorRequest createElevatorRequest(String[] data) {
+        LocalTime time = LocalTime.parse(data[0]);
+        int floorNumber = Integer.parseInt(data[1]);
+        Direction direction = Direction.getDirection(data[2]);
+        int floorToVisit = Integer.parseInt(data[3]);
+
+        return new ElevatorRequest(time, floorNumber, direction, floorToVisit);
+    }
+
+    /**
+     * Converts a JSONObject to a String array in the format:
+     * "hh:mm:ss.mmm CurrentFloorNumber Direction DesiredFloorNumber".
+     *
+     * @param jsonObject the input object as a JSONObject
+     * @return a String array containing information in the specified format
+     */
+    public String[] convertJSONToStringArray(JSONObject jsonObject) {
+        return ((String) jsonObject.get("event")).split(" ");
+    }
+
 }
