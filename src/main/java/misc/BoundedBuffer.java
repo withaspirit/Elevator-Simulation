@@ -4,8 +4,7 @@
 package misc;
 
 /**
- * @author Julian
- *From course notes
+ * @author Julian From course notes
  *
  */
 public class BoundedBuffer {
@@ -67,6 +66,4 @@ public class BoundedBuffer {
 
         return item;
     }
-
-	
 }
