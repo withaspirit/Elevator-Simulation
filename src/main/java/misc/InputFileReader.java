@@ -1,20 +1,15 @@
 package misc;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 /**
- * InputFileReader creates takes a given file name and returns the file as a usable object.
+ * InputFileReader takes a given file name and returns the file as a usable object.
  *
  * @author Liam Tripp, Ryan Dash
  */
@@ -50,8 +45,8 @@ public class InputFileReader {
     /**
      * Returns a JSON file with the specified name as a JSONObject.
      *
-     * @param name name the name of the file (and optionally, its folder)
-     * @return JSONObject a file as a JSONObject
+     * @param name the name of the file (and optionally, its folder)
+     * @return JSONObject a JSON file as a JSONObject
      */
     public JSONObject getJSONFileAsObject(String name) {
         try {

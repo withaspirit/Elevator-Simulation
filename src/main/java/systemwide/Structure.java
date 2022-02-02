@@ -4,7 +4,6 @@ package systemwide;
  * 
  * 
  * @author Liam Tripp
- *
  */
 public class Structure {
 	
