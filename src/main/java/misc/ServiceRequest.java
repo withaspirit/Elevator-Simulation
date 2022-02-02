@@ -10,7 +10,7 @@ import systemwide.Direction;
  */
 //FIXME: This could be refactored into an abstract class, but is an interface for now due to design uncertainty
 public interface ServiceRequest {
-	public int getTime();
-	public int getFloorNumber();
-	public Direction getDirection();
+	int getTime();
+	int getFloorNumber();
+	Direction getDirection();
 }
