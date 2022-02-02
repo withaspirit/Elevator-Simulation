@@ -2,6 +2,8 @@ package misc;
 
 import systemwide.Direction;
 
+import java.time.LocalTime;
+
 /**
  * FloorRequest is generated when a user presses a button in an elevator.
  * 
@@ -10,12 +12,19 @@ import systemwide.Direction;
  */
 public class FloorRequest implements ServiceRequest {
 
-	private int time;
+	private LocalTime time;
 	private int floorNumber; // floorToVisit
 	private Direction direction;
 	private int elevatorNumber;
 	
-	public FloorRequest(int time, int floorNumber, Direction direction, int elevatorNumber) {
+	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber) {
+		this.time = time;
+		this.floorNumber = floorNumber;
+		this.direction = direction;
+		this.elevatorNumber = elevatorNumber;
+	}
+
+	public FloorRequest(LocalTime time, int floorNumber, Direction direction) {
 		this.time = time;
 		this.floorNumber = floorNumber;
 		this.direction = direction;
@@ -26,7 +35,7 @@ public class FloorRequest implements ServiceRequest {
 	}
 	
 	@Override
-	public int getTime() {
+	public LocalTime getTime() {
 		return time;
 	}
 
