@@ -1,4 +1,4 @@
-# SYSC-3303-Project</h1>
+# SYSC-3303-Project
 
 ## Description
 
@@ -17,7 +17,7 @@ This is a group project for designing, creating, and simulating an elevator syst
 
 #### Editing
 
-This project is setup as a Maven project.
+This project is set up as a Maven project.
 
 #### Testing
 
