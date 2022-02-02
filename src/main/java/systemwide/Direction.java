@@ -1,8 +1,5 @@
 package systemwide;
 
-import java.util.HashMap;
-import java.util.Locale;
-
 /**
  * Direction indicates vertical direction in terms of up, down, and stopped.
  * 
