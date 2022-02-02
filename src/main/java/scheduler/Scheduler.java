@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import misc.BoundedBuffer;
 
 /**
- * 
+ * Scheduler handles the requests from all system components
  * 
  * @author Liam Tripp, Julian
  */
@@ -61,8 +61,8 @@ public class Scheduler implements Runnable {
 	 * Puts the request message into the buffer
 	 * 
 	 * @param request the message being sent
-	 * @param buffer  the buffer used for sending the request
-	 * @return request success
+	 * @param buffer the BoundedBuffer used for sending the request
+	 * @return true if request is successful, false otherwise
 	 */
 	public boolean sendRequest(String request, BoundedBuffer buffer) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
@@ -72,14 +72,15 @@ public class Scheduler implements Runnable {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
 		}
+		
 		return true;
 	}
 
 	/**
 	 * Checks the buffer for messages
 	 * 
-	 * @param buffer the buffer used for receiving the request
-	 * @return request success
+	 * @param buffer the BoundedBuffer used for receiving the request
+	 * @return true if request is successful, false otherwise
 	 */
 	public boolean receiveRequest(BoundedBuffer buffer) {
 		String request = (String) buffer.removeFirst();

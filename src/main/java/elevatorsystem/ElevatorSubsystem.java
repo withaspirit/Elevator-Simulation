@@ -5,7 +5,7 @@ import javax.swing.JButton;
 import misc.BoundedBuffer;
 
 /**
- * 
+ * ElevatorSubsystem manages the elevators and their requests to the Scheduler
  * 
  * @author Liam Tripp, Julian
  */
@@ -17,10 +17,6 @@ public class ElevatorSubsystem implements Runnable {
 
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.schedulerElevatorsubBuffer = buffer;
-
-	}
-
-	public ElevatorSubsystem() {
 	}
 
 	// readInputFile();
@@ -57,8 +53,8 @@ public class ElevatorSubsystem implements Runnable {
 	 * Puts the request message into the buffer
 	 * 
 	 * @param request the message being sent
-	 * @param buffer  the buffer used for sending the request
-	 * @return request success
+	 * @param buffer the BoundedBuffer used for sending the request
+	 * @return true if request is successful, false otherwise
 	 */
 	public boolean sendRequest(String request, BoundedBuffer buffer) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
@@ -75,8 +71,8 @@ public class ElevatorSubsystem implements Runnable {
 	/**
 	 * Checks the buffer for messages
 	 * 
-	 * @param buffer the buffer used for receiving the request
-	 * @return request success
+	 * @param buffer the BoundedBuffer used for receiving the request
+	 * @return true if request is successful, false otherwise
 	 */
 	public boolean receiveRequest(BoundedBuffer buffer) {
 		String request = (String) buffer.removeFirst();

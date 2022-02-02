@@ -4,8 +4,9 @@
 package misc;
 
 /**
+ * BoundedBuffer for managing Thread-Safe messaging between system components
+ * 
  * @author Julian From course notes
- *
  */
 public class BoundedBuffer {
     // A simple ring buffer is used to hold the data
@@ -21,6 +22,10 @@ public class BoundedBuffer {
     // If true, there is at least one object stored in the buffer.    
     private boolean readable = false;
 
+    /**
+     * Adds the item to the end of the ring buffer
+     * 
+     */
     public synchronized void addLast(Object item)
     {
         while (!writeable) {
@@ -42,6 +47,10 @@ public class BoundedBuffer {
         notifyAll();
     }
 
+    /**
+     * Removes the first item from the ring buffer
+     * 
+     */
     public synchronized Object removeFirst()
     {
         Object item;
