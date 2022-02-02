@@ -6,7 +6,6 @@ import systemwide.Direction;
  * FloorRequest is generated when a user presses a button in an elevator.
  * 
  * @author Liam Tripp
- *
  */
 public class FloorRequest implements ServiceRequest {
 
