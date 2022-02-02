@@ -1,7 +1,7 @@
 package floorsystem;
 
 /**
- * 
+ * Floor simulates a level of a structure that an elevator can visit.
  * 
  * @author Liam Tripp
  */
