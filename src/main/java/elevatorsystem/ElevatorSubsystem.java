@@ -27,27 +27,28 @@ public class ElevatorSubsystem implements Runnable {
 	 * 
 	 */
 	public void run() {
+		while(true) {
+			// A sleep to allow communication between Floor Subsystem and Scheduler to
+			// happen first
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				System.err.println(e);
+			}
 
-		// A sleep to allow communication between Floor Subsystem and Scheduler to
-		// happen first
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			System.err.println(e);
-		}
+			// Receiving Data from Scheduler
+			if (receiveRequest()) {
+				System.out.println("Elevator SubSystem received Request Successful");
+			} else {
+				System.out.println("Failed Successful");
+			}
 
-		// Receiving Data from Scheduler
-		if (receiveRequest()) {
-			System.out.println("Receive Request Successful");
-		} else {
-			System.out.println("Failed Successful");
-		}
-
-		// Sending Data to Scheduler
-		if (sendRequest(floorRequest)) { // Expect elevator # at floor #
-			System.out.println("Send Request Successful");
-		} else {
-			System.out.println("Failed Successful");
+			// Sending Data to Scheduler
+			if (sendRequest(floorRequest)) { // Expect elevator # at floor #
+				System.out.println("Elevator SubSystem Sent Request to Scheduler Successful");
+			} else {
+				System.out.println("Failed Successful");
+			}
 		}
 	}
 
@@ -80,8 +81,8 @@ public class ElevatorSubsystem implements Runnable {
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 		if (request instanceof ElevatorRequest elevatorRequest){
 			floorRequest = new FloorRequest(elevatorRequest, 1);
-		} else {
-			System.err.println("Incorrect Request");
+		}  else if (request instanceof FloorRequest){
+			System.err.println("Incorrect Request. This is for a Floor");
 		}
 		try {
 			Thread.sleep(500);

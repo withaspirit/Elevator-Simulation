@@ -34,14 +34,13 @@ public class FloorSubsystem implements Runnable {
 		while (!requests.isEmpty()) {
 			// Sending Data to Scheduler
 			if (sendRequest(requests.get(0))) {
-				System.out.println("Send Request Successful");
+				System.out.println("Floor Subsystem Sent Request Successful to Scheduler");
 			} else {
 				System.out.println("Failed Successful");
 			}
 
 			// Receiving Data from Scheduler
 			if (receiveRequest()) {
-				System.out.println("Receive Request Successful");
 				System.out.println("Expected Elevator# "+ floorRequest.getElevatorNumber() + " Arrived");
 			} else {
 				System.out.println("Failed Successful");
@@ -80,8 +79,8 @@ public class FloorSubsystem implements Runnable {
 
 		if (request instanceof FloorRequest floorRequest){
 			this.floorRequest = floorRequest;
-		} else {
-			System.err.println("Incorrect Request");
+		} else if (request instanceof ElevatorRequest){
+			System.err.println("Incorrect Request. This is for an elevator");
 		}
 
 		try {

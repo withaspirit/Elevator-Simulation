@@ -33,14 +33,14 @@ public class Scheduler implements Runnable {
 
 		// Receiving Data from Floor Subsystem
 		if (receiveRequest(schedulerFloorsubBuffer)) {
-			System.out.println("Receive Request from Floor SubSystem Successful");
+			System.out.println("Scheduler received Request from Floor SubSystem Successful");
 		} else {
 			System.out.println("Failed Successful");
 		}
 
 		// Receiving Data from Elevator Subsystem
 		if (receiveRequest(schedulerElevatorsubBuffer)) {
-			System.out.println("Receive Request from Elevator SubSystem Successful");
+			System.out.println("Scheduler received Request from Elevator SubSystem Successful");
 		} else {
 			System.out.println("Failed Successful");
 		}
@@ -77,13 +77,13 @@ public class Scheduler implements Runnable {
 
 		if (request instanceof FloorRequest floorRequest){
 			if (sendRequest(floorRequest, schedulerFloorsubBuffer)) {
-				System.out.println("Send Request to floor Successful");
+				System.out.println("Scheduler Sent Request to floor Successful");
 			} else {
 				System.out.println("Failed Successful");
 			}
 		} else if (request instanceof ElevatorRequest elevatorRequest){
 			if (sendRequest(elevatorRequest, schedulerElevatorsubBuffer)) {
-				System.out.println("Send Request to Elevator Successful");
+				System.out.println("Scheduler Sent Request to Elevator Successful");
 			} else {
 				System.out.println("Failed Successful");
 			}
