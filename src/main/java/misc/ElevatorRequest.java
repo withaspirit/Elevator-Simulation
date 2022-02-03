@@ -2,18 +2,26 @@ package misc;
 
 import systemwide.Direction;
 
+import java.time.LocalTime;
+
 public class ElevatorRequest implements ServiceRequest {
 	
-	private int time;
+	private LocalTime time;
 	private int floorNumber;
 	private Direction direction;
 	private int desiredFloor;
-	
-	public ElevatorRequest(int time, int floorNumber, Direction direction, int desiredFloor) {
+
+	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction, int desiredFloor) {
 		this.time = time;
 		this.floorNumber = floorNumber;
 		this.direction = direction;
 		this.desiredFloor = desiredFloor;
+	}
+
+	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction) {
+		this.time = time;
+		this.floorNumber = floorNumber;
+		this.direction = direction;
 	}
 	
 	public int getDesiredFloor() {
@@ -21,7 +29,7 @@ public class ElevatorRequest implements ServiceRequest {
 	}
 	
 	@Override
-	public int getTime() {
+	public LocalTime getTime() {
 		return time;
 	}
 
