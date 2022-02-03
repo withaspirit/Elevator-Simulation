@@ -36,7 +36,7 @@ This project is set up as a Maven project.
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- |----
-  | Ryan Dash | InputFileReader, Converting JSON File contents to data structure, creating JSON files | Design Document, UML Diagram Contributions | 
+  | Ryan Dash | InputFileReader, Converting JSON File contents to data structure, creating JSON files | Design Document, UML Diagram Contributions | Code Review 
   | Ramit Mahajan | Message Transfer, Test Files, Filling out skeleton |  | 
   | Brady Norton | | README, Setup Instructions, UML Sequence Diagram | 
   | Julian Obando Velez | Message Transfer, Test Files, Filling out skeleton | UML Diagram Feedback | 
