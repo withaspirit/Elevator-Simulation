@@ -20,7 +20,6 @@ public class ElevatorSubsystem implements Runnable {
 
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.schedulerElevatorsubBuffer = buffer;
-
 	}
 
 	/**
@@ -38,14 +37,14 @@ public class ElevatorSubsystem implements Runnable {
 		}
 
 		// Receiving Data from Scheduler
-		if (receiveRequest(schedulerElevatorsubBuffer)) {
+		if (receiveRequest()) {
 			System.out.println("Receive Request Successful");
 		} else {
 			System.out.println("Failed Successful");
 		}
 
 		// Sending Data to Scheduler
-		if (sendRequest(floorRequest, schedulerElevatorsubBuffer)) { // Expect elevator # at floor #
+		if (sendRequest(floorRequest)) { // Expect elevator # at floor #
 			System.out.println("Send Request Successful");
 		} else {
 			System.out.println("Failed Successful");
@@ -56,12 +55,11 @@ public class ElevatorSubsystem implements Runnable {
 	 * Puts the request message into the buffer
 	 * 
 	 * @param request the message being sent
-	 * @param buffer the BoundedBuffer used for sending the request
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean sendRequest(FloorRequest request, BoundedBuffer buffer) {
+	public boolean sendRequest(FloorRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
-		buffer.addLast(request);
+		schedulerElevatorsubBuffer.addLast(request);
 
 		try {
 			Thread.sleep(500);
@@ -74,12 +72,11 @@ public class ElevatorSubsystem implements Runnable {
 
 	/**
 	 * Checks the buffer for messages
-	 * 
-	 * @param buffer the BoundedBuffer used for receiving the request
+	 *
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean receiveRequest(BoundedBuffer buffer) {
-		ServiceRequest request = buffer.removeFirst();
+	public boolean receiveRequest() {
+		ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 		if (request instanceof ElevatorRequest elevatorRequest){
 			floorRequest = new FloorRequest(elevatorRequest, 1);
