@@ -19,13 +19,10 @@ import systemwide.Direction;
  */
 public class InputFileReader {
 
-    private RequestFactory requestFactory;
-
     /**
      * Constructor for InputFileReader.
      */
     public InputFileReader() {
-        this.requestFactory = new RequestFactory();
     }
 
     /**
@@ -82,10 +79,25 @@ public class InputFileReader {
         for (Object obj: jsonArray) {
             JSONObject inputObject = (JSONObject) obj;
             data = convertJSONToStringArray(inputObject);
-            ElevatorRequest elevatorRequest = requestFactory.createElevatorRequest(data);
+            ElevatorRequest elevatorRequest = createElevatorRequest(data);
             queue.add(elevatorRequest);
         }
         return queue;
+    }
+
+    /**
+     * Creates an ElevatorRequest from a given String array.
+     *
+     * @param data a String array containing information for the ElevatorRequest
+     * @return elevatorRequest a request for an elevator made from an input file
+     */
+    public ElevatorRequest createElevatorRequest(String[] data) {
+        LocalTime time = LocalTime.parse(data[0]);
+        int floorNumber = Integer.parseInt(data[1]);
+        Direction direction = Direction.getDirection(data[2]);
+        int floorToVisit = Integer.parseInt(data[3]);
+
+        return new ElevatorRequest(time, floorNumber, direction, floorToVisit);
     }
 
     /**
@@ -98,5 +110,4 @@ public class InputFileReader {
     public String[] convertJSONToStringArray(JSONObject jsonObject) {
         return ((String) jsonObject.get("event")).split(" ");
     }
-
 }
