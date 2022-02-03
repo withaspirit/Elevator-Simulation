@@ -5,7 +5,7 @@ import systemwide.Direction;
 import java.time.LocalTime;
 
 /**
- * FloorRequest is generated when a user presses a button in an elevator.
+ * FloorRequest is an event data structure for when a user presses a FloorButton in an elevator.
  * 
  * @author Liam Tripp
  *
@@ -29,11 +29,10 @@ public class FloorRequest implements ServiceRequest {
 	}
 
 	/**
-	 * Creates a FloorRequest given an ElevatorRequest and an Elevator's Number.
+	 * Constructor for FloorRequest given an ElevatorRequest and an Elevator's number.
 	 *
 	 * @param elevatorRequest a ServiceRequest for an Elevator made by someone on a Floor
 	 * @param elevatorNumber the number of the elevator
-	 * @return floorRequest a request for an elevator to visit a floor made by an input file
 	 */
 	public FloorRequest(ElevatorRequest elevatorRequest, int elevatorNumber) {
 		this(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),

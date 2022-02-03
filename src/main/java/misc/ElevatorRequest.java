@@ -4,6 +4,12 @@ import systemwide.Direction;
 
 import java.time.LocalTime;
 
+/**
+ * ElevatorRequest is an event data structure for when a user presses an up/down
+ * button on a Floor.
+ *
+ * @author Liam Tripp
+ */
 public class ElevatorRequest implements ServiceRequest {
 	
 	private LocalTime time;
@@ -11,10 +17,16 @@ public class ElevatorRequest implements ServiceRequest {
 	private Direction direction;
 	private int desiredFloor;
 
+	/**
+	 * Constructor for ElevatorRequest read from an input file.
+	 *
+	 * @param time the time the Request was made
+	 * @param floorNumber the number of the floor on which the request was made
+	 * @param direction the direction selected by the user
+	 * @param desiredFloor the floor the user wishes to visit
+	 */
 	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction, int desiredFloor) {
-		this.time = time;
-		this.floorNumber = floorNumber;
-		this.direction = direction;
+		this(time, floorNumber, direction);
 		this.desiredFloor = desiredFloor;
 	}
 
