@@ -1,7 +1,7 @@
 {
   "inputs": [
     {
-      "event": "hh:mm:ss.mmm 1 Up 2"
+      "event": "00:00:00.000 1 Up 2"
     },
     {
       "event": "14:05:15.0 2 Up 4"
