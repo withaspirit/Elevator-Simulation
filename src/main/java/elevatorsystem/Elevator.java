@@ -1,7 +1,7 @@
 package elevatorsystem;
 
 /**
- * 
+ * Elevator is a model for simulating an elevator.
  * 
  * @author Liam Tripp
  */
@@ -13,6 +13,5 @@ public class Elevator {
 	// private Direction direction;
 	
 	public Elevator() {
-		
 	}
 }

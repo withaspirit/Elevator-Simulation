@@ -4,7 +4,6 @@ package systemwide;
  * Direction indicates direction in terms of up, down, and stopped.
  *
  * @author Liam Tripp
- *
  */
 public enum Direction {
 	UP("Up"),
@@ -23,7 +22,7 @@ public enum Direction {
 	}
 
 	/**
-	 * Returns the name of the Direction.
+	 * Returns the name of a Direction as a String.
 	 *
 	 * @return name the name of the Direction
 	 */

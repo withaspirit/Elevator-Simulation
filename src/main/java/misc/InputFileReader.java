@@ -13,7 +13,7 @@ import org.junit.runner.Request;
 import systemwide.Direction;
 
 /**
- * InputFileReader creates takes a given file name and returns the file as a usable object.
+ * InputFileReader takes a given file name and returns the file as a usable object.
  *
  * @author Liam Tripp, Ryan Dash
  */
@@ -48,8 +48,8 @@ public class InputFileReader {
     /**
      * Returns a JSON file with the specified name as a JSONObject.
      *
-     * @param name name the name of the file (and optionally, its folder)
-     * @return JSONObject a file as a JSONObject
+     * @param name the name of the file (and optionally, its folder)
+     * @return JSONObject a JSON file as a JSONObject
      */
     public JSONObject getJSONFileAsObject(String name) {
         try {

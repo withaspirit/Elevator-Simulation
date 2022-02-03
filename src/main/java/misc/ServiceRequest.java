@@ -9,11 +9,10 @@ import java.time.LocalTime;
  * Elevator's service.
  * 
  * @author Liam Tripp
- *
  */
 //FIXME: This could be refactored into an abstract class, but is an interface for now due to design uncertainty
 public interface ServiceRequest {
-	public LocalTime getTime();
-	public int getFloorNumber();
-	public Direction getDirection();
+	LocalTime getTime();
+	int getFloorNumber();
+	Direction getDirection();
 }
