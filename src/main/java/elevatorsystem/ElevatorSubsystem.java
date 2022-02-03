@@ -82,11 +82,7 @@ public class ElevatorSubsystem implements Runnable {
 		ServiceRequest request = buffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 		if (request instanceof ElevatorRequest elevatorRequest){
-			if (elevatorRequest.getDirection().equals(Direction.UP)){
-				floorRequest = new FloorRequest(LocalTime.now(), elevatorRequest.getDesiredFloor(), Direction.DOWN, 1);
-			} else {
-				floorRequest = new FloorRequest(LocalTime.now(), elevatorRequest.getDesiredFloor(), Direction.UP, 1);
-			}
+			floorRequest = new FloorRequest(elevatorRequest, 1);
 		} else {
 			System.err.println("Incorrect Request");
 		}
