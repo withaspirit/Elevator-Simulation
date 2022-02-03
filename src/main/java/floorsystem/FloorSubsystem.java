@@ -1,7 +1,11 @@
 package floorsystem;
 
 import javax.swing.JButton;
-import misc.BoundedBuffer;
+
+import misc.*;
+import scheduler.Scheduler;
+
+import java.util.ArrayList;
 
 /**
  * FloorSubsystem manages the floors and their requests to the Scheduler
@@ -10,11 +14,14 @@ import misc.BoundedBuffer;
  */
 public class FloorSubsystem implements Runnable {
 
-	// private Scheduler scheduler;
-	private BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
+	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
+	private final ArrayList<ElevatorRequest> requests;
+	private FloorRequest floorRequest;
 
 	public FloorSubsystem(BoundedBuffer buffer) {
 		this.schedulerFloorsubBuffer = buffer;
+		InputFileReader inputFileReader = new InputFileReader();
+		requests = inputFileReader.readInputFile("inputs");
 	}
 
 	// readInputFile();
@@ -24,19 +31,21 @@ public class FloorSubsystem implements Runnable {
 	 * 
 	 */
 	public void run() {
+		while (!requests.isEmpty()) {
+			// Sending Data to Scheduler
+			if (sendRequest(requests.get(0), schedulerFloorsubBuffer)) {
+				System.out.println("Send Request Successful");
+			} else {
+				System.out.println("Failed Successful");
+			}
 
-		// Sending Data to Scheduler
-		if (sendRequest("Input File", schedulerFloorsubBuffer)) {
-			System.out.println("Send Request Successful");
-		} else {
-			System.out.println("Failed Successful");
-		}
-
-		// Receiving Data from Scheduler
-		if (receiveRequest(schedulerFloorsubBuffer)) {
-			System.out.println("Receive Request Successful");
-		} else {
-			System.out.println("Failed Successful");
+			// Receiving Data from Scheduler
+			if (receiveRequest(schedulerFloorsubBuffer)) {
+				System.out.println("Receive Request Successful");
+				System.out.println("Expected Elevator# "+ floorRequest.getElevatorNumber() + " Arrived");
+			} else {
+				System.out.println("Failed Successful");
+			}
 		}
 	}
 
@@ -47,13 +56,15 @@ public class FloorSubsystem implements Runnable {
 	 * @param buffer the BoundedBuffer used for sending the request
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean sendRequest(String request, BoundedBuffer buffer) {
+	public boolean sendRequest(ElevatorRequest request, BoundedBuffer buffer) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
 		buffer.addLast(request);
+		requests.remove(0);
 
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
+			System.err.println(e);
 		}
 
 		return true;
@@ -66,12 +77,19 @@ public class FloorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean receiveRequest(BoundedBuffer buffer) {
-		String request = (String) buffer.removeFirst();
-		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+		ServiceRequest request = buffer.removeFirst();
+		System.out.println(Thread.currentThread().getName() + " received the request: " + request + "\n");
+
+		if (request instanceof FloorRequest floorRequest){
+			this.floorRequest = floorRequest;
+		} else {
+			System.err.println("Incorrect Request");
+		}
 
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
+			System.err.println(e);
 		}
 
 		return true;
