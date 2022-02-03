@@ -17,15 +17,15 @@ public class FloorRequest implements ServiceRequest {
 	private Direction direction;
 	private int elevatorNumber;
 
-	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber) {
-		this(time, floorNumber, direction);
-		this.elevatorNumber = elevatorNumber;
-	}
-
 	public FloorRequest(LocalTime time, int floorNumber, Direction direction) {
 		this.time = time;
 		this.floorNumber = floorNumber;
 		this.direction = direction;
+	}
+
+	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber) {
+		this(time, floorNumber, direction);
+		this.elevatorNumber = elevatorNumber;
 	}
 
 	/**
