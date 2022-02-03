@@ -1,8 +1,5 @@
 package systemwide;
 
-import java.util.HashMap;
-import java.util.Locale;
-
 /**
  * Direction indicates vertical direction in terms of up, down, and stopped.
  * 
@@ -12,7 +9,7 @@ import java.util.Locale;
 public enum Direction {
 	UP("Up"),
 	DOWN("Down"),
-	STOPPED("Stop");
+	STOP("Stop");
 
 	private String name;
 
@@ -42,7 +39,7 @@ public enum Direction {
 	 */
 	public static Direction getDirection(String name) {
 		try {
-			return valueOf(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase());
+			return valueOf(name.trim().toUpperCase());
 		} catch (IllegalArgumentException iae) {
 			System.out.println("Direction does not exist");
 			iae.printStackTrace();
