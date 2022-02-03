@@ -17,6 +17,12 @@ public class ElevatorRequest implements ServiceRequest {
 	private Direction direction;
 	private int desiredFloor;
 
+	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction) {
+		this.time = time;
+		this.floorNumber = floorNumber;
+		this.direction = direction;
+	}
+
 	/**
 	 * Constructor for ElevatorRequest read from an input file.
 	 *
@@ -30,12 +36,7 @@ public class ElevatorRequest implements ServiceRequest {
 		this.desiredFloor = desiredFloor;
 	}
 
-	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction) {
-		this.time = time;
-		this.floorNumber = floorNumber;
-		this.direction = direction;
-	}
-	
+
 	public int getDesiredFloor() {
 		return desiredFloor;
 	}
