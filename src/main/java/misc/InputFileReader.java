@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.junit.runner.Request;
 import systemwide.Direction;
 
 /**
@@ -18,11 +19,13 @@ import systemwide.Direction;
  */
 public class InputFileReader {
 
+    private RequestFactory requestFactory;
+
     /**
      * Constructor for InputFileReader.
      */
     public InputFileReader() {
-
+        this.requestFactory = new RequestFactory();
     }
 
     /**
@@ -79,25 +82,10 @@ public class InputFileReader {
         for (Object obj: jsonArray) {
             JSONObject inputObject = (JSONObject) obj;
             data = convertJSONToStringArray(inputObject);
-            ElevatorRequest elevatorRequest = createElevatorRequest(data);
+            ElevatorRequest elevatorRequest = requestFactory.createElevatorRequest(data);
             queue.add(elevatorRequest);
         }
         return queue;
-    }
-
-    /**
-     * Creates an ElevatorRequest from a given String array.
-     *
-     * @param data a String array containing information for the ElevatorRequest
-     * @return elevatorRequest and
-     */
-    public ElevatorRequest createElevatorRequest(String[] data) {
-        LocalTime time = LocalTime.parse(data[0]);
-        int floorNumber = Integer.parseInt(data[1]);
-        Direction direction = Direction.getDirection(data[2]);
-        int floorToVisit = Integer.parseInt(data[3]);
-
-        return new ElevatorRequest(time, floorNumber, direction, floorToVisit);
     }
 
     /**
