@@ -11,7 +11,7 @@ import java.time.LocalTime;
  * @author Liam Tripp
  */
 public class ElevatorRequest implements ServiceRequest {
-	
+
 	private LocalTime time;
 	private int floorNumber;
 	private Direction direction;
@@ -36,11 +36,10 @@ public class ElevatorRequest implements ServiceRequest {
 		this.desiredFloor = desiredFloor;
 	}
 
-
 	public int getDesiredFloor() {
 		return desiredFloor;
 	}
-	
+
 	@Override
 	public LocalTime getTime() {
 		return time;
