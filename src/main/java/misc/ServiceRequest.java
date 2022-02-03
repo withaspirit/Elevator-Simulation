@@ -5,7 +5,8 @@ import systemwide.Direction;
 import java.time.LocalTime;
 
 /**
- * ServiceRequest is an abstraction for ElevatorRequests and FloorRequests.
+ * ServiceRequest is an abstract event data structure for when a user requests an
+ * Elevator's service.
  * 
  * @author Liam Tripp
  *
