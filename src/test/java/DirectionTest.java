@@ -7,7 +7,7 @@ import systemwide.Direction;
  *
  * @author Liam Tripp
  */
-public class Placeholder {
+public class DirectionTest {
 
     @Test
     public void testGetDirection() {
