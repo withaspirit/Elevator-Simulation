@@ -3,6 +3,7 @@ package misc;
 import systemwide.Direction;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * ElevatorRequest is an event data structure for when a user presses an up/down
@@ -21,6 +22,7 @@ public class ElevatorRequest implements ServiceRequest {
 		this.time = time;
 		this.floorNumber = floorNumber;
 		this.direction = direction;
+		this.desiredFloor = -1; // Error Value
 	}
 
 	/**
@@ -36,6 +38,7 @@ public class ElevatorRequest implements ServiceRequest {
 		this.desiredFloor = desiredFloor;
 	}
 
+	// do not use if created from floorRequest
 	public int getDesiredFloor() {
 		return desiredFloor;
 	}
@@ -53,5 +56,25 @@ public class ElevatorRequest implements ServiceRequest {
 	@Override
 	public Direction getDirection() {
 		return direction;
+	}
+
+	/**
+	 * Convert ElevatorRequest to a String.
+	 *
+	 * 	if ElevatorRequest was made from an InputFileReader:
+	 * 		"hh:mm:ss.mmm floorNumber direction desiredFloorNumber"
+	 * 	otherwise:
+	 * 		"hh:mm:ss.mmm floorNumber direction"
+	 */
+	@Override
+	public String toString() {
+		DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+		String formattedDate = time.format(dateTimeFormat);
+		String formattedString = formattedDate + " " + floorNumber + " " + direction.getName();
+
+		if (desiredFloor != -1) {
+			formattedString += " " + desiredFloor;
+		}
+		return formattedString;
 	}
 }
