@@ -74,12 +74,10 @@ public class InputFileReader {
         ArrayList<ElevatorRequest> queue = new ArrayList<>();
         JSONObject jsonObject = getJSONFileAsObject(name);
         JSONArray jsonArray = (JSONArray) jsonObject.get("inputs");
-        String[] data;
 
         for (Object obj: jsonArray) {
             JSONObject inputObject = (JSONObject) obj;
-            data = convertJSONToStringArray(inputObject);
-            ElevatorRequest elevatorRequest = createElevatorRequest(data);
+            ElevatorRequest elevatorRequest = createElevatorRequest(inputObject);
             queue.add(elevatorRequest);
         }
         return queue;
@@ -88,10 +86,11 @@ public class InputFileReader {
     /**
      * Creates an ElevatorRequest from a given String array.
      *
-     * @param data a String array containing information for the ElevatorRequest
+     * @param jsonObject a ServiceRequest as a JSONObject
      * @return elevatorRequest a request for an elevator made from an input file
      */
-    public ElevatorRequest createElevatorRequest(String[] data) {
+    public ElevatorRequest createElevatorRequest(JSONObject jsonObject) {
+        String[] data = convertJSONToStringArray(jsonObject);
         LocalTime time = LocalTime.parse(data[0]);
         int floorNumber = Integer.parseInt(data[1]);
         Direction direction = Direction.getDirection(data[2]);
@@ -104,10 +103,10 @@ public class InputFileReader {
      * Converts a JSONObject to a String array in the format:
      * "hh:mm:ss.mmm CurrentFloorNumber Direction DesiredFloorNumber".
      *
-     * @param jsonObject the input object as a JSONObject
+     * @param jsonObject a ServiceRequest as a JSONObject
      * @return a String array containing information in the specified format
      */
-    public String[] convertJSONToStringArray(JSONObject jsonObject) {
+    private String[] convertJSONToStringArray(JSONObject jsonObject) {
         return ((String) jsonObject.get("event")).split(" ");
     }
 }

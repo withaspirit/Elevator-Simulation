@@ -3,6 +3,7 @@ package misc;
 import systemwide.Direction;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * FloorRequest is an event data structure for when a user presses a FloorButton in an elevator.
@@ -56,5 +57,17 @@ public class FloorRequest implements ServiceRequest {
 	@Override
 	public Direction getDirection() {
 		return direction;
+	}
+
+	/**
+	 * Convert FloorRequest to a String in the format:
+	 * "hh:mm:ss.mmm desiredFloor direction elevatorNumber"
+	 *
+	 */
+	@Override
+	public String toString() {
+		DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+		String formattedDate = time.format(dateTimeFormat);
+		return formattedDate + " " + floorNumber + " " + direction.getName() + " " + elevatorNumber;
 	}
 }
