@@ -77,17 +77,26 @@ public class ElevatorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean receiveRequest() {
-		ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
-		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-		if (request instanceof ElevatorRequest elevatorRequest){
-			floorRequest = new FloorRequest(elevatorRequest, 1);
-		}  else if (request instanceof FloorRequest){
-			System.err.println("Incorrect Request. This is for a Floor");
-		}
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			System.err.println(e);
+		if((schedulerElevatorsubBuffer.checkFirst() instanceof ElevatorRequest)) {
+			ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
+			System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+			if (request instanceof ElevatorRequest elevatorRequest) {
+				floorRequest = new FloorRequest(elevatorRequest, 1);
+			} else if (request instanceof FloorRequest) {
+				System.err.println("Incorrect Request. This is for a Floor");
+			}
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				System.err.println(e);
+			}
+		} else {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return false;
 		}
 
 		return true;

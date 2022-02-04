@@ -30,19 +30,20 @@ public class Scheduler implements Runnable {
 	 * 
 	 */
 	public void run() {
+		while(true) {
+			// Receiving Data from Floor Subsystem
+			if (receiveRequest(schedulerFloorsubBuffer)) {
+				System.out.println("Scheduler received Request from Floor SubSystem Successful");
+			} else {
+				System.out.println("Failed Successful");
+			}
 
-		// Receiving Data from Floor Subsystem
-		if (receiveRequest(schedulerFloorsubBuffer)) {
-			System.out.println("Scheduler received Request from Floor SubSystem Successful");
-		} else {
-			System.out.println("Failed Successful");
-		}
-
-		// Receiving Data from Elevator Subsystem
-		if (receiveRequest(schedulerElevatorsubBuffer)) {
-			System.out.println("Scheduler received Request from Elevator SubSystem Successful");
-		} else {
-			System.out.println("Failed Successful");
+			// Receiving Data from Elevator Subsystem
+			if (receiveRequest(schedulerElevatorsubBuffer)) {
+				System.out.println("Scheduler received Request from Elevator SubSystem Successful");
+			} else {
+				System.out.println("Failed Successful");
+			}
 		}
 	}
 

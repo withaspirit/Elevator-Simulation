@@ -75,4 +75,15 @@ public class BoundedBuffer {
 
         return item;
     }
+
+    public synchronized ServiceRequest checkFirst(){
+        while (!readable) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                System.err.println(e);
+            }
+        }
+        return buffer[outIndex];
+    }
 }

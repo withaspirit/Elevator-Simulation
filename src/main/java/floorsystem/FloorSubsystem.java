@@ -24,8 +24,6 @@ public class FloorSubsystem implements Runnable {
 		requests = inputFileReader.readInputFile("inputs");
 	}
 
-	// readInputFile();
-
 	/**
 	 * Simple message requesting and sending between subsystems.
 	 * 
@@ -41,7 +39,7 @@ public class FloorSubsystem implements Runnable {
 
 			// Receiving Data from Scheduler
 			if (receiveRequest()) {
-				System.out.println("Expected Elevator# "+ floorRequest.getElevatorNumber() + " Arrived");
+				System.out.println("Expected Elevator# "+ floorRequest.getElevatorNumber() + " Arrived \n");
 			} else {
 				System.out.println("Failed Successful");
 			}
@@ -74,19 +72,28 @@ public class FloorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean receiveRequest() {
-		ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
-		System.out.println(Thread.currentThread().getName() + " received the request: " + request + "\n");
+		if((schedulerFloorsubBuffer.checkFirst() instanceof FloorRequest)) {
+			ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
+			System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
-		if (request instanceof FloorRequest floorRequest){
-			this.floorRequest = floorRequest;
-		} else if (request instanceof ElevatorRequest){
-			System.err.println("Incorrect Request. This is for an elevator");
-		}
+			if (request instanceof FloorRequest floorRequest) {
+				this.floorRequest = floorRequest;
+			} else if (request instanceof ElevatorRequest) {
+				System.err.println("Incorrect Request. This is for an elevator");
+			}
 
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			System.err.println(e);
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				System.err.println(e);
+			}
+		} else {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return false;
 		}
 
 		return true;
