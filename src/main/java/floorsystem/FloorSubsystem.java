@@ -17,11 +17,13 @@ public class FloorSubsystem implements Runnable {
 	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
 	private FloorRequest floorRequest;
+	private static int receive;
 
 	public FloorSubsystem(BoundedBuffer buffer) {
 		this.schedulerFloorsubBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
+		receive = requests.size();
 	}
 
 	/**
@@ -29,19 +31,21 @@ public class FloorSubsystem implements Runnable {
 	 * 
 	 */
 	public void run() {
-		while (!requests.isEmpty()) {
-			// Sending Data to Scheduler
-			if (sendRequest(requests.get(0))) {
-				System.out.println("Floor Subsystem Sent Request Successful to Scheduler");
-			} else {
-				System.out.println("Failed Successful");
+		while (receive != 0) {
+			if (!requests.isEmpty()) {
+				// Sending Data to Scheduler
+				if (sendRequest(requests.get(0))) {
+					System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+				} else {
+					System.err.println(Thread.currentThread().getName() + " failed Sending Successful");
+				}
 			}
 
 			// Receiving Data from Scheduler
 			if (receiveRequest()) {
 				System.out.println("Expected Elevator# "+ floorRequest.getElevatorNumber() + " Arrived \n");
 			} else {
-				System.out.println("Failed Successful");
+				System.err.println(Thread.currentThread().getName() + " failed Receiving Successful");
 			}
 		}
 	}
@@ -60,7 +64,7 @@ public class FloorSubsystem implements Runnable {
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
 
 		return true;
@@ -73,19 +77,14 @@ public class FloorSubsystem implements Runnable {
 	 */
 	public boolean receiveRequest() {
 		if((schedulerFloorsubBuffer.checkFirst() instanceof FloorRequest)) {
-			ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
+			FloorRequest request = (FloorRequest) schedulerFloorsubBuffer.removeFirst();
 			System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
-			if (request instanceof FloorRequest floorRequest) {
-				this.floorRequest = floorRequest;
-			} else if (request instanceof ElevatorRequest) {
-				System.err.println("Incorrect Request. This is for an elevator");
-			}
+			this.floorRequest = request;
 
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
-				System.err.println(e);
+				e.printStackTrace();
 			}
 		} else {
 			try {

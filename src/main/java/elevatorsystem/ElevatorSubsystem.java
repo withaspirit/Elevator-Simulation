@@ -10,7 +10,7 @@ import systemwide.Direction;
 
 /**
  * ElevatorSubsystem manages the elevators and their requests to the Scheduler
- * 
+ *
  * @author Liam Tripp, Julian
  */
 public class ElevatorSubsystem implements Runnable {
@@ -24,7 +24,7 @@ public class ElevatorSubsystem implements Runnable {
 
 	/**
 	 * Simple message requesting and sending between subsystems.
-	 * 
+	 *
 	 */
 	public void run() {
 		while(true) {
@@ -33,28 +33,28 @@ public class ElevatorSubsystem implements Runnable {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				System.err.println(e);
+				e.printStackTrace();
 			}
 
 			// Receiving Data from Scheduler
 			if (receiveRequest()) {
 				System.out.println("Elevator SubSystem received Request Successful");
 			} else {
-				System.out.println("Failed Successful");
+				System.out.println(Thread.currentThread().getName() + " failed receiving Successful");
 			}
 
 			// Sending Data to Scheduler
 			if (sendRequest(floorRequest)) { // Expect elevator # at floor #
 				System.out.println("Elevator SubSystem Sent Request to Scheduler Successful");
 			} else {
-				System.out.println("Failed Successful");
+				System.out.println(Thread.currentThread().getName() + " failed sending Successful");
 			}
 		}
 	}
 
 	/**
 	 * Puts the request message into the buffer
-	 * 
+	 *
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
 	 */
@@ -65,7 +65,7 @@ public class ElevatorSubsystem implements Runnable {
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
 
 		return true;
@@ -78,17 +78,14 @@ public class ElevatorSubsystem implements Runnable {
 	 */
 	public boolean receiveRequest() {
 		if((schedulerElevatorsubBuffer.checkFirst() instanceof ElevatorRequest)) {
-			ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
+			ElevatorRequest request = (ElevatorRequest) schedulerElevatorsubBuffer.removeFirst();
 			System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-			if (request instanceof ElevatorRequest elevatorRequest) {
-				floorRequest = new FloorRequest(elevatorRequest, 1);
-			} else if (request instanceof FloorRequest) {
-				System.err.println("Incorrect Request. This is for a Floor");
-			}
+			floorRequest = new FloorRequest(request, 1);
+
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
-				System.err.println(e);
+				e.printStackTrace();
 			}
 		} else {
 			try {
