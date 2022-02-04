@@ -16,6 +16,7 @@ public class FloorRequest implements ServiceRequest {
 	private int floorNumber; // floorToVisit
 	private Direction direction;
 	private int elevatorNumber;
+	private String basicAction;
 
 	public FloorRequest(LocalTime time, int floorNumber, Direction direction) {
 		this.time = time;
@@ -37,6 +38,11 @@ public class FloorRequest implements ServiceRequest {
 	public FloorRequest(ElevatorRequest elevatorRequest, int elevatorNumber) {
 		this(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
 				elevatorRequest.getDirection(), elevatorNumber);
+	}
+
+	//TODO move to a separate class
+	public FloorRequest(String basicAction) {
+		this.basicAction = basicAction;
 	}
 
 	public int getElevatorNumber() {

@@ -13,7 +13,7 @@ public class BoundedBuffer {
 
     // buffer capacity
     public static final int SIZE = 5;
-    private Object[] buffer = new Object[SIZE];
+    private final ServiceRequest[] buffer = new ServiceRequest[SIZE];
     private int inIndex = 0, outIndex = 0, count = 0;
 
     // If true, there is room for at least one object in the buffer.
@@ -26,7 +26,7 @@ public class BoundedBuffer {
      * Adds the item to the end of the ring buffer
      * 
      */
-    public synchronized void addLast(Object item)
+    public synchronized void addLast(ServiceRequest item)
     {
         while (!writeable) {
             try { 
@@ -51,9 +51,9 @@ public class BoundedBuffer {
      * Removes the first item from the ring buffer
      * 
      */
-    public synchronized Object removeFirst()
+    public synchronized ServiceRequest removeFirst()
     {
-        Object item;
+        ServiceRequest item;
         
         while (!readable) {
             try { 
