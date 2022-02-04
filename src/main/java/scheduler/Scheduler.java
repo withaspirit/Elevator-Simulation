@@ -1,9 +1,6 @@
 package scheduler;
 
-import misc.BoundedBuffer;
-import misc.ElevatorRequest;
-import misc.FloorRequest;
-import misc.ServiceRequest;
+import misc.*;
 
 /**
  * Scheduler handles the requests from all system components
@@ -29,8 +26,10 @@ public class Scheduler implements Runnable {
 	 * 
 	 */
 	public void run() {
-		int numberOfInputs = 6;
-		for (int i = 0; i < numberOfInputs; i++) {
+		// TODO: make getting input file size a method?
+		InputFileReader inputFileReader = new InputFileReader();
+		int numberOfInputs = inputFileReader.readInputFile("inputs").size();
+		for (int i = 0; i < numberOfInputs * 2; i++) {
 			ServiceRequest serviceRequest = receiveRequest(schedulerFloorsubBuffer);
 			sendRequest(serviceRequest, schedulerElevatorsubBuffer);
 			serviceRequest = receiveRequest(schedulerElevatorsubBuffer);

@@ -24,7 +24,8 @@ public class ElevatorSubsystem implements Runnable {
 	 */
 	public void run() {
 		// need to get proper number from somewhere - maybe instantiate a FileInputReader, read in the inputs
-		int numberOfInputs = 4;
+		InputFileReader inputFileReader = new InputFileReader();
+		int numberOfInputs = inputFileReader.readInputFile("inputs").size();
 		for (int i = 0; i < numberOfInputs * 2; i++) {
 			ServiceRequest request = receiveRequest();
 			sendRequest(request);
