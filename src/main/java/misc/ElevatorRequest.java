@@ -13,11 +13,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class ElevatorRequest extends ServiceRequest {
 
-	private LocalTime time;
-	private int floorNumber;
-	private Direction direction;
 	private int desiredFloor;
-	private String basicAction;
+//	private String basicAction;
 
 	/**
 	 * Constructor for ElevatorRequest read from an input file.
@@ -28,9 +25,9 @@ public class ElevatorRequest extends ServiceRequest {
 	 * @param desiredFloor the floor the user wishes to visit
 	 */
 	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction, int desiredFloor) {
-			super(time ,floorNumber, direction);
-			this.desiredFloor = desiredFloor;
-		}
+		super(time ,floorNumber, direction);
+		this.desiredFloor = desiredFloor;
+	}
 
 	/**
 	 * Constructor for ElevatorRequest read from an input file.
@@ -66,7 +63,7 @@ public class ElevatorRequest extends ServiceRequest {
 	public String toString() {
 		DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 		String formattedDate = getTime().format(dateTimeFormat);
-		String formattedString = formattedDate + " " + floorNumber + " " + direction.getName();
+		String formattedString = formattedDate + " " + getFloorNumber() + " " + getDirection().getName();
 
 		if (desiredFloor != -1) {
 			formattedString += " " + desiredFloor;
