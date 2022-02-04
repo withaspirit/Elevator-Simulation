@@ -2,6 +2,9 @@ package elevatorsystem;
 
 import misc.*;
 
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+
 /**
  * ElevatorSubsystem manages the elevators and their requests to the Scheduler
  * 
@@ -24,7 +27,7 @@ public class ElevatorSubsystem implements Runnable {
 		int numberOfInputs = 4;
 		for (int i = 0; i < numberOfInputs * 2; i++) {
 			ServiceRequest request = receiveRequest();
-			sendRequest(request);
+			sendRequest(new FloorRequest(request.getTime().plus(69, ChronoUnit.MILLIS), ((ElevatorRequest) request).getDesiredFloor(), request.getDirection(),  request.getFloorNumber()));
 		}
 		/*
 		while(true) {
@@ -59,7 +62,7 @@ public class ElevatorSubsystem implements Runnable {
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean sendRequest(ServiceRequest request) {
+	public boolean sendRequest(FloorRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
 		schedulerElevatorsubBuffer.addLast(request);
 

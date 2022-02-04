@@ -37,7 +37,7 @@ public class FloorSubsystem implements Runnable {
 
 			ElevatorRequest elevatorRequest = requests.get(0);
 			sendRequest(elevatorRequest);
-			elevatorRequest = (ElevatorRequest) receiveRequest();
+			FloorRequest floorRequest = (FloorRequest) receiveRequest();
 			System.out.println("Printing buffer contents for buffer");
 			schedulerFloorsubBuffer.printBufferContents();
 		}
