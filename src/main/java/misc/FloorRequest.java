@@ -38,6 +38,11 @@ public class FloorRequest implements ServiceRequest {
 	public FloorRequest(ElevatorRequest elevatorRequest, int elevatorNumber) {
 		this(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
 				elevatorRequest.getDirection(), elevatorNumber);
+		if (direction.equals(Direction.UP)){
+			direction = Direction.DOWN;
+		} else {
+			direction = Direction.UP;
+		}
 	}
 
 	//TODO move to a separate class
