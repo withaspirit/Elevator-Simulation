@@ -48,12 +48,12 @@ This project is set up as a Maven project.
 
   ### Contributions
 
-  | Member | Coding | Documentation | Misc
-  | ------ | ------ | ------------- |----
-  | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer | Design Document, UML Diagram Contributions | Code Review
-  | Ramit Mahajan | Data Structure abstraction |  |
-  | Brady Norton | Message transfer tests, Read/Verify Input file tests | README, Setup Instructions, UML Sequence Diagram |
-  | Julian Obando Velez | Message Transfer, Bounded Buffer | UML Diagram Feedback, GitHub Releases  |
+  | Member | Coding                                                                                              | Documentation | Misc
+  |-----------------------------------------------------------------------------------------------------| ------ | ------------- |----
+  | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer, Unit Testing             | Design Document, UML Diagram Contributions | Code Review
+  | Ramit Mahajan | Data Structure abstraction                                                                          |  |
+  | Brady Norton | Message transfer tests, Read/Verify Input file tests                                                | README, Setup Instructions, UML Sequence Diagram |
+  | Julian Obando Velez | Message Transfer, Bounded Buffer                                                                    | UML Diagram Feedback, GitHub Releases  |
   | Liam Tripp | Project Skeleton, Event Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Contributions, Early Design Diagrams, Design Document | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead
 
   </details>
