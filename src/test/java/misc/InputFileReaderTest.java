@@ -28,41 +28,22 @@ public class InputFileReaderTest {
     @BeforeEach
     void setUp() {
         inputFileReader = new InputFileReader();
+        jsonArray = (JSONArray) inputFileReader.getJSONFileAsObject("inputs").get("inputs");
     }
 
     @AfterEach
     void tearDown() {}
 
-    /**
-     * Initializes the JSONArray for a test to the "inputs" file.
-     */
-    private void initStandardInputArray() {
-        jsonArray = initJSONArray("inputs");
-    }
-
-    /**
-     * Initializes the JSONArray for a JSON file with the specified name.
-     *
-     * @return JSONArray the JSON file with the specified name converted to a JSON array
-     */
-    private JSONArray initJSONArray(String name) {
-        ArrayList<ElevatorRequest> queue = inputFileReader.readInputFile(name);
-        // Fill JSONArray with inputs
-        return (JSONArray) inputFileReader.getJSONFileAsObject(name).get(name);
-    }
-
     // Assert all inputs are in correct format
     @Test
     void testConvertJSONToString() {
-        initStandardInputArray();
-
         for (Object object : jsonArray) {
             jsonObject = (JSONObject) object;
             String[] data = inputFileReader.convertJSONToStringArray(jsonObject);
 
             // Test that time is valid
             // This should just throw an exception if the format is invalid
-            LocalTime time = LocalTime.parse(data[0]);
+            LocalTime.parse(data[0]);
 
             // floorNumber is a valid number ( > 0)
             int floorNumber = Integer.parseInt(data[1]);
@@ -91,9 +72,6 @@ public class InputFileReaderTest {
         // Fill queue with inputs
         ArrayList<ElevatorRequest> queue = inputFileReader.readInputFile("inputs");
 
-        // Fill JSONArray with inputs
-        initStandardInputArray();
-
         // make sure both return same number of inputs
         assertEquals(jsonArray.size(), queue.size());
 
@@ -108,8 +86,6 @@ public class InputFileReaderTest {
 
     @Test
     void inputFormatTest() {
-        initStandardInputArray();
-
         // Event 1 -> "00:00:00.000 1 Up 2"
         jsonObject = (JSONObject) jsonArray.get(0);
         elevatorRequest1 = inputFileReader.createElevatorRequest(jsonObject);
