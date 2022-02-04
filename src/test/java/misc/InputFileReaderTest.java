@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import systemwide.Direction;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,33 +54,23 @@ public class InputFileReaderTest {
     }
 
     @Test
-    void testReadInputFile() {
+    void testReadInputFileEquality() {
         // Fill queue with inputs
         ArrayList<ElevatorRequest> queue = inputFileReader.readInputFile("inputs");
 
         // Fill JSONArray with inputs
         initStandardInputArray();
-        // Event 1
-        elevatorRequest1 = queue.get(0);
-        jsonObject = (JSONObject) jsonArray.get(0);
-        elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
 
-        assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
+        // make sure both return same number of inputs
+        assertEquals(jsonArray.size(), queue.size());
 
-        // Event 2
-        jsonObject = (JSONObject) jsonArray.get(1);
-        elevatorRequest1 = queue.get(1);
-        elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
-
-        assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
-
-        // Event 3
-        jsonObject = (JSONObject) jsonArray.get(2);
-        elevatorRequest1 = queue.get(2);
-        elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
-
-        assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
-
+        // Assure contents of each method is the same
+        for (int i = 0; i < queue.size(); i++) {
+            elevatorRequest1 = queue.get(i);
+            jsonObject = (JSONObject) jsonArray.get(i);
+            elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
+            assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
+        }
     }
 
     @Test
