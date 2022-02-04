@@ -62,8 +62,9 @@ public class BoundedBuffer {
                 System.err.println(e);
             }
         }
-
+        // remove item from buffer
         item = buffer[outIndex];
+        buffer[outIndex] = null;
         writeable = true;
 
         outIndex = (outIndex + 1) % SIZE;

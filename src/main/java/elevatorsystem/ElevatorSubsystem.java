@@ -1,22 +1,18 @@
 package elevatorsystem;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
-import javax.swing.JButton;
-
 import misc.*;
-import scheduler.Scheduler;
-import systemwide.Direction;
+
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 
 /**
  * ElevatorSubsystem manages the elevators and their requests to the Scheduler
- *
- * @author Liam Tripp, Julian
+ * 
+ * @author Liam Tripp, Julian, Ryan Dash
  */
 public class ElevatorSubsystem implements Runnable {
 
 	private final BoundedBuffer schedulerElevatorsubBuffer; // Elevator Subsystem - Scheduler link
-	private FloorRequest floorRequest;
 
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.schedulerElevatorsubBuffer = buffer;
@@ -27,6 +23,15 @@ public class ElevatorSubsystem implements Runnable {
 	 *
 	 */
 	public void run() {
+		// need to get proper number from somewhere - maybe instantiate a FileInputReader, read in the inputs
+		InputFileReader inputFileReader = new InputFileReader();
+		int numberOfInputs = inputFileReader.readInputFile("inputs").size();
+		for (int i = 0; i < numberOfInputs * 2; i++) {
+			ServiceRequest request = receiveRequest();
+			sendRequest(request);
+			// sendRequest(new FloorRequest(request.getTime().plus(69, ChronoUnit.MILLIS), ((ElevatorRequest) request).getDesiredFloor(), request.getDirection(),  request.getFloorNumber()));
+		}
+		/*
 		while(true) {
 			// A sleep to allow communication between Floor Subsystem and Scheduler to
 			// happen first
@@ -50,6 +55,7 @@ public class ElevatorSubsystem implements Runnable {
 				System.out.println(Thread.currentThread().getName() + " failed sending Successful");
 			}
 		}
+		 */
 	}
 
 	/**
@@ -58,7 +64,7 @@ public class ElevatorSubsystem implements Runnable {
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean sendRequest(FloorRequest request) {
+	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
 		schedulerElevatorsubBuffer.addLast(request);
 
@@ -69,6 +75,23 @@ public class ElevatorSubsystem implements Runnable {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Removes a ServiceRequest from the Buffer.
+	 *
+	 * @return serviceRequest a request by a person on a floor or in an elevator
+	 */
+	public ServiceRequest receiveRequest() {
+		ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
+		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+
+		try {
+			Thread.sleep(0);
+		} catch (InterruptedException e) {
+			System.err.println(e);
+		}
+		return request;
 	}
 
 	/**
