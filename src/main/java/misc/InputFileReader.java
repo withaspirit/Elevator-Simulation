@@ -106,7 +106,7 @@ public class InputFileReader {
      * @param jsonObject a ServiceRequest as a JSONObject
      * @return a String array containing information in the specified format
      */
-    private String[] convertJSONToStringArray(JSONObject jsonObject) {
+    public String[] convertJSONToStringArray(JSONObject jsonObject) {
         return ((String) jsonObject.get("event")).split(" ");
     }
 }

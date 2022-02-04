@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test class for InputFileReader methods
  *
- * @author Ryan Dash, Brady
+ * @author Ryan Dash, Brady, Liam Tripp
  */
 public class InputFileReaderTest {
 
@@ -74,12 +74,43 @@ public class InputFileReaderTest {
     }
 
     @Test
+    void testConvertJSONToString() {
+        initStandardInputArray();
+
+        for (Object object : jsonArray) {
+            jsonObject = (JSONObject) object;
+            String[] data = inputFileReader.convertJSONToStringArray(jsonObject);
+
+
+            // this should just throw an exception if the format is invalid
+            LocalTime time = LocalTime.parse(data[0]);
+
+            // floorNumber is a valid number ( > 0)
+            int floorNumber = Integer.parseInt(data[1]);
+            assertTrue(floorNumber > 0);
+
+            // Direction is Up or Down
+            // (special cases: no down on first floor)
+            Direction direction = Direction.getDirection(data[2]);
+            assertNotNull(direction);
+            String directionName = direction.getName();
+            if (floorNumber == 1) {
+                assertNotEquals(directionName, Direction.DOWN.getName());
+            } else {
+                assertTrue(directionName.equals(Direction.UP.getName()) ||
+                        directionName.equals(Direction.DOWN.getName()));
+            }
+
+            // floorToVisit is a valid number ( > 0)
+            int floorToVisit = Integer.parseInt(data[3]);
+            assertTrue(floorToVisit > 0);
+        }
+    }
+
+    @Test
     void inputFormatTest() {
         // test all inputs in input file
         // LocalTime in proper format
-        // floorNumber is a valid number ( > 0)
-        // Direction is Up or Down
-        //      (special cases: no down on first floor)
         //      (no way to know which is top floor so no test for that)
         //
         // Could create an inputs file just for testing incorrect inputs
