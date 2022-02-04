@@ -89,4 +89,16 @@ public class BoundedBuffer {
             + "buffer1: "+ buffer[1] + "\n");
     }
 
+    /**
+     * Method to determine if Buffer is empty
+     */
+    public boolean isEmpty()
+    {
+        if(count==0)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }
