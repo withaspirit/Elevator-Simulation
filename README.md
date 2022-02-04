@@ -51,7 +51,7 @@ This project is set up as a Maven project.
   | ------ | ------ | ------------- |----
   | Ryan Dash | InputFileReader, Converting JSON File contents to data structure, creating JSON files | Design Document, UML Diagram Contributions | Code Review 
   | Ramit Mahajan | Message Transfer, Test Files, Filling out skeleton |  | 
-  | Brady Norton | | README, Setup Instructions, UML Sequence Diagram | 
+  | Brady Norton | Input File Reader Tests, Message Transfer Tests | README, Setup Instructions, UML Sequence Diagram | 
   | Julian Obando Velez | Message Transfer, Test Files, Filling out skeleton | UML Diagram Feedback | 
   | Liam Tripp | Project Skeleton, Event Data Structures, InputFileReader, Direction | Early Design Diagrams, Design Document | Discord Server, Google Drive, GitHub repo, Code reviews
   
