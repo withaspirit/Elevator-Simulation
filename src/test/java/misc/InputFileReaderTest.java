@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import systemwide.Direction;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +25,7 @@ public class InputFileReaderTest {
     JSONObject jsonObject;
 
     InputFileReader inputFileReader;
+    JSONArray jsonArray;
 
     @BeforeEach
     void setUp() {
@@ -34,14 +36,31 @@ public class InputFileReaderTest {
     void tearDown() {
     }
 
+    /**
+     * Initializes the JSONArray for a test to the "inputs" file.
+     */
+    private void initStandardInputArray() {
+        jsonArray = initJSONArray("inputs");
+    }
+
+    /**
+     * Initializes the JSONArray for a JSON file with the specified name.
+     *
+     * @return JSONArray the JSON file with the specified name converted to a JSON array
+     */
+    private JSONArray initJSONArray(String name) {
+        ArrayList<ElevatorRequest> queue = inputFileReader.readInputFile(name);
+        // Fill JSONArray with inputs
+        return (JSONArray) inputFileReader.getJSONFileAsObject(name).get(name);
+    }
+
     @Test
     void testReadInputFile() {
         // Fill queue with inputs
         ArrayList<ElevatorRequest> queue = inputFileReader.readInputFile("inputs");
 
         // Fill JSONArray with inputs
-        JSONArray jsonArray = (JSONArray) inputFileReader.getJSONFileAsObject("inputs").get("inputs");
-
+        initStandardInputArray();
         // Event 1
         elevatorRequest1 = queue.get(0);
         jsonObject = (JSONObject) jsonArray.get(0);
@@ -50,15 +69,15 @@ public class InputFileReaderTest {
         assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
 
         // Event 2
-        elevatorRequest1 = queue.get(1);
         jsonObject = (JSONObject) jsonArray.get(1);
+        elevatorRequest1 = queue.get(1);
         elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
 
         assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
 
         // Event 3
-        elevatorRequest1 = queue.get(2);
         jsonObject = (JSONObject) jsonArray.get(2);
+        elevatorRequest1 = queue.get(2);
         elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
 
         assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
@@ -81,8 +100,7 @@ public class InputFileReaderTest {
         }
 
          */
-        // Create JSONArray
-        JSONArray jsonArray = (JSONArray) inputFileReader.getJSONFileAsObject("inputs").get("inputs");
+        initStandardInputArray();
 
         // Event 1 -> "00:00:00.000 1 Up 2"
 
@@ -94,8 +112,6 @@ public class InputFileReaderTest {
         assertEquals(1, Integer.parseInt(data[1]));
         assertEquals(Direction.UP, Direction.getDirection(data[2]));
         assertEquals(2, Integer.parseInt(data[3]));
-
-
     }
 
     void formatTest() {
