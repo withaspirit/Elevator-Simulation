@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SchedulerTest {
 
-    // Variables
     BoundedBuffer elevator;
     BoundedBuffer floor;
     Scheduler scheduler;
@@ -30,8 +29,7 @@ class SchedulerTest {
     ServiceRequest req;
 
     @BeforeEach
-    void setUp()
-    {
+    void setUp() {
         // Request
         req = new ServiceRequest(LocalTime.NOON, 1, Direction.UP);
 
@@ -40,19 +38,16 @@ class SchedulerTest {
         floor = new BoundedBuffer();
 
         // Set up systems
-        scheduler = new Scheduler(elevator,floor);
+        scheduler = new Scheduler(elevator, floor);
         elevatorSys = new ElevatorSubsystem(elevator);
         floorSys = new FloorSubsystem(floor);
     }
 
     @AfterEach
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
     @Test
-    void sendElevatorRequest()
-    {
+    void sendElevatorRequest() {
         // Send req from scheduler to elevator buffer
         scheduler.sendRequest(req, elevator);
 
@@ -66,8 +61,7 @@ class SchedulerTest {
     }
 
     @Test
-    void sendFloorRequest()
-    {
+    void sendFloorRequest() {
         // Send req from scheduler to elevator buffer
         scheduler.sendRequest(req, floor);
 
@@ -81,8 +75,7 @@ class SchedulerTest {
     }
 
     @Test
-    void receiveElevatorRequest()
-    {
+    void receiveElevatorRequest() {
         // Send request to buffer
         elevatorSys.sendRequest(req);
 
@@ -93,12 +86,10 @@ class SchedulerTest {
         assertEquals(LocalTime.NOON, result.getTime());
         assertEquals(1, result.getFloorNumber());
         assertEquals(Direction.UP, result.getDirection());
-
     }
 
     @Test
-    void receiveFloorRequest()
-    {
+    void receiveFloorRequest() {
         // Ensure buffer is initially empty
         assertTrue(floor.isEmpty());
 
