@@ -72,8 +72,7 @@ public class InputFileReader {
      */
     public ArrayList<ElevatorRequest> readInputFile(String name){
         ArrayList<ElevatorRequest> queue = new ArrayList<>();
-        JSONObject jsonObject = getJSONFileAsObject(name);
-        JSONArray jsonArray = (JSONArray) jsonObject.get("inputs");
+        JSONArray jsonArray = createJSONArray(name);
 
         for (Object obj: jsonArray) {
             JSONObject inputObject = (JSONObject) obj;
@@ -81,6 +80,15 @@ public class InputFileReader {
             queue.add(elevatorRequest);
         }
         return queue;
+    }
+
+    /**
+     * Initializes a JSONArray for a JSON file with the specified name.
+     *
+     * @return JSONArray the JSON file converted to a JSON array
+     */
+    public JSONArray createJSONArray(String name) {
+        return (JSONArray) getJSONFileAsObject(name).get(name);
     }
 
     /**

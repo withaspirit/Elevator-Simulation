@@ -37,18 +37,7 @@ public class InputFileReaderTest {
      * Initializes the JSONArray for a test to the "inputs" file.
      */
     private void initStandardInputArray() {
-        jsonArray = initJSONArray("inputs");
-    }
-
-    /**
-     * Initializes the JSONArray for a JSON file with the specified name.
-     *
-     * @return JSONArray the JSON file with the specified name converted to a JSON array
-     */
-    private JSONArray initJSONArray(String name) {
-        ArrayList<ElevatorRequest> queue = inputFileReader.readInputFile(name);
-        // Fill JSONArray with inputs
-        return (JSONArray) inputFileReader.getJSONFileAsObject(name).get(name);
+        jsonArray = inputFileReader.createJSONArray("inputs");
     }
 
     // Assert all inputs are in correct format
