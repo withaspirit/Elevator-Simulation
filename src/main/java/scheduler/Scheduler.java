@@ -1,6 +1,5 @@
 package scheduler;
 
-import java.util.ArrayList;
 import misc.BoundedBuffer;
 import misc.ElevatorRequest;
 import misc.FloorRequest;
@@ -9,7 +8,7 @@ import misc.ServiceRequest;
 /**
  * Scheduler handles the requests from all system components
  * 
- * @author Liam Tripp, Julian
+ * @author Liam Tripp, Julian, Ryan Dash
  */
 public class Scheduler implements Runnable {
 
@@ -30,7 +29,14 @@ public class Scheduler implements Runnable {
 	 * 
 	 */
 	public void run() {
-
+		int numberOfInputs = 6;
+		for (int i = 0; i < numberOfInputs; i++) {
+			ServiceRequest serviceRequest = receiveRequest(schedulerFloorsubBuffer);
+			sendRequest(serviceRequest, schedulerElevatorsubBuffer);
+			serviceRequest = receiveRequest(schedulerElevatorsubBuffer);
+			sendRequest(serviceRequest, schedulerFloorsubBuffer);
+		}
+		/*
 		// Receiving Data from Floor Subsystem
 		if (receiveRequest(schedulerFloorsubBuffer)) {
 			System.out.println("Scheduler received Request from Floor SubSystem Successful");
@@ -44,6 +50,7 @@ public class Scheduler implements Runnable {
 		} else {
 			System.out.println("Failed Successful");
 		}
+		 */
 	}
 
 	/**
@@ -54,15 +61,31 @@ public class Scheduler implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean sendRequest(ServiceRequest request, BoundedBuffer buffer) {
-		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
+		System.out.println(Thread.currentThread().getName() + " sending: " + request);
 		buffer.addLast(request);
 
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
 		}
-		
 		return true;
+	}
+
+	/**
+	 * Removes a ServiceRequest from the Buffer.
+	 *
+	 * @param buffer the BoundedBuffer used for receiving the request
+	 * @return serviceRequest a request by a person on a floor or in an elevator
+	 */
+	public ServiceRequest receiveRequest(BoundedBuffer buffer) {
+		ServiceRequest request = buffer.removeFirst();
+		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+
+		try {
+			Thread.sleep(0);
+		} catch (InterruptedException e) {
+		}
+		return request;
 	}
 
 	/**
@@ -71,7 +94,7 @@ public class Scheduler implements Runnable {
 	 * @param buffer the BoundedBuffer used for receiving the request
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean receiveRequest(BoundedBuffer buffer) {
+	public boolean receiveRequestBoolean(BoundedBuffer buffer) {
 		ServiceRequest request = buffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
@@ -95,5 +118,4 @@ public class Scheduler implements Runnable {
 
 		return true;
 	}
-
 }
