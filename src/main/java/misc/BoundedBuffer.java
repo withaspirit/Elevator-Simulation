@@ -62,8 +62,9 @@ public class BoundedBuffer {
                 System.err.println(e);
             }
         }
-
+        // remove item from buffer
         item = buffer[outIndex];
+        buffer[outIndex] = null;
         writeable = true;
 
         outIndex = (outIndex + 1) % SIZE;
@@ -75,4 +76,17 @@ public class BoundedBuffer {
 
         return item;
     }
+
+    // method for verifying whether buffer is empty?
+    // method for returning buffer contents?
+
+    /**
+     * Method to print the contents of a Buffer.
+     */
+    public void printBufferContents() {
+        // expand upon this
+        System.out.println("Buffer contents: buffer0: " + buffer[0] + "\n"
+            + "buffer1: "+ buffer[1] + "\n");
+    }
+
 }
