@@ -32,7 +32,7 @@ public class BoundedBuffer {
             try { 
                 wait();
             } catch (InterruptedException e) {
-                System.err.println(e);
+                e.printStackTrace();
             }
         }
         
@@ -59,7 +59,7 @@ public class BoundedBuffer {
             try { 
                 wait();
             } catch (InterruptedException e) {
-                System.err.println(e);
+                e.printStackTrace();
             }
         }
         // remove item from buffer
@@ -82,9 +82,13 @@ public class BoundedBuffer {
             try {
                 wait();
             } catch (InterruptedException e) {
-                System.err.println(e);
+                e.printStackTrace();
             }
         }
         return buffer[outIndex];
+    }
+
+    public boolean isEmpty() {
+        return count == 0;
     }
 }

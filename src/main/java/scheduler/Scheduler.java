@@ -11,6 +11,7 @@ public class Scheduler implements Runnable {
 
 	private final BoundedBuffer schedulerElevatorsubBuffer; // Elevator Subsystem - Scheduler link
 	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
+	private ServiceRequest request;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
 
@@ -27,68 +28,13 @@ public class Scheduler implements Runnable {
 	 */
 	public void run() {
 		while(true) {
-			// Receiving Data from Floor Subsystem
-			if (receiveRequest(schedulerFloorsubBuffer)) {
-				System.out.println("Scheduler received Request from Floor SubSystem Successful");
-			} else {
-				System.out.println("Failed Successful");
-			}
-
-			// Receiving Data from Elevator Subsystem
-			if (receiveRequest(schedulerElevatorsubBuffer)) {
-				System.out.println("Scheduler received Request from Elevator SubSystem Successful");
-			} else {
-				System.out.println("Failed Successful");
-			}
+			redirectRequest(schedulerFloorsubBuffer);
+			redirectRequest(schedulerElevatorsubBuffer);
 		}
-		 */
 	}
 
-	/**
-	 * Puts the request message into the buffer
-	 * 
-	 * @param request the message being sent
-	 * @param buffer the BoundedBuffer used for sending the request
-	 * @return true if request is successful, false otherwise
-	 */
-	public boolean sendRequest(ServiceRequest request, BoundedBuffer buffer) {
-		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		buffer.addLast(request);
-
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-		}
-		return true;
-	}
-
-	/**
-	 * Removes a ServiceRequest from the Buffer.
-	 *
-	 * @param buffer the BoundedBuffer used for receiving the request
-	 * @return serviceRequest a request by a person on a floor or in an elevator
-	 */
-	public ServiceRequest receiveRequest(BoundedBuffer buffer) {
-		ServiceRequest request = buffer.removeFirst();
-		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
-		try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
-		}
-		return request;
-	}
-
-	/**
-	 * Checks the buffer for messages
-	 * 
-	 * @param buffer the BoundedBuffer used for receiving the request
-	 * @return true if request is successful, false otherwise
-	 */
-	public boolean receiveRequestBoolean(BoundedBuffer buffer) {
-		ServiceRequest request = buffer.removeFirst();
-		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
+	private void redirectRequest(BoundedBuffer buffer) {
+		request = receiveRequest(buffer);
 		if (request instanceof FloorRequest floorRequest){
 			if (sendRequest(floorRequest, schedulerFloorsubBuffer)) {
 				System.out.println("Scheduler Sent Request to floor Successful");
@@ -102,11 +48,45 @@ public class Scheduler implements Runnable {
 				System.out.println("Failed Successful");
 			}
 		}
+	}
+
+	/**
+	 * Puts the request message into the buffer
+	 * 
+	 * @param request the message being sent
+	 * @param buffer the BoundedBuffer used for sending the request
+	 * @return true if request is successful, false otherwise
+	 */
+	public boolean sendRequest(ServiceRequest request, BoundedBuffer buffer) {
+		if (request != null) {
+			System.out.println(Thread.currentThread().getName() + " sending: " + request);
+			buffer.addLast(request);
+
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks the buffer for messages
+	 * 
+	 * @param buffer the BoundedBuffer used for receiving the request
+	 * @return true if request is successful, false otherwise
+	 */
+	public ServiceRequest receiveRequest(BoundedBuffer buffer) {
+		ServiceRequest request = buffer.removeFirst();
+		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-
-		return true;
+		return request;
 	}
 }

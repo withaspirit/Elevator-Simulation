@@ -1,9 +1,6 @@
 package floorsystem;
 
-import javax.swing.JButton;
-
 import misc.*;
-import scheduler.Scheduler;
 
 import java.util.ArrayList;
 
@@ -16,8 +13,7 @@ public class FloorSubsystem implements Runnable {
 
 	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
-	private FloorRequest floorRequest;
-	private static int receive;
+	private int receive;
 
 	public FloorSubsystem(BoundedBuffer buffer) {
 		this.schedulerFloorsubBuffer = buffer;
@@ -41,15 +37,16 @@ public class FloorSubsystem implements Runnable {
 				}
 			}
 
+			ServiceRequest floorRequest = receiveRequest();
 			// Receiving Data from Scheduler
-			if (receiveRequest()) {
-				System.out.println("Expected Elevator# "+ floorRequest.getElevatorNumber() + " Arrived \n");
+			if (floorRequest != null) {
+				receive--;
+				System.out.println("Expected Elevator# "+ ((FloorRequest)floorRequest).getElevatorNumber() + " Arrived \n");
 			} else {
 				System.err.println(Thread.currentThread().getName() + " failed Receiving Successful");
 			}
 		}
-
-		 */
+		System.exit(0);
 	}
 
 	/**
@@ -64,7 +61,7 @@ public class FloorSubsystem implements Runnable {
 		requests.remove(0);
 
 		try {
-			Thread.sleep(800);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -72,47 +69,27 @@ public class FloorSubsystem implements Runnable {
 	}
 
 	/**
-	 * Removes a ServiceRequest from the Buffer.
-	 *
-	 * @return serviceRequest a request by a person on a floor or in an elevator
-	 */
-	public ServiceRequest receiveRequest() {
-		ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
-		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
-		try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
-			System.err.println(e);
-		}
-		return request;
-	}
-
-	/**
 	 * Checks the buffer for messages
 	 *
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean receiveRequest() {
-		if((schedulerFloorsubBuffer.checkFirst() instanceof FloorRequest)) {
-			FloorRequest request = (FloorRequest) schedulerFloorsubBuffer.removeFirst();
+	public ServiceRequest receiveRequest() {
+		if(schedulerFloorsubBuffer.checkFirst() instanceof FloorRequest) {
+			ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
 			System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-			this.floorRequest = request;
 
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		} else {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return false;
+			return request;
 		}
-
-		return true;
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
