@@ -5,11 +5,12 @@
 This is a group project for designing, creating, and simulating an elevator system.
 
 ## Team (Group 4)
-- [Ryan Dash](https://github.com/ryandash)
-- [Ramit Mahajan](https://github.com/RamitMahajan)
-- [Brady Norton](https://github.com/Bnortron)
-- [Julian Obando Velez](https://github.com/julian-carleton)
-- [Liam Tripp](https://github.com/cyberphoria)
+
+  - [Ryan Dash](https://github.com/ryandash)
+  - [Ramit Mahajan](https://github.com/RamitMahajan)
+  - [Brady Norton](https://github.com/Bnortron)
+  - [Julian Obando Velez](https://github.com/julian-carleton)
+  - [Liam Tripp](https://github.com/cyberphoria)
 
 ## Instructions
 
@@ -67,8 +68,8 @@ This project is set up as a Maven project.
 
   ### Contributions
 
-  | Member | Coding | Documentation | Misc
-      | ------ | ------ | ------------- |----
+  | Member | Coding | Documentation | Misc 
+  | ------ | ------ | ------------- |----
   | Ryan Dash | | |
   | Ramit Mahajan | | |
   | Brady Norton | | |
