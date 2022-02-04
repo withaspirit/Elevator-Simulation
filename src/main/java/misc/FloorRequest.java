@@ -8,25 +8,20 @@ import java.time.format.DateTimeFormatter;
 /**
  * FloorRequest is an event data structure for when a user presses a FloorButton in an elevator.
  * 
- * @author Liam Tripp
+ * @author Liam Tripp, Ramit Mahajan
  */
-public class FloorRequest implements ServiceRequest {
+public class FloorRequest extends ServiceRequest {
 
-	private LocalTime time;
-	private int floorNumber; // floorToVisit
-	private Direction direction;
 	private int elevatorNumber;
-	private String basicAction;
-
-	public FloorRequest(LocalTime time, int floorNumber, Direction direction) {
-		this.time = time;
-		this.floorNumber = floorNumber;
-		this.direction = direction;
-	}
+//	private String basicAction;
 
 	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber) {
-		this(time, floorNumber, direction);
+		super(time ,floorNumber, direction);
 		this.elevatorNumber = elevatorNumber;
+	}
+
+	public FloorRequest(LocalTime time, int floorNumber, Direction direction) {
+		super(time ,floorNumber, direction);
 	}
 
 	/**
@@ -38,35 +33,20 @@ public class FloorRequest implements ServiceRequest {
 	public FloorRequest(ElevatorRequest elevatorRequest, int elevatorNumber) {
 		this(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
 				elevatorRequest.getDirection(), elevatorNumber);
-		if (direction.equals(Direction.UP)){
-			direction = Direction.DOWN;
+		if (getDirection().equals(Direction.UP)){
+			setDirection(Direction.DOWN);
 		} else {
-			direction = Direction.UP;
+			setDirection(Direction.UP);
 		}
 	}
 
-	//TODO move to a separate class
-	public FloorRequest(String basicAction) {
-		this.basicAction = basicAction;
-	}
+//	//TODO move to a separate class
+//	public FloorRequest(String basicAction) {
+//		this.basicAction = basicAction;
+//	}
 
 	public int getElevatorNumber() {
 		return elevatorNumber;
-	}
-	
-	@Override
-	public LocalTime getTime() {
-		return time;
-	}
-
-	@Override
-	public int getFloorNumber() {
-		return floorNumber;
-	}
-
-	@Override
-	public Direction getDirection() {
-		return direction;
 	}
 
 	/**
@@ -77,7 +57,7 @@ public class FloorRequest implements ServiceRequest {
 	@Override
 	public String toString() {
 		DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-		String formattedDate = time.format(dateTimeFormat);
-		return formattedDate + " " + floorNumber + " " + direction.getName() + " " + elevatorNumber;
+		String formattedDate = getTime().format(dateTimeFormat);
+		return formattedDate + " " + getFloorNumber() + " " + getDirection().getName() + " " + elevatorNumber;
 	}
 }
