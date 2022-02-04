@@ -15,24 +15,11 @@ This is a group project for designing, creating, and simulating an elevator syst
 
 #### Installation 
 
-1.	Download and extract the ZIP folder
-2. 	Open up Eclipse and select file
-3. 	Click "Open Projects from File System" and select the project folder
-4. 	Select Finish and then build the project
-5. 	To begin the simulation, navigate to the testsystem directory
-6. 	src -> main -> java -> testsystem
-7. 	Run TestSystem.java
-
 #### Editing
 
 This project is set up as a Maven project.
 
 #### Testing
-
-1. Locate the test directory in the workspace
-2. Run InputReaderTest.java for tests related to reading the json input file
-3. Run SchedulerTest.java for tests related to passing data between the systems
-4. Run DirectionTest for tests related to the Direction enum search function
 
 ## Iterations
 
@@ -49,11 +36,11 @@ This project is set up as a Maven project.
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- |----
-  | Ryan Dash | InputFileReader, Converting JSON File contents to data structure, creating JSON files | Design Document, UML Diagram Contributions | Code Review 
-  | Ramit Mahajan | Message Transfer, Test Files, Filling out skeleton |  | 
-  | Brady Norton | Input File Reader Tests, Message Transfer Tests | README, Setup Instructions, UML Sequence Diagram | 
-  | Julian Obando Velez | Message Transfer, Test Files, Filling out skeleton | UML Diagram Feedback | 
-  | Liam Tripp | Project Skeleton, Event Data Structures, InputFileReader, Direction | Early Design Diagrams, Design Document | Discord Server, Google Drive, GitHub repo, Code reviews
+  | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer | Design Document, UML Diagram Contributions | Code Review 
+  | Ramit Mahajan | Data Structure abstraction |  | 
+  | Brady Norton | | README, Setup Instructions, UML Sequence Diagram | 
+  | Julian Obando Velez | Message Transfer, Bounded Buffer | UML Diagram Feedback, GitHub Releases  | 
+  | Liam Tripp | Project Skeleton, Event Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Contributions, Early Design Diagrams, Design Document | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead
   
   </details>
 
