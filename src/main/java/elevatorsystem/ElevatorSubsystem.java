@@ -27,7 +27,8 @@ public class ElevatorSubsystem implements Runnable {
 		int numberOfInputs = 4;
 		for (int i = 0; i < numberOfInputs * 2; i++) {
 			ServiceRequest request = receiveRequest();
-			sendRequest(new FloorRequest(request.getTime().plus(69, ChronoUnit.MILLIS), ((ElevatorRequest) request).getDesiredFloor(), request.getDirection(),  request.getFloorNumber()));
+			sendRequest(request);
+			// sendRequest(new FloorRequest(request.getTime().plus(69, ChronoUnit.MILLIS), ((ElevatorRequest) request).getDesiredFloor(), request.getDirection(),  request.getFloorNumber()));
 		}
 		/*
 		while(true) {
@@ -62,7 +63,7 @@ public class ElevatorSubsystem implements Runnable {
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean sendRequest(FloorRequest request) {
+	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
 		schedulerElevatorsubBuffer.addLast(request);
 
