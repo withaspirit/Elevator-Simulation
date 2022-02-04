@@ -35,9 +35,12 @@ public class FloorSubsystem implements Runnable {
 		for (int i = 0; i < size; i++) {
 			System.out.println("Queue Size " + requests.size());
 
-			ElevatorRequest elevatorRequest = requests.get(0);
-			sendRequest(elevatorRequest);
-			FloorRequest floorRequest = (FloorRequest) receiveRequest();
+//			ElevatorRequest elevatorRequest = requests.get(0);
+//			sendRequest(elevatorRequest);
+//			FloorRequest floorRequest = (FloorRequest) receiveRequest();
+			ServiceRequest serviceRequest = requests.get(0);
+			sendRequest(serviceRequest);
+			serviceRequest = receiveRequest();
 			System.out.println("Printing buffer contents for buffer");
 			schedulerFloorsubBuffer.printBufferContents();
 		}
@@ -67,7 +70,7 @@ public class FloorSubsystem implements Runnable {
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean sendRequest(ElevatorRequest request) {
+	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
 		schedulerFloorsubBuffer.addLast(request);
 		requests.remove(0);
@@ -77,7 +80,6 @@ public class FloorSubsystem implements Runnable {
 		} catch (InterruptedException e) {
 			System.err.println(e);
 		}
-
 		return true;
 	}
 
