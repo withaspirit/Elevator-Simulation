@@ -50,11 +50,6 @@ public class FloorRequest implements ServiceRequest {
 		this.basicAction = basicAction;
 	}
 
-	//TODO move to a separate class
-	public FloorRequest(String basicAction) {
-		this.basicAction = basicAction;
-	}
-
 	public int getElevatorNumber() {
 		return elevatorNumber;
 	}

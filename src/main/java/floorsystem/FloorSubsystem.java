@@ -73,7 +73,7 @@ public class FloorSubsystem implements Runnable {
 		requests.remove(0);
 
 		try {
-			Thread.sleep(500);
+			Thread.sleep(800);
 		} catch (InterruptedException e) {
 			System.err.println(e);
 		}
