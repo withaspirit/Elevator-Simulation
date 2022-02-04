@@ -15,11 +15,24 @@ This is a group project for designing, creating, and simulating an elevator syst
 
 #### Installation 
 
+1.	Download and extract the ZIP folder
+2. 	Open up Eclipse and select file
+3. 	Click "Open Projects from File System" and select the project folder
+4. 	Select Finish and then build the project
+5. 	To begin the simulation, navigate to the testsystem directory
+6. 	src -> main -> java -> testsystem
+7. 	Run TestSystem.java
+
 #### Editing
 
 This project is set up as a Maven project.
 
 #### Testing
+
+1. Locate the test directory in the workspace
+2. Run InputReaderTest.java for tests related to reading the json input file
+3. Run SchedulerTest.java for tests related to passing data between the systems
+4. Run DirectionTest for tests related to the Direction enum search function
 
 ## Iterations
 
