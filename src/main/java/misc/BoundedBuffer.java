@@ -23,6 +23,21 @@ public class BoundedBuffer {
     private boolean readable = false;
 
     /**
+     * Returns the amount of items in the buffer.
+     *
+     * @return number the amount of items int the buffer
+     */
+    public int getSize() {
+        int count = 0;
+        for (int i = 0; i < SIZE; i++) {
+            if (buffer[i] != null) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Adds the item to the end of the ring buffer
      * 
      */
