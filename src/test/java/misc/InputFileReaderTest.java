@@ -53,26 +53,7 @@ public class InputFileReaderTest {
         return (JSONArray) inputFileReader.getJSONFileAsObject(name).get(name);
     }
 
-    @Test
-    void testReadInputFileEquality() {
-        // Fill queue with inputs
-        ArrayList<ElevatorRequest> queue = inputFileReader.readInputFile("inputs");
-
-        // Fill JSONArray with inputs
-        initStandardInputArray();
-
-        // make sure both return same number of inputs
-        assertEquals(jsonArray.size(), queue.size());
-
-        // Assure contents of each method is the same
-        for (int i = 0; i < queue.size(); i++) {
-            elevatorRequest1 = queue.get(i);
-            jsonObject = (JSONObject) jsonArray.get(i);
-            elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
-            assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
-        }
-    }
-
+    // Assert all inputs are in correct format
     @Test
     void testConvertJSONToString() {
         initStandardInputArray();
@@ -81,8 +62,8 @@ public class InputFileReaderTest {
             jsonObject = (JSONObject) object;
             String[] data = inputFileReader.convertJSONToStringArray(jsonObject);
 
-
-            // this should just throw an exception if the format is invalid
+            // Test that time is valid
+            // This should just throw an exception if the format is invalid
             LocalTime time = LocalTime.parse(data[0]);
 
             // floorNumber is a valid number ( > 0)
@@ -108,18 +89,27 @@ public class InputFileReaderTest {
     }
 
     @Test
-    void inputFormatTest() {
-        // test all inputs in input file
-        // LocalTime in proper format
-        //      (no way to know which is top floor so no test for that)
-        //
-        // Could create an inputs file just for testing incorrect inputs
-        /*
-        if (Integer.parseInt(data[1]) == 1 && data[2].equals("Down")){
-            System.err.println("There is no down button on the First floor");
-        }
+    void testReadInputFileEquality() {
+        // Fill queue with inputs
+        ArrayList<ElevatorRequest> queue = inputFileReader.readInputFile("inputs");
 
-         */
+        // Fill JSONArray with inputs
+        initStandardInputArray();
+
+        // make sure both return same number of inputs
+        assertEquals(jsonArray.size(), queue.size());
+
+        // Assure contents of each method is the same
+        for (int i = 0; i < queue.size(); i++) {
+            elevatorRequest1 = queue.get(i);
+            jsonObject = (JSONObject) jsonArray.get(i);
+            elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
+            assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
+        }
+    }
+
+    @Test
+    void inputFormatTest() {
         initStandardInputArray();
 
         // Event 1 -> "00:00:00.000 1 Up 2"
@@ -132,9 +122,5 @@ public class InputFileReaderTest {
         assertEquals(1, Integer.parseInt(data[1]));
         assertEquals(Direction.UP, Direction.getDirection(data[2]));
         assertEquals(2, Integer.parseInt(data[3]));
-    }
-
-    void formatTest() {
-        // request.toString = LocalTime.DateTimeFormatter("hh:mm:ss.mmm"); or something
     }
 }
