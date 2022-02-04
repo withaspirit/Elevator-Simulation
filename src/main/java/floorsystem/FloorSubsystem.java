@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * FloorSubsystem manages the floors and their requests to the Scheduler
  * 
- * @author Liam Tripp, Julian
+ * @author Liam Tripp, Julian, Ryan Dash
  */
 public class FloorSubsystem implements Runnable {
 
@@ -28,9 +28,20 @@ public class FloorSubsystem implements Runnable {
 
 	/**
 	 * Simple message requesting and sending between subsystems.
-	 * 
+	 *
 	 */
 	public void run() {
+		int size = requests.size();
+		for (int i = 0; i < size; i++) {
+			System.out.println("Queue Size " + requests.size());
+
+			ElevatorRequest elevatorRequest = requests.get(0);
+			sendRequest(elevatorRequest);
+			elevatorRequest = (ElevatorRequest) receiveRequest();
+			System.out.println("Printing buffer contents for buffer");
+			schedulerFloorsubBuffer.printBufferContents();
+		}
+		/*
 		while (!requests.isEmpty()) {
 			// Sending Data to Scheduler
 			if (sendRequest(requests.get(0))) {
@@ -46,6 +57,8 @@ public class FloorSubsystem implements Runnable {
 				System.out.println("Failed Successful");
 			}
 		}
+
+		 */
 	}
 
 	/**
@@ -55,7 +68,7 @@ public class FloorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean sendRequest(ElevatorRequest request) {
-		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
+		System.out.println(Thread.currentThread().getName() + " sending: " + request);
 		schedulerFloorsubBuffer.addLast(request);
 		requests.remove(0);
 
@@ -69,11 +82,28 @@ public class FloorSubsystem implements Runnable {
 	}
 
 	/**
+	 * Removes a ServiceRequest from the Buffer.
+	 *
+	 * @return serviceRequest a request by a person on a floor or in an elevator
+	 */
+	public ServiceRequest receiveRequest() {
+		ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
+		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+
+		try {
+			Thread.sleep(0);
+		} catch (InterruptedException e) {
+			System.err.println(e);
+		}
+		return request;
+	}
+
+	/**
 	 * Checks the buffer for messages
 	 *
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean receiveRequest() {
+	public boolean receiveRequestBoolean() {
 		ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request + "\n");
 
@@ -84,7 +114,7 @@ public class FloorSubsystem implements Runnable {
 		}
 
 		try {
-			Thread.sleep(500);
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			System.err.println(e);
 		}
