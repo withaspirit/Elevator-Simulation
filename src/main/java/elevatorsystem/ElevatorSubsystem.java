@@ -27,7 +27,6 @@ public class ElevatorSubsystem implements Runnable {
 		int numberOfInputs = 4;
 		for (int i = 0; i < numberOfInputs * 2; i++) {
 			ServiceRequest request = receiveRequest();
-			System.out.println(request.toString());
 			sendRequest(new FloorRequest(request.getTime().plus(69, ChronoUnit.MILLIS), ((ElevatorRequest) request).getDesiredFloor(), request.getDirection(),  request.getFloorNumber()));
 		}
 		/*
