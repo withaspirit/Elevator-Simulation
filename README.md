@@ -57,9 +57,11 @@ This is a group project for designing, creating, and simulating an elevator syst
   <summary>Downloading a Release</summary>
 
 1. Choose the tag for the iteration. For example v0.1 refers to iteration 1.  
-  ![Picture1](https://user-images.githubusercontent.com/71390371/152629966-a56e28e7-1c0d-4dca-a3f3-d64325755f05.png)
+  
+![Picture1](https://user-images.githubusercontent.com/71390371/152629966-a56e28e7-1c0d-4dca-a3f3-d64325755f05.png)
 
 2. Go to the Code tab and Download Zip
+  
 ![Picture2](https://user-images.githubusercontent.com/71390371/152629981-84ec3fa3-29d4-42db-82a5-b4ed0a5f4e82.png)
 
 3. Unzip the folder and import the project into the IDE.
