@@ -28,12 +28,6 @@ public class BoundedBuffer {
      * @return number the amount of items int the buffer
      */
     public int getSize() {
-        int count = 0;
-        for (int i = 0; i < SIZE; i++) {
-            if (buffer[i] != null) {
-                count++;
-            }
-        }
         return count;
     }
 
