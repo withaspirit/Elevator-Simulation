@@ -22,14 +22,14 @@ public class TestSystem {
 	public static void main(String[] args) {
 
 		Thread scheduler, elevatorSubsystem, floorSubsystem;
-		BoundedBuffer schedulerElevatorBuffer, schedulerFloorsubBuffer;
+		BoundedBuffer elevatorSubsystemBuffer, floorSubsystemBuffer;
 
-		schedulerElevatorBuffer = new BoundedBuffer();
-		schedulerFloorsubBuffer = new BoundedBuffer();
+		elevatorSubsystemBuffer = new BoundedBuffer();
+		floorSubsystemBuffer = new BoundedBuffer();
 
-		scheduler = new Thread(new Scheduler(schedulerElevatorBuffer, schedulerFloorsubBuffer), "Scheduler");
-		elevatorSubsystem = new Thread(new ElevatorSubsystem(schedulerElevatorBuffer), "Elevator Subsystem");
-		floorSubsystem = new Thread(new FloorSubsystem(schedulerFloorsubBuffer), "Floor Subsystem");
+		scheduler = new Thread(new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer), "Scheduler");
+		elevatorSubsystem = new Thread(new ElevatorSubsystem(elevatorSubsystemBuffer), "Elevator Subsystem");
+		floorSubsystem = new Thread(new FloorSubsystem(floorSubsystemBuffer), "Floor Subsystem");
 
 		scheduler.start();
 		elevatorSubsystem.start();
