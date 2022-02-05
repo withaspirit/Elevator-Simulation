@@ -6,7 +6,7 @@ package misc;
 /**
  * BoundedBuffer for managing Thread-Safe messaging between system components
  * 
- * @author Julian From course notes
+ * @author Lynn Marshall, Julian
  */
 public class BoundedBuffer {
     // A simple ring buffer is used to hold the data
@@ -28,12 +28,6 @@ public class BoundedBuffer {
      * @return number the amount of items int the buffer
      */
     public int getSize() {
-        int count = 0;
-        for (int i = 0; i < SIZE; i++) {
-            if (buffer[i] != null) {
-                count++;
-            }
-        }
         return count;
     }
 
