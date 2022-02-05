@@ -30,13 +30,14 @@ This is a group project for designing, creating, and simulating an elevator syst
 <details>
   <summary>Editing</summary>
 
-** In Eclipse: **
+
+**In Eclipse:**
   
-1. Open File the file menu and select "Import". This will open the "Import" window. From there select "Git"->"Projects from Git"as the import wizard and press Next>.
+1. Open the File menu and select "Import". This will open the "Import" window. From there select "Git"->"Projects from Git" as the import wizard and press Next>.
 2. From the next window, select "Clone URI" as the repository source and press Next>
-3. You have to enter the URL of the git repository in this window which can be found by pressing the "Code" button  on project github page. 
-4. Account authentication via HTTPS: Copy the HTTPS URL and paste it in the window. It will prefill some of the information in the window, Select "HTTPS" as the protocol and enter your Github's UserName and Password and Press Next>.
-5. Due to an update in GitHub, account authentication with Eclipse via HTTPS might not work, is it offically not supported for security reasons. To overcome that error follow the guide [here](https://stackoverflow.com/a/68802292). 
+3. You have to enter the URL of the git repository in this window which can be found by pressing the "Code" button and selecting the preferred connection protocol on the project's GitHub page. 
+4. Paste the information obtained from the project page into the window. It may prefill some of the information in the window. Enter any required information.
+5. Due to an update in GitHub, account authentication with Eclipse via HTTPS might not work. It is not offically supported for security reasons. To overcome that error, follow the guide [here](https://stackoverflow.com/a/68802292). 
 6. After over coming the erorr, press Next> and it will show you the branches of the repository, do not make any changes to the default selected branches. 
 7. It will open the Local Destination window in which you can select the location of the folder where you want clone the repository. Press Next> 
 8. In the next window, Select "Import as general project" as the wizard from import and press Next>
@@ -70,11 +71,11 @@ This is a group project for designing, creating, and simulating an elevator syst
 
   | Member | Coding | Documentation | Misc
   | ------ | ------ | ------------- |----
-  | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer | Design Document, UML Diagram Contributions | Code Review
-  | Ramit Mahajan | Data Structure abstraction for the Request Systems/ subsystems| README, Editing Instructure |
+  | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer Implementation and Bug Fixes | Design Document, UML Diagram Contributions | Code Review
+  | Ramit Mahajan | Data Structure abstraction for the Request Systems/ subsystems| README Eclipse Editing Instructions |
   | Brady Norton | Message transfer tests, Read/Verify Input file tests | README, Setup Instructions, UML Sequence Diagram |
   | Julian Obando Velez | Message Transfer, Bounded Buffer | UML Diagram Feedback, GitHub Releases |
-  | Liam Tripp | Project Skeleton, Event Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Contributions, Early Design Diagrams, Design Document | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead
+  | Liam Tripp | Project Skeleton, Event Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing| README Contributions, Early Design Diagrams, Design Document | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead
 
   </details>
 
