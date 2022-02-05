@@ -34,7 +34,7 @@ This is a group project for designing, creating, and simulating an elevator syst
   
 1. Open the File menu and select "Import". This will open the "Import" window. From there select "Git"->"Projects from Git" as the import wizard and press Next>
 2. From the next window, select "Clone URI" as the repository source and press Next>
-3. You have to enter the URL of the git repository in this window which can be found by pressing the "Code" button and selecting the preferred connection protocol on the project's GitHub page
+3. Enter the URL of the git repository in this window which can be found by pressing the "Code" button and selecting the preferred connection protocol on the project's GitHub page
 4. Paste the information obtained from the project page into the window. It may prefill some of the information in the window. Enter any required information
 5. Due to an update in GitHub, account authentication with Eclipse via HTTPS might not work. It is not offically supported for security reasons. To overcome that error, follow the guide [here](https://stackoverflow.com/a/68802292)
 6. After over coming the erorr, press Next> and it will show you the branches of the repository, do not make any changes to the default selected branches.
@@ -74,8 +74,8 @@ This is a group project for designing, creating, and simulating an elevator syst
   | Member | Coding | Documentation | Misc
   | ------ | ------ | ------------- |----
   | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer Implementation and Bug Fixes | Project Requirements Summary, UML Diagram Contributions | Code Review
-  | Ramit Mahajan | Data Structure abstraction for the Request Systems / Subsystems | README Eclipse Editing Instructions |
-  | Brady Norton | Message transfer tests, Read/Verify Input file tests | README, Setup Instructions, UML Sequence Diagram | Code Review
+  | Ramit Mahajan | Data Structure abstraction for the Request Systems / Subsystems | README Editing Instructions |
+  | Brady Norton | Message transfer tests, Read/Verify Input file tests | README Installation + Setup Instructions, UML Sequence Diagram | Code Review
   | Julian Obando Velez | Message Transfer, Bounded Buffer | UML Diagram Feedback, GitHub Releases | Code Review
   | Liam Tripp | Project Skeleton, Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Design, Early Design Diagrams, Design Document, Requirements Analysis | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead, Instruction documents + videos 
 
