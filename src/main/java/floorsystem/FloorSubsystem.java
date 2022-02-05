@@ -17,9 +17,11 @@ public class FloorSubsystem implements Runnable {
 	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
 	private FloorRequest floorRequest;
+	private Origin origin;
 
 	public FloorSubsystem(BoundedBuffer buffer) {
 		this.schedulerFloorsubBuffer = buffer;
+		origin = Origin.FLOOR_SYSTEM;
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
 	}

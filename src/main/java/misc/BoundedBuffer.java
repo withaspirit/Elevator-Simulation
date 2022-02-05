@@ -3,6 +3,8 @@
  */
 package misc;
 
+import java.security.Provider;
+
 /**
  * BoundedBuffer for managing Thread-Safe messaging between system components
  * 
@@ -41,7 +43,7 @@ public class BoundedBuffer {
      * Adds the item to the end of the ring buffer
      * 
      */
-    public synchronized void addLast(ServiceRequest item)
+    public synchronized void addLast(ServiceRequest item, Origin origin)
     {
         while (!writeable) {
             try { 
@@ -50,7 +52,7 @@ public class BoundedBuffer {
                 System.err.println(e);
             }
         }
-        
+        item.setOrigin(origin);
         buffer[inIndex] = item;
         readable = true;
 
@@ -66,11 +68,11 @@ public class BoundedBuffer {
      * Removes the first item from the ring buffer
      * 
      */
-    public synchronized ServiceRequest removeFirst()
+    public synchronized ServiceRequest removeFirst(Origin origin)
     {
         ServiceRequest item;
         
-        while (!readable) {
+        while (!readable || identicalOrigin(buffer[outIndex], origin)) {
             try { 
                 wait();
             } catch (InterruptedException e) {
@@ -90,6 +92,10 @@ public class BoundedBuffer {
         notifyAll();
 
         return item;
+    }
+
+    public boolean identicalOrigin(ServiceRequest request, Origin origin) {
+        return origin == ((ServiceRequest) request).getOrigin();
     }
 
     // method for verifying whether buffer is empty?

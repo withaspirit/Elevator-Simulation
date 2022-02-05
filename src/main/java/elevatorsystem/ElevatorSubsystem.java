@@ -13,9 +13,11 @@ import java.time.temporal.TemporalUnit;
 public class ElevatorSubsystem implements Runnable {
 
 	private final BoundedBuffer schedulerElevatorsubBuffer; // Elevator Subsystem - Scheduler link
+	private Origin origin;
 
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.schedulerElevatorsubBuffer = buffer;
+		origin = Origin.SCHEDULER;
 	}
 
 	/**
