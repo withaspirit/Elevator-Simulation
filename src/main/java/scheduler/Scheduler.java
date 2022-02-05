@@ -11,7 +11,6 @@ public class Scheduler implements Runnable {
 
 	private final BoundedBuffer schedulerElevatorsubBuffer; // Elevator Subsystem - Scheduler link
 	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
-	private ServiceRequest request;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
 
@@ -34,18 +33,18 @@ public class Scheduler implements Runnable {
 	}
 
 	private void redirectRequest(BoundedBuffer buffer) {
-		request = receiveRequest(buffer);
-		if (request instanceof FloorRequest floorRequest){
+		ServiceRequest request = receiveRequest(buffer);
+		if (request instanceof FloorRequest floorRequest) {
 			if (sendRequest(floorRequest, schedulerFloorsubBuffer)) {
 				System.out.println("Scheduler Sent Request to floor Successful");
 			} else {
-				System.out.println("Failed Successful");
+				System.err.println("Failed Successful");
 			}
-		} else if (request instanceof ElevatorRequest elevatorRequest){
+		} else if (request instanceof ElevatorRequest elevatorRequest) {
 			if (sendRequest(elevatorRequest, schedulerElevatorsubBuffer)) {
 				System.out.println("Scheduler Sent Request to Elevator Successful");
 			} else {
-				System.out.println("Failed Successful");
+				System.err.println("Failed Successful");
 			}
 		}
 	}
@@ -58,18 +57,9 @@ public class Scheduler implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean sendRequest(ServiceRequest request, BoundedBuffer buffer) {
-		if (request != null) {
-			System.out.println(Thread.currentThread().getName() + " sending: " + request);
-			buffer.addLast(request);
-
-			try {
-				Thread.sleep(0);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return true;
-		}
-		return false;
+		System.out.println(Thread.currentThread().getName() + " sending: " + request);
+		buffer.addLast(request, Thread.currentThread());
+		return true;
 	}
 
 	/**
@@ -81,7 +71,6 @@ public class Scheduler implements Runnable {
 	public ServiceRequest receiveRequest(BoundedBuffer buffer) {
 		ServiceRequest request = buffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
 		return request;
 	}
 }

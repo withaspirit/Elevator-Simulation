@@ -12,7 +12,7 @@ public class BoundedBuffer {
     // A simple ring buffer is used to hold the data
 
     // buffer capacity
-    public static final int SIZE = 5;
+    public static final int SIZE = 10;
     private final ServiceRequest[] buffer = new ServiceRequest[SIZE];
     private int inIndex = 0, outIndex = 0, count = 0;
 
@@ -26,7 +26,7 @@ public class BoundedBuffer {
      * Adds the item to the end of the ring buffer
      * 
      */
-    public synchronized void addLast(ServiceRequest item)
+    public synchronized void addLast(ServiceRequest item, Thread requestThread)
     {
         while (!writeable) {
             try { 
@@ -35,7 +35,7 @@ public class BoundedBuffer {
                 e.printStackTrace();
             }
         }
-        
+        item.setOrigin(requestThread);
         buffer[inIndex] = item;
         readable = true;
 
@@ -90,5 +90,9 @@ public class BoundedBuffer {
 
     public boolean isEmpty() {
         return count == 0;
+    }
+
+    public boolean isOrigin() {
+        return checkFirst().getOrigin() != Thread.currentThread();
     }
 }

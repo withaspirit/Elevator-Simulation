@@ -15,8 +15,9 @@ public class ServiceRequest {
 	private final LocalTime time;
 	private final int floorNumber;
 	private Direction direction;
+	private static Thread originThread;
 
-	public ServiceRequest(LocalTime time, int floorNumber, Direction direction  ) {
+	public ServiceRequest(LocalTime time, int floorNumber, Direction direction) {
 		this.time = time;
 		this.floorNumber = floorNumber;
 		this.direction = direction;
@@ -39,5 +40,17 @@ public class ServiceRequest {
 	 */
 	public void setDirection(Direction direction) {
 		this.direction = direction;
+	}
+
+	public Thread getOrigin(){
+		return originThread;
+	}
+
+	public void setOrigin(Thread requestThread) {
+		originThread = requestThread;
+	}
+
+	public boolean isOrigin() {
+		return originThread == Thread.currentThread();
 	}
 }

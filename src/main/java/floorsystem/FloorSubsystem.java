@@ -36,10 +36,16 @@ public class FloorSubsystem implements Runnable {
 					System.err.println(Thread.currentThread().getName() + " failed Sending Successful");
 				}
 			}
-
 			ServiceRequest floorRequest = receiveRequest();
+			while (!floorRequest.isOrigin()) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 			receive--;
-			System.out.println("Expected Elevator# "+ ((FloorRequest)floorRequest).getElevatorNumber() + " Arrived \n");
+			System.out.println("Expected Elevator# " + ((FloorRequest) floorRequest).getElevatorNumber() + " Arrived \n");
 		}
 		System.exit(0);
 	}
@@ -50,11 +56,10 @@ public class FloorSubsystem implements Runnable {
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
 	 */
-	public synchronized boolean sendRequest(ServiceRequest request) {
+	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		schedulerFloorsubBuffer.addLast(request);
+		schedulerFloorsubBuffer.addLast(request, Thread.currentThread());
 		requests.remove(0);
-
 		return true;
 	}
 
@@ -63,18 +68,9 @@ public class FloorSubsystem implements Runnable {
 	 *
 	 * @return true if request is successful, false otherwise
 	 */
-	public synchronized ServiceRequest receiveRequest() {
-		while (schedulerFloorsubBuffer.checkFirst() instanceof ElevatorRequest) {
-			System.err.println("Floor waiting");
-			try {
-				this.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+	public ServiceRequest receiveRequest() {
 		ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
 		return request;
 	}
 }

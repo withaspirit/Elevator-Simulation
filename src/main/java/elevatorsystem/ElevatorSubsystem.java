@@ -2,9 +2,6 @@ package elevatorsystem;
 
 import misc.*;
 
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-
 /**
  * ElevatorSubsystem manages the elevators and their requests to the Scheduler
  * 
@@ -13,7 +10,6 @@ import java.time.temporal.TemporalUnit;
 public class ElevatorSubsystem implements Runnable {
 
 	private final BoundedBuffer schedulerElevatorsubBuffer; // Elevator Subsystem - Scheduler link
-	private FloorRequest floorRequest;
 
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.schedulerElevatorsubBuffer = buffer;
@@ -25,13 +21,17 @@ public class ElevatorSubsystem implements Runnable {
 	 */
 	public void run() {
 		while(true) {
+			ServiceRequest elevatorRequest = receiveRequest();
 			// Receiving Data from Scheduler
-			ServiceRequest request = receiveRequest();
-			if (sendRequest(new FloorRequest((ElevatorRequest) request, 1))) {
-				System.out.println("Elevator SubSystem Sent Request to Scheduler Successful");
-			} else {
-				System.out.println(Thread.currentThread().getName() + " failed sending Successful");
+			while (elevatorRequest.isOrigin()) {
+				System.out.println(elevatorRequest);
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
+			sendRequest(new FloorRequest((ElevatorRequest) elevatorRequest, 1));
 		}
 	}
 
@@ -41,9 +41,9 @@ public class ElevatorSubsystem implements Runnable {
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
 	 */
-	public synchronized boolean sendRequest(ServiceRequest request) {
+	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
-		schedulerElevatorsubBuffer.addLast(request);
+		schedulerElevatorsubBuffer.addLast(request, Thread.currentThread());
 
 		return true;
 	}
@@ -53,15 +53,7 @@ public class ElevatorSubsystem implements Runnable {
 	 *
 	 * @return true if request is successful, false otherwise
 	 */
-	public synchronized ServiceRequest receiveRequest() {
-		while (schedulerElevatorsubBuffer.checkFirst() instanceof FloorRequest) {
-			System.err.println("Elevator waiting");
-			try {
-				this.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+	public ServiceRequest receiveRequest() {
 		ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
