@@ -30,8 +30,7 @@ This is a group project for designing, creating, and simulating an elevator syst
 <details>
   <summary>Editing</summary>
 
-
-**In Eclipse:**
+#### In Eclipse:
   
 1. Open the File menu and select "Import". This will open the "Import" window. From there select "Git"->"Projects from Git" as the import wizard and press Next>.
 2. From the next window, select "Clone URI" as the repository source and press Next>
