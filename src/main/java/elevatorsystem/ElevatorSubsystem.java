@@ -25,27 +25,13 @@ public class ElevatorSubsystem implements Runnable {
 	 */
 	public void run() {
 		while(true) {
-			// A sleep to allow communication between Floor Subsystem and Scheduler to
-			// happen first
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
 			// Receiving Data from Scheduler
 			ServiceRequest request = receiveRequest();
-			if (request != null){
-				if (sendRequest(new FloorRequest((ElevatorRequest) request, 1))) {
-					System.out.println("Elevator SubSystem Sent Request to Scheduler Successful");
-				} else {
-					System.out.println(Thread.currentThread().getName() + " failed sending Successful");
-				}
+			if (sendRequest(new FloorRequest((ElevatorRequest) request, 1))) {
+				System.out.println("Elevator SubSystem Sent Request to Scheduler Successful");
 			} else {
-				System.out.println(Thread.currentThread().getName() + " failed receiving Successful");
+				System.out.println(Thread.currentThread().getName() + " failed sending Successful");
 			}
-
-
 		}
 	}
 
@@ -59,12 +45,6 @@ public class ElevatorSubsystem implements Runnable {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
 		schedulerElevatorsubBuffer.addLast(request);
 
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
 		return true;
 	}
 
@@ -74,22 +54,10 @@ public class ElevatorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public ServiceRequest receiveRequest() {
-		if(schedulerElevatorsubBuffer.checkFirst() instanceof ElevatorRequest) {
-			ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
-			System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+		while (schedulerElevatorsubBuffer.checkFirst() instanceof FloorRequest) {}
+		ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
+		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return request;
-		}
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return request;
 	}
 }

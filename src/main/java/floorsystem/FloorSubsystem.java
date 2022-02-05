@@ -38,13 +38,8 @@ public class FloorSubsystem implements Runnable {
 			}
 
 			ServiceRequest floorRequest = receiveRequest();
-			// Receiving Data from Scheduler
-			if (floorRequest != null) {
-				receive--;
-				System.out.println("Expected Elevator# "+ ((FloorRequest)floorRequest).getElevatorNumber() + " Arrived \n");
-			} else {
-				System.err.println(Thread.currentThread().getName() + " failed Receiving Successful");
-			}
+			receive--;
+			System.out.println("Expected Elevator# "+ ((FloorRequest)floorRequest).getElevatorNumber() + " Arrived \n");
 		}
 		System.exit(0);
 	}
@@ -60,11 +55,6 @@ public class FloorSubsystem implements Runnable {
 		schedulerFloorsubBuffer.addLast(request);
 		requests.remove(0);
 
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		return true;
 	}
 
@@ -74,22 +64,10 @@ public class FloorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public ServiceRequest receiveRequest() {
-		if(schedulerFloorsubBuffer.checkFirst() instanceof FloorRequest) {
-			ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
-			System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+		while (schedulerFloorsubBuffer.checkFirst() instanceof ElevatorRequest) {}
+		ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
+		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return request;
-		}
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return request;
 	}
 }
