@@ -61,7 +61,7 @@ This is a group project for designing, creating, and simulating an elevator syst
 - ## Iteration 1
 
   <details>
-    <summary>Editing</summary>
+    <summary>Display</summary>
 
   ### Description
 
@@ -71,11 +71,11 @@ This is a group project for designing, creating, and simulating an elevator syst
 
   | Member | Coding | Documentation | Misc
   | ------ | ------ | ------------- |----
-  | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer Implementation and Bug Fixes | Design Document, UML Diagram Contributions | Code Review
+  | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer Implementation and Bug Fixes | Project Requirements Summary, UML Diagram Contributions | Code Review
   | Ramit Mahajan | Data Structure abstraction for the Request Systems/ subsystems| README Eclipse Editing Instructions |
   | Brady Norton | Message transfer tests, Read/Verify Input file tests | README, Setup Instructions, UML Sequence Diagram |
   | Julian Obando Velez | Message Transfer, Bounded Buffer | UML Diagram Feedback, GitHub Releases |
-  | Liam Tripp | Project Skeleton, Event Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing| README Contributions, Early Design Diagrams, Design Document | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead
+  | Liam Tripp | Project Skeleton, Event Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Contributions, Early Design Diagrams, Design Document, Requirements Analysis | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead
 
   </details>
 
