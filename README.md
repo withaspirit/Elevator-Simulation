@@ -49,12 +49,21 @@ This is a group project for designing, creating, and simulating an elevator syst
 2. Run InputReaderTest.java for tests related to reading the json input file
 3. Run SchedulerTest.java for tests related to passing data between the systems
 4. Run DirectionTest for tests related to the Direction enum search function
+5. Run BoundedBufferTest for tests related to the buffer used for Thread-Safe messaging
 </details>
 
 
 <details>
   <summary>Downloading a Release</summary>
 
+1. Choose the tag for the iteration. For example v0.1 refers to iteration 1.  
+  ![Picture1](https://user-images.githubusercontent.com/71390371/152629966-a56e28e7-1c0d-4dca-a3f3-d64325755f05.png)
+
+2. Go to the Code tab and Download Zip
+![Picture2](https://user-images.githubusercontent.com/71390371/152629981-84ec3fa3-29d4-42db-82a5-b4ed0a5f4e82.png)
+
+3. Unzip the folder and import the project into the IDE.
+  
 </details>
 
 
@@ -76,7 +85,7 @@ This is a group project for designing, creating, and simulating an elevator syst
   | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer | Design Document, UML Diagram Contributions | Code Review
   | Ramit Mahajan | Data Structure abstraction for the Request Systems/ subsystems| README, Editing Instructure |
   | Brady Norton | Message transfer tests, Read/Verify Input file tests | README, Setup Instructions, UML Sequence Diagram |
-  | Julian Obando Velez | Message Transfer, Bounded Buffer | UML Diagram Feedback, GitHub Releases  |
+  | Julian Obando Velez | Message Transfer, Bounded Buffer, Bounded Buffer Test | UML Diagram Feedback, GitHub Releases  |
   | Liam Tripp | Project Skeleton, Event Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Contributions, Early Design Diagrams, Design Document | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead
 
   </details>
