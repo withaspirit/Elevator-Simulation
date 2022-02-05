@@ -41,7 +41,7 @@ public class ElevatorSubsystem implements Runnable {
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
 	 */
-	public boolean sendRequest(ServiceRequest request) {
+	public synchronized boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
 		schedulerElevatorsubBuffer.addLast(request);
 
@@ -53,8 +53,15 @@ public class ElevatorSubsystem implements Runnable {
 	 *
 	 * @return true if request is successful, false otherwise
 	 */
-	public ServiceRequest receiveRequest() {
-		while (schedulerElevatorsubBuffer.checkFirst() instanceof FloorRequest) {}
+	public synchronized ServiceRequest receiveRequest() {
+		while (schedulerElevatorsubBuffer.checkFirst() instanceof FloorRequest) {
+			System.err.println("Elevator waiting");
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
