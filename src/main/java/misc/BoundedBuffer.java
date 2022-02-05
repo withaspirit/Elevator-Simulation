@@ -6,7 +6,7 @@ package misc;
 /**
  * BoundedBuffer for managing Thread-Safe messaging between system components
  * 
- * @author Julian From course notes
+ * @author Lynn Marshall, Julian
  */
 public class BoundedBuffer {
     // A simple ring buffer is used to hold the data
