@@ -39,9 +39,8 @@ This is a group project for designing, creating, and simulating an elevator syst
 5. Due to an update in GitHub, account authentication with Eclipse via HTTPS might not work. It is not offically supported for security reasons. To overcome that error, follow the guide [here](https://stackoverflow.com/a/68802292). 
 6. After over coming the erorr, press Next> and it will show you the branches of the repository, do not make any changes to the default selected branches. 
 7. It will open the Local Destination window in which you can select the location of the folder where you want clone the repository. Press Next> 
-8. In the next window, Select "Import as general project" as the wizard from import and press Next>
-9. It will load the project and from the project explorer window, right click the project folder and from the popup menu, select "Configure", then "Convert to Maven Project". 
-10. This will convert the project into a Maven project.
+8. In the next window, Select "Import as general project" as the wizard from import and press Next>. It will load the project.
+9. From the project explorer window, right click the project folder and from the popup menu, select "Configure", then "Convert to Maven Project". This will convert the project into a Maven project.
 
 </details>
 
