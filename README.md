@@ -14,6 +14,8 @@ This is a group project for designing, creating, and simulating an elevator syst
 
 ## Instructions
 
+Note that this project is set up as a Maven project.
+
 <details>
   <summary>Installation</summary>
 
@@ -58,13 +60,16 @@ This is a group project for designing, creating, and simulating an elevator syst
 </details>
 <details>
   <summary>Testing</summary>
+
+#### In Eclipse:
   
-1. Locate the test directory in the workspace
-2. Run InputReaderTest.java for tests related to reading the json input file
-3. Run SchedulerTest.java for tests related to passing data between the systems
-4. Run DirectionTest for tests related to the Direction enum search function
-5. Run BoundedBufferTest for tests related to the buffer used for Thread-Safe messaging
-  
+1. Ensure the project is loaded as a Maven project (instructions contained in Editing section)
+2. Locate the test directory in the workspace
+3. Right click on the directory and select "Run As" -> "JUnit Test". This runs all the unit tests
+4. InputReaderTest.java does tests related to reading the json input file
+5. SchedulerTest.java does tests related to passing data between the systems
+6. DirectionTest does tests related to the Direction enum search function
+
 </details>
 
 ## Iterations
