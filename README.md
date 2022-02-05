@@ -49,15 +49,21 @@ This is a group project for designing, creating, and simulating an elevator syst
 2. Run InputReaderTest.java for tests related to reading the json input file
 3. Run SchedulerTest.java for tests related to passing data between the systems
 4. Run DirectionTest for tests related to the Direction enum search function
+</details>
+
+
+<details>
+  <summary>Downloading a Release</summary>
 
 </details>
+
 
 ## Iterations
 
 - ## Iteration 1
 
   <details>
-    <summary>Editing</summary>
+    <summary>Display</summary>
 
   ### Description
 
