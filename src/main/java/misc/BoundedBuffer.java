@@ -9,7 +9,7 @@ public class BoundedBuffer {
     // A simple ring buffer is used to hold the data
 
     // buffer capacity
-    public static final int SIZE = 5;
+    private static final int SIZE = 5;
     private final ServiceRequest[] buffer = new ServiceRequest[SIZE];
     private int inIndex = 0, outIndex = 0, count = 0;
 
@@ -82,6 +82,7 @@ public class BoundedBuffer {
 
         return item;
     }
+
 
     public boolean identicalOrigin(ServiceRequest request, Origin origin) {
         return origin == ((ServiceRequest) request).getOrigin();
