@@ -28,6 +28,7 @@ Note that this project is set up as a Maven project.
 7. 	Run TestSystem.java
 
 </details>
+
 <details>
   <summary>Editing</summary>
 
@@ -44,6 +45,7 @@ Note that this project is set up as a Maven project.
 9. From the project explorer window, right click the project folder and from the popup menu, select "Configure", then "Convert to Maven Project". This will convert the project into a Maven project
 
 </details>
+
 <details>
   <summary>Downloading a Release</summary>
 
@@ -58,19 +60,18 @@ Note that this project is set up as a Maven project.
 3. Unzip the folder and import the project into the IDE.
   
 </details>
+
 <details>
   <summary>Testing</summary>
 
 #### In Eclipse:
-  
+
 1. Ensure the project is loaded as a Maven project (instructions contained in Editing section)
 2. Locate the test directory in the workspace
 3. Right click on the directory and select "Run As" -> "JUnit Test". This runs all the unit tests
 4. InputReaderTest.java does tests related to reading the json input file
 5. SchedulerTest.java does tests related to passing data between the systems
 6. DirectionTest does tests related to the Direction enum search function
-
-</details>
 
 ## Iterations
 

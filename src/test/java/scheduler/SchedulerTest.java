@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import systemwide.Direction;
 
-import javax.xml.transform.Result;
 import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,26 +20,26 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SchedulerTest {
 
-    BoundedBuffer elevator;
-    BoundedBuffer floor;
-    Scheduler scheduler;
-    ElevatorSubsystem elevatorSys;
-    FloorSubsystem floorSys;
-    ServiceRequest req;
+    private BoundedBuffer elevatorBuffer;
+    private BoundedBuffer floorBuffer;
+    private Scheduler scheduler;
+    private ElevatorSubsystem elevatorSubsystem;
+    private FloorSubsystem floorSubsystem;
+    private ServiceRequest serviceRequest;
 
     @BeforeEach
     void setUp() {
         // Request
-        req = new ServiceRequest(LocalTime.NOON, 1, Direction.UP);
+        serviceRequest = new ServiceRequest(LocalTime.NOON, 1, Direction.UP);
 
         // Set up buffers
-        elevator = new BoundedBuffer();
-        floor = new BoundedBuffer();
+        elevatorBuffer = new BoundedBuffer();
+        floorBuffer = new BoundedBuffer();
 
         // Set up systems
-        scheduler = new Scheduler(elevator, floor);
-        elevatorSys = new ElevatorSubsystem(elevator);
-        floorSys = new FloorSubsystem(floor);
+        scheduler = new Scheduler(elevatorBuffer, floorBuffer);
+        elevatorSubsystem = new ElevatorSubsystem(elevatorBuffer);
+        floorSubsystem = new FloorSubsystem(floorBuffer);
     }
 
     @AfterEach
@@ -49,10 +48,12 @@ class SchedulerTest {
     @Test
     void sendElevatorRequest() {
         // Send req from scheduler to elevator buffer
-        scheduler.sendRequest(req, elevator);
+        scheduler.sendRequest(serviceRequest, elevatorBuffer);
+        assertEquals(1, elevatorBuffer.getSize());
 
         // Elevator receives request from buffer
-        ServiceRequest result = elevatorSys.receiveRequest();
+        ServiceRequest result = elevatorSubsystem.receiveRequest();
+        assertEquals(0, elevatorBuffer.getSize());
 
         // Verify values
         assertEquals(LocalTime.NOON, result.getTime());
@@ -62,11 +63,13 @@ class SchedulerTest {
 
     @Test
     void sendFloorRequest() {
-        // Send req from scheduler to elevator buffer
-        scheduler.sendRequest(req, floor);
+        // Send req from scheduler to FloorBuffer
+        scheduler.sendRequest(serviceRequest, floorBuffer);
+        assertEquals(1, floorBuffer.getSize());
 
         // Elevator receives request from buffer
-        ServiceRequest result = floorSys.receiveRequest();
+        ServiceRequest result = floorSubsystem.receiveRequest();
+        assertEquals(0, floorBuffer.getSize());
 
         // Verify values
         assertEquals(LocalTime.NOON, result.getTime());
@@ -77,10 +80,10 @@ class SchedulerTest {
     @Test
     void receiveElevatorRequest() {
         // Send request to buffer
-        elevatorSys.sendRequest(req);
+        elevatorSubsystem.sendRequest(serviceRequest);
 
         // Scheduler receives request from buffer
-        ServiceRequest result = scheduler.receiveRequest(elevator);
+        ServiceRequest result = scheduler.receiveRequest(elevatorBuffer);
 
         // Verify values
         assertEquals(LocalTime.NOON, result.getTime());
@@ -91,13 +94,13 @@ class SchedulerTest {
     @Test
     void receiveFloorRequest() {
         // Ensure buffer is initially empty
-        assertTrue(floor.isEmpty());
+        assertTrue(floorBuffer.isEmpty());
 
         // Send request to buffer
-        floorSys.sendRequest(req);
+        floorSubsystem.sendRequest(serviceRequest);
 
         // Scheduler receives request from buffer
-        ServiceRequest result = scheduler.receiveRequest(floor);
+        ServiceRequest result = scheduler.receiveRequest(floorBuffer);
 
         // Verify values
         assertEquals(LocalTime.NOON, result.getTime());
