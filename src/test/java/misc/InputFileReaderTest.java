@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import requests.ElevatorRequest;
 import systemwide.Direction;
 
 import java.time.LocalTime;

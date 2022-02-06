@@ -3,7 +3,7 @@ package scheduler;
 import elevatorsystem.ElevatorSubsystem;
 import floorsystem.FloorSubsystem;
 import misc.BoundedBuffer;
-import misc.ServiceRequest;
+import requests.ServiceRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

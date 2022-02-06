@@ -1,4 +1,7 @@
-package misc;
+package requests;
+
+import requests.ElevatorRequest;
+import requests.FloorRequest;
 
 /**
  * ServiceRequestListener allows ____ and ____ to respond to ServiceRequests.

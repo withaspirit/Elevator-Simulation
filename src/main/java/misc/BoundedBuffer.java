@@ -1,5 +1,8 @@
 package misc;
 
+import requests.ServiceRequest;
+import systemwide.Origin;
+
 /**
  * BoundedBuffer for managing Thread-Safe messaging between system components
  * 
