@@ -16,7 +16,6 @@ public class BoundedBufferTest {
 	BoundedBuffer buffer;
 	ServiceRequest request1, request2;
 	Origin origin;
-
 	
 	/**
 	 *Initializes the objects for testing

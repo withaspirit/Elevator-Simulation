@@ -15,6 +15,12 @@ public class Scheduler implements Runnable {
 	// private ArrayList<Floor> floors;
 	private Origin origin;
 
+	/**
+	 * Constructor for Scheduler
+	 *
+	 * @param buffer1
+	 * @param buffer2
+	 */
 	public Scheduler(BoundedBuffer buffer1, BoundedBuffer buffer2) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors

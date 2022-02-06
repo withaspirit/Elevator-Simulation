@@ -6,7 +6,7 @@ import scheduler.Scheduler;
 import misc.BoundedBuffer;
 
 /**
- * 
+ * Structure instantiates the overall system.
  * 
  * @author Liam Tripp, Julian
  */
@@ -14,17 +14,18 @@ public class Structure {
 	
 	private final int numberOfFloors;
 	private final int numberOfElevators;
-	
-	// NOTE: should these immutable constants be accessed globally or passed along? 
-	// passing along creates dependencies
+
+	/**
+	 * Constructor for Structure.
+	 *
+	 * @param numberOfFloors the number of floors in the structure
+	 * @param numberOfElevators
+	 */
 	public Structure(int numberOfFloors, int numberOfElevators) {
 		this.numberOfFloors = numberOfFloors;
 		this.numberOfElevators = numberOfElevators;
 	}
-	
-	/**
-	 * @param args
-	 */
+
 	public static void main(String[] args) {
 
 		Thread scheduler, elevatorSubsystem, floorSubsystem;

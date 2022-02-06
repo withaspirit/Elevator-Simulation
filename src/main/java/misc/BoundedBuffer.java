@@ -29,8 +29,10 @@ public class BoundedBuffer {
     }
 
     /**
-     * Adds the item to the end of the ring buffer
-     * 
+     * Adds the item to the end of the ring buffer.
+     *
+     * @param item a request sent to the buffer
+     * @param origin the system from which the request came
      */
     public synchronized void addLast(ServiceRequest item, Origin origin)
     {
@@ -55,7 +57,8 @@ public class BoundedBuffer {
 
     /**
      * Removes the first item from the ring buffer
-     * 
+     *
+     * @param origin the system making the request to remove an object from the buffer
      */
     public synchronized ServiceRequest removeFirst(Origin origin)
     {
@@ -83,7 +86,13 @@ public class BoundedBuffer {
         return item;
     }
 
-
+    /**
+     * Determines whether the request's origin is the same as the provided origin.
+     *
+     * @param request the topmost request in the buffer
+     * @param origin the origin of the system attempting to remove an object
+     * @return true if successful, false otherwise
+     */
     public boolean identicalOrigin(ServiceRequest request, Origin origin) {
         return origin == ((ServiceRequest) request).getOrigin();
     }
@@ -92,7 +101,7 @@ public class BoundedBuffer {
     // method for returning buffer contents?
 
     /**
-     * Method to print the contents of a Buffer.
+     * Prints the contents of a Buffer.
      */
     public void printBufferContents() {
         // expand upon this
@@ -101,7 +110,7 @@ public class BoundedBuffer {
     }
 
     /**
-     * Method to determine if Buffer is empty
+     * Determines if Buffer is empty
      */
     public boolean isEmpty()
     {
@@ -111,5 +120,4 @@ public class BoundedBuffer {
         }
         return false;
     }
-
 }
