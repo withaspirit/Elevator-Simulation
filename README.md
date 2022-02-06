@@ -73,6 +73,8 @@ Note that this project is set up as a Maven project.
 5. SchedulerTest.java does tests related to passing data between the systems
 6. DirectionTest does tests related to the Direction enum search function
 
+</details>
+
 ## Iterations
 
 - ## Iteration 1
