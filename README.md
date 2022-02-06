@@ -14,6 +14,23 @@ This is a group project for designing, creating, and simulating an elevator syst
 
 ## Instructions
 
+Note that this project is set up as a Maven project.
+
+<details>
+  <summary>Downloading a Release / Iteration Code</summary>
+
+1. Choose the tag for the iteration. For example v0.1 refers to iteration 1.  
+  
+![Picture1](https://user-images.githubusercontent.com/71390371/152629966-a56e28e7-1c0d-4dca-a3f3-d64325755f05.png)
+
+2. Go to the Code tab and Download Zip
+  
+![Picture2](https://user-images.githubusercontent.com/71390371/152629981-84ec3fa3-29d4-42db-82a5-b4ed0a5f4e82.png)
+
+3. Unzip the folder and import the project into the IDE.
+  
+</details>
+
 <details>
   <summary>Installation</summary>
 
@@ -21,9 +38,9 @@ This is a group project for designing, creating, and simulating an elevator syst
 2. 	Open up Eclipse and select file
 3. 	Click "Open Projects from File System" and select the project folder
 4. 	Select Finish and then build the project
-5. 	To begin the simulation, navigate to the testsystem directory
-6. 	src -> main -> java -> testsystem
-7. 	Run TestSystem.java
+5. 	To begin the simulation, navigate to the systemwide directory
+6. 	src -> main -> java -> systemwide
+7. 	Run Structure.java
 
 </details>
 
@@ -55,6 +72,7 @@ This is a group project for designing, creating, and simulating an elevator syst
 4. InputReaderTest.java does tests related to reading the json input file
 5. SchedulerTest.java does tests related to passing data between the systems
 6. DirectionTest does tests related to the Direction enum search function
+7. BoundedBufferTest does tests related tothe BoundedBuffer methods for Thread-Safe messaging
 
 </details>
 
@@ -75,8 +93,8 @@ This is a group project for designing, creating, and simulating an elevator syst
   | ------ | ------ | ------------- |----
   | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer Implementation and Bug Fixes | Project Requirements Summary, UML Diagram Contributions | Code Review
   | Ramit Mahajan | Data Structure abstraction for the Request Systems / Subsystems | README Editing Instructions |
-  | Brady Norton | Message transfer tests, Read/Verify Input file tests | README Installation + Setup Instructions, UML Sequence Diagram | Code Review
-  | Julian Obando Velez | Message Transfer, Bounded Buffer | UML Diagram Feedback, GitHub Releases | Code Review
+  | Brady Norton | Message transfer tests, InputFileReaderTest | README Testing + Installation Instructions, UML Sequence Diagram | Code Review
+  | Julian Obando Velez | Message Transfer, Bounded Buffer, Bounded Buffer Test | UML Diagram Feedback, GitHub Releases  | Code Review
   | Liam Tripp | Project Skeleton, Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Design, Early Design Diagrams, Design Document, Requirements Analysis | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead, Instruction documents + videos 
 
   </details>
