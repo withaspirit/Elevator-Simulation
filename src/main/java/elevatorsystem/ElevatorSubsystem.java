@@ -15,6 +15,11 @@ public class ElevatorSubsystem implements Runnable {
 	private final BoundedBuffer schedulerElevatorsubBuffer; // Elevator Subsystem - Scheduler link
 	private Origin origin;
 
+	/**
+	 * Constructor for ElevatorSubsystem.
+	 *
+	 * @param buffer the buffer the ElevatorSubsystem passes messages to and receives messages from
+	 */
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.schedulerElevatorsubBuffer = buffer;
 		origin = Origin.ELEVATOR_SYSTEM;

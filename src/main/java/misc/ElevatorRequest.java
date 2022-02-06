@@ -44,7 +44,7 @@ public class ElevatorRequest extends ServiceRequest {
 	}
 
 	/**
-	 * Constructor for ElevatorRequest read from an input file.
+	 * Constructor for ElevatorRequest.
 	 *
 	 * @param time the time the Request was made
 	 * @param floorNumber the number of the floor on which the request was made
@@ -61,6 +61,12 @@ public class ElevatorRequest extends ServiceRequest {
 //	}
 
 	// do not use if created from floorRequest
+
+	/**
+	 * Return the desired floor's number.
+	 *
+	 * @return desiredFloorNumber the number of the desired floor
+	 */
 	public int getDesiredFloor() {
 		return desiredFloor;
 	}

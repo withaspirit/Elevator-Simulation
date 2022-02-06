@@ -19,6 +19,11 @@ public class FloorSubsystem implements Runnable {
 	private FloorRequest floorRequest;
 	private Origin origin;
 
+	/**
+	 * Constructor for FloorSubsystem.
+	 *
+	 * @param buffer the buffer the FloorSubsystem passes messages to and receives messages from
+	 */
 	public FloorSubsystem(BoundedBuffer buffer) {
 		this.schedulerFloorsubBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();

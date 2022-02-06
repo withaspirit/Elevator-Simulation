@@ -1,6 +1,3 @@
-/**
- * 
- */
 package misc;
 
 /**
@@ -92,6 +89,13 @@ public class BoundedBuffer {
         return item;
     }
 
+    /**
+     * Determine whether the request's origin is the same as the provided origin.
+     *
+     * @param request the topmost request in the buffer
+     * @param origin the origin of the system attempting to remove an object
+     * @return true if successful, false otherwise
+     */
     public boolean identicalOrigin(ServiceRequest request, Origin origin) {
         return origin == ((ServiceRequest) request).getOrigin();
     }
@@ -119,5 +123,4 @@ public class BoundedBuffer {
         }
         return false;
     }
-
 }
