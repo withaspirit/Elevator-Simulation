@@ -1,9 +1,14 @@
 package systemwide;
 
+import elevatorsystem.ElevatorSubsystem;
+import floorsystem.FloorSubsystem;
+import scheduler.Scheduler;
+import misc.BoundedBuffer;
+
 /**
  * 
  * 
- * @author Liam Tripp
+ * @author Liam Tripp, Julian
  */
 public class Structure {
 	
@@ -15,5 +20,25 @@ public class Structure {
 	public Structure(int numberOfFloors, int numberOfElevators) {
 		this.numberOfFloors = numberOfFloors;
 		this.numberOfElevators = numberOfElevators;
+	}
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+
+		Thread scheduler, elevatorSubsystem, floorSubsystem;
+		BoundedBuffer schedulerElevatorBuffer, schedulerFloorsubBuffer;
+
+		schedulerElevatorBuffer = new BoundedBuffer();
+		schedulerFloorsubBuffer = new BoundedBuffer();
+
+		scheduler = new Thread(new Scheduler(schedulerElevatorBuffer, schedulerFloorsubBuffer), "Scheduler");
+		elevatorSubsystem = new Thread(new ElevatorSubsystem(schedulerElevatorBuffer), "Elevator Subsystem");
+		floorSubsystem = new Thread(new FloorSubsystem(schedulerFloorsubBuffer), "Floor Subsystem");
+
+		scheduler.start();
+		elevatorSubsystem.start();
+		floorSubsystem.start();
 	}
 }
