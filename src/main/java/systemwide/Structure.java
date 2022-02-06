@@ -14,14 +14,11 @@ public class Structure {
 	
 	private final int numberOfFloors;
 	private final int numberOfElevators;
-	
-	// NOTE: should these immutable constants be accessed globally or passed along? 
-	// passing along creates dependencies
 
 	/**
 	 * Constructor for Structure.
 	 *
-	 * @param numberOfFloors
+	 * @param numberOfFloors the number of floors in the structure
 	 * @param numberOfElevators
 	 */
 	public Structure(int numberOfFloors, int numberOfElevators) {

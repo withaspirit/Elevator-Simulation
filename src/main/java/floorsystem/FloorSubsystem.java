@@ -30,7 +30,6 @@ public class FloorSubsystem implements Runnable {
 
 	/**
 	 * Simple message requesting and sending between subsystems.
-	 *
 	 */
 	public void run() {
 		int size = requests.size();
@@ -67,7 +66,7 @@ public class FloorSubsystem implements Runnable {
 	}
 
 	/**
-	 * Puts the request message into the buffer
+	 * Puts a request into the buffer.
 	 * 
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
@@ -86,7 +85,7 @@ public class FloorSubsystem implements Runnable {
 	}
 
 	/**
-	 * Removes a ServiceRequest from the Buffer.
+	 * Removes a request from the Buffer.
 	 *
 	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */

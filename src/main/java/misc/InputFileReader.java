@@ -19,7 +19,7 @@ import systemwide.Direction;
 public class InputFileReader {
 
     /**
-     * Constructor for InputFileReader.
+     * Constructor for InputFileReader (No-args for now).
      */
     public InputFileReader() {
     }

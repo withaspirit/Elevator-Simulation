@@ -8,11 +8,9 @@ package floorsystem;
 public class Floor {
 	
 	private int floorNumber;
-	private FloorSubsystem subSystem; // TODO: what creates the subsystem is yet to be determined
-	
+
 	public Floor(int floorNumber) {
 		this.floorNumber = floorNumber;
-		// subsystem = new FloorSubsystem();
 		// createButtons(floorNumber);
 	}
 

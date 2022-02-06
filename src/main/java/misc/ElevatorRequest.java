@@ -63,7 +63,7 @@ public class ElevatorRequest extends ServiceRequest {
 	// do not use if created from floorRequest
 
 	/**
-	 * Return the desired floor's number.
+	 * Returns the desired floor's number.
 	 *
 	 * @return desiredFloorNumber the number of the desired floor
 	 */

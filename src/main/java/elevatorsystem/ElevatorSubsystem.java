@@ -64,7 +64,7 @@ public class ElevatorSubsystem implements Runnable {
 	}
 
 	/**
-	 * Puts the request message into the buffer
+	 * Puts a request into a buffer.
 	 * 
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
@@ -83,7 +83,7 @@ public class ElevatorSubsystem implements Runnable {
 	}
 
 	/**
-	 * Removes a ServiceRequest from the Buffer.
+	 * Removes a request from the Buffer.
 	 *
 	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
