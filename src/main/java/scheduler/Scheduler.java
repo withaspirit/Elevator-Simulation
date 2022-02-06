@@ -13,12 +13,14 @@ public class Scheduler implements Runnable {
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
+	private Origin origin;
 
 	public Scheduler(BoundedBuffer buffer1, BoundedBuffer buffer2) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
 		this.elevatorSubsystemBuffer = buffer1;
 		this.floorSubsystemBuffer = buffer2;
+		origin = Origin.SCHEDULER;
 	}
 
 	/**
@@ -61,7 +63,7 @@ public class Scheduler implements Runnable {
 	 */
 	public boolean sendRequest(ServiceRequest request, BoundedBuffer buffer) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		buffer.addLast(request);
+		buffer.addLast(request, origin);
 
 		try {
 			Thread.sleep(500);
@@ -77,7 +79,7 @@ public class Scheduler implements Runnable {
 	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
 	public ServiceRequest receiveRequest(BoundedBuffer buffer) {
-		ServiceRequest request = buffer.removeFirst();
+		ServiceRequest request = buffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
 		try {
@@ -94,7 +96,7 @@ public class Scheduler implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean receiveRequestBoolean(BoundedBuffer buffer) {
-		ServiceRequest request = buffer.removeFirst();
+		ServiceRequest request = buffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
 		if (request instanceof FloorRequest floorRequest){

@@ -11,9 +11,11 @@ import misc.*;
 public class ElevatorSubsystem implements Runnable {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
+	private Origin origin;
 
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.elevatorSubsystemBuffer = buffer;
+		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
 	/**
@@ -64,7 +66,7 @@ public class ElevatorSubsystem implements Runnable {
 	 */
 	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
-		elevatorSubsystemBuffer.addLast(request);
+		elevatorSubsystemBuffer.addLast(request, origin);
 
 		try {
 			Thread.sleep(500);
@@ -81,7 +83,7 @@ public class ElevatorSubsystem implements Runnable {
 	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
 	public ServiceRequest receiveRequest() {
-		ServiceRequest request = elevatorSubsystemBuffer.removeFirst();
+		ServiceRequest request = elevatorSubsystemBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
 		try {
@@ -98,7 +100,7 @@ public class ElevatorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean receiveRequestBoolean() {
-		ServiceRequest request = elevatorSubsystemBuffer.removeFirst();
+		ServiceRequest request = elevatorSubsystemBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 		if (request instanceof ElevatorRequest elevatorRequest){
 			FloorRequest floorRequest = new FloorRequest(elevatorRequest, 1);

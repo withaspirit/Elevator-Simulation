@@ -15,8 +15,16 @@ public class ServiceRequest {
 	private final LocalTime time;
 	private final int floorNumber;
 	private Direction direction;
+	private Origin origin;
 
-	public ServiceRequest(LocalTime time, int floorNumber, Direction direction  ) {
+	public ServiceRequest(LocalTime time, int floorNumber, Direction direction, Origin origin) {
+		this.time = time;
+		this.floorNumber = floorNumber;
+		this.direction = direction;
+		this.origin = origin;
+	}
+
+	public ServiceRequest(LocalTime time, int floorNumber, Direction direction) {
 		this.time = time;
 		this.floorNumber = floorNumber;
 		this.direction = direction;
@@ -39,5 +47,13 @@ public class ServiceRequest {
 	 */
 	public void setDirection(Direction direction) {
 		this.direction = direction;
+	}
+
+	public Origin getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(Origin origin) {
+		this.origin = origin;
 	}
 }
