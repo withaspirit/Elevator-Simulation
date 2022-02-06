@@ -17,11 +17,13 @@ public class FloorSubsystem implements Runnable {
 	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
 	private FloorRequest floorRequest;
+	private Origin origin;
 
 	public FloorSubsystem(BoundedBuffer buffer) {
 		this.schedulerFloorsubBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
+		origin = Origin.FLOOR_SYSTEM;
 	}
 
 	// readInputFile();
@@ -72,7 +74,7 @@ public class FloorSubsystem implements Runnable {
 	 */
 	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		schedulerFloorsubBuffer.addLast(request);
+		schedulerFloorsubBuffer.addLast(request, origin);
 		requests.remove(0);
 
 		try {
@@ -89,7 +91,7 @@ public class FloorSubsystem implements Runnable {
 	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
 	public ServiceRequest receiveRequest() {
-		ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
+		ServiceRequest request = schedulerFloorsubBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
 		try {
@@ -106,7 +108,7 @@ public class FloorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean receiveRequestBoolean() {
-		ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
+		ServiceRequest request = schedulerFloorsubBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request + "\n");
 
 		if (request instanceof FloorRequest floorRequest){

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.junit.runner.Request;
 import systemwide.Direction;
 
 /**
@@ -103,8 +102,8 @@ public class InputFileReader {
         int floorNumber = Integer.parseInt(data[1]);
         Direction direction = Direction.getDirection(data[2]);
         int floorToVisit = Integer.parseInt(data[3]);
-
-        return new ElevatorRequest(time, floorNumber, direction, floorToVisit);
+        // FIXME: this is true only for origin
+        return new ElevatorRequest(time, floorNumber, direction, floorToVisit, Origin.FLOOR_SYSTEM);
     }
 
     /**

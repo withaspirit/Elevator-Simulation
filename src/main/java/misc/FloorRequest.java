@@ -15,6 +15,11 @@ public class FloorRequest extends ServiceRequest {
 	private int elevatorNumber;
 //	private String basicAction;
 
+	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Origin origin) {
+		super(time ,floorNumber, direction, origin);
+		this.elevatorNumber = elevatorNumber;
+	}
+
 	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber) {
 		super(time ,floorNumber, direction);
 		this.elevatorNumber = elevatorNumber;
