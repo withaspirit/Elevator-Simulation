@@ -9,8 +9,8 @@ import misc.*;
  */
 public class Scheduler implements Runnable {
 
-	private final BoundedBuffer schedulerElevatorsubBuffer; // Elevator Subsystem - Scheduler link
-	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
+	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
+	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
 	private Origin origin;
@@ -18,8 +18,8 @@ public class Scheduler implements Runnable {
 	public Scheduler(BoundedBuffer buffer1, BoundedBuffer buffer2) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
-		this.schedulerElevatorsubBuffer = buffer1;
-		this.schedulerFloorsubBuffer = buffer2;
+		this.elevatorSubsystemBuffer = buffer1;
+		this.floorSubsystemBuffer = buffer2;
 		origin = Origin.SCHEDULER;
 	}
 
@@ -32,21 +32,21 @@ public class Scheduler implements Runnable {
 		InputFileReader inputFileReader = new InputFileReader();
 		int numberOfInputs = inputFileReader.readInputFile("inputs").size();
 		for (int i = 0; i < numberOfInputs * 2; i++) {
-			ServiceRequest serviceRequest = receiveRequest(schedulerFloorsubBuffer);
-			sendRequest(serviceRequest, schedulerElevatorsubBuffer);
-			serviceRequest = receiveRequest(schedulerElevatorsubBuffer);
-			sendRequest(serviceRequest, schedulerFloorsubBuffer);
+			ServiceRequest serviceRequest = receiveRequest(floorSubsystemBuffer);
+			sendRequest(serviceRequest, elevatorSubsystemBuffer);
+			serviceRequest = receiveRequest(elevatorSubsystemBuffer);
+			sendRequest(serviceRequest, floorSubsystemBuffer);
 		}
 		/*
 		// Receiving Data from Floor Subsystem
-		if (receiveRequest(schedulerFloorsubBuffer)) {
+		if (receiveRequest(floorSubsystemBuffer)) {
 			System.out.println("Scheduler received Request from Floor SubSystem Successful");
 		} else {
 			System.out.println("Failed Successful");
 		}
 
 		// Receiving Data from Elevator Subsystem
-		if (receiveRequest(schedulerElevatorsubBuffer)) {
+		if (receiveRequest(elevatorSubsystemBuffer)) {
 			System.out.println("Scheduler received Request from Elevator SubSystem Successful");
 		} else {
 			System.out.println("Failed Successful");
@@ -100,13 +100,13 @@ public class Scheduler implements Runnable {
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
 		if (request instanceof FloorRequest floorRequest){
-			if (sendRequest(floorRequest, schedulerFloorsubBuffer)) {
+			if (sendRequest(floorRequest, floorSubsystemBuffer)) {
 				System.out.println("Scheduler Sent Request to floor Successful");
 			} else {
 				System.out.println("Failed Successful");
 			}
 		} else if (request instanceof ElevatorRequest elevatorRequest){
-			if (sendRequest(elevatorRequest, schedulerElevatorsubBuffer)) {
+			if (sendRequest(elevatorRequest, elevatorSubsystemBuffer)) {
 				System.out.println("Scheduler Sent Request to Elevator Successful");
 			} else {
 				System.out.println("Failed Successful");
