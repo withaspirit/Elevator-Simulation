@@ -1,9 +1,6 @@
 package floorsystem;
 
-import javax.swing.JButton;
-
 import misc.*;
-import scheduler.Scheduler;
 
 import java.util.ArrayList;
 
@@ -14,7 +11,7 @@ import java.util.ArrayList;
  */
 public class FloorSubsystem implements Runnable {
 
-	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
+	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
 	private FloorRequest floorRequest;
 	private Origin origin;
@@ -25,13 +22,11 @@ public class FloorSubsystem implements Runnable {
 	 * @param buffer the buffer the FloorSubsystem passes messages to and receives messages from
 	 */
 	public FloorSubsystem(BoundedBuffer buffer) {
-		this.schedulerFloorsubBuffer = buffer;
+		this.floorSubsystemBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
 		origin = Origin.FLOOR_SYSTEM;
 	}
-
-	// readInputFile();
 
 	/**
 	 * Simple message requesting and sending between subsystems.
@@ -49,7 +44,7 @@ public class FloorSubsystem implements Runnable {
 			sendRequest(serviceRequest);
 			serviceRequest = receiveRequest();
 			System.out.println("Printing buffer contents for buffer");
-			schedulerFloorsubBuffer.printBufferContents();
+			floorSubsystemBuffer.printBufferContents();
 		}
 		/*
 		while (!requests.isEmpty()) {
@@ -79,7 +74,7 @@ public class FloorSubsystem implements Runnable {
 	 */
 	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		schedulerFloorsubBuffer.addLast(request, origin);
+		floorSubsystemBuffer.addLast(request, origin);
 		requests.remove(0);
 
 		try {
@@ -96,7 +91,7 @@ public class FloorSubsystem implements Runnable {
 	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
 	public ServiceRequest receiveRequest() {
-		ServiceRequest request = schedulerFloorsubBuffer.removeFirst(origin);
+		ServiceRequest request = floorSubsystemBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
 		try {
@@ -113,7 +108,7 @@ public class FloorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean receiveRequestBoolean() {
-		ServiceRequest request = schedulerFloorsubBuffer.removeFirst(origin);
+		ServiceRequest request = floorSubsystemBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request + "\n");
 
 		if (request instanceof FloorRequest floorRequest){
