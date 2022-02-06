@@ -85,7 +85,7 @@ Note that this project is set up as a Maven project.
 
   ### Description
 
-  Lorem ipsum
+  This iteration of the project implements a multi-threaded system where all active subsystems, the Elevator Subsystem, the Floor Subsystem, and the Scheduler, act as both [Consumers and Producers](https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem). Two buffers exist to achieve this, one for message passing between Scheduler and Elevator Subsystem and another for between Floor Subsystem and Scheduler. 
 
   ### Contributions
 
@@ -96,6 +96,13 @@ Note that this project is set up as a Maven project.
   | Brady Norton | Message transfer tests, InputFileReaderTest | README Testing + Installation Instructions, UML Sequence Diagram | Code Review
   | Julian Obando Velez | Message Transfer, Bounded Buffer, Bounded Buffer Test | UML Diagram Feedback, GitHub Releases  | Code Review
   | Liam Tripp | Project Skeleton, Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Design, Early Design Diagrams, Design Document, Requirements Analysis | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead, Instruction documents + videos 
+  
+  #### UML Class Diagram
+  ![UML Class Diagram](https://user-images.githubusercontent.com/61635007/152667157-df45fbf8-6c48-430f-b47d-c82156e23872.png)
+
+  #### UML Sequence Diagram
+
+  ![UML Sequence Diagram](https://user-images.githubusercontent.com/61635007/152667164-26f422be-fdd9-4bfb-81eb-9de66fbc9595.png)
 
   </details>
 
