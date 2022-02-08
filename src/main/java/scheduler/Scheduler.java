@@ -33,18 +33,18 @@ public class Scheduler implements Runnable, ServiceRequestListener {
 	 */
 	public void run() {
 		while(true) {
-			ServiceRequest request = receiveMessage(floorSubsystemBuffer);
+			ServiceRequest request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
 			if (request instanceof ElevatorRequest elevatorRequest){
-				if (sendMessage(elevatorRequest, elevatorSubsystemBuffer)) {
+				if (sendMessage(elevatorRequest, elevatorSubsystemBuffer, Thread.currentThread())) {
 					System.out.println("Scheduler Sent Request to Elevator Successful");
 				} else {
 					System.err.println("Failed Successful");
 				}
 			}
 
-			request = receiveMessage(elevatorSubsystemBuffer);
+			request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
 			if (request instanceof FloorRequest floorRequest){
-				if (sendMessage(floorRequest, floorSubsystemBuffer)) {
+				if (sendMessage(floorRequest, floorSubsystemBuffer, Thread.currentThread())) {
 					System.out.println("Scheduler Sent Request to Elevator Successful");
 				} else {
 					System.err.println("Failed Successful");
