@@ -31,15 +31,19 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 	 * Simple message requesting and sending between subsystems.
 	 */
 	public void run() {
-		int size = requests.size();
-		for (int i = 0; i < size; i++) {
-			System.out.println("Queue Size " + requests.size());
-			ElevatorRequest elevatorRequest = requests.get(0);
-			sendMessage(elevatorRequest, floorSubsystemBuffer, origin);
-			FloorRequest floorRequest = (FloorRequest) receiveMessage(floorSubsystemBuffer, origin);
-			System.out.println("Printing buffer contents for buffer");
-			floorSubsystemBuffer.printBufferContents();
-			requests.remove(0);
+		int receive = requests.size();
+		while (receive != 0) {
+			if (!requests.isEmpty()) {
+				// Sending Data to Scheduler
+				sendMessage(requests.get(0), floorSubsystemBuffer, origin);
+				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+				requests.remove(0);
+			}
+			ServiceRequest request = receiveMessage(floorSubsystemBuffer, origin);
+			if (request instanceof FloorRequest floorRequest){
+				receive--;
+				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");
+			}
 		}
 	}
 }

@@ -18,15 +18,14 @@ public class Scheduler implements Runnable, ServiceRequestListener {
 	/**
 	 * Constructor for Scheduler
 	 *
-	 * @param buffer1
-	 * @param buffer2
+	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
+	 * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
 	 */
-	public Scheduler(BoundedBuffer buffer1, BoundedBuffer buffer2) {
+	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
-		this.elevatorSubsystemBuffer = buffer1;
-		this.floorSubsystemBuffer = buffer2;
-		origin = Origin.SCHEDULER;
+		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
+		this.floorSubsystemBuffer = floorSubsystemBuffer;
 	}
 
 	/**
@@ -34,14 +33,18 @@ public class Scheduler implements Runnable, ServiceRequestListener {
 	 * 
 	 */
 	public void run() {
-		// TODO: make getting input file size a method?
-		InputFileReader inputFileReader = new InputFileReader();
-		int numberOfInputs = inputFileReader.readInputFile("inputs").size();
-		for (int i = 0; i < numberOfInputs * 2; i++) {
-			ElevatorRequest elevatorRequest = (ElevatorRequest) receiveMessage(floorSubsystemBuffer, origin);
-			sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
-			FloorRequest floorRequest = (FloorRequest) receiveMessage(elevatorSubsystemBuffer, origin);
-			sendMessage(floorRequest, floorSubsystemBuffer, origin);
+		while(true) {
+			ServiceRequest request = receiveMessage(floorSubsystemBuffer, origin);
+			if (request instanceof ElevatorRequest elevatorRequest){
+				sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
+				System.out.println("Scheduler Sent Request to Elevator Successful");
+			}
+
+			request = receiveMessage(elevatorSubsystemBuffer, origin);
+			if (request instanceof FloorRequest floorRequest){
+				sendMessage(floorRequest, floorSubsystemBuffer, origin);
+				System.out.println("Scheduler Sent Request to Elevator Successful");
+			}
 		}
 	}
 }

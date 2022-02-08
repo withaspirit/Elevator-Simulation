@@ -28,12 +28,12 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 	 * 
 	 */
 	public void run() {
-		// need to get proper number from somewhere - maybe instantiate a FileInputReader, read in the inputs
-		InputFileReader inputFileReader = new InputFileReader();
-		int numberOfInputs = inputFileReader.readInputFile("inputs").size();
-		for (int i = 0; i < numberOfInputs * 2; i++) {
-			ElevatorRequest elevatorRequest = (ElevatorRequest) receiveMessage(elevatorSubsystemBuffer, origin);
-			sendMessage(new FloorRequest(elevatorRequest, 1), elevatorSubsystemBuffer, origin);
+		while(true) {
+			ServiceRequest request = receiveMessage(elevatorSubsystemBuffer, origin);
+			if (request instanceof ElevatorRequest elevatorRequest) {
+				sendMessage(new FloorRequest(elevatorRequest, 1), elevatorSubsystemBuffer, origin);
+				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+			}
 		}
 	}
 }
