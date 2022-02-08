@@ -13,7 +13,6 @@ public class Scheduler implements Runnable, ServiceRequestListener {
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
-	private Origin origin;
 
 	/**
 	 * Constructor for Scheduler
@@ -34,18 +33,18 @@ public class Scheduler implements Runnable, ServiceRequestListener {
 	 */
 	public void run() {
 		while(true) {
-			ServiceRequest request = receiveMessage(floorSubsystemBuffer, origin);
+			ServiceRequest request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
 			if (request instanceof ElevatorRequest elevatorRequest){
-				if (sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin)) {
+				if (sendMessage(elevatorRequest, elevatorSubsystemBuffer, Thread.currentThread())) {
 					System.out.println("Scheduler Sent Request to Elevator Successful");
 				} else {
 					System.err.println("Failed Successful");
 				}
 			}
 
-			request = receiveMessage(elevatorSubsystemBuffer, origin);
+			request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
 			if (request instanceof FloorRequest floorRequest){
-				if (sendMessage(floorRequest, floorSubsystemBuffer, origin)) {
+				if (sendMessage(floorRequest, floorSubsystemBuffer, Thread.currentThread())) {
 					System.out.println("Scheduler Sent Request to Elevator Successful");
 				} else {
 					System.err.println("Failed Successful");

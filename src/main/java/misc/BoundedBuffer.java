@@ -3,7 +3,7 @@ package misc;
 /**
  * BoundedBuffer for managing Thread-Safe messaging between system components
  * 
- * @author Lynn Marshall, Julian
+ * @author Lynn Marshall, Julian, Ryan Dash
  */
 public class BoundedBuffer {
     // A simple ring buffer is used to hold the data
@@ -34,19 +34,18 @@ public class BoundedBuffer {
      * @param item a request sent to the buffer
      * @param origin the system from which the request came
      */
-    public synchronized void addLast(ServiceRequest item, Origin origin)
+    public synchronized void addLast(ServiceRequest item, Thread origin)
     {
         while (!writeable) {
             try { 
                 wait();
             } catch (InterruptedException e) {
-                System.err.println(e);
+                e.printStackTrace();
             }
         }
         item.setOrigin(origin);
         buffer[inIndex] = item;
         readable = true;
-
         inIndex = (inIndex + 1) % SIZE;
         count++;
         if (count == SIZE)
@@ -60,7 +59,7 @@ public class BoundedBuffer {
      *
      * @param origin the system making the request to remove an object from the buffer
      */
-    public synchronized ServiceRequest removeFirst(Origin origin)
+    public synchronized ServiceRequest removeFirst(Thread origin)
     {
         ServiceRequest item;
         
@@ -68,14 +67,13 @@ public class BoundedBuffer {
             try { 
                 wait();
             } catch (InterruptedException e) {
-                System.err.println(e);
+                e.printStackTrace();
             }
         }
         // remove item from buffer
         item = buffer[outIndex];
         buffer[outIndex] = null;
         writeable = true;
-
         outIndex = (outIndex + 1) % SIZE;
         count--;
         if (count == 0)
@@ -93,12 +91,9 @@ public class BoundedBuffer {
      * @param origin the origin of the system attempting to remove an object
      * @return true if successful, false otherwise
      */
-    public boolean identicalOrigin(ServiceRequest request, Origin origin) {
-        return origin == ((ServiceRequest) request).getOrigin();
+    public boolean identicalOrigin(ServiceRequest request, Thread origin) {
+        return origin == request.getOrigin();
     }
-
-    // method for verifying whether buffer is empty?
-    // method for returning buffer contents?
 
     /**
      * Prints the contents of a Buffer.
@@ -106,18 +101,13 @@ public class BoundedBuffer {
     public void printBufferContents() {
         // expand upon this
         System.out.println("Buffer contents: buffer0: " + buffer[0] + "\n"
-            + "buffer1: "+ buffer[1] + "\n");
+                + "buffer1: "+ buffer[1] + "\n");
     }
 
     /**
      * Determines if Buffer is empty
      */
-    public boolean isEmpty()
-    {
-        if(count==0)
-        {
-            return true;
-        }
-        return false;
+    public boolean isEmpty() {
+        return count == 0;
     }
 }

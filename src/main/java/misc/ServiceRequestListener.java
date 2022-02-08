@@ -6,7 +6,6 @@ package misc;
  * @author Liam Tripp, Ryan Dash
  */
 public interface ServiceRequestListener {
-  
 	/**
 	 * Adds an object to a buffer.
 	 *
@@ -14,7 +13,7 @@ public interface ServiceRequestListener {
 	 * @param buffer a BoundedBuffer which holds serviceRequests
 	 * @return true if request is successful, false otherwise
 	 */
-	default boolean sendMessage(ServiceRequest request, BoundedBuffer buffer, Origin origin) {
+	default boolean sendMessage(ServiceRequest request, BoundedBuffer buffer, Thread origin) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
 		buffer.addLast(request, origin);
 		return true;
@@ -25,8 +24,8 @@ public interface ServiceRequestListener {
 	 *
 	 * @param buffer a buffer which holds object
 	 * @return object the first object in the buffer
-   */
-	default ServiceRequest receiveMessage(BoundedBuffer buffer, Origin origin) {
+	 */
+	default ServiceRequest receiveMessage(BoundedBuffer buffer, Thread origin) {
 		ServiceRequest request = buffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received: " + request);
 		return request;
