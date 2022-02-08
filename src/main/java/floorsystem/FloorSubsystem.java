@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * 
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class FloorSubsystem implements Runnable {
+public class FloorSubsystem implements Runnable, ServiceRequestListener {
 
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
@@ -36,41 +36,17 @@ public class FloorSubsystem implements Runnable {
 		while (receive != 0) {
 			if (!requests.isEmpty()) {
 				// Sending Data to Scheduler
-				if (sendRequest(requests.get(0))) {
+				if (sendMessage(requests.get(0), floorSubsystemBuffer)) {
 					System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
 				} else {
 					System.err.println(Thread.currentThread().getName() + " failed Sending Successful");
 				}
 			}
-			if (receiveRequest() instanceof FloorRequest floorRequest){
+			if (receiveMessage(floorSubsystemBuffer) instanceof FloorRequest floorRequest){
 				receive--;
 				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");
 			}
 		}
 		System.exit(0);
-	}
-
-	/**
-	 * Puts a request into the buffer.
-	 * 
-	 * @param request the message being sent
-	 * @return true if request is successful, false otherwise
-	 */
-	public boolean sendRequest(ServiceRequest request) {
-		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		floorSubsystemBuffer.addLast(request, Thread.currentThread());
-		requests.remove(0);
-		return true;
-	}
-
-	/**
-	 * Removes a request from the Buffer.
-	 *
-	 * @return serviceRequest a request by a person on a floor or in an elevator
-	 */
-	public ServiceRequest receiveRequest() {
-		ServiceRequest request = floorSubsystemBuffer.removeFirst(Thread.currentThread());
-		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-		return request;
 	}
 }
