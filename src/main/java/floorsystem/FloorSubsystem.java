@@ -1,6 +1,9 @@
 package floorsystem;
 
+import javax.swing.JButton;
+
 import misc.*;
+import scheduler.Scheduler;
 
 import java.util.ArrayList;
 
@@ -11,14 +14,24 @@ import java.util.ArrayList;
  */
 public class FloorSubsystem implements Runnable {
 
-	private final BoundedBuffer floorSubBuffer; // Floor Subsystem- Scheduler link
+	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
+	private FloorRequest floorRequest;
+	private Origin origin;
 
+	/**
+	 * Constructor for FloorSubsystem.
+	 *
+	 * @param buffer the buffer the FloorSubsystem passes messages to and receives messages from
+	 */
 	public FloorSubsystem(BoundedBuffer buffer) {
-		this.floorSubBuffer = buffer;
+		this.floorSubsystemBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
+		origin = Origin.FLOOR_SYSTEM;
 	}
+
+	// readInputFile();
 
 	/**
 	 * Simple message requesting and sending between subsystems.
@@ -35,36 +48,43 @@ public class FloorSubsystem implements Runnable {
 					System.err.println(Thread.currentThread().getName() + " failed Sending Successful");
 				}
 			}
-			if (!floorSubBuffer.checkFirst().isOrigin()) {
-				ServiceRequest floorRequest = receiveRequest();
-				receive--;
-				System.out.println("Expected Elevator# " + ((FloorRequest) floorRequest).getElevatorNumber() + " Arrived \n");
-			}
 		}
 		System.exit(0);
 	}
 
 	/**
-	 * Puts the request message into the buffer
+	 * Puts a request into the buffer.
 	 * 
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		floorSubBuffer.addLast(request, Thread.currentThread());
+		floorSubsystemBuffer.addLast(request, origin);
 		requests.remove(0);
+
+		try {
+			Thread.sleep(800);
+		} catch (InterruptedException e) {
+			System.err.println(e);
+		}
 		return true;
 	}
 
 	/**
-	 * Checks the buffer for messages
+	 * Removes a request from the Buffer.
 	 *
-	 * @return true if request is successful, false otherwise
+	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
 	public ServiceRequest receiveRequest() {
-		ServiceRequest request = floorSubBuffer.removeFirst();
+		ServiceRequest request = floorSubsystemBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+
+		try {
+			Thread.sleep(0);
+		} catch (InterruptedException e) {
+			System.err.println(e);
+		}
 		return request;
 	}
 }

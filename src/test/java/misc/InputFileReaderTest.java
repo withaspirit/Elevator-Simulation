@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test class for InputFileReader methods
  *
- * @author Ryan Dash, Brady
+ * @author Ryan Dash, Brady, Liam Tripp
  */
 public class InputFileReaderTest {
 
@@ -23,6 +23,7 @@ public class InputFileReaderTest {
     ElevatorRequest elevatorRequest2;
     JSONObject jsonObject;
     InputFileReader inputFileReader;
+    JSONArray jsonArray;
 
     @BeforeEach
     void setUp() {
@@ -32,37 +33,71 @@ public class InputFileReaderTest {
     @AfterEach
     void tearDown() {}
 
+    /**
+     * Initializes the JSONArray for a test to the "inputs" file.
+     */
+    private void initStandardInputArray() {
+        jsonArray = inputFileReader.createJSONArray("inputs");
+    }
+
+    // Assert all inputs are in correct format
     @Test
-    void testReadInputFile() {
+    void testConvertJSONToString() {
+        initStandardInputArray();
+
+        for (Object object : jsonArray) {
+            jsonObject = (JSONObject) object;
+            String[] data = inputFileReader.convertJSONToStringArray(jsonObject);
+
+            // Test that time is valid
+            // This should just throw an exception if the format is invalid
+            LocalTime time = LocalTime.parse(data[0]);
+
+            // floorNumber is a valid number ( > 0)
+            int floorNumber = Integer.parseInt(data[1]);
+            assertTrue(floorNumber > 0);
+
+            // Direction is Up or Down
+            // (special cases: no down on first floor)
+            Direction direction = Direction.getDirection(data[2]);
+            assertNotNull(direction);
+            String directionName = direction.getName();
+            if (floorNumber == 1) {
+                assertNotEquals(directionName, Direction.DOWN.getName());
+            } else {
+                assertTrue(directionName.equals(Direction.UP.getName()) ||
+                        directionName.equals(Direction.DOWN.getName()));
+            }
+
+            // floorToVisit is a valid number ( > 0)
+            int floorToVisit = Integer.parseInt(data[3]);
+            assertTrue(floorToVisit > 0);
+        }
+    }
+
+    @Test
+    void testReadInputFileEquality() {
         // Fill queue with inputs
         ArrayList<ElevatorRequest> queue = inputFileReader.readInputFile("inputs");
 
         // Fill JSONArray with inputs
-        JSONArray jsonArray = (JSONArray) inputFileReader.getJSONFileAsObject("inputs").get("inputs");
+        initStandardInputArray();
 
-        // Event 1
-        elevatorRequest1 = queue.get(0);
-        jsonObject = (JSONObject) jsonArray.get(0);
-        elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
-        assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
+        // make sure both return same number of inputs
+        assertEquals(jsonArray.size(), queue.size());
 
-        // Event 2
-        elevatorRequest1 = queue.get(1);
-        jsonObject = (JSONObject) jsonArray.get(1);
-        elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
-        assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
-
-        // Event 3
-        elevatorRequest1 = queue.get(2);
-        jsonObject = (JSONObject) jsonArray.get(2);
-        elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
-        assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
+        // Assure contents of each method is the same
+        for (int i = 0; i < queue.size(); i++) {
+            elevatorRequest1 = queue.get(i);
+            jsonObject = (JSONObject) jsonArray.get(i);
+            elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
+            assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
+        }
     }
 
     @Test
     void inputFormatTest() {
-        // Create JSONArray
-        JSONArray jsonArray = (JSONArray) inputFileReader.getJSONFileAsObject("inputs").get("inputs");
+        initStandardInputArray();
 
         // Event 1 -> "00:00:00.000 1 Up 2"
         jsonObject = (JSONObject) jsonArray.get(0);

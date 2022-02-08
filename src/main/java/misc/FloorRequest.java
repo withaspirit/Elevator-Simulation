@@ -15,11 +15,40 @@ public class FloorRequest extends ServiceRequest {
 	private int elevatorNumber;
 //	private String basicAction;
 
+	/**
+	 * Constructor for FloorRequest read from an input file.
+	 *
+	 * @param time the time the Request was made
+	 * @param floorNumber the number of the floor on which the request was made
+	 * @param direction the direction selected by the user
+	 * @param elevatorNumber the number of the elevator taking the request
+	 * @param origin the system from which the message originated
+	 */
+	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Origin origin) {
+		super(time ,floorNumber, direction, origin);
+		this.elevatorNumber = elevatorNumber;
+	}
+
+	/**
+	 * Constructor for FloorRequest read from an input file.
+	 *
+	 * @param time the time the Request was made
+	 * @param floorNumber the number of the floor on which the request was made
+	 * @param direction the direction selected by the user
+	 * @param elevatorNumber the number of the elevator taking the request
+	 */
 	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber) {
 		super(time ,floorNumber, direction);
 		this.elevatorNumber = elevatorNumber;
 	}
 
+	/**
+	 * Constructor for FloorRequest.
+	 *
+	 * @param time the time the Request was made
+	 * @param floorNumber the number of the floor on which the request was made
+	 * @param direction the direction selected by the user
+	 */
 	public FloorRequest(LocalTime time, int floorNumber, Direction direction) {
 		super(time ,floorNumber, direction);
 	}
@@ -45,6 +74,11 @@ public class FloorRequest extends ServiceRequest {
 //		this.basicAction = basicAction;
 //	}
 
+	/**
+	 * Returns the number of the elevator corresponding to the floorRequest.
+	 *
+	 * @return elevatorNumber the number of the elevator corresponding to the request
+	 */
 	public int getElevatorNumber() {
 		return elevatorNumber;
 	}

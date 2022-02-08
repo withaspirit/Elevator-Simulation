@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.junit.runner.Request;
 import systemwide.Direction;
 
 /**
@@ -20,7 +19,7 @@ import systemwide.Direction;
 public class InputFileReader {
 
     /**
-     * Constructor for InputFileReader.
+     * Constructor for InputFileReader (No-args for now).
      */
     public InputFileReader() {
     }
@@ -72,8 +71,7 @@ public class InputFileReader {
      */
     public ArrayList<ElevatorRequest> readInputFile(String name){
         ArrayList<ElevatorRequest> queue = new ArrayList<>();
-        JSONObject jsonObject = getJSONFileAsObject(name);
-        JSONArray jsonArray = (JSONArray) jsonObject.get("inputs");
+        JSONArray jsonArray = createJSONArray(name);
 
         for (Object obj: jsonArray) {
             JSONObject inputObject = (JSONObject) obj;
@@ -81,6 +79,15 @@ public class InputFileReader {
             queue.add(elevatorRequest);
         }
         return queue;
+    }
+
+    /**
+     * Initializes a JSONArray for a JSON file with the specified name.
+     *
+     * @return JSONArray the JSON file converted to a JSON array
+     */
+    public JSONArray createJSONArray(String name) {
+        return (JSONArray) getJSONFileAsObject(name).get(name);
     }
 
     /**
@@ -95,8 +102,8 @@ public class InputFileReader {
         int floorNumber = Integer.parseInt(data[1]);
         Direction direction = Direction.getDirection(data[2]);
         int floorToVisit = Integer.parseInt(data[3]);
-
-        return new ElevatorRequest(time, floorNumber, direction, floorToVisit);
+        // FIXME: this is true only for origin
+        return new ElevatorRequest(time, floorNumber, direction, floorToVisit, Origin.FLOOR_SYSTEM);
     }
 
     /**
@@ -106,7 +113,7 @@ public class InputFileReader {
      * @param jsonObject a ServiceRequest as a JSONObject
      * @return a String array containing information in the specified format
      */
-    private String[] convertJSONToStringArray(JSONObject jsonObject) {
+    public String[] convertJSONToStringArray(JSONObject jsonObject) {
         return ((String) jsonObject.get("event")).split(" ");
     }
 }

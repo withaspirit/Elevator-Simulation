@@ -9,16 +9,23 @@ import misc.*;
  */
 public class Scheduler implements Runnable {
 
-	private final BoundedBuffer elevatorSubBuffer; // Elevator Subsystem - Scheduler link
-	private final BoundedBuffer floorSubBuffer; // Floor Subsystem- Scheduler link
+	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
+	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
+	private Origin origin;
 
+	/**
+	 * Constructor for Scheduler
+	 *
+	 * @param buffer1
+	 * @param buffer2
+	 */
 	public Scheduler(BoundedBuffer buffer1, BoundedBuffer buffer2) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
-		this.elevatorSubBuffer = buffer1;
-		this.floorSubBuffer = buffer2;
+		this.schedulerElevatorsubBuffer = buffer1;
+		this.schedulerFloorsubBuffer = buffer2;
 	}
 
 	/**
@@ -45,6 +52,7 @@ public class Scheduler implements Runnable {
 				}
 			}
 		}
+		 */
 	}
 
 	/**
@@ -56,22 +64,29 @@ public class Scheduler implements Runnable {
 	 */
 	public boolean sendRequest(ServiceRequest request, BoundedBuffer buffer) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		buffer.addLast(request, Thread.currentThread());
+		buffer.addLast(request, origin);
+
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+		}
 		return true;
 	}
 
 	/**
-	 * Checks the buffer for messages
-	 * 
+	 * Removes a ServiceRequest from the Buffer.
+	 *
 	 * @param buffer the BoundedBuffer used for receiving the request
-	 * @return true if request is successful, false otherwise
+	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
 	public ServiceRequest receiveRequest(BoundedBuffer buffer) {
-		if (!buffer.checkFirst().isOrigin()) {
-			ServiceRequest request = buffer.removeFirst();
-			System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-			return request;
+		ServiceRequest request = buffer.removeFirst(origin);
+		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+
+		try {
+			Thread.sleep(0);
+		} catch (InterruptedException e) {
 		}
-		return null;
+		return request;
 	}
 }
