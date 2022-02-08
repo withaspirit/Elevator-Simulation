@@ -9,10 +9,10 @@ import misc.*;
  */
 public class ElevatorSubsystem implements Runnable {
 
-	private final BoundedBuffer schedulerElevatorsubBuffer; // Elevator Subsystem - Scheduler link
+	private final BoundedBuffer elevatorSubBuffer; // Elevator Subsystem - Scheduler link
 
 	public ElevatorSubsystem(BoundedBuffer buffer) {
-		this.schedulerElevatorsubBuffer = buffer;
+		this.elevatorSubBuffer = buffer;
 	}
 
 	/**
@@ -21,17 +21,14 @@ public class ElevatorSubsystem implements Runnable {
 	 */
 	public void run() {
 		while(true) {
-			ServiceRequest elevatorRequest = receiveRequest();
-			// Receiving Data from Scheduler
-			while (elevatorRequest.isOrigin()) {
-				System.out.println(elevatorRequest);
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+			ServiceRequest request = receiveRequest();
+			if (request instanceof ElevatorRequest elevatorRequest){
+				if (sendRequest(new FloorRequest(elevatorRequest, 1))){
+					System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+				} else {
+					System.err.println(Thread.currentThread().getName() + " failed Sending Successful");
 				}
 			}
-			sendRequest(new FloorRequest((ElevatorRequest) elevatorRequest, 1));
 		}
 	}
 
@@ -43,8 +40,7 @@ public class ElevatorSubsystem implements Runnable {
 	 */
 	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
-		schedulerElevatorsubBuffer.addLast(request, Thread.currentThread());
-
+		elevatorSubBuffer.addLast(request, Thread.currentThread());
 		return true;
 	}
 
@@ -54,9 +50,11 @@ public class ElevatorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public ServiceRequest receiveRequest() {
-		ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
-		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
-		return request;
+		if (!elevatorSubBuffer.checkFirst().isOrigin()) {
+			ServiceRequest request = elevatorSubBuffer.removeFirst();
+			System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+			return request;
+		}
+		return null;
 	}
 }

@@ -11,15 +11,13 @@ import java.util.ArrayList;
  */
 public class FloorSubsystem implements Runnable {
 
-	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
+	private final BoundedBuffer floorSubBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
-	private int receive;
 
 	public FloorSubsystem(BoundedBuffer buffer) {
-		this.schedulerFloorsubBuffer = buffer;
+		this.floorSubBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
-		receive = requests.size();
 	}
 
 	/**
@@ -27,6 +25,7 @@ public class FloorSubsystem implements Runnable {
 	 *
 	 */
 	public void run() {
+		int receive = requests.size();
 		while (receive != 0) {
 			if (!requests.isEmpty()) {
 				// Sending Data to Scheduler
@@ -36,16 +35,11 @@ public class FloorSubsystem implements Runnable {
 					System.err.println(Thread.currentThread().getName() + " failed Sending Successful");
 				}
 			}
-			ServiceRequest floorRequest = receiveRequest();
-			while (!floorRequest.isOrigin()) {
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			if (!floorSubBuffer.checkFirst().isOrigin()) {
+				ServiceRequest floorRequest = receiveRequest();
+				receive--;
+				System.out.println("Expected Elevator# " + ((FloorRequest) floorRequest).getElevatorNumber() + " Arrived \n");
 			}
-			receive--;
-			System.out.println("Expected Elevator# " + ((FloorRequest) floorRequest).getElevatorNumber() + " Arrived \n");
 		}
 		System.exit(0);
 	}
@@ -58,7 +52,7 @@ public class FloorSubsystem implements Runnable {
 	 */
 	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		schedulerFloorsubBuffer.addLast(request, Thread.currentThread());
+		floorSubBuffer.addLast(request, Thread.currentThread());
 		requests.remove(0);
 		return true;
 	}
@@ -69,7 +63,7 @@ public class FloorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public ServiceRequest receiveRequest() {
-		ServiceRequest request = schedulerFloorsubBuffer.removeFirst();
+		ServiceRequest request = floorSubBuffer.removeFirst();
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 		return request;
 	}

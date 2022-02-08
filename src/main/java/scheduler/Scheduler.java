@@ -9,16 +9,16 @@ import misc.*;
  */
 public class Scheduler implements Runnable {
 
-	private final BoundedBuffer schedulerElevatorsubBuffer; // Elevator Subsystem - Scheduler link
-	private final BoundedBuffer schedulerFloorsubBuffer; // Floor Subsystem- Scheduler link
+	private final BoundedBuffer elevatorSubBuffer; // Elevator Subsystem - Scheduler link
+	private final BoundedBuffer floorSubBuffer; // Floor Subsystem- Scheduler link
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
 
 	public Scheduler(BoundedBuffer buffer1, BoundedBuffer buffer2) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
-		this.schedulerElevatorsubBuffer = buffer1;
-		this.schedulerFloorsubBuffer = buffer2;
+		this.elevatorSubBuffer = buffer1;
+		this.floorSubBuffer = buffer2;
 	}
 
 	/**
@@ -27,24 +27,22 @@ public class Scheduler implements Runnable {
 	 */
 	public void run() {
 		while(true) {
-			redirectRequest(schedulerFloorsubBuffer);
-			redirectRequest(schedulerElevatorsubBuffer);
-		}
-	}
-
-	private void redirectRequest(BoundedBuffer buffer) {
-		ServiceRequest request = receiveRequest(buffer);
-		if (request instanceof FloorRequest floorRequest) {
-			if (sendRequest(floorRequest, schedulerFloorsubBuffer)) {
-				System.out.println("Scheduler Sent Request to floor Successful");
-			} else {
-				System.err.println("Failed Successful");
+			ServiceRequest request = receiveRequest(floorSubBuffer);
+			if (request instanceof ElevatorRequest elevatorRequest){
+				if (sendRequest(elevatorRequest, elevatorSubBuffer)) {
+					System.out.println("Scheduler Sent Request to Elevator Successful");
+				} else {
+					System.err.println("Failed Successful");
+				}
 			}
-		} else if (request instanceof ElevatorRequest elevatorRequest) {
-			if (sendRequest(elevatorRequest, schedulerElevatorsubBuffer)) {
-				System.out.println("Scheduler Sent Request to Elevator Successful");
-			} else {
-				System.err.println("Failed Successful");
+
+			request = receiveRequest(elevatorSubBuffer);
+			if (request instanceof FloorRequest floorRequest){
+				if (sendRequest(floorRequest, floorSubBuffer)) {
+					System.out.println("Scheduler Sent Request to Elevator Successful");
+				} else {
+					System.err.println("Failed Successful");
+				}
 			}
 		}
 	}
@@ -69,8 +67,11 @@ public class Scheduler implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public ServiceRequest receiveRequest(BoundedBuffer buffer) {
-		ServiceRequest request = buffer.removeFirst();
-		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-		return request;
+		if (!buffer.checkFirst().isOrigin()) {
+			ServiceRequest request = buffer.removeFirst();
+			System.out.println(Thread.currentThread().getName() + " received the request: " + request);
+			return request;
+		}
+		return null;
 	}
 }
