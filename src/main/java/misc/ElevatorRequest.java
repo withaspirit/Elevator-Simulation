@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class ElevatorRequest extends ServiceRequest {
 
-	private int desiredFloor;
+	private final int desiredFloor;
 //	private String basicAction;
 
 	/**
@@ -38,7 +38,7 @@ public class ElevatorRequest extends ServiceRequest {
 	 * @param desiredFloor the floor the user wishes to visit
 	 * @param origin the system from which the message originated
 	 */
-	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction, int desiredFloor, Origin origin) {
+	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction, int desiredFloor, Thread origin) {
 		super(time ,floorNumber, direction, origin);
 		this.desiredFloor = desiredFloor;
 	}

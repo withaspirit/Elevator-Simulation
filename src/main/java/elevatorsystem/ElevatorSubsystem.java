@@ -11,7 +11,6 @@ import misc.*;
 public class ElevatorSubsystem implements Runnable {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-	private Origin origin;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
@@ -20,7 +19,6 @@ public class ElevatorSubsystem implements Runnable {
 	 */
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.elevatorSubsystemBuffer = buffer;
-		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
 	/**
@@ -48,7 +46,7 @@ public class ElevatorSubsystem implements Runnable {
 	 */
 	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
-		elevatorSubsystemBuffer.addLast(request, origin);
+		elevatorSubsystemBuffer.addLast(request, Thread.currentThread());
 		return true;
 	}
 
@@ -58,7 +56,7 @@ public class ElevatorSubsystem implements Runnable {
 	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
 	public ServiceRequest receiveRequest() {
-		ServiceRequest request = elevatorSubsystemBuffer.removeFirst(origin);
+		ServiceRequest request = elevatorSubsystemBuffer.removeFirst(Thread.currentThread());
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 		return request;
 	}

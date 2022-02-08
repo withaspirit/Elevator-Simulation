@@ -13,8 +13,6 @@ public class FloorSubsystem implements Runnable {
 
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
-	private FloorRequest floorRequest;
-	private Origin origin;
 
 	/**
 	 * Constructor for FloorSubsystem.
@@ -25,7 +23,6 @@ public class FloorSubsystem implements Runnable {
 		this.floorSubsystemBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
-		origin = Origin.FLOOR_SYSTEM;
 	}
 
 	// readInputFile();
@@ -61,7 +58,7 @@ public class FloorSubsystem implements Runnable {
 	 */
 	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		floorSubsystemBuffer.addLast(request, origin);
+		floorSubsystemBuffer.addLast(request, Thread.currentThread());
 		requests.remove(0);
 		return true;
 	}
@@ -72,7 +69,7 @@ public class FloorSubsystem implements Runnable {
 	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
 	public ServiceRequest receiveRequest() {
-		ServiceRequest request = floorSubsystemBuffer.removeFirst(origin);
+		ServiceRequest request = floorSubsystemBuffer.removeFirst(Thread.currentThread());
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 		return request;
 	}

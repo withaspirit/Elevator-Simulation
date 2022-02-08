@@ -103,7 +103,7 @@ public class InputFileReader {
         Direction direction = Direction.getDirection(data[2]);
         int floorToVisit = Integer.parseInt(data[3]);
         // FIXME: this is true only for origin
-        return new ElevatorRequest(time, floorNumber, direction, floorToVisit, Origin.FLOOR_SYSTEM);
+        return new ElevatorRequest(time, floorNumber, direction, floorToVisit, Thread.currentThread());
     }
 
     /**

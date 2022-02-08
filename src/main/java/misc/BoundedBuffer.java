@@ -37,13 +37,13 @@ public class BoundedBuffer {
      * @param item a request sent to the buffer
      * @param origin the system from which the request came
      */
-    public synchronized void addLast(ServiceRequest item, Origin origin)
+    public synchronized void addLast(ServiceRequest item, Thread origin)
     {
         while (!writeable) {
             try { 
                 wait();
             } catch (InterruptedException e) {
-                System.err.println(e);
+                e.printStackTrace();
             }
         }
         item.setOrigin(origin);
@@ -62,7 +62,7 @@ public class BoundedBuffer {
      *
      * @param origin the system making the request to remove an object from the buffer
      */
-    public synchronized ServiceRequest removeFirst(Origin origin)
+    public synchronized ServiceRequest removeFirst(Thread origin)
     {
         ServiceRequest item;
         
@@ -94,8 +94,8 @@ public class BoundedBuffer {
      * @param origin the origin of the system attempting to remove an object
      * @return true if successful, false otherwise
      */
-    public boolean identicalOrigin(ServiceRequest request, Origin origin) {
-        return origin == ((ServiceRequest) request).getOrigin();
+    public boolean identicalOrigin(ServiceRequest request, Thread origin) {
+        return origin == request.getOrigin();
     }
 
     // method for verifying whether buffer is empty?
