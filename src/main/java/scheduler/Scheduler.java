@@ -7,7 +7,7 @@ import misc.*;
  * 
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class Scheduler implements Runnable {
+public class Scheduler implements Runnable, ServiceRequestListener {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
@@ -62,19 +62,13 @@ public class Scheduler implements Runnable {
 
 	/**
 	 * Puts the request message into the buffer
-	 * 
+	 *
 	 * @param request the message being sent
 	 * @param buffer the BoundedBuffer used for sending the request
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean sendRequest(ServiceRequest request, BoundedBuffer buffer) {
-		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		buffer.addLast(request, origin);
-
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-		}
+		sendMessage(request, buffer);
 		return true;
 	}
 
@@ -85,14 +79,7 @@ public class Scheduler implements Runnable {
 	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
 	public ServiceRequest receiveRequest(BoundedBuffer buffer) {
-		ServiceRequest request = buffer.removeFirst(origin);
-		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
-		try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
-		}
-		return request;
+		return (ServiceRequest) receiveMessage(buffer);
 	}
 
 	/**
