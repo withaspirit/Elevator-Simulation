@@ -30,4 +30,5 @@ public interface ServiceRequestListener {
 		ServiceRequest request = buffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received: " + request);
 		return request;
+	}
 }
