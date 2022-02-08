@@ -33,11 +33,8 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 		while (receive != 0) {
 			if (!requests.isEmpty()) {
 				// Sending Data to Scheduler
-				if (sendMessage(requests.get(0), floorSubsystemBuffer, Thread.currentThread())) {
-					System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
-				} else {
-					System.err.println(Thread.currentThread().getName() + " failed Sending Successful");
-				}
+				sendMessage(requests.get(0), floorSubsystemBuffer, Thread.currentThread());
+				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
 				requests.remove(0);
 			}
 			ServiceRequest request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
