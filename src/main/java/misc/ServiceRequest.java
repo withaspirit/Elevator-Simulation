@@ -8,14 +8,14 @@ import java.time.LocalTime;
  * ServiceRequest is an abstract event data structure for when a user requests an
  * Elevator's service.
  *
- * @author Liam Tripp, Ramit Mahajan
+ * @author Liam Tripp, Ramit Mahajan, Ryan Dash
  */
 public class ServiceRequest {
 
 	private final LocalTime time;
 	private final int floorNumber;
 	private Direction direction;
-	private Origin origin;
+	private Thread origin;
 
 	/**
 	 * Constructor for ServiceRequest.
@@ -25,7 +25,7 @@ public class ServiceRequest {
 	 * @param direction the direction selected by the user
 	 * @param origin the system from which the message originated
 	 */
-	public ServiceRequest(LocalTime time, int floorNumber, Direction direction, Origin origin) {
+	public ServiceRequest(LocalTime time, int floorNumber, Direction direction, Thread origin) {
 		this.time = time;
 		this.floorNumber = floorNumber;
 		this.direction = direction;
@@ -80,11 +80,11 @@ public class ServiceRequest {
 	}
 
 	/**
-	 * Returns Origin, an enum representing the Runnable system from which the request came from.
+	 * Returns Origin, a Thread representing the Runnable system from which the request came from.
 	 *
 	 * @return origin, the Runnable system representing the request's origin
 	 */
-	public Origin getOrigin() {
+	public Thread getOrigin() {
 		return origin;
 	}
 
@@ -93,7 +93,7 @@ public class ServiceRequest {
 	 *
 	 * @param origin an enum representing the Runnable system from which the request came from
 	 */
-	public void setOrigin(Origin origin) {
+	public void setOrigin(Thread origin) {
 		this.origin = origin;
 	}
 }

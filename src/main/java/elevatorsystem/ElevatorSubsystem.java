@@ -11,7 +11,6 @@ import misc.*;
 public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-	private Origin origin;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
@@ -20,7 +19,6 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 	 */
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.elevatorSubsystemBuffer = buffer;
-		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
 	/**
@@ -29,9 +27,9 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 	 */
 	public void run() {
 		while(true) {
-			ServiceRequest request = receiveMessage(elevatorSubsystemBuffer, origin);
+			ServiceRequest request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
 			if (request instanceof ElevatorRequest elevatorRequest) {
-				sendMessage(new FloorRequest(elevatorRequest, 1), elevatorSubsystemBuffer, origin);
+				sendMessage(new FloorRequest(elevatorRequest, 1), elevatorSubsystemBuffer, Thread.currentThread());
 				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
 			}
 		}

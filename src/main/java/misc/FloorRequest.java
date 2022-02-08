@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * FloorRequest is an event data structure for when a user presses a FloorButton in an elevator.
  * 
- * @author Liam Tripp, Ramit Mahajan
+ * @author Liam Tripp, Ramit Mahajan, Ryan Dash
  */
 public class FloorRequest extends ServiceRequest {
 
@@ -24,7 +24,7 @@ public class FloorRequest extends ServiceRequest {
 	 * @param elevatorNumber the number of the elevator taking the request
 	 * @param origin the system from which the message originated
 	 */
-	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Origin origin) {
+	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Thread origin) {
 		super(time ,floorNumber, direction, origin);
 		this.elevatorNumber = elevatorNumber;
 	}
