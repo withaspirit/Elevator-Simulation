@@ -49,13 +49,6 @@ public class ElevatorSubsystem implements Runnable {
 	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
 		elevatorSubsystemBuffer.addLast(request, origin);
-
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			System.err.println(e);
-		}
-
 		return true;
 	}
 
@@ -67,12 +60,6 @@ public class ElevatorSubsystem implements Runnable {
 	public ServiceRequest receiveRequest() {
 		ServiceRequest request = elevatorSubsystemBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
-		try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
-			System.err.println(e);
-		}
 		return request;
 	}
 }

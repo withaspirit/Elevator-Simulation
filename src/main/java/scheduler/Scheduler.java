@@ -18,14 +18,14 @@ public class Scheduler implements Runnable {
 	/**
 	 * Constructor for Scheduler
 	 *
-	 * @param buffer1
-	 * @param buffer2
+	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
+	 * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
 	 */
-	public Scheduler(BoundedBuffer buffer1, BoundedBuffer buffer2) {
+	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
-		this.schedulerElevatorsubBuffer = buffer1;
-		this.schedulerFloorsubBuffer = buffer2;
+		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
+		this.floorSubsystemBuffer = floorSubsystemBuffer;
 	}
 
 	/**
@@ -34,25 +34,24 @@ public class Scheduler implements Runnable {
 	 */
 	public void run() {
 		while(true) {
-			ServiceRequest request = receiveRequest(floorSubBuffer);
+			ServiceRequest request = receiveRequest(floorSubsystemBuffer);
 			if (request instanceof ElevatorRequest elevatorRequest){
-				if (sendRequest(elevatorRequest, elevatorSubBuffer)) {
+				if (sendRequest(elevatorRequest, elevatorSubsystemBuffer)) {
 					System.out.println("Scheduler Sent Request to Elevator Successful");
 				} else {
 					System.err.println("Failed Successful");
 				}
 			}
 
-			request = receiveRequest(elevatorSubBuffer);
+			request = receiveRequest(elevatorSubsystemBuffer);
 			if (request instanceof FloorRequest floorRequest){
-				if (sendRequest(floorRequest, floorSubBuffer)) {
+				if (sendRequest(floorRequest, floorSubsystemBuffer)) {
 					System.out.println("Scheduler Sent Request to Elevator Successful");
 				} else {
 					System.err.println("Failed Successful");
 				}
 			}
 		}
-		 */
 	}
 
 	/**
@@ -65,11 +64,6 @@ public class Scheduler implements Runnable {
 	public boolean sendRequest(ServiceRequest request, BoundedBuffer buffer) {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
 		buffer.addLast(request, origin);
-
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-		}
 		return true;
 	}
 
@@ -82,11 +76,6 @@ public class Scheduler implements Runnable {
 	public ServiceRequest receiveRequest(BoundedBuffer buffer) {
 		ServiceRequest request = buffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
-		try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
-		}
 		return request;
 	}
 }

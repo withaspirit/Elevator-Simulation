@@ -49,12 +49,6 @@ public class BoundedBuffer {
         item.setOrigin(origin);
         buffer[inIndex] = item;
         readable = true;
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         inIndex = (inIndex + 1) % SIZE;
         count++;
         if (count == SIZE)
@@ -83,12 +77,6 @@ public class BoundedBuffer {
         item = buffer[outIndex];
         buffer[outIndex] = null;
         writeable = true;
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         outIndex = (outIndex + 1) % SIZE;
         count--;
         if (count == 0)

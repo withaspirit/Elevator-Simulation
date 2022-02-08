@@ -1,9 +1,6 @@
 package floorsystem;
 
-import javax.swing.JButton;
-
 import misc.*;
-import scheduler.Scheduler;
 
 import java.util.ArrayList;
 
@@ -48,6 +45,10 @@ public class FloorSubsystem implements Runnable {
 					System.err.println(Thread.currentThread().getName() + " failed Sending Successful");
 				}
 			}
+			if (receiveRequest() instanceof FloorRequest floorRequest){
+				receive--;
+				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");
+			}
 		}
 		System.exit(0);
 	}
@@ -62,12 +63,6 @@ public class FloorSubsystem implements Runnable {
 		System.out.println(Thread.currentThread().getName() + " sending: " + request);
 		floorSubsystemBuffer.addLast(request, origin);
 		requests.remove(0);
-
-		try {
-			Thread.sleep(800);
-		} catch (InterruptedException e) {
-			System.err.println(e);
-		}
 		return true;
 	}
 
@@ -79,12 +74,6 @@ public class FloorSubsystem implements Runnable {
 	public ServiceRequest receiveRequest() {
 		ServiceRequest request = floorSubsystemBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
-
-		try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
-			System.err.println(e);
-		}
 		return request;
 	}
 }
