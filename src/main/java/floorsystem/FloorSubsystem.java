@@ -42,7 +42,8 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 					System.err.println(Thread.currentThread().getName() + " failed Sending Successful");
 				}
 			}
-			if (receiveMessage(floorSubsystemBuffer) instanceof FloorRequest floorRequest){
+			ServiceRequest request = receiveMessage(floorSubsystemBuffer);
+			if (request instanceof FloorRequest floorRequest){
 				receive--;
 				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");
 			}
