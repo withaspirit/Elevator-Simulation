@@ -35,6 +35,20 @@ public class ElevatorRequest extends ServiceRequest {
 	 * @param time the time the Request was made
 	 * @param floorNumber the number of the floor on which the request was made
 	 * @param direction the direction selected by the user
+	 * @param desiredFloor the floor the user wishes to visit
+	 * @param origin the system from which the message originated
+	 */
+	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction, int desiredFloor, Origin origin) {
+		super(time ,floorNumber, direction, origin);
+		this.desiredFloor = desiredFloor;
+	}
+
+	/**
+	 * Constructor for ElevatorRequest.
+	 *
+	 * @param time the time the Request was made
+	 * @param floorNumber the number of the floor on which the request was made
+	 * @param direction the direction selected by the user
 	 */
 	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction) {
 		super(time, floorNumber, direction);
@@ -47,6 +61,12 @@ public class ElevatorRequest extends ServiceRequest {
 //	}
 
 	// do not use if created from floorRequest
+
+	/**
+	 * Returns the desired floor's number.
+	 *
+	 * @return desiredFloorNumber the number of the desired floor
+	 */
 	public int getDesiredFloor() {
 		return desiredFloor;
 	}

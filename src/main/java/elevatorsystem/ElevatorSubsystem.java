@@ -2,8 +2,6 @@ package elevatorsystem;
 
 import misc.*;
 
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 /**
  * ElevatorSubsystem manages the elevators and their requests to the Scheduler
@@ -12,10 +10,17 @@ import java.time.temporal.TemporalUnit;
  */
 public class ElevatorSubsystem implements Runnable {
 
-	private final BoundedBuffer schedulerElevatorsubBuffer; // Elevator Subsystem - Scheduler link
+	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
+	private Origin origin;
 
+	/**
+	 * Constructor for ElevatorSubsystem.
+	 *
+	 * @param buffer the buffer the ElevatorSubsystem passes messages to and receives messages from
+	 */
 	public ElevatorSubsystem(BoundedBuffer buffer) {
-		this.schedulerElevatorsubBuffer = buffer;
+		this.elevatorSubsystemBuffer = buffer;
+		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
 	/**
@@ -59,14 +64,14 @@ public class ElevatorSubsystem implements Runnable {
 	}
 
 	/**
-	 * Puts the request message into the buffer
+	 * Puts a request into a buffer.
 	 * 
 	 * @param request the message being sent
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean sendRequest(ServiceRequest request) {
 		System.out.println(Thread.currentThread().getName() + " requested for: " + request);
-		schedulerElevatorsubBuffer.addLast(request);
+		elevatorSubsystemBuffer.addLast(request, origin);
 
 		try {
 			Thread.sleep(500);
@@ -78,12 +83,12 @@ public class ElevatorSubsystem implements Runnable {
 	}
 
 	/**
-	 * Removes a ServiceRequest from the Buffer.
+	 * Removes a request from the Buffer.
 	 *
 	 * @return serviceRequest a request by a person on a floor or in an elevator
 	 */
 	public ServiceRequest receiveRequest() {
-		ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
+		ServiceRequest request = elevatorSubsystemBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 
 		try {
@@ -100,7 +105,7 @@ public class ElevatorSubsystem implements Runnable {
 	 * @return true if request is successful, false otherwise
 	 */
 	public boolean receiveRequestBoolean() {
-		ServiceRequest request = schedulerElevatorsubBuffer.removeFirst();
+		ServiceRequest request = elevatorSubsystemBuffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received the request: " + request);
 		if (request instanceof ElevatorRequest elevatorRequest){
 			FloorRequest floorRequest = new FloorRequest(elevatorRequest, 1);
