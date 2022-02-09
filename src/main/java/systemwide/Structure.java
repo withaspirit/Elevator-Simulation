@@ -3,7 +3,6 @@ package systemwide;
 import elevatorsystem.ElevatorSubsystem;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
-import misc.BoundedBuffer;
 
 /**
  * Structure instantiates the overall system.

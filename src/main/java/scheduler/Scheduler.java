@@ -1,6 +1,10 @@
 package scheduler;
 
-import misc.*;
+import requests.ElevatorRequest;
+import requests.FloorRequest;
+import requests.ServiceRequest;
+import requests.ServiceRequestListener;
+import systemwide.BoundedBuffer;
 
 /**
  * Scheduler handles the requests from all system components
