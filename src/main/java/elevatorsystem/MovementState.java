@@ -1,12 +1,12 @@
 package elevatorsystem;
 
 /**
- * MovementState indicates the movement state of the elevator.
+ * MovementState indicates the state of movement activity of the elevator.
  *
  * @author Liam Tripp
  */
 public enum MovementState {
     IDLE,
-    MOVING,
+    ACTIVE,
     STUCK;
 }
