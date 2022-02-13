@@ -64,6 +64,8 @@ public class Structure {
 
 	public static void main(String[] args) {
 
+		Structure structure = new Structure(10, 1);
+
 		Thread scheduler, elevatorSubsystem, floorSubsystem;
 		BoundedBuffer elevatorSubsystemBuffer, floorSubsystemBuffer;
 
