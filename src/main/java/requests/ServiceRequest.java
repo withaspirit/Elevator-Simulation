@@ -10,11 +10,10 @@ import java.time.LocalTime;
  *
  * @author Liam Tripp, Ramit Mahajan, Ryan Dash
  */
-public class ServiceRequest extends Requests{
+public class ServiceRequest extends SystemEvent {
 
 	private final int floorNumber;
 	private Direction direction;
-	private Thread origin;
 
 	/**
 	 * Constructor for ServiceRequest.
@@ -54,5 +53,4 @@ public class ServiceRequest extends Requests{
 	public void setDirection(Direction direction) {
 		this.direction = direction;
 	}
-
 }

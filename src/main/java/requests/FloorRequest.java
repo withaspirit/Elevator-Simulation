@@ -30,27 +30,15 @@ public class FloorRequest extends ServiceRequest {
 	}
 
 	/**
-	 * Constructor for FloorRequest read from an input file.
+	 * Constructor for FloorRequest. Used for button presses within Elevators.
 	 *
 	 * @param time the time the Request was made
 	 * @param floorNumber the number of the floor on which the request was made
 	 * @param direction the direction selected by the user
-	 * @param elevatorNumber the number of the elevator taking the request
+     * @param origin the system from which the message originated
 	 */
-	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber) {
-		super(time ,floorNumber, direction);
-		this.elevatorNumber = elevatorNumber;
-	}
-
-	/**
-	 * Constructor for FloorRequest.
-	 *
-	 * @param time the time the Request was made
-	 * @param floorNumber the number of the floor on which the request was made
-	 * @param direction the direction selected by the user
-	 */
-	public FloorRequest(LocalTime time, int floorNumber, Direction direction) {
-		super(time ,floorNumber, direction);
+	public FloorRequest(LocalTime time, int floorNumber, Direction direction, Thread origin) {
+		super(time ,floorNumber, direction, origin);
 	}
 
 	/**
@@ -61,7 +49,7 @@ public class FloorRequest extends ServiceRequest {
 	 */
 	public FloorRequest(ElevatorRequest elevatorRequest, int elevatorNumber) {
 		this(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
-				elevatorRequest.getDirection(), elevatorNumber);
+				elevatorRequest.getDirection(), elevatorNumber, elevatorRequest.getOrigin());
 		if (getDirection().equals(Direction.UP)){
 			setDirection(Direction.DOWN);
 		} else {
