@@ -72,9 +72,11 @@ public class Structure {
 			elevatorList.add(elevator);
 			elevatorSubsystem.addElevator(elevator);
 		}
+		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
 		for (int i = 0; i < numberOfFloors; i++) {
-			FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
-			floorList.add(new Floor(i));
+			Floor floor = new Floor(i);
+			floorList.add(floor);
+			floorSubsystem.addFloor(floor);
 		}
 		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer);
 	}
