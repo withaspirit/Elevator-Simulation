@@ -26,6 +26,11 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 		requests = inputFileReader.readInputFile("inputs");
 	}
 
+	/**
+	 * Adds a floor to the subsystem's list of floors.
+	 *
+	 * @param floor a floor
+	 */
 	public void addFloor(Floor floor) {
 		floorList.add(floor);
 	}

@@ -24,6 +24,11 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 		this.elevatorSubsystemBuffer = buffer;
 	}
 
+	/**
+	 * Adds an elevator to the subsystem's list of elevators.
+	 *
+	 * @param elevator an elevator
+	 */
 	public void addElevator(Elevator elevator) {
 		elevatorList.add(elevator);
 	}
