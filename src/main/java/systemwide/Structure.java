@@ -1,9 +1,13 @@
 package systemwide;
 
+import elevatorsystem.Elevator;
 import elevatorsystem.ElevatorSubsystem;
+import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
 import misc.BoundedBuffer;
+
+import java.util.ArrayList;
 
 /**
  * Structure instantiates the overall system.
@@ -14,6 +18,8 @@ public class Structure {
 	
 	private int numberOfFloors;
 	private int numberOfElevators;
+	private ArrayList<Elevator> elevatorList;
+	private ArrayList<Floor> floorList;
 
 	/**
 	 * Constructor for Structure.
@@ -54,6 +60,18 @@ public class Structure {
 	}
 
 	/**
+	 * Initializes the Structure. 
+	 */
+	public void initializeStructure() {
+		for (int i = 0; i < numberOfElevators; i++) {
+			elevatorList.add(new Elevator());
+		}
+		for (int i = 0; i < numberOfFloors; i++) {
+			floorList.add(new Floor(i));
+		}
+	}
+
+	/**
 	 * Returns the number of elevators in the structure.
 	 *
 	 * @param numberOfElevators number of elevators
@@ -66,6 +84,7 @@ public class Structure {
 
 		Structure structure = new Structure(10, 1);
 
+		structure.initializeStructure();
 		Thread scheduler, elevatorSubsystem, floorSubsystem;
 		BoundedBuffer elevatorSubsystemBuffer, floorSubsystemBuffer;
 
