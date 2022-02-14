@@ -22,6 +22,7 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 	 */
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.elevatorSubsystemBuffer = buffer;
+		elevatorList = new ArrayList<>();
 	}
 
 	/**

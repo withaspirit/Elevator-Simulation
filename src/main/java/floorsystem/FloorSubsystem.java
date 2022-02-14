@@ -24,6 +24,7 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 		this.floorSubsystemBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
+		floorList = new ArrayList<>();
 	}
 
 	/**
