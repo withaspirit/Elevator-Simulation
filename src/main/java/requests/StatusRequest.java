@@ -1,6 +1,6 @@
 package requests;
 
-public class StatusRequest extends Requests {
+public class StatusRequest extends SystemEvent {
 
     private FloorRequest floorRequest;
     private int elevatorFloor;

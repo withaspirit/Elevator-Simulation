@@ -35,7 +35,7 @@ public class Scheduler implements Runnable, ServiceRequestListener {
 	 */
 	public void run() {
 		while(true) {
-			Requests request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
+			SystemEvent request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
 
 			if (request instanceof ElevatorRequest elevatorRequest){
 				sendMessage(elevatorRequest, elevatorSubsystemBuffer, Thread.currentThread());
@@ -59,10 +59,10 @@ public class Scheduler implements Runnable, ServiceRequestListener {
 		int chosenElevator = 0;
 		for (int i = 0; i < tempNumberOfElevators; i++) {
 			sendMessage(new StatusRequest(floorRequest,Thread.currentThread(), i), floorSubsystemBuffer, Thread.currentThread());
-			Requests request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
+			SystemEvent request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
 			if (request instanceof StatusResponse statusResponse){
 				if (statusResponse.getStatus() == MovementState.IDLE){
-					return new FloorRequest(floorRequest, floorRequest.getElevatorNumber(), Thread.currentThread());
+					return new FloorRequest(floorRequest, floorRequest.getElevatorNumber());
 				}else if (elevatorTime == 0 || elevatorTime > statusResponse.getExpectedTime()){
 					elevatorTime = statusResponse.getExpectedTime();
 					chosenElevator = floorRequest.getElevatorNumber();
@@ -70,6 +70,6 @@ public class Scheduler implements Runnable, ServiceRequestListener {
 			}
 		}
 
-		return new FloorRequest(floorRequest, chosenElevator, Thread.currentThread());
+		return new FloorRequest(floorRequest, chosenElevator);
 	}
 }

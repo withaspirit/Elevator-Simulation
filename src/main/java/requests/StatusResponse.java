@@ -4,7 +4,7 @@ import elevatorsystem.MovementState;
 
 import java.time.LocalTime;
 
-public class StatusResponse extends Requests{
+public class StatusResponse extends SystemEvent{
     private double expectedTime;
     private MovementState status;
 

@@ -31,9 +31,9 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 	 */
 	public void run() {
 		while(true) {
-			Requests request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
+			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
 			if (request instanceof ElevatorRequest elevatorRequest) {
-				sendMessage(new FloorRequest(elevatorRequest, 1, Thread.currentThread()), elevatorSubsystemBuffer, Thread.currentThread());
+				sendMessage(new FloorRequest(elevatorRequest, 1), elevatorSubsystemBuffer, Thread.currentThread());
 				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
 			} else if (request instanceof StatusRequest statusRequest) {
 				if (statusRequest.getElevatorNumber() == elevator.getElevatorNumber()){

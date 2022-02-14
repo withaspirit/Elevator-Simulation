@@ -15,9 +15,9 @@ public interface ServiceRequestListener {
 	 * @param buffer a BoundedBuffer which holds serviceRequests
 	 * @return true if request is successful, false otherwise
 	 */
-	default boolean sendMessage(Requests request, BoundedBuffer buffer, Thread origin) {
-		System.out.println(Thread.currentThread().getName() + " sending: " + request);
-		buffer.addLast(request, origin);
+	default boolean sendMessage(SystemEvent event, BoundedBuffer buffer, Thread origin) {
+		System.out.println(Thread.currentThread().getName() + " sending: " + event);
+		buffer.addLast(event, origin);
 		return true;
 	}
 
@@ -27,8 +27,8 @@ public interface ServiceRequestListener {
 	 * @param buffer a buffer which holds object
 	 * @return object the first object in the buffer
 	 */
-	default Requests receiveMessage(BoundedBuffer buffer, Thread origin) {
-		Requests request = buffer.removeFirst(origin);
+	default SystemEvent receiveMessage(BoundedBuffer buffer, Thread origin) {
+		SystemEvent request = buffer.removeFirst(origin);
 		System.out.println(Thread.currentThread().getName() + " received: " + request);
 		return request;
 	}
