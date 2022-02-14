@@ -5,9 +5,7 @@ import elevatorsystem.ElevatorSubsystem;
 import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
-import misc.BoundedBuffer;
-
-import java.util.ArrayList;
+import systemwide.BoundedBuffer;
 
 /**
  * Structure instantiates the overall system.
