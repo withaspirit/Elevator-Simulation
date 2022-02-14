@@ -1,8 +1,11 @@
 package systemwide;
 
+import elevatorsystem.Elevator;
 import elevatorsystem.ElevatorSubsystem;
+import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
+import systemwide.BoundedBuffer;
 
 /**
  * Structure instantiates the overall system.
@@ -61,22 +64,40 @@ public class Structure {
 		this.numberOfElevators = numberOfElevators;
 	}
 
+	/**
+	 * Initializes the Structure's properties.
+	 */
+	public void initializeStructure() {
+		BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
+		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
+
+		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
+		for (int i = 0; i < numberOfElevators; i++) {
+			Elevator elevator = new Elevator(elevatorSubsystem);
+			elevatorSubsystem.addElevator(elevator);
+		}
+
+		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
+		for (int i = 0; i < numberOfFloors; i++) {
+			Floor floor = new Floor(i);
+			floorSubsystem.addFloor(floor);
+		}
+
+		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer);
+
+		Thread schedulerThread, elevatorSubsystemThread, floorSubsystemThread;
+
+		schedulerThread = new Thread(scheduler, scheduler.getClass().getSimpleName());
+		elevatorSubsystemThread = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
+		floorSubsystemThread = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
+
+		schedulerThread.start();
+		elevatorSubsystemThread.start();
+		floorSubsystemThread.start();
+	}
+
 	public static void main(String[] args) {
-
 		Structure structure = new Structure(10, 1);
-
-		Thread scheduler, elevatorSubsystem, floorSubsystem;
-		BoundedBuffer elevatorSubsystemBuffer, floorSubsystemBuffer;
-
-		elevatorSubsystemBuffer = new BoundedBuffer();
-		floorSubsystemBuffer = new BoundedBuffer();
-
-		scheduler = new Thread(new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer), "Scheduler");
-		elevatorSubsystem = new Thread(new ElevatorSubsystem(elevatorSubsystemBuffer), "Elevator Subsystem");
-		floorSubsystem = new Thread(new FloorSubsystem(floorSubsystemBuffer), "Floor Subsystem");
-
-		scheduler.start();
-		elevatorSubsystem.start();
-		floorSubsystem.start();
+		structure.initializeStructure();
 	}
 }
