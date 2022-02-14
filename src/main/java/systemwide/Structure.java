@@ -60,7 +60,7 @@ public class Structure {
 	}
 
 	/**
-	 * Initializes the Structure.
+	 * Initializes the Structure's properties.
 	 */
 	public void initializeStructure() {
 		BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
@@ -72,13 +72,25 @@ public class Structure {
 			elevatorList.add(elevator);
 			elevatorSubsystem.addElevator(elevator);
 		}
+
 		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
 		for (int i = 0; i < numberOfFloors; i++) {
 			Floor floor = new Floor(i);
 			floorList.add(floor);
 			floorSubsystem.addFloor(floor);
 		}
+
 		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer);
+
+		Thread schedulerThread, elevatorSubsystemThread, floorSubsystemThread;
+
+		schedulerThread = new Thread(scheduler, scheduler.getClass().getSimpleName());
+		elevatorSubsystemThread = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
+		floorSubsystemThread = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
+
+		schedulerThread.start();
+		elevatorSubsystemThread.start();
+		floorSubsystemThread.start();
 	}
 
 	/**
@@ -91,22 +103,7 @@ public class Structure {
 	}
 
 	public static void main(String[] args) {
-
 		Structure structure = new Structure(10, 1);
-
 		structure.initializeStructure();
-		Thread scheduler, elevatorSubsystem, floorSubsystem;
-		BoundedBuffer elevatorSubsystemBuffer, floorSubsystemBuffer;
-
-		elevatorSubsystemBuffer = new BoundedBuffer();
-		floorSubsystemBuffer = new BoundedBuffer();
-
-		scheduler = new Thread(new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer), "Scheduler");
-		elevatorSubsystem = new Thread(new ElevatorSubsystem(elevatorSubsystemBuffer), "Elevator Subsystem");
-		floorSubsystem = new Thread(new FloorSubsystem(floorSubsystemBuffer), "Floor Subsystem");
-
-		scheduler.start();
-		elevatorSubsystem.start();
-		floorSubsystem.start();
 	}
 }
