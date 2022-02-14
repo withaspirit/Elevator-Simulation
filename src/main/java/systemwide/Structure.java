@@ -56,6 +56,15 @@ public class Structure {
 	}
 
 	/**
+	 * Returns the number of elevators in the structure.
+	 *
+	 * @param numberOfElevators number of elevators
+	 */
+	public void setNumberOfElevators(int numberOfElevators) {
+		this.numberOfElevators = numberOfElevators;
+	}
+
+	/**
 	 * Initializes the Structure's properties.
 	 */
 	public void initializeStructure() {
@@ -85,15 +94,6 @@ public class Structure {
 		schedulerThread.start();
 		elevatorSubsystemThread.start();
 		floorSubsystemThread.start();
-	}
-
-	/**
-	 * Returns the number of elevators in the structure.
-	 *
-	 * @param numberOfElevators number of elevators
-	 */
-	public void setNumberOfElevators(int numberOfElevators) {
-		this.numberOfElevators = numberOfElevators;
 	}
 
 	public static void main(String[] args) {
