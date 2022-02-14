@@ -18,8 +18,6 @@ public class Structure {
 	
 	private int numberOfFloors;
 	private int numberOfElevators;
-	private ArrayList<Elevator> elevatorList;
-	private ArrayList<Floor> floorList;
 
 	/**
 	 * Constructor for Structure.
@@ -69,14 +67,12 @@ public class Structure {
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
 		for (int i = 0; i < numberOfElevators; i++) {
 			Elevator elevator = new Elevator(elevatorSubsystem);
-			elevatorList.add(elevator);
 			elevatorSubsystem.addElevator(elevator);
 		}
 
 		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
 		for (int i = 0; i < numberOfFloors; i++) {
 			Floor floor = new Floor(i);
-			floorList.add(floor);
 			floorSubsystem.addFloor(floor);
 		}
 
