@@ -60,15 +60,21 @@ public class Structure {
 	}
 
 	/**
-	 * Initializes the Structure. 
+	 * Initializes the Structure.
 	 */
 	public void initializeStructure() {
+		BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
+		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
+
 		for (int i = 0; i < numberOfElevators; i++) {
+			ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
 			elevatorList.add(new Elevator());
 		}
 		for (int i = 0; i < numberOfFloors; i++) {
+			FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
 			floorList.add(new Floor(i));
 		}
+		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer);
 	}
 
 	/**
