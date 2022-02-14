@@ -46,11 +46,10 @@ public class FloorRequest extends ServiceRequest {
 	 *
 	 * @param elevatorRequest a ServiceRequest for an Elevator made by someone on a Floor
 	 * @param elevatorNumber the number of the elevator
-	 * @param origin the system from which the message originated
 	 */
-	public FloorRequest(ElevatorRequest elevatorRequest, int elevatorNumber, Thread origin) {
+	public FloorRequest(ElevatorRequest elevatorRequest, int elevatorNumber) {
 		this(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
-				elevatorRequest.getDirection(), elevatorNumber, origin);
+				elevatorRequest.getDirection(), elevatorNumber, elevatorRequest.getOrigin());
 		if (getDirection().equals(Direction.UP)){
 			setDirection(Direction.DOWN);
 		} else {
