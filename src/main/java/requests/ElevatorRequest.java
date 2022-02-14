@@ -14,20 +14,6 @@ import java.time.format.DateTimeFormatter;
 public class ElevatorRequest extends ServiceRequest {
 
 	private final int desiredFloor;
-//	private String basicAction;
-
-	/**
-	 * Constructor for ElevatorRequest read from an input file.
-	 *
-	 * @param time the time the Request was made
-	 * @param floorNumber the number of the floor on which the request was made
-	 * @param direction the direction selected by the user
-	 * @param desiredFloor the floor the user wishes to visit
-	 */
-	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction, int desiredFloor) {
-		super(time ,floorNumber, direction);
-		this.desiredFloor = desiredFloor;
-	}
 
 	/**
 	 * Constructor for ElevatorRequest read from an input file.
@@ -42,25 +28,6 @@ public class ElevatorRequest extends ServiceRequest {
 		super(time ,floorNumber, direction, origin);
 		this.desiredFloor = desiredFloor;
 	}
-
-	/**
-	 * Constructor for ElevatorRequest.
-	 *
-	 * @param time the time the Request was made
-	 * @param floorNumber the number of the floor on which the request was made
-	 * @param direction the direction selected by the user
-	 */
-	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction) {
-		super(time, floorNumber, direction);
-		this.desiredFloor = -1; // Error Value
-	}
-
-//	//TODO move to a different class
-//	public ElevatorRequest(String basicAction) {
-//		this.basicAction = basicAction;
-//	}
-
-	// do not use if created from floorRequest
 
 	/**
 	 * Returns the desired floor's number.

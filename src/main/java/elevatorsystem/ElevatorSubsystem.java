@@ -1,10 +1,9 @@
 package elevatorsystem;
 
-import requests.ElevatorRequest;
-import requests.FloorRequest;
-import requests.ServiceRequest;
-import requests.ServiceRequestListener;
+import requests.*;
 import systemwide.BoundedBuffer;
+
+import java.time.LocalTime;
 
 
 /**
@@ -15,6 +14,7 @@ import systemwide.BoundedBuffer;
 public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
+	private Elevator elevator;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
@@ -31,10 +31,15 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 	 */
 	public void run() {
 		while(true) {
-			ServiceRequest request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
+			Requests request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
 			if (request instanceof ElevatorRequest elevatorRequest) {
-				sendMessage(new FloorRequest(elevatorRequest, 1), elevatorSubsystemBuffer, Thread.currentThread());
+				sendMessage(new FloorRequest(elevatorRequest, 1, Thread.currentThread()), elevatorSubsystemBuffer, Thread.currentThread());
 				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+			} else if (request instanceof StatusRequest statusRequest) {
+				if (statusRequest.getElevatorNumber() == elevator.getElevatorNumber()){
+					double expectedTime = elevator.getExpectedTime() + Math.abs(elevator.getElevation() - (statusRequest.getFloorRequest().getFloorNumber()* 4) / 2.67);
+					sendMessage(new StatusResponse(LocalTime.now(), Thread.currentThread(), expectedTime, elevator.getStatus()));
+				}
 			}
 		}
 	}

@@ -1,10 +1,7 @@
 package floorsystem;
 
 import misc.*;
-import requests.ElevatorRequest;
-import requests.FloorRequest;
-import requests.ServiceRequest;
-import requests.ServiceRequestListener;
+import requests.*;
 import systemwide.BoundedBuffer;
 
 import java.util.ArrayList;
@@ -42,7 +39,7 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
 				requests.remove(0);
 			}
-			ServiceRequest request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
+			Requests request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
 			if (request instanceof FloorRequest floorRequest){
 				receive--;
 				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");

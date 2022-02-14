@@ -1,5 +1,6 @@
 package systemwide;
 
+import requests.Requests;
 import requests.ServiceRequest;
 
 /**
@@ -12,7 +13,7 @@ public class BoundedBuffer {
 
     // buffer capacity
     private static final int SIZE = 5;
-    private final ServiceRequest[] buffer = new ServiceRequest[SIZE];
+    private final Requests[] buffer = new Requests[SIZE];
     private int inIndex = 0, outIndex = 0, count = 0;
 
     // If true, there is room for at least one object in the buffer.
@@ -36,7 +37,7 @@ public class BoundedBuffer {
      * @param item a request sent to the buffer
      * @param origin the system from which the request came
      */
-    public synchronized void addLast(ServiceRequest item, Thread origin)
+    public synchronized void addLast(Requests item, Thread origin)
     {
         while (!writeable) {
             try { 
@@ -61,9 +62,9 @@ public class BoundedBuffer {
      *
      * @param origin the system making the request to remove an object from the buffer
      */
-    public synchronized ServiceRequest removeFirst(Thread origin)
+    public synchronized Requests removeFirst(Thread origin)
     {
-        ServiceRequest item;
+        Requests item;
         
         while (!readable || identicalOrigin(buffer[outIndex], origin)) {
             try { 
@@ -93,7 +94,7 @@ public class BoundedBuffer {
      * @param origin the origin of the system attempting to remove an object
      * @return true if successful, false otherwise
      */
-    public boolean identicalOrigin(ServiceRequest request, Thread origin) {
+    public boolean identicalOrigin(Requests request, Thread origin) {
         return origin == request.getOrigin();
     }
 
