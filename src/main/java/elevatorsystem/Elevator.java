@@ -12,6 +12,7 @@ public class Elevator {
 	// private int currentFloor;
 	// private Direction direction;
 	
-	public Elevator() {
+	public Elevator(ElevatorSubsystem elevatorSubsystem) {
+		this.subsystem = elevatorSubsystem;
 	}
 }
