@@ -26,9 +26,9 @@ public class FloorsQueue {
 	 * @param floorNum the number of the floor to be visited
 	 * @param direction the direction the elevator comes to the floor
 	 */
-	public void addFloor(int floorNum, String direction) throws Exception {
+	public void addFloor(int floorNum, String direction){
 		if (floorNum < 0) {
-			throw new Exception("Invalid floor number");
+			throw new RuntimeException("Invalid floor number");
 		}
 		
 		if (direction == "Up") {
@@ -36,7 +36,7 @@ public class FloorsQueue {
 		} else if (direction == "Down") {
 			downwardRequests.add(floorNum);
 		} else {
-			throw new Exception("Direction is invalid");
+			throw new RuntimeException("Direction is invalid");
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class FloorsQueue {
 	 * @param direction the direction the elevator came to the floor
 	 * @return floorVisited the floor that has been visited, -1 if not successful 
 	 */
-	public int visitNextFloor(String direction) throws Exception {
+	public int visitNextFloor(String direction){
 		int floorVisited = -1;
 		
 		if (direction == "Up") {
@@ -58,7 +58,7 @@ public class FloorsQueue {
 				floorVisited = downwardRequests.remove();
 			}
 		} else {
-			throw new Exception("Direction is invalid");
+			throw new RuntimeException("Direction is invalid");
 		}
 		return floorVisited;
 	}
@@ -80,7 +80,7 @@ public class FloorsQueue {
 				nextFloor = downwardRequests.peek();
 			}
 		} else {
-			throw new Exception("Direction is invalid");
+			throw new RuntimeException("Direction is invalid");
 		}
 		return nextFloor;
 	}
