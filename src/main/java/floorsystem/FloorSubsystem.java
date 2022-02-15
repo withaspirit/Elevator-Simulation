@@ -18,6 +18,7 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
+	private ArrayList<Floor> floorList;
 
 	/**
 	 * Constructor for FloorSubsystem.
@@ -28,6 +29,16 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 		this.floorSubsystemBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
+		floorList = new ArrayList<>();
+	}
+
+	/**
+	 * Adds a floor to the subsystem's list of floors.
+	 *
+	 * @param floor a floor
+	 */
+	public void addFloor(Floor floor) {
+		floorList.add(floor);
 	}
 
 	/**
