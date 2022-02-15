@@ -3,7 +3,7 @@ package elevatorsystem;
 import java.util.*;
 
 /**
- * 
+ * Data Structure that manages the floors to visit by the elevator
  * 
  * @author Julian
  */
@@ -12,11 +12,20 @@ public class FloorsQueue {
 	private PriorityQueue<Integer> upwardRequests;
 	private PriorityQueue<Integer> downwardRequests;
 	
+	/**
+	 * Constructor for the class
+	 */
 	public FloorsQueue() {
 		this.upwardRequests =  new PriorityQueue<Integer>();
 		this.downwardRequests =  new PriorityQueue<Integer>(Collections.reverseOrder());
 	}
 
+	/**
+	 * Adds a floor to be visited
+	 * 
+	 * @param floorNum the number of the floor to be visited
+	 * @param direction the direction the elevator comes to the floor
+	 */
 	public void addFloor(int floorNum, String direction) throws Exception {
 		if (floorNum < 0) {
 			throw new Exception("Invalid floor number");
@@ -31,26 +40,58 @@ public class FloorsQueue {
 		}
 	}
 	
-	public int visitNextFloor(String direction) {
+	/**
+	 * Removes the next floor to flag that the floor has been visited
+	 * 
+	 * @param direction the direction the elevator came to the floor
+	 * @return floorVisited the floor that has been visited, -1 if not successful 
+	 */
+	public int visitNextFloor(String direction) throws Exception {
+		int floorVisited = -1;
+		
 		if (direction == "Up") {
-			return upwardRequests.remove();
+			if (!upwardRequests.isEmpty()) {
+				floorVisited = upwardRequests.remove();
+			}
 		} else if (direction == "Down") {
-			return downwardRequests.remove();
+			if (!downwardRequests.isEmpty()) {
+				floorVisited = downwardRequests.remove();
+			}
 		} else {
-			return -1;
+			throw new Exception("Direction is invalid");
 		}
+		return floorVisited;
 	}
 	
-	public int peekNextFloor(String direction) {
+	/**
+	 * Returns the next floor in queue for the direction
+	 * 
+	 * @param direction the direction wanting to peek
+	 * @return nextFloor the next floor in queue, -1 if not successful 
+	 */
+	public int peekNextFloor(String direction) throws Exception {
+		int nextFloor = -1;
 		if (direction == "Up") {
-			return upwardRequests.peek();
+			if (!upwardRequests.isEmpty()) {
+				nextFloor = upwardRequests.peek();
+			}
 		} else if (direction == "Down") {
-			return downwardRequests.peek();
+			if (!downwardRequests.isEmpty()) {
+				nextFloor = downwardRequests.peek();
+			}
 		} else {
-			return -1;
+			throw new Exception("Direction is invalid");
 		}
+		return nextFloor;
 	}
 	
+	/**
+	 * Returns the occupancy status of the queues
+	 * 
+	 * @return status the status of the queues, 
+	 * 		  3 for both not empty, 			2 for downwardRequest not empty,
+	 * 		  1 for upwardRequest not empty, 	0 for both empty 		  
+	 */		
 	public int isEmpty() {
 		int status = 0;
 		
