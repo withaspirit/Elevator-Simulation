@@ -46,30 +46,9 @@ public class Scheduler implements Runnable, ServiceRequestListener {
 			if (request instanceof StatusResponse){
 
 			}else if (request instanceof FloorRequest floorRequest){
-				floorRequest = chooseElevator(floorRequest);
 				sendMessage(floorRequest, floorSubsystemBuffer, Thread.currentThread());
 				System.out.println("Scheduler Sent Request to Elevator Successful");
 			}
 		}
-	}
-
-	public FloorRequest chooseElevator(FloorRequest floorRequest) {
-		int tempNumberOfElevators = 1;
-		double elevatorTime = 0;
-		int chosenElevator = 0;
-		for (int i = 0; i < tempNumberOfElevators; i++) {
-			sendMessage(new StatusRequest(floorRequest,Thread.currentThread(), i), floorSubsystemBuffer, Thread.currentThread());
-			SystemEvent request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
-			if (request instanceof StatusResponse statusResponse){
-				if (statusResponse.getStatus() == MovementState.IDLE){
-					return new FloorRequest(floorRequest, floorRequest.getElevatorNumber());
-				}else if (elevatorTime == 0 || elevatorTime > statusResponse.getExpectedTime()){
-					elevatorTime = statusResponse.getExpectedTime();
-					chosenElevator = floorRequest.getElevatorNumber();
-				}
-			}
-		}
-
-		return new FloorRequest(floorRequest, chosenElevator);
 	}
 }
