@@ -31,10 +31,10 @@ public class BoundedBuffer {
     }
 
     /**
-     * Adds the item to the end of the ring buffer.
+     * Adds a SystemEvent to the end of the ring buffer.
      *
      * @param item a request sent to the buffer
-     * @param origin the system from which the request came
+     * @param origin the thread from which the request came
      */
     public synchronized void addLast(SystemEvent item, Thread origin)
     {
@@ -57,9 +57,9 @@ public class BoundedBuffer {
     }
 
     /**
-     * Removes the first item from the ring buffer
+     * Removes the first SystemEvent from the ring buffer
      *
-     * @param origin the system making the request to remove an object from the buffer
+     * @param origin the thread making the request to remove an object from the buffer
      */
     public synchronized SystemEvent removeFirst(Thread origin)
     {
@@ -89,8 +89,8 @@ public class BoundedBuffer {
     /**
      * Determines whether the request's origin is the same as the provided origin.
      *
-     * @param request the topmost request in the buffer
-     * @param origin the origin of the system attempting to remove an object
+     * @param request the topmost SystemEvent in the buffer
+     * @param origin the thread that is attempting to remove a SystemEvent
      * @return true if successful, false otherwise
      */
     public boolean identicalOrigin(SystemEvent request, Thread origin) {

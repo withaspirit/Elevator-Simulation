@@ -15,7 +15,7 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
-	private ArrayList<Floor> floorList;
+	private final ArrayList<Floor> floorList;
 
 	/**
 	 * Constructor for FloorSubsystem.

@@ -2,8 +2,8 @@ package requests;
 
 public class StatusRequest extends SystemEvent {
 
-    private FloorRequest floorRequest;
-    private int elevatorFloor;
+    private final FloorRequest floorRequest;
+    private final int elevatorFloor;
 
     public StatusRequest(FloorRequest floorRequest, Thread origin, int elevatorFloor) {
         super(floorRequest.getTime(), origin);

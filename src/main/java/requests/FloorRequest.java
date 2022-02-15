@@ -57,10 +57,6 @@ public class FloorRequest extends ServiceRequest {
 		}
 	}
 
-	public FloorRequest(FloorRequest floorRequest, int elevatorNumber) {
-		this(floorRequest.getTime(), floorRequest.getFloorNumber(), floorRequest.getDirection(), elevatorNumber, floorRequest.getOrigin());
-	}
-
 //	//TODO move to a separate class
 //	public FloorRequest(String basicAction) {
 //		this.basicAction = basicAction;

@@ -11,7 +11,7 @@ public interface ServiceRequestListener {
 	/**
 	 * Adds an object to a buffer.
 	 *
-	 * @param request a ServiceRequest which holds a request
+	 * @param event a SystemEvent which holds a request
 	 * @param buffer a BoundedBuffer which holds serviceRequests
 	 * @return true if request is successful, false otherwise
 	 */
@@ -24,8 +24,8 @@ public interface ServiceRequestListener {
 	/**
 	 * Removes and returns an object from a buffer.
 	 *
-	 * @param buffer a buffer which holds object
-	 * @return object the first object in the buffer
+	 * @param buffer a buffer which holds SystemEvents
+	 * @return the first SystemEvent from the buffer
 	 */
 	default SystemEvent receiveMessage(BoundedBuffer buffer, Thread origin) {
 		SystemEvent request = buffer.removeFirst(origin);

@@ -5,8 +5,8 @@ import elevatorsystem.MovementState;
 import java.time.LocalTime;
 
 public class StatusResponse extends SystemEvent{
-    private double expectedTime;
-    private MovementState status;
+    private final double expectedTime;
+    private final MovementState status;
 
     public StatusResponse(LocalTime currentTime, Thread currentThread, double expectedTime, MovementState status) {
         super(currentTime, currentThread);

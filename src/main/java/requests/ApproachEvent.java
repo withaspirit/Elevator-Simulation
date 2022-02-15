@@ -11,7 +11,7 @@ import java.time.LocalTime;
  */
 public class ApproachEvent extends ServiceRequest {
 
-    private int elevatorNumber;
+    private final int elevatorNumber;
     /**
      * Indicates whether an elevator should stop at a floor
      */

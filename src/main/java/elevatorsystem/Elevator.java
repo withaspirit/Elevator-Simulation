@@ -12,12 +12,12 @@ import java.util.*;
  */
 public class Elevator {
 
-    private int elevatorNumber;
-    private int currentFloor;
+    private final int elevatorNumber;
+    private final int currentFloor;
     private Direction currentDirection;
     private MovementState state;
-    private ArrayDeque<Integer> queueDown;
-    private ArrayDeque<Integer> queueUp;
+    private final ArrayDeque<Integer> queueDown;
+    private final ArrayDeque<Integer> queueUp;
     private double queueTime;
     private final double MAX_SPEED = 2.67;
     private final double ACCELERATION = 0.152;

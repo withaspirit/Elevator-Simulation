@@ -6,6 +6,7 @@ import systemwide.Direction;
 
 import java.util.ArrayList;
 
+
 /**
  * ElevatorSubsystem manages the elevators and their requests to the Scheduler
  *
@@ -14,26 +15,26 @@ import java.util.ArrayList;
 public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-	private ArrayList<Elevator> elevatorList;
+	private final ArrayList<Elevator> elevatorList;
 
-    /**
-     * Constructor for ElevatorSubsystem.
-     *
-     * @param buffer the buffer the ElevatorSubsystem passes messages to and receives messages from
-     */
-    public ElevatorSubsystem(BoundedBuffer buffer) {
-        this.elevatorSubsystemBuffer = buffer;
-        elevatorList = new ArrayList<>();
-    }
+	/**
+	 * Constructor for ElevatorSubsystem.
+	 *
+	 * @param buffer the buffer the ElevatorSubsystem passes messages to and receives messages from
+	 */
+	public ElevatorSubsystem(BoundedBuffer buffer) {
+		this.elevatorSubsystemBuffer = buffer;
+		elevatorList = new ArrayList<>();
+	}
 
-    /**
-     * Adds an elevator to the subsystem's list of elevators.
-     *
-     * @param elevator an elevator
-     */
-    public void addElevator(Elevator elevator) {
-        elevatorList.add(elevator);
-    }
+	/**
+	 * Adds an elevator to the subsystem's list of elevators.
+	 *
+	 * @param elevator an elevator
+	 */
+	public void addElevator(Elevator elevator) {
+		elevatorList.add(elevator);
+	}
 
     /**
      * Returns an elevator number corresponding to an elevator that is

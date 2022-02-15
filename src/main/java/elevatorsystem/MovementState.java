@@ -8,5 +8,5 @@ package elevatorsystem;
 public enum MovementState {
     IDLE,
     ACTIVE,
-    STUCK;
+    STUCK
 }
