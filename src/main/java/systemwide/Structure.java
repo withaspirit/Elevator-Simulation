@@ -10,7 +10,7 @@ import systemwide.BoundedBuffer;
 /**
  * Structure instantiates the overall system.
  * 
- * @author Liam Tripp, Julian
+ * @author Liam Tripp, Julian, Ryan Dash
  */
 public class Structure {
 	
@@ -71,15 +71,18 @@ public class Structure {
 		BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
 		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
+		numberOfElevators = 2;
+		numberOfFloors = 10;
+
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
-		for (int i = 0; i < numberOfElevators; i++) {
-			Elevator elevator = new Elevator(elevatorSubsystem);
+		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
+			Elevator elevator = new Elevator(elevatorNumber);
 			elevatorSubsystem.addElevator(elevator);
 		}
 
 		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
-		for (int i = 0; i < numberOfFloors; i++) {
-			Floor floor = new Floor(i);
+		for (int floorNumber = 0; floorNumber < numberOfFloors; floorNumber++) {
+			Floor floor = new Floor(floorNumber);
 			floorSubsystem.addFloor(floor);
 		}
 

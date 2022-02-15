@@ -1,29 +1,30 @@
 package elevatorsystem;
 
 import requests.ElevatorRequest;
+import systemwide.Direction;
 
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Elevator is a model for simulating an elevator.
  *
- * @author Liam Tripp
+ * @author Liam Tripp, Ryan Dash
  */
 public class Elevator {
 
     private int elevatorNumber;
     private int currentFloor;
+    private Direction currentDirection;
     private MovementState state;
-    private PriorityQueue<Integer> queue;
+    private ArrayDeque<Integer> queueDown;
+    private ArrayDeque<Integer> queueUp;
     private double queueTime;
     private final double MAX_SPEED = 2.67;
     private final double ACCELERATION = 0.152;
-    private final int ACCELERATION_TIME = 0; //TODO need to determine time of acceleration
-    private final int ACCELERATION_DISTANCE = 0; //TODO need to determine distance at which elevator stops accelerating
+    private final double ACCELERATION_TIME = 1.12; //TODO need to determine time of acceleration
+    private final double ACCELERATION_DISTANCE = 3.0; //TODO need to determine distance at which elevator stops accelerating
     private final double LOADING_TIME = 9.50;
-    private final int floorSeparation = 4;
-
-    // private Direction direction;
+    private final double floorSeparation = 4.0;
 
 	/**
 	 * Main Constructor for Elevator Class.
@@ -33,18 +34,11 @@ public class Elevator {
     public Elevator(int elevatorNumber) {
         this.elevatorNumber = elevatorNumber;
         currentFloor = 0;
+        currentDirection = Direction.STOP;
         state = MovementState.IDLE;
-        queue = new PriorityQueue<>();
+        queueDown = new ArrayDeque<>();
+        queueUp = new ArrayDeque<>();
         queueTime = 0;
-    }
-
-    /**
-     * Gets the state of the elevator
-     *
-     * @return the current state of the elevator.
-     */
-    public MovementState getState() {
-        return state;
     }
 
     /**
@@ -57,6 +51,24 @@ public class Elevator {
     }
 
     /**
+     * Gets the current elevator's moving direction.
+     *
+     * @return a Direction corresponding to the elevator's moving direction
+     */
+    public Direction getCurrentDirection() {
+        return currentDirection;
+    }
+
+    /**
+     * Gets the state of the elevator
+     *
+     * @return the current state of the elevator.
+     */
+    public MovementState getState() {
+        return state;
+    }
+
+    /**
      * Adds the expected time it will take for the elevator to perform the
 	 * elevator request to the queueTime and adds a request to the queue.
      *
@@ -64,23 +76,65 @@ public class Elevator {
      */
     public void addRequest(ElevatorRequest elevatorRequest) {
         queueTime = getExpectedTime(elevatorRequest);
-        queue.add(elevatorRequest.getDesiredFloor());
+        if (queueDown.isEmpty() && queueUp.isEmpty()){
+            currentDirection = elevatorRequest.getDirection();
+        }
+
+        int tempDesiredFloor = elevatorRequest.getDesiredFloor();
+        if (elevatorRequest.getDirection() == Direction.UP) {
+            if (currentDirection == Direction.UP && !queueUp.isEmpty()){
+                if (tempDesiredFloor < queueUp.peek() && tempDesiredFloor > currentFloor){
+                    queueUp.addFirst(tempDesiredFloor);
+                }
+            }
+            queueUp.addLast(tempDesiredFloor);
+        } else if (elevatorRequest.getDirection() == Direction.DOWN) {
+            if (currentDirection == Direction.DOWN && !queueDown.isEmpty()){
+                if (tempDesiredFloor < currentFloor && tempDesiredFloor > queueDown.peek()){
+                    queueDown.addFirst(tempDesiredFloor);
+                }
+            }
+            queueDown.addLast(tempDesiredFloor);
+        } else {
+            System.err.println("Invalid Direction in elevator request");
+        }
+        System.out.println("\nElevator #" + elevatorNumber + " QueueUP# "+ queueUp.size()+ " QueueDOWN# "+ queueDown.size()+"\n");
+        state = MovementState.ACTIVE;
     }
 
 	/**
-	 * Returns the total expected time that the elevator will need to take to
+	 * Gets the total expected time that the elevator will need to take to
 	 * perform its current requests along with the new elevatorRequest.
 	 *
 	 * @param elevatorRequest an elevator request from the floorSubsystem
 	 * @return a double containing the elevator's total expected queue time
 	 */
     public double getExpectedTime(ElevatorRequest elevatorRequest) {
-		int distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * floorSeparation;
-		double expectedTime = queueTime + LOADING_TIME;
-		if (distance > ACCELERATION_DISTANCE * 2) {
-			return expectedTime + (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
-		} else {
-			return expectedTime + Math.sqrt(distance * 2 / ACCELERATION);
-		}
+		return queueTime + LOADING_TIME + requestTime(elevatorRequest);
+    }
+
+    /**
+     * Gets the expected time of a new request for the current elevator
+     * based on distance.
+     *
+     * @param elevatorRequest an elevatorRequest from a floor
+     * @return a double containing the time to fulfil the request
+     */
+    public double requestTime(ElevatorRequest elevatorRequest) {
+        double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * floorSeparation;
+        if (distance > ACCELERATION_DISTANCE * 2) {
+            return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
+        } else {
+            return Math.sqrt(distance * 2 / ACCELERATION);
+        }
+    }
+
+    /**
+     * Gets the current elevator's floor number.
+     *
+     * @return the current floor number of the elevator
+     */
+    public int getCurrentFloor() {
+        return currentFloor;
     }
 }

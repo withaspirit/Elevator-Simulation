@@ -1,16 +1,10 @@
 package elevatorsystem;
 
-import requests.ElevatorRequest;
-import requests.FloorRequest;
-import requests.ServiceRequest;
-import requests.ServiceRequestListener;
+import requests.*;
 import systemwide.BoundedBuffer;
+import systemwide.Direction;
 
 import java.util.ArrayList;
-
-import java.time.LocalTime;
-import java.util.ArrayList;
-
 
 /**
  * ElevatorSubsystem manages the elevators and their requests to the Scheduler
@@ -21,27 +15,7 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
 	private ArrayList<Elevator> elevatorList;
-    private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-    private ArrayList<Elevator> elevatorList;
 
-	/**
-	 * Constructor for ElevatorSubsystem.
-	 *
-	 * @param buffer the buffer the ElevatorSubsystem passes messages to and receives messages from
-	 */
-	public ElevatorSubsystem(BoundedBuffer buffer) {
-		this.elevatorSubsystemBuffer = buffer;
-		elevatorList = new ArrayList<>();
-	}
-
-	/**
-	 * Adds an elevator to the subsystem's list of elevators.
-	 *
-	 * @param elevator an elevator
-	 */
-	public void addElevator(Elevator elevator) {
-		elevatorList.add(elevator);
-	}
     /**
      * Constructor for ElevatorSubsystem.
      *
@@ -61,9 +35,19 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
         elevatorList.add(elevator);
     }
 
+    /**
+     * Returns an elevator number corresponding to an elevator that is
+     * best suited to perform the given ElevatorRequest based on
+     * expected time to fulfill the request and direction of elevator.
+     *
+     * @param elevatorRequest an ElevatorRequest
+     * @return a number corresponding to an elevator
+     */
     public int chooseElevator(ElevatorRequest elevatorRequest) {
-        double elevatorTime = 0.0;
-        int chosenElevator = 0;
+        double elevatorBestExpectedTime = 0.0;
+        double elevatorWorstExpectedTime = 0.0;
+        int chosenBestElevator = 0;
+        int chosenWorstElevator = 0;
         for (Elevator elevator : elevatorList) {
 //			sendMessage(new StatusRequest(elevatorRequest,Thread.currentThread(), i), elevatorSubsystemBuffer, Thread.currentThread());
 //			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
@@ -74,12 +58,31 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
             } else if (elevator.getState() == MovementState.STUCK) {
                 System.err.println("Elevator is stuck");
 
-            } else if (elevatorTime == 0 || elevatorTime > tempExpectedTime) {
-                elevatorTime = tempExpectedTime;
-                chosenElevator = elevator.getElevatorNumber();
+            } else if (elevator.getCurrentDirection() == elevatorRequest.getDirection()) {
+                if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()){
+                    if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime){
+                        elevatorBestExpectedTime = tempExpectedTime;
+                        chosenBestElevator = elevator.getElevatorNumber();
+                    }
+
+                } else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
+                    if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
+                        elevatorBestExpectedTime = tempExpectedTime;
+                        chosenBestElevator = elevator.getElevatorNumber();
+                    }
+                }
+
+            } else {
+                if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime){
+                    elevatorWorstExpectedTime = tempExpectedTime;
+                    chosenBestElevator = elevator.getElevatorNumber();
+                }
             }
         }
-        return chosenElevator;
+        if (chosenBestElevator == 0){
+            chosenBestElevator = chosenWorstElevator;
+        }
+        return chosenBestElevator;
     }
 
     /**
@@ -90,7 +93,7 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
             SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
             if (request instanceof ElevatorRequest elevatorRequest) {
 				int chosenElevator = chooseElevator(elevatorRequest);
-				elevatorList.get(chosenElevator).addRequest(elevatorRequest);
+				elevatorList.get(chosenElevator-1).addRequest(elevatorRequest);
 				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
                 System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
             } else if (request instanceof StatusRequest statusRequest) {
