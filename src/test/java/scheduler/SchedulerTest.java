@@ -31,7 +31,7 @@ class SchedulerTest {
     @BeforeEach
     void setUp() {
         // Request
-        serviceRequest = new ServiceRequest(LocalTime.NOON, 1, Direction.UP);
+        serviceRequest = new ServiceRequest(LocalTime.NOON, 1, Direction.UP, floorThreadSubsystem);
 
         // Set up buffers
         elevatorBuffer = new BoundedBuffer();
