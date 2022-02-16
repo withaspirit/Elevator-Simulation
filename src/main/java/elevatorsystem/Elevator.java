@@ -44,8 +44,8 @@ public class Elevator {
 	 *
 	 * @param subsystem
 	 */
-	public Elevator(ElevatorSubsystem subsystem) {
-		this.subsystem = subsystem;
+	public Elevator(ElevatorSubsystem elevatorSubsystem) {
+		this.subsystem = elevatorSubsystem;
 		currentFloor = 1;
 		speed = ACCELERATION;
 		displacement = 0;
