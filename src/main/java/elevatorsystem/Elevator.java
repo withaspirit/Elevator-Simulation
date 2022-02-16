@@ -13,9 +13,9 @@ import java.util.*;
 public class Elevator {
 
     private final int elevatorNumber;
+    private final ElevatorMotor elevatorMotor;
     private final int currentFloor;
     private Direction currentDirection;
-    private MovementState state;
     private final ArrayDeque<Integer> queueDown;
     private final ArrayDeque<Integer> queueUp;
     private double queueTime;
@@ -33,9 +33,9 @@ public class Elevator {
 	 */
     public Elevator(int elevatorNumber) {
         this.elevatorNumber = elevatorNumber;
+        elevatorMotor = new ElevatorMotor();
         currentFloor = 0;
         currentDirection = Direction.STOP;
-        state = MovementState.IDLE;
         queueDown = new ArrayDeque<>();
         queueUp = new ArrayDeque<>();
         queueTime = 0;
@@ -59,14 +59,6 @@ public class Elevator {
         return currentDirection;
     }
 
-    /**
-     * Gets the state of the elevator
-     *
-     * @return the current state of the elevator.
-     */
-    public MovementState getState() {
-        return state;
-    }
 
     /**
      * Adds the expected time it will take for the elevator to perform the
@@ -99,7 +91,7 @@ public class Elevator {
             System.err.println("Invalid Direction in elevator request");
         }
         System.out.println("\nElevator #" + elevatorNumber + " QueueUP# "+ queueUp.size()+ " QueueDOWN# "+ queueDown.size()+"\n");
-        state = MovementState.ACTIVE;
+        elevatorMotor.setMovementState(MovementState.ACTIVE);
     }
 
 	/**
@@ -136,5 +128,9 @@ public class Elevator {
      */
     public int getCurrentFloor() {
         return currentFloor;
+    }
+
+    public MovementState getState() {
+        return elevatorMotor.getMovementState();
     }
 }
