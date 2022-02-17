@@ -63,16 +63,16 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
                 System.err.println("Elevator is stuck");
 
             } else if (elevator.getCurrentDirection() == elevatorRequest.getDirection()) {
-                if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
-                    if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
+                if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
+                    if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
                         elevatorBestExpectedTime = tempExpectedTime;
                         chosenBestElevator = elevator.getElevatorNumber();
-                    }
 
-                } else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
-                    if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
+                    } else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
                         elevatorBestExpectedTime = tempExpectedTime;
                         chosenBestElevator = elevator.getElevatorNumber();
+                    } else {
+                        // Add to the third queue of the elevator
                     }
                 }
 
