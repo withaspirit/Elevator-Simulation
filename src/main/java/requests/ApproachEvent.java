@@ -33,13 +33,24 @@ public class ApproachEvent extends ServiceRequest {
     }
 
     /**
-     * Constructor for ApproachRequest using a FloorRequest
+     * Constructor for ApproachEvent using a FloorRequest.
      *
      * @param floorRequest the floorRequest for which the approachRequest is made
      */
     public ApproachEvent(FloorRequest floorRequest) {
-        this(floorRequest.getTime(), floorRequest.getFloorNumber(), floorRequest.getDirection(),
-                Thread.currentThread(), floorRequest.getElevatorNumber());
+        this(floorRequest.getTime(), floorRequest.getFloorNumber(),
+                floorRequest.getDirection(), Thread.currentThread(), floorRequest.getElevatorNumber());
+    }
+
+    /**
+     * Constructor for ApproachEvent using an ElevatorRequest.
+     *
+     * @param elevatorRequest the request for which the approachEvent is made
+     * @param elevatorNumber the number of the Elevator servicing the ApproachEvent
+     */
+    public ApproachEvent(ElevatorRequest elevatorRequest, int elevatorNumber) {
+        this(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
+                elevatorRequest.getDirection(), Thread.currentThread(), elevatorNumber);
     }
 
     /**
