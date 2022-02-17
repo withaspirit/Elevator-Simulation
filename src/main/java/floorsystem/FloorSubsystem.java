@@ -1,10 +1,7 @@
 package floorsystem;
 
 import misc.*;
-import requests.ElevatorRequest;
-import requests.FloorRequest;
-import requests.ServiceRequest;
-import requests.ServiceRequestListener;
+import requests.*;
 import systemwide.BoundedBuffer;
 
 import java.util.ArrayList;
@@ -43,6 +40,9 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 
 	/**
 	 * Simple message requesting and sending between subsystems.
+	 * FloorSubsystem
+	 * Sends: ApproachEvent, ElevatorRequest
+	 * Receives: ApproachEvent
 	 */
 	public void run() {
 		int receive = requests.size();
@@ -57,6 +57,8 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 			if (request instanceof FloorRequest floorRequest){
 				receive--;
 				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");
+			} else if (request instanceof ApproachEvent approachEvent) {
+				// pass to floorList.get((approachEvent.getFloorNumber());
 			}
 		}
 	}

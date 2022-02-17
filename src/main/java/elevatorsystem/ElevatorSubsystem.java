@@ -1,9 +1,6 @@
 package elevatorsystem;
 
-import requests.ElevatorRequest;
-import requests.FloorRequest;
-import requests.ServiceRequest;
-import requests.ServiceRequestListener;
+import requests.*;
 import systemwide.BoundedBuffer;
 
 import java.util.ArrayList;
@@ -40,7 +37,9 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 
 	/**
 	 * Simple message requesting and sending between subsystems.
-	 * 
+	 * ElevatorSubsystem
+	 * Sends: ApproachEvent
+	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
 		while(true) {
@@ -48,6 +47,8 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 			if (request instanceof ElevatorRequest elevatorRequest) {
 				sendMessage(new FloorRequest(elevatorRequest, 1), elevatorSubsystemBuffer, Thread.currentThread());
 				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+			} else if (request instanceof ApproachEvent approachEvent) {
+				// pass to ElevatorRequest
 			}
 		}
 	}
