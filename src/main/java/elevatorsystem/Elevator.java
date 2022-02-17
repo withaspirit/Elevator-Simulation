@@ -57,8 +57,7 @@ public class Elevator {
 	 *
 	 * @return total time it will take to stop as a float
 	 */
-	public float stopTime()
-	{
+	public float stopTime() {
 		float numerator = 0 - speed;
 		return numerator / ACCELERATION;
 	}
@@ -87,15 +86,18 @@ public class Elevator {
 	 *
 	 * @return true if elevator is moving
 	 */
-	public boolean isActive(){ return status.equals(MovementState.ACTIVE); }
-
+	public boolean isActive(){
+		return status.equals(MovementState.ACTIVE);
+	}
 
 	/**
 	 * Gets the current floor the elevator is on
 	 *
 	 * @return the current floor as an int
 	 */
-	public int getCurrentFloor() { return currentFloor; }
+	public int getCurrentFloor() {
+		return currentFloor;
+	}
 
 	/**
 	 * Sets the currentFloor that the elevator is on
@@ -106,13 +108,14 @@ public class Elevator {
 		this.currentFloor = currentFloor;
 	}
 
-
 	/**
 	 * Gets the Direction the elevator is heading
 	 *
 	 * @return Direction
 	 */
-	public Direction getDirection(){ return direction; }
+	public Direction getDirection(){
+		return direction;
+	}
 
 	/**
 	 * Sets the direction of the elevator
@@ -123,27 +126,31 @@ public class Elevator {
 		this.direction = direction;
 	}
 
-
 	/**
 	 * Gets the speed of the elevator
 	 *
 	 * @return the speed as a float
 	 */
-	public float getSpeed(){ return speed; }
+	public float getSpeed(){
+		return speed;
+	}
 
 	/**
 	 * Sets the speed of the elevator
 	 * @param speed
 	 */
-	public void setSpeed(float speed) { this.speed = speed; }
-
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
 
 	/**
 	 * Gets the displacement that the elevator has moved on the current floor
 	 *
 	 * @return displacement of elevator as float
 	 */
-	public float getFloorDisplacement(){return displacement;}
+	public float getFloorDisplacement(){
+		return displacement;
+	}
 
 	/**
 	 * Sets the displacement the elevator for the current floor
@@ -153,4 +160,5 @@ public class Elevator {
 	public void setFloorDisplacement(float displacement) {
 		this.displacement = displacement;
 	}
+
 }
