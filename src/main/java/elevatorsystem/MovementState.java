@@ -1,5 +1,7 @@
 package elevatorsystem;
 
+import java.util.Locale;
+
 /**
  * MovementState indicates the state of movement activity of the elevator.
  *
@@ -35,8 +37,12 @@ public enum MovementState {
      * @return the MovementState and it's name
      */
     public static MovementState getState(String s) {
-        if ("IDLE".equals(s)) {return IDLE;}
-        else if ("ACTIVE".equals(s)) {return ACTIVE;}
-        else {return STUCK;}
+        try{
+            return valueOf(s.trim().toUpperCase());
+        } catch (IllegalArgumentException e){
+            System.out.println("State does not exist");
+            e.printStackTrace();
+            return null;
+        }
     }
 }

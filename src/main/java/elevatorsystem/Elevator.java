@@ -36,7 +36,7 @@ public class Elevator {
 	private Direction direction = Direction.UP;
 	private float speed;
 	private float displacement;
-	private int elevatorNumber;
+	//private int elevatorNumber;
 
 	/**
 	 * Constructor for Elevator class
@@ -53,57 +53,22 @@ public class Elevator {
 	}
 
 	/**
-	 * Getter for the current floor the elevator is on
-	 *
-	 * @return the current floor as an int
-	 */
-	public int getFloor() { return currentFloor; }
-
-	/**
-	 * Getter for the speed of the elevator
-	 *
-	 * @return the speed as a float
-	 */
-	public float getSpeed(){ return speed; }
-
-	/**
-	 * Getter for the Direction the elevator is heading
-	 *
-	 * @return Direction
-	 */
-	public Direction getDirection(){ return direction; }
-
-	/**
-	 * Getter for the elevator state
-	 *
-	 * @return
-	 */
-	public MovementState getElevatorState(){ return status; }
-
-	/**
-	 * Getter for the displacement that the elevator has moved on the current floor
-	 *
-	 * @return displacement of elevator as float
-	 */
-	public float getFloorDisplacement(){return displacement;}
-
-	/**
 	 * Calculates the amount of time it will take for the elevator to stop at it's current speed
 	 *
 	 * @return total time it will take to stop as a float
 	 */
-	public synchronized float stopTime()
+	public float stopTime()
 	{
 		float numerator = 0 - speed;
 		return numerator / ACCELERATION;
 	}
 
 	/**
-	 * Getter for the distance until the next floor as a float
+	 * Gets the distance until the next floor as a float
 	 *
 	 * @return distance until next floor
 	 */
-	public synchronized float getDistanceUntilNextFloor(){
+	public float getDistanceUntilNextFloor(){
 		float distance = 0;
 		float stopTime = stopTime();
 
@@ -118,16 +83,22 @@ public class Elevator {
 	}
 
 	/**
-	 * Setter for elevator status
+	 * Checks if the elevator is currently active (in motion)
 	 *
-	 * @param status the status to set the elevator as
+	 * @return true if elevator is moving
 	 */
-	public void setStatus(MovementState status) {
-		this.status = status;
-	}
+	public boolean isActive(){ return status.equals(MovementState.ACTIVE); }
+
 
 	/**
-	 * Setter for the currentFloor that the elevator is on
+	 * Gets the current floor the elevator is on
+	 *
+	 * @return the current floor as an int
+	 */
+	public int getCurrentFloor() { return currentFloor; }
+
+	/**
+	 * Sets the currentFloor that the elevator is on
 	 *
 	 * @param currentFloor the floor to set the elevator on
 	 */
@@ -135,8 +106,16 @@ public class Elevator {
 		this.currentFloor = currentFloor;
 	}
 
+
 	/**
-	 * Setter for the direction of the elevator
+	 * Gets the Direction the elevator is heading
+	 *
+	 * @return Direction
+	 */
+	public Direction getDirection(){ return direction; }
+
+	/**
+	 * Sets the direction of the elevator
 	 *
 	 * @param direction the elevator will be moving
 	 */
@@ -144,20 +123,34 @@ public class Elevator {
 		this.direction = direction;
 	}
 
-	/**
-	 * Setter for the speed of the elevator
-	 * @param speed
-	 */
-	public void setSpeed(float speed) {
-		this.speed = speed;
-	}
 
 	/**
-	 * Setter for the displacement the elevator for the current floor
+	 * Gets the speed of the elevator
+	 *
+	 * @return the speed as a float
+	 */
+	public float getSpeed(){ return speed; }
+
+	/**
+	 * Sets the speed of the elevator
+	 * @param speed
+	 */
+	public void setSpeed(float speed) { this.speed = speed; }
+
+
+	/**
+	 * Gets the displacement that the elevator has moved on the current floor
+	 *
+	 * @return displacement of elevator as float
+	 */
+	public float getFloorDisplacement(){return displacement;}
+
+	/**
+	 * Sets the displacement the elevator for the current floor
 	 *
 	 * @param displacement the displacement of the elevator as a float
 	 */
-	public void setDisplacement(float displacement) {
+	public void setFloorDisplacement(float displacement) {
 		this.displacement = displacement;
 	}
 }
