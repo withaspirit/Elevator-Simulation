@@ -38,6 +38,8 @@ public class FloorsQueue {
 		} else {
 			throw new RuntimeException("Direction is invalid");
 		}
+
+		System.out.println("\nFloor #" + floorNum + " QueueUP# "+ upwardRequests.size()+ " QueueDOWN# "+ downwardRequests.size()+"\n");
 	}
 
 	/**

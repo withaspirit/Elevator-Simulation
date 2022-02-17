@@ -32,7 +32,7 @@ public class Elevator {
 	private ElevatorMotor motor;
 	private Direction currentDirection;
 	private double queueTime;
-	private LinkedList<Integer> queueDown, queueUp;
+	private FloorsQueue floorsQueue;
 
 	/**
 	 * Constructor for Elevator class
@@ -48,8 +48,7 @@ public class Elevator {
 		currentDirection = Direction.STOP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
-		queueDown = new LinkedList<>();
-		queueUp = new LinkedList<>();
+		floorsQueue = new FloorsQueue();
 	}
 
 	/**
@@ -169,29 +168,30 @@ public class Elevator {
      */
     public void addRequest(ElevatorRequest elevatorRequest) {
 		queueTime = getExpectedTime(elevatorRequest);
-        if (queueDown.isEmpty() && queueUp.isEmpty()){
+        if (floorsQueue.isEmpty() == 0){
             currentDirection = elevatorRequest.getDirection();
         }
 
         int tempDesiredFloor = elevatorRequest.getDesiredFloor();
         if (elevatorRequest.getDirection() == Direction.UP) {
-            if (currentDirection == Direction.UP && !queueUp.isEmpty()){
-                if (tempDesiredFloor < queueUp.peek() && tempDesiredFloor > currentFloor){
-                    queueUp.addFirst(tempDesiredFloor);
+            if (currentDirection == Direction.UP && floorsQueue.isEmpty() == 1){
+                if (tempDesiredFloor < floorsQueue.peekNextFloor(currentDirection.getName()) && tempDesiredFloor > currentFloor){
+                    floorsQueue.addFloor(tempDesiredFloor, currentDirection.getName());
                 }
             }
-            queueUp.addLast(tempDesiredFloor);
+			floorsQueue.addFloor(tempDesiredFloor, currentDirection.getName());
+            //queueUp.addLast(tempDesiredFloor);
         } else if (elevatorRequest.getDirection() == Direction.DOWN) {
-            if (currentDirection == Direction.DOWN && !queueDown.isEmpty()){
-                if (tempDesiredFloor < currentFloor && tempDesiredFloor > queueDown.peek()){
-                    queueDown.addFirst(tempDesiredFloor);
+            if (currentDirection == Direction.DOWN && floorsQueue.isEmpty() == 2){
+                if (tempDesiredFloor > floorsQueue.peekNextFloor(currentDirection.getName()) && tempDesiredFloor < currentFloor){
+					floorsQueue.addFloor(tempDesiredFloor, currentDirection.getName());
                 }
             }
-            queueDown.addLast(tempDesiredFloor);
+			floorsQueue.addFloor(tempDesiredFloor, currentDirection.getName());
+            //queueDown.addLast(tempDesiredFloor);
         } else {
             System.err.println("Invalid Direction in elevator request");
         }
-        System.out.println("\nElevator #" + elevatorNumber + " QueueUP# "+ queueUp.size()+ " QueueDOWN# "+ queueDown.size()+"\n");
         motor.setMovementState(MovementState.ACTIVE);
     }
 
