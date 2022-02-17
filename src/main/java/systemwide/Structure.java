@@ -5,7 +5,6 @@ import elevatorsystem.ElevatorSubsystem;
 import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
-import systemwide.BoundedBuffer;
 
 /**
  * Structure instantiates the overall system.
@@ -72,8 +71,8 @@ public class Structure {
 		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
-		for (int i = 0; i < numberOfElevators; i++) {
-			Elevator elevator = new Elevator(elevatorSubsystem);
+		for (int elevatorNumber = 0; elevatorNumber < numberOfElevators; elevatorNumber++) {
+			Elevator elevator = new Elevator(elevatorNumber);
 			elevatorSubsystem.addElevator(elevator);
 		}
 
