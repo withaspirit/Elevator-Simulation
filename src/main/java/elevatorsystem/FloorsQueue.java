@@ -1,6 +1,7 @@
 package elevatorsystem;
 
 import java.util.*;
+import systemwide.Direction;
 
 /**
  * Data Structure that manages the floors to visit by the elevator
@@ -31,9 +32,9 @@ public class FloorsQueue {
 			throw new RuntimeException("Invalid floor number");
 		}
 
-		if (direction == "Up") {
+		if (direction == Direction.UP.getName()) {
 			upwardRequests.add(floorNum);
-		} else if (direction == "Down") {
+		} else if (direction == Direction.DOWN.getName()) {
 			downwardRequests.add(floorNum);
 		} else {
 			throw new RuntimeException("Direction is invalid");
@@ -49,11 +50,11 @@ public class FloorsQueue {
 	public int visitNextFloor(String direction) {
 		int floorVisited = -1;
 
-		if (direction == "Up") {
+		if (direction == Direction.UP.getName()) {
 			if (!upwardRequests.isEmpty()) {
 				floorVisited = upwardRequests.remove();
 			}
-		} else if (direction == "Down") {
+		} else if (direction == Direction.DOWN.getName()) {
 			if (!downwardRequests.isEmpty()) {
 				floorVisited = downwardRequests.remove();
 			}
@@ -71,11 +72,11 @@ public class FloorsQueue {
 	 */
 	public int peekNextFloor(String direction) {
 		int nextFloor = -1;
-		if (direction == "Up") {
+		if (direction == Direction.UP.getName()) {
 			if (!upwardRequests.isEmpty()) {
 				nextFloor = upwardRequests.peek();
 			}
-		} else if (direction == "Down") {
+		} else if (direction == Direction.DOWN.getName()) {
 			if (!downwardRequests.isEmpty()) {
 				nextFloor = downwardRequests.peek();
 			}
