@@ -176,7 +176,19 @@ public class Elevator {
             currentDirection = elevatorRequest.getDirection();
         }
 		System.out.print("Elevator# " + elevatorNumber + " ");
-		floorsQueue.addFloor(elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
+		int desiredFloor =  elevatorRequest.getDesiredFloor();
+		Direction requestDirection = elevatorRequest.getDirection();
+
+		if (desiredFloor >= currentFloor && desiredFloor < floorsQueue.peekNextFloor(currentDirection)){
+			floorsQueue.addFloor(elevatorRequest.getDesiredFloor(), requestDirection);
+			// Add request to the up queue
+		} else if (desiredFloor <= currentFloor && desiredFloor > floorsQueue.peekNextFloor(currentDirection)){
+			floorsQueue.addFloor(elevatorRequest.getDesiredFloor(), requestDirection);
+			// Add request to the down queue
+		} else {
+			floorsQueue.addFloor(elevatorRequest.getDesiredFloor(), requestDirection);
+			// Add to third queue
+		}
         motor.setMovementState(MovementState.ACTIVE);
     }
 
@@ -203,7 +215,7 @@ public class Elevator {
 		if (distance > ACCELERATION_DISTANCE * 2) {
 			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
 		} else {
-			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerated and decelerates continuously
+			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
 		}
 	}
 

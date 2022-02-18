@@ -17,8 +17,8 @@ public class FloorsQueue {
 	 * Constructor for the class
 	 */
 	public FloorsQueue() {
-		this.upwardRequests = new PriorityQueue<Integer>();
-		this.downwardRequests = new PriorityQueue<Integer>(Collections.reverseOrder());
+		this.upwardRequests = new PriorityQueue<>();
+		this.downwardRequests = new PriorityQueue<>(Collections.reverseOrder());
 	}
 
 	/**
