@@ -8,7 +8,7 @@ package systemwide;
 public enum Direction {
 	UP("Up"),
 	DOWN("Down"),
-	STOP("Stop");
+	NONE("None");
 
 	private String name;
 
