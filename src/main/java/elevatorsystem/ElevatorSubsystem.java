@@ -71,7 +71,9 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
                     } else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
                         elevatorBestExpectedTime = tempExpectedTime;
                         chosenBestElevator = elevator.getElevatorNumber();
+
                     } else {
+                        System.out.println("Test");
                         // Add to the third queue of the elevator
                     }
                 }
@@ -97,6 +99,8 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
             SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
             if (request instanceof ElevatorRequest elevatorRequest) {
                 int chosenElevator = chooseElevator(elevatorRequest);
+                System.out.println(chosenElevator);
+                elevatorList.get(chosenElevator-1).addRequest(elevatorRequest);
                 sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
                 System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
             }

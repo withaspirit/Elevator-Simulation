@@ -22,18 +22,20 @@ public class Elevator {
 	public static final float ACCELERATION = 0.304f; // meters/second^2
 	public static final float LOAD_TIME = 9.5f; // seconds
 	public static final float FLOOR_HEIGHT = 3.91f; // meters (22 steps/floor @ 0.1778 meters/step)
+	public static final double ACCELERATION_DISTANCE = Math.pow(MAX_SPEED, 2)/ (2 * ACCELERATION); // Vf^2 = Vi^2 + 2as therefore s = vf^2/2a
+	public static final double ACCELERATION_TIME = Math.sqrt((FLOOR_HEIGHT * 2) / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
+
 
 	// Elevator Properties
 
 	private ElevatorSubsystem elevatorSubsystem;
 	private final int elevatorNumber;
 	private int currentFloor;
-	private float speed;
-	private float displacement;
-
+	private float speed, displacement;
 	private final ElevatorMotor motor;
 	private Direction currentDirection;
-	private final double queueTime;
+	private double queueTime;
+	private FloorsQueue floorsQueue;
 
 	/**
 	 * Constructor for Elevator class
@@ -50,6 +52,7 @@ public class Elevator {
 		currentDirection = Direction.STOP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
+		floorsQueue = new FloorsQueue();
 	}
 
 	/**
@@ -175,9 +178,9 @@ public class Elevator {
 
         int tempDesiredFloor = elevatorRequest.getDesiredFloor();
         if (elevatorRequest.getDirection() == Direction.UP) {
-			floorsQueue.addFloor(tempDesiredFloor, currentDirection.getName());
+			floorsQueue.addFloor(tempDesiredFloor, Direction.UP);
         } else if (elevatorRequest.getDirection() == Direction.DOWN) {
-			floorsQueue.addFloor(tempDesiredFloor, currentDirection.getName());
+			floorsQueue.addFloor(tempDesiredFloor, Direction.DOWN);
         } else {
             System.err.println("Invalid Direction in elevator request");
         }
@@ -204,12 +207,10 @@ public class Elevator {
 	 */
 	public double requestTime(ElevatorRequest elevatorRequest) {
 		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
-		double ACCELERATION_DISTANCE = ACCELERATION * FLOOR_HEIGHT;
-		double ACCELERATION_TIME = Math.sqrt(FLOOR_HEIGHT * 2 / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
 		if (distance > ACCELERATION_DISTANCE * 2) {
 			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
 		} else {
-			return Math.sqrt(distance * 2 / ACCELERATION);
+			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerated and decelerates continuously
 		}
 	}
 
