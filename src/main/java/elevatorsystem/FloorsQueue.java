@@ -27,14 +27,14 @@ public class FloorsQueue {
 	 * @param floorNum  the number of the floor to be visited
 	 * @param direction the direction the elevator comes to the floor
 	 */
-	public void addFloor(int floorNum, String direction) {
+	public void addFloor(int floorNum, Direction direction) {
 		if (floorNum < 0) {
 			throw new RuntimeException("Invalid floor number");
 		}
 
-		if (direction == Direction.UP.getName()) {
+		if (direction == Direction.UP) {
 			upwardRequests.add(floorNum);
-		} else if (direction == Direction.DOWN.getName()) {
+		} else if (direction == Direction.DOWN) {
 			downwardRequests.add(floorNum);
 		} else {
 			throw new RuntimeException("Direction is invalid");
@@ -47,14 +47,14 @@ public class FloorsQueue {
 	 * @param direction the direction the elevator came to the floor
 	 * @return floorVisited the floor that has been visited, -1 if not successful
 	 */
-	public int visitNextFloor(String direction) {
+	public int visitNextFloor(Direction direction) {
 		int floorVisited = -1;
 
-		if (direction == Direction.UP.getName()) {
+		if (direction == Direction.UP) {
 			if (!upwardRequests.isEmpty()) {
 				floorVisited = upwardRequests.remove();
 			}
-		} else if (direction == Direction.DOWN.getName()) {
+		} else if (direction == Direction.DOWN) {
 			if (!downwardRequests.isEmpty()) {
 				floorVisited = downwardRequests.remove();
 			}
@@ -70,13 +70,13 @@ public class FloorsQueue {
 	 * @param direction the direction wanting to peek
 	 * @return nextFloor the next floor in queue, -1 if not successful
 	 */
-	public int peekNextFloor(String direction) {
+	public int peekNextFloor(Direction direction) {
 		int nextFloor = -1;
-		if (direction == Direction.UP.getName()) {
+		if (direction == Direction.UP) {
 			if (!upwardRequests.isEmpty()) {
 				nextFloor = upwardRequests.peek();
 			}
-		} else if (direction == Direction.DOWN.getName()) {
+		} else if (direction == Direction.DOWN) {
 			if (!downwardRequests.isEmpty()) {
 				nextFloor = downwardRequests.peek();
 			}
