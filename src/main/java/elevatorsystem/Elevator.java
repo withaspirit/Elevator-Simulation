@@ -18,7 +18,7 @@ import java.util.TreeSet;
  * 2. Only services one elevator shaft of a structure
  * 3. Has speed
  * 4. Can stop at floors
- * 5. Knows it's own location
+ * 5. Knows its own location
  * 6. Takes time for elevator to move
  * 7. travels at SPEED to traverse FLOOR HEIGHT per second
  *
@@ -142,6 +142,7 @@ public class Elevator {
 
 	/**
 	 * Sets the speed of the elevator
+	 *
 	 * @param speed
 	 */
 	public void setSpeed(float speed) {
@@ -169,9 +170,9 @@ public class Elevator {
 	/**
 	 * Passes an ApproachEvent to the ElevatorSubsystem.
 	 *
-	 * @param request the request for which the ApproachEvent is made
+	 * @param approachEvent the ApproachEvent to be passed to the subsystem
 	 */
-	public void passApproachEvent(FloorRequest request) {
-		subsystem.handleApproachEvent(new ApproachEvent(request));
+	public void passApproachEvent(ApproachEvent approachEvent) {
+		subsystem.handleApproachEvent(approachEvent);
 	}
 }
