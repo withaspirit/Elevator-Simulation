@@ -95,7 +95,6 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
     public void run() {
         while (true) {
             SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
-            System.out.println(Thread.currentThread());
             if (request instanceof ElevatorRequest elevatorRequest) {
                 int chosenElevator = chooseElevator(elevatorRequest);
                 sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
