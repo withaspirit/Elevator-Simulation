@@ -30,6 +30,7 @@ public class Elevator {
 
 	// Elevator Properties
 
+	private ElevatorSubsystem elevatorSubsystem;
 	private final int elevatorNumber;
 	private MovementState status;
 	private int currentFloor;
@@ -46,8 +47,10 @@ public class Elevator {
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
 	 *
 	 * @param elevatorNumber
+	 * @param elevatorSubsystem
 	 */
-	public Elevator(int elevatorNumber) {
+	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
+		this.elevatorSubsystem = elevatorSubsystem;
 		this.elevatorNumber = elevatorNumber;
 		speed = 0;
 		displacement = 0;
