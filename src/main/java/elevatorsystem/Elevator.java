@@ -1,9 +1,9 @@
 package elevatorsystem;
 
+import requests.ElevatorRequest;
+import requests.FloorRequest;
+import requests.ServiceRequest;
 import systemwide.Direction;
-import elevatorsystem.MovementState;
-
-import java.util.TreeSet;
 
 /**
  * Elevator is a model for simulating an elevator.
@@ -19,7 +19,7 @@ import java.util.TreeSet;
  *
  * @author Liam Tripp, Brady Norton
  */
-public class Elevator {
+public class Elevator implements Runnable{
 
 	// Elevator Subsystem
 	private ElevatorSubsystem subsystem;
@@ -37,6 +37,11 @@ public class Elevator {
 	private float speed;
 	private float displacement;
 	//private int elevatorNumber;
+
+	// Request Properties
+	private double requestTime;
+	private int requestFloor;
+	private Direction requestedDirection;
 
 	/**
 	 * Constructor for Elevator class
@@ -67,19 +72,66 @@ public class Elevator {
 	 *
 	 * @return distance until next floor
 	 */
-	public float getDistanceUntilNextFloor(){
-		float distance = 0;
-		float stopTime = stopTime();
-
-		// Using Kinematics equation: d = vt + (1/2)at^2
-		float part1 = speed*stopTime;
-		System.out.println("Part 1: " + part1);
-
-		float part2 = (float) ((0.5)*(ACCELERATION)*(Math.pow(stopTime,2)));
-		System.out.println("Part 2: " + part2);
-
-		return part1 - part2;
+	public double getDistanceUntilNextFloor(int requestFloor){
+		return Math.abs((requestFloor - currentFloor)*3.91);
 	}
+
+	/**
+	 *
+	 * Attempt at method but just saw that it gets replaced by requestTime()
+	 *
+	 *
+	public int simulationTime(int requestFloor, Direction requestDirection){
+		// On current floor
+		if(requestFloor == currentFloor){
+			return 0;
+		}
+
+		// requested floor is higher than the current floor while the elevator's direction is down
+		if(requestFloor > currentFloor && direction == Direction.DOWN){
+			// Return -1 to signify that the elevator will complete this request
+			return -1;
+		}
+
+		// Requested floor is lower than the current floor while the elevator's direction is up
+		if(requestFloor < currentFloor && direction == Direction.UP){
+			// Return -1 to signify that the elevator will complete this request
+			return -1;
+		}
+
+		// Now calculate the time to the requestedFloor
+		// This is calculated using the kinematic equation: Vf = Vo + at
+		// Which can be rearranged to solve for time: t = (Vf - Vo) / a
+		int seconds = 0;
+		float currSpeed = speed;
+		double distanceBetweenFloors = getDistanceUntilNextFloor(requestFloor);
+		double distanceTraveled = 0;
+		boolean requestFloorReached = false;
+
+		// Loop
+		while(!requestFloorReached){
+			// If elevator is at the max speed then continue at that speed
+			if(currSpeed == MAX_SPEED){
+				speed += 0;
+			}
+			// If elevator not at max speed then increase by acceleration rate
+			else{
+				speed += ACCELERATION;
+			}
+			// Update the distance
+			distanceTraveled += speed;
+
+			// Update the time
+			seconds++;
+
+			if(distanceTraveled == distanceBetweenFloors){
+				requestFloorReached = true;
+			}
+		}
+		return seconds;
+	}
+	 **/
+
 
 	/**
 	 * Checks if the elevator is currently active (in motion)
@@ -88,6 +140,23 @@ public class Elevator {
 	 */
 	public boolean isActive(){
 		return status.equals(MovementState.ACTIVE);
+	}
+
+	/**
+	 * Gets the state of the elevator
+	 * @return MovementState value
+	 */
+	public MovementState getState(){
+		return this.status;
+	}
+
+	/**
+	 * Sets the state of the elevator
+	 * @param state the state elevator will be set to
+	 */
+	public void setState(MovementState state){
+		this.status = state;
+
 	}
 
 	/**
@@ -143,22 +212,137 @@ public class Elevator {
 		this.speed = speed;
 	}
 
+	// ALL METHODS RELATING TO MOVEMENT
+
 	/**
-	 * Gets the displacement that the elevator has moved on the current floor
+	 * First attempt
 	 *
-	 * @return displacement of elevator as float
+	public synchronized void move(int requestedFloor){
+		while(this.status != MovementState.IDLE) {
+			try {
+				// Elevator requested a floor it's already at
+				if (requestedFloor == currentFloor) {
+					break;
+				}
+				// Elevator requested a floor that is above
+				else if (requestedFloor > currentFloor) {
+					Thread.sleep(5000);
+					int prevFloor = currentFloor;
+					currentFloor +=1;
+					System.out.println("Moved from: " + prevFloor + " to: " + currentFloor);
+				}
+			} catch(InterruptedException e){
+				e.printStackTrace();
+				System.out.println("Elevator Error");
+				System.exit(1);
+			}
+		}
+	}
+	 **/
+
+
+	/**
+	 * Processes a serviceRequest and moves based on the request type
+	 *
+	 * @param serviceRequest the request that's sent to elevator
 	 */
-	public float getFloorDisplacement(){
-		return displacement;
+	public void processRequest(ServiceRequest serviceRequest){
+		// If request is an elevator request
+		if(serviceRequest instanceof ElevatorRequest){
+			// Set time of request
+			this.requestTime = requestTime((ElevatorRequest) serviceRequest);
+
+			// Set floor of request
+			this.requestFloor = ((ElevatorRequest) serviceRequest).getDesiredFloor();
+
+			// Set direction of request
+			this.requestedDirection = serviceRequest.getDirection();
+
+			if(requestedDirection == Direction.UP){
+				this.moveUp();
+			}
+			else if(requestedDirection == Direction.DOWN){
+				this.moveDown();
+			}
+			else if(requestedDirection == Direction.STOP){
+				this.stop();
+			}
+		}
+		else if(serviceRequest instanceof FloorRequest){
+			// do something
+		}
 	}
 
 	/**
-	 * Sets the displacement the elevator for the current floor
 	 *
-	 * @param displacement the displacement of the elevator as a float
+	 * @param elevatorRequest
+	 * @return
 	 */
-	public void setFloorDisplacement(float displacement) {
-		this.displacement = displacement;
+	public double requestTime(ElevatorRequest elevatorRequest) {
+		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
+		double ACCELERATION_DISTANCE = ACCELERATION * FLOOR_HEIGHT;
+		double ACCELERATION_TIME = Math.sqrt(FLOOR_HEIGHT * 2 / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
+		if (distance > ACCELERATION_DISTANCE * 2) {
+			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
+		} else {
+			return Math.sqrt(distance * 2 / ACCELERATION);
+		}
 	}
 
+	/**
+	 * Stops the elevator
+	 */
+	public void stop(){
+		// Set state and direction
+		this.setState(MovementState.IDLE);
+		this.setDirection(Direction.STOP);
+
+		System.out.println("Status: Stopped");
+	}
+
+	/**
+	 * Simulates the elevator moving up
+	 */
+	public void moveUp(){
+		// Set state and direction
+		this.setState(MovementState.ACTIVE);
+		this.setDirection(Direction.UP);
+
+		// Simulate time
+		try{
+			Thread.sleep((long) requestTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		// Update location
+		this.setCurrentFloor(this.getCurrentFloor() + requestFloor);
+	}
+
+	/**
+	 * Simulates the elevator moving down
+	 */
+	public void moveDown(){
+		// Set state and direction
+		this.setState(MovementState.ACTIVE);
+		this.setDirection(Direction.DOWN);
+
+		// Simulate time
+		try{
+			Thread.sleep((long) requestTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		// Update location
+		this.setCurrentFloor(this.getCurrentFloor() - requestFloor);
+	}
+	
+
+	@Override
+	public void run() {
+		while(true){
+			System.out.println("Processing");
+		}
+	}
 }
