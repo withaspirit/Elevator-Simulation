@@ -5,6 +5,8 @@ import requests.FloorRequest;
 import requests.ServiceRequest;
 
 import java.time.LocalTime;
+
+import requests.SubsystemComponent;
 import systemwide.Direction;
 import elevatorsystem.MovementState;
 
@@ -24,7 +26,7 @@ import java.util.TreeSet;
  *
  * @author Liam Tripp, Brady Norton
  */
-public class Elevator {
+public class Elevator implements SubsystemComponent {
 
 	// Elevator Subsystem
 	private ElevatorSubsystem subsystem;
@@ -174,5 +176,15 @@ public class Elevator {
 	 */
 	public void passApproachEvent(ApproachEvent approachEvent) {
 		subsystem.handleApproachEvent(approachEvent);
+	}
+
+	/**
+	 * Receives an ApproachEvent from the Subsystem and returns it to the component.
+	 *
+	 * @param approachEvent the ApproachEvent to be received from the Subsystem
+	 */
+	@Override
+	public void receiveApproachEvent(ApproachEvent approachEvent) {
+		// do thing
 	}
 }
