@@ -177,6 +177,7 @@ public class Elevator {
         }
 
         int tempDesiredFloor = elevatorRequest.getDesiredFloor();
+		System.out.print("Elevator# " + elevatorNumber + " ");
         if (elevatorRequest.getDirection() == Direction.UP) {
 			floorsQueue.addFloor(tempDesiredFloor, Direction.UP);
         } else if (elevatorRequest.getDirection() == Direction.DOWN) {
