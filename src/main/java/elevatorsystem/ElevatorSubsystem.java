@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * 
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
+public class ElevatorSubsystem implements Runnable, ServiceRequestListener, SystemEventListener {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
 	private ArrayList<Elevator> elevatorList;
@@ -51,5 +51,15 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 				// pass to ElevatorRequest
 			}
 		}
+	}
+
+	/**
+	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
+	 *
+	 * @param approachEvent the approach event for the system
+	 */
+	@Override
+	public void handleApproachEvent(ApproachEvent approachEvent) {
+		sendMessage(approachEvent, elevatorSubsystemBuffer, Thread.currentThread());
 	}
 }

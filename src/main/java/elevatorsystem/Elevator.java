@@ -1,5 +1,10 @@
 package elevatorsystem;
 
+import requests.ApproachEvent;
+import requests.FloorRequest;
+import requests.ServiceRequest;
+
+import java.time.LocalTime;
 import systemwide.Direction;
 import elevatorsystem.MovementState;
 
@@ -13,7 +18,7 @@ import java.util.TreeSet;
  * 2. Only services one elevator shaft of a structure
  * 3. Has speed
  * 4. Can stop at floors
- * 5. Knows it's own location
+ * 5. Knows its own location
  * 6. Takes time for elevator to move
  * 7. travels at SPEED to traverse FLOOR HEIGHT per second
  *
@@ -137,6 +142,7 @@ public class Elevator {
 
 	/**
 	 * Sets the speed of the elevator
+	 *
 	 * @param speed
 	 */
 	public void setSpeed(float speed) {
@@ -161,4 +167,12 @@ public class Elevator {
 		this.displacement = displacement;
 	}
 
+	/**
+	 * Passes an ApproachEvent to the ElevatorSubsystem.
+	 *
+	 * @param approachEvent the ApproachEvent to be passed to the subsystem
+	 */
+	public void passApproachEvent(ApproachEvent approachEvent) {
+		subsystem.handleApproachEvent(approachEvent);
+	}
 }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * 
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class FloorSubsystem implements Runnable, ServiceRequestListener {
+public class FloorSubsystem implements Runnable, ServiceRequestListener, SystemEventListener {
 
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
@@ -61,5 +61,15 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener {
 				// pass to floorList.get((approachEvent.getFloorNumber());
 			}
 		}
+	}
+
+	/**
+	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
+	 *
+	 * @param approachEvent the approach event for the system
+	 */
+	@Override
+	public void handleApproachEvent(ApproachEvent approachEvent) {
+		sendMessage(approachEvent, floorSubsystemBuffer, Thread.currentThread());
 	}
 }
