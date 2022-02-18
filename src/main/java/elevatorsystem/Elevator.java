@@ -31,7 +31,8 @@ public class Elevator {
 	private ElevatorSubsystem elevatorSubsystem;
 	private final int elevatorNumber;
 	private int currentFloor;
-	private float speed, displacement;
+	private float speed;
+	private float displacement;
 	private final ElevatorMotor motor;
 	private Direction currentDirection;
 	private double queueTime;
