@@ -30,18 +30,6 @@ public class FloorRequest extends ServiceRequest {
 	}
 
 	/**
-	 * Constructor for FloorRequest. Used for button presses within Elevators.
-	 *
-	 * @param time the time the Request was made
-	 * @param floorNumber the number of the floor on which the request was made
-	 * @param direction the direction selected by the user
-     * @param origin the system from which the message originated
-	 */
-	public FloorRequest(LocalTime time, int floorNumber, Direction direction, Thread origin) {
-		super(time ,floorNumber, direction, origin);
-	}
-
-	/**
 	 * Constructor for FloorRequest given an ElevatorRequest and an Elevator's number.
 	 *
 	 * @param elevatorRequest a ServiceRequest for an Elevator made by someone on a Floor
