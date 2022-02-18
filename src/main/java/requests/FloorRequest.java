@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 public class FloorRequest extends ServiceRequest {
 
 	private int elevatorNumber;
-//	private String basicAction;
 
 	/**
 	 * Constructor for FloorRequest read from an input file.
@@ -45,11 +44,6 @@ public class FloorRequest extends ServiceRequest {
 		}
 	}
 
-//	//TODO move to a separate class
-//	public FloorRequest(String basicAction) {
-//		this.basicAction = basicAction;
-//	}
-
 	/**
 	 * Returns the number of the elevator corresponding to the floorRequest.
 	 *
@@ -62,7 +56,6 @@ public class FloorRequest extends ServiceRequest {
 	/**
 	 * Convert FloorRequest to a String in the format:
 	 * "hh:mm:ss.mmm desiredFloor direction elevatorNumber"
-	 *
 	 */
 	@Override
 	public String toString() {
