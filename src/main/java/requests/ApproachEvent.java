@@ -16,7 +16,7 @@ public class ApproachEvent extends ServiceRequest {
     /**
      * Indicates whether an elevator should stop at a floor
      */
-    private boolean elevatorCanStop;
+    private boolean elevatorMayStop;
 
     /**
      * Constructor for ApproachEvent.
@@ -30,7 +30,7 @@ public class ApproachEvent extends ServiceRequest {
     public ApproachEvent(LocalTime time, int floorNumber, Direction direction, Thread origin, int elevatorNumber) {
         super(time, floorNumber, direction, origin);
         this.elevatorNumber = elevatorNumber;
-        this.elevatorCanStop = false;
+        this.elevatorMayStop = false;
     }
 
     /**
@@ -48,13 +48,13 @@ public class ApproachEvent extends ServiceRequest {
      * @return true if the elevator is allowed to stop, false otherwise
      */
     public boolean getElevatorStopStatus() {
-        return elevatorCanStop;
+        return elevatorMayStop;
     }
 
     /**
      * Allows an elevator to stop.
      */
     public void allowElevatorStop() {
-        elevatorCanStop = true;
+        elevatorMayStop = true;
     }
 }
