@@ -5,7 +5,6 @@ import elevatorsystem.ElevatorSubsystem;
 import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
-import systemwide.BoundedBuffer;
 
 /**
  * Structure instantiates the overall system.

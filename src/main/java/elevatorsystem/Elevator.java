@@ -3,8 +3,6 @@ package elevatorsystem;
 import requests.ElevatorRequest;
 import systemwide.Direction;
 
-import java.util.LinkedList;
-
 /**
  * Requirements:
  * 1. Can move between floors
@@ -27,30 +25,31 @@ public class Elevator {
 
 	// Elevator Properties
 
-    private int elevatorNumber, currentFloor;
 	private ElevatorSubsystem elevatorSubsystem;
-	private float speed, displacement;
-	private ElevatorMotor motor;
+	private final int elevatorNumber;
+	private int currentFloor;
+	private float speed;
+	private float displacement;
+
+	private final ElevatorMotor motor;
 	private Direction currentDirection;
-	private double queueTime;
-	private FloorsQueue floorsQueue;
+	private final double queueTime;
 
 	/**
 	 * Constructor for Elevator class
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
 	 *
 	 * @param elevatorNumber
+	 * @param elevatorSubsystem
 	 */
 	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
-		this.elevatorNumber = elevatorNumber;
 		this.elevatorSubsystem = elevatorSubsystem;
+		this.elevatorNumber = elevatorNumber;
 		speed = 0;
 		displacement = 0;
-		currentFloor = 1;
 		currentDirection = Direction.STOP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
-		floorsQueue = new FloorsQueue();
 	}
 
 	/**
@@ -87,7 +86,7 @@ public class Elevator {
 	 *
 	 * @return true if elevator is moving
 	 */
-	public MovementState getState(){
+	public MovementState getState() {
 		return motor.getMovementState();
 	}
 
@@ -114,7 +113,7 @@ public class Elevator {
 	 *
 	 * @return Direction
 	 */
-	public Direction getCurrentDirection(){
+	public Direction getCurrentDirection() {
 		return currentDirection;
 	}
 
@@ -149,7 +148,7 @@ public class Elevator {
 	 *
 	 * @return displacement of elevator as float
 	 */
-	public float getFloorDisplacement(){
+	public float getFloorDisplacement() {
 		return displacement;
 	}
 
@@ -192,27 +191,27 @@ public class Elevator {
 	 * @param elevatorRequest an elevator request from the floorSubsystem
 	 * @return a double containing the elevator's total expected queue time
 	 */
-    public double getExpectedTime(ElevatorRequest elevatorRequest) {
+	public double getExpectedTime(ElevatorRequest elevatorRequest) {
 		return queueTime + LOAD_TIME + requestTime(elevatorRequest);
-    }
+	}
 
-    /**
-     * Gets the expected time of a new request for the current elevator
-     * based on distance.
-     *
-     * @param elevatorRequest an elevatorRequest from a floor
-     * @return a double containing the time to fulfil the request
-     */
-    public double requestTime(ElevatorRequest elevatorRequest) {
-        double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
+	/**
+	 * Gets the expected time of a new request for the current elevator
+	 * based on distance.
+	 *
+	 * @param elevatorRequest an elevatorRequest from a floor
+	 * @return a double containing the time to fulfil the request
+	 */
+	public double requestTime(ElevatorRequest elevatorRequest) {
+		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
 		double ACCELERATION_DISTANCE = ACCELERATION * FLOOR_HEIGHT;
-		double ACCELERATION_TIME = Math.sqrt(FLOOR_HEIGHT*2/ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
-        if (distance > ACCELERATION_DISTANCE * 2) {
-            return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
-        } else {
-            return Math.sqrt(distance * 2 / ACCELERATION);
-        }
-    }
+		double ACCELERATION_TIME = Math.sqrt(FLOOR_HEIGHT * 2 / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
+		if (distance > ACCELERATION_DISTANCE * 2) {
+			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
+		} else {
+			return Math.sqrt(distance * 2 / ACCELERATION);
+		}
+	}
 
 	public int getElevatorNumber() {
 		return elevatorNumber;
