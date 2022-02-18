@@ -1,16 +1,9 @@
 package elevatorsystem;
 
 import requests.ApproachEvent;
-import requests.FloorRequest;
-import requests.ServiceRequest;
 
-import java.time.LocalTime;
-
-import requests.SubsystemComponent;
+import requests.SubsystemPasser;
 import systemwide.Direction;
-import elevatorsystem.MovementState;
-
-import java.util.TreeSet;
 
 /**
  * Elevator is a model for simulating an elevator.
@@ -26,7 +19,7 @@ import java.util.TreeSet;
  *
  * @author Liam Tripp, Brady Norton
  */
-public class Elevator implements SubsystemComponent {
+public class Elevator implements SubsystemPasser {
 
 	// Elevator Subsystem
 	private ElevatorSubsystem subsystem;

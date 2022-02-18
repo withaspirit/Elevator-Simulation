@@ -1,15 +1,15 @@
 package requests;
 
 /**
- * SubsystemComponent enables receiving and sending of various SystemEvents from
+ * SubsystemPasser enables receiving and sending of various SystemEvents from
  * subsystem components to subsystems.
  *
  * @author Liam Tripp
  */
-public interface SubsystemComponent {
+public interface SubsystemPasser {
 
     /**
-     * Passes an ApproachEvent to the SubsystemComponent's Subsystem.
+     * Passes an ApproachEvent to the SubsystemPasser's Subsystem.
      *
      * @param approachEvent the ApproachEvent to be passed to the subsystem
      */

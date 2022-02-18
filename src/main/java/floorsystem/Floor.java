@@ -1,14 +1,14 @@
 package floorsystem;
 
 import requests.ApproachEvent;
-import requests.SubsystemComponent;
+import requests.SubsystemPasser;
 
 /**
  * Floor simulates a level of a structure that an elevator can visit.
  * 
  * @author Liam Tripp
  */
-public class Floor implements SubsystemComponent {
+public class Floor implements SubsystemPasser {
 	
 	private int floorNumber;
 	private FloorSubsystem floorSubsystem;
@@ -31,7 +31,7 @@ public class Floor implements SubsystemComponent {
 	 */
 
 	/**
-	 * Passes an ApproachEvent to the SubsystemComponent's Subsystem.
+	 * Passes an ApproachEvent to the SubsystemPasser's Subsystem.
 	 *
 	 * @param approachEvent the ApproachEvent that is examined by the ArrivalSensor
 	 */
