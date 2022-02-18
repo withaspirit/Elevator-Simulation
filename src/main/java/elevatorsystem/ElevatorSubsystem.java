@@ -79,7 +79,7 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
             } else {
                 if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime) {
                     elevatorWorstExpectedTime = tempExpectedTime;
-                    chosenBestElevator = elevator.getElevatorNumber();
+                    chosenWorstElevator = elevator.getElevatorNumber();
                 }
             }
         }
@@ -95,6 +95,7 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
     public void run() {
         while (true) {
             SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
+            System.out.println(Thread.currentThread());
             if (request instanceof ElevatorRequest elevatorRequest) {
                 int chosenElevator = chooseElevator(elevatorRequest);
                 sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());

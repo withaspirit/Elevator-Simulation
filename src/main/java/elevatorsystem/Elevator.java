@@ -32,9 +32,7 @@ public class Elevator {
 
 	private ElevatorSubsystem elevatorSubsystem;
 	private final int elevatorNumber;
-	private MovementState status;
 	private int currentFloor;
-	private Direction direction = Direction.UP;
 	private float speed;
 	private float displacement;
 
