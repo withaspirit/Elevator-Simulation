@@ -175,16 +175,8 @@ public class Elevator {
         if (floorsQueue.isEmpty() == 0){
             currentDirection = elevatorRequest.getDirection();
         }
-
-        int tempDesiredFloor = elevatorRequest.getDesiredFloor();
 		System.out.print("Elevator# " + elevatorNumber + " ");
-        if (elevatorRequest.getDirection() == Direction.UP) {
-			floorsQueue.addFloor(tempDesiredFloor, Direction.UP);
-        } else if (elevatorRequest.getDirection() == Direction.DOWN) {
-			floorsQueue.addFloor(tempDesiredFloor, Direction.DOWN);
-        } else {
-            System.err.println("Invalid Direction in elevator request");
-        }
+		floorsQueue.addFloor(elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
         motor.setMovementState(MovementState.ACTIVE);
     }
 
