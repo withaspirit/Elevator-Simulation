@@ -5,7 +5,8 @@ import systemwide.Direction;
 import java.time.LocalTime;
 
 /**
- * ApproachEvent is a SystemEvent for when an Elevator is approaching a floor.
+ * ApproachEvent is a SystemEvent that is sent by an Elevator to a Floor's ArrivalSensor when
+ * the Elevator Approaches a floor.
  *
  * @author Liam Tripp
  */

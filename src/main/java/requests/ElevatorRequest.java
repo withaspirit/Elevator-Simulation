@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * ElevatorRequest is an event data structure for when a user presses an up/down
+ * ElevatorRequest is a data structure for when a user presses an up/down
  * button on a Floor.
  *
  * @author Liam Tripp, Ramit Mahajan, Ryan Dash
@@ -32,7 +32,7 @@ public class ElevatorRequest extends ServiceRequest {
 	/**
 	 * Returns the desired floor's number.
 	 *
-	 * @return desiredFloorNumber the number of the desired floor
+	 * @return desiredFloorNumber the number of a passenger's desired floor
 	 */
 	public int getDesiredFloor() {
 		return desiredFloor;
