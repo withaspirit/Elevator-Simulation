@@ -28,6 +28,7 @@ public class Elevator {
 	// Elevator Properties
 
     private int elevatorNumber, currentFloor;
+	private ElevatorSubsystem elevatorSubsystem;
 	private float speed, displacement;
 	private ElevatorMotor motor;
 	private Direction currentDirection;
@@ -40,8 +41,9 @@ public class Elevator {
 	 *
 	 * @param elevatorNumber
 	 */
-	public Elevator(int elevatorNumber) {
+	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
 		this.elevatorNumber = elevatorNumber;
+		this.elevatorSubsystem = elevatorSubsystem;
 		speed = 0;
 		displacement = 0;
 		currentFloor = 1;
@@ -174,21 +176,9 @@ public class Elevator {
 
         int tempDesiredFloor = elevatorRequest.getDesiredFloor();
         if (elevatorRequest.getDirection() == Direction.UP) {
-            if (currentDirection == Direction.UP && floorsQueue.isEmpty() == 1){
-                if (tempDesiredFloor < floorsQueue.peekNextFloor(currentDirection.getName()) && tempDesiredFloor > currentFloor){
-                    floorsQueue.addFloor(tempDesiredFloor, currentDirection.getName());
-                }
-            }
 			floorsQueue.addFloor(tempDesiredFloor, currentDirection.getName());
-            //queueUp.addLast(tempDesiredFloor);
         } else if (elevatorRequest.getDirection() == Direction.DOWN) {
-            if (currentDirection == Direction.DOWN && floorsQueue.isEmpty() == 2){
-                if (tempDesiredFloor > floorsQueue.peekNextFloor(currentDirection.getName()) && tempDesiredFloor < currentFloor){
-					floorsQueue.addFloor(tempDesiredFloor, currentDirection.getName());
-                }
-            }
 			floorsQueue.addFloor(tempDesiredFloor, currentDirection.getName());
-            //queueDown.addLast(tempDesiredFloor);
         } else {
             System.err.println("Invalid Direction in elevator request");
         }

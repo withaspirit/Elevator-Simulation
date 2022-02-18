@@ -76,7 +76,7 @@ public class Structure {
 
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
 		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
-			Elevator elevator = new Elevator(elevatorNumber);
+			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
 			elevatorSubsystem.addElevator(elevator);
 		}
 
