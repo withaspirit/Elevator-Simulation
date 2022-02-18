@@ -6,7 +6,7 @@ import java.time.LocalTime;
 
 /**
  * ApproachEvent is a SystemEvent that is sent by an Elevator to a Floor's ArrivalSensor when
- * the Elevator Approaches a floor.
+ * an Elevator approaches a Floor.
  *
  * @author Liam Tripp
  */
@@ -21,22 +21,22 @@ public class ApproachEvent extends ServiceRequest {
     /**
      * Constructor for ApproachEvent.
      *
-     * @param time the time the Request was made
-     * @param floorNumber the number of the floor on which the request was made
-     * @param direction the direction selected by the user
+     * @param time the time elevator's approach began
+     * @param floorNumber the number of the floor the elevator is approaching
+     * @param direction the direction of the elevator
+     * @param elevatorNumber the number of the elevator that created the event
      * @param origin the system from which the message originated
-     * @param elevatorNumber the number of the elevator to which the
      */
-    public ApproachEvent(LocalTime time, int floorNumber, Direction direction, Thread origin, int elevatorNumber) {
+    public ApproachEvent(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Thread origin) {
         super(time, floorNumber, direction, origin);
         this.elevatorNumber = elevatorNumber;
         this.elevatorMayStop = false;
     }
 
     /**
-     * Returns the number corresponding to the Elevator for which this event occurred.
+     * Returns the number of the Elevator that created the event.
      *
-     * @return number the number of the elevator
+     * @return number the number of the elevator that created the event
      */
     public int getElevatorNumber() {
         return elevatorNumber;
@@ -45,7 +45,7 @@ public class ApproachEvent extends ServiceRequest {
     /**
      * Indicates whether an elevator is allowed to stop.
      *
-     * @return true if the elevator is allowed to stop, false otherwise
+     * @return true if the elevator may stop, false otherwise
      */
     public boolean getElevatorStopStatus() {
         return elevatorMayStop;
