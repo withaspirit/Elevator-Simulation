@@ -5,7 +5,7 @@ import systemwide.Direction;
 /**
  * ElevatorMotor is the mechanism that moves an Elevator. 
  * 
- * @author Liam Tripp
+ * @author Liam Tripp, Brady Norton
  */
 public class ElevatorMotor {
 
