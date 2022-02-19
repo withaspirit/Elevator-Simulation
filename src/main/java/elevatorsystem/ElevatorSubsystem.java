@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class ElevatorSubsystem implements Runnable, ServiceRequestListener, SystemEventListener {
+public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
     private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
     private final ArrayList<Elevator> elevatorList;

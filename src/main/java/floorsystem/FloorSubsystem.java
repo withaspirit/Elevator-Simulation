@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * 
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class FloorSubsystem implements Runnable, ServiceRequestListener, SystemEventListener {
+public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;

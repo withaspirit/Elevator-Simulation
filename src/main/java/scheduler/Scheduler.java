@@ -8,7 +8,7 @@ import systemwide.BoundedBuffer;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class Scheduler implements Runnable, ServiceRequestListener {
+public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
