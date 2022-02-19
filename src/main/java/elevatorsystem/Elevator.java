@@ -3,9 +3,9 @@ package elevatorsystem;
 import requests.*;
 import systemwide.Direction;
 
-import java.time.LocalTime;
-
 /**
+ * Elevator is a model for simulating an elevator.
+ *
  * Requirements:
  * 1. Can move between floors
  * 2. Only services one elevator shaft of a structure
@@ -18,6 +18,9 @@ import java.time.LocalTime;
  * @author Liam Tripp, Brady Norton
  */
 public class Elevator implements Runnable, SubsystemPasser {
+
+	// Elevator Subsystem
+	private ElevatorSubsystem elevatorSubsystem;
 
 	// Elevator Measurements
 	public static final float MAX_SPEED = 2.67f; // meters/second
@@ -34,11 +37,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private float speed;
 	private float displacement;
 	private int elevatorNumber;
-	private final double queueTime;
+	private double queueTime;
 
 	private final ElevatorMotor motor;
 	private Direction currentDirection;
-	private double queueTime;
 	private FloorsQueue floorsQueue;
   
 	private ElevatorRequest request;
@@ -51,8 +53,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param elevatorSubsystem
 	 */
 	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
-		this.subsystem = elevatorSubsystem;
 		this.elevatorNumber = elevatorNumber;
+		this.elevatorSubsystem = elevatorSubsystem;
 		speed = 0;
 		direction = Direction.STOP;
 		motor = new ElevatorMotor();
@@ -187,23 +189,11 @@ public class Elevator implements Runnable, SubsystemPasser {
      */
     public void addRequest(ElevatorRequest elevatorRequest) {
 		queueTime = getExpectedTime(elevatorRequest);
-        if (floorsQueue.isEmpty() == 0){
+        if (floorsQueue.isDownqueueEmpty() && floorsQueue.isUpqueueEmpty()){
             currentDirection = elevatorRequest.getDirection();
         }
 		System.out.print("Elevator# " + elevatorNumber + " ");
-		int desiredFloor =  elevatorRequest.getDesiredFloor();
-		Direction requestDirection = elevatorRequest.getDirection();
-
-		if (desiredFloor >= currentFloor && desiredFloor < floorsQueue.peekNextFloor(currentDirection)){
-			floorsQueue.addFloor(elevatorRequest.getDesiredFloor(), requestDirection);
-			// Add request to the up queue
-		} else if (desiredFloor <= currentFloor && desiredFloor > floorsQueue.peekNextFloor(currentDirection)){
-			floorsQueue.addFloor(elevatorRequest.getDesiredFloor(), requestDirection);
-			// Add request to the down queue
-		} else {
-			floorsQueue.addFloor(elevatorRequest.getDesiredFloor(), requestDirection);
-			// Add to third queue
-		}
+		floorsQueue.addFloor(elevatorRequest.getFloorNumber(), currentFloor, elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
         motor.setMovementState(MovementState.ACTIVE);
     }
 
@@ -269,7 +259,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param approachEvent the ApproachEvent to be passed to the subsystem
 	 */
 	public void passApproachEvent(ApproachEvent approachEvent) {
-		subsystem.handleApproachEvent(approachEvent);
+		elevatorSubsystem.handleApproachEvent(approachEvent);
 	}
 
 	/**

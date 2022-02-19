@@ -19,40 +19,50 @@ class FloorsQueueTest {
 	void testAddFloor() {
 
 		assertTrue(testQueue.isMissedqueueEmpty());
-		testQueue.addFloor(2, 3, Direction.UP); // Should be added to missed Requests
-		testQueue.addFloor(1, 3, Direction.UP); // Should be added to missed Requests
+		testQueue.addFloor(2, 3, 4, Direction.UP); // Should be added to missed Requests
+		testQueue.addFloor(1, 3, 5, Direction.UP); // Should be added to missed Requests
 		assertFalse(testQueue.isMissedqueueEmpty());
-		testQueue.addFloor(4, 3, Direction.UP);
-		testQueue.addFloor(8, 3, Direction.UP);
-		testQueue.addFloor(6, 3, Direction.UP);
+		testQueue.addFloor(4, 3, 6, Direction.UP);
+		testQueue.addFloor(9, 3, 10, Direction.UP);
+		testQueue.addFloor(7, 3, 8, Direction.UP);
 
 		// Test for proper ordering added in upwardRequests
 		assertEquals(testQueue.visitNextFloor(Direction.UP), 4);
 		assertEquals(testQueue.visitNextFloor(Direction.UP), 6);
+		assertEquals(testQueue.visitNextFloor(Direction.UP), 7);
 		assertEquals(testQueue.visitNextFloor(Direction.UP), 8);
+		assertEquals(testQueue.visitNextFloor(Direction.UP), 9);
+		assertEquals(testQueue.visitNextFloor(Direction.UP), 10);
 		// Test for missed requests update
 		assertEquals(testQueue.visitNextFloor(Direction.UP), 1);
 		assertEquals(testQueue.visitNextFloor(Direction.UP), 2);
+		assertEquals(testQueue.visitNextFloor(Direction.UP), 4);
+		assertEquals(testQueue.visitNextFloor(Direction.UP), 5);
 
-		testQueue.addFloor(3, 5, Direction.DOWN);
-		testQueue.addFloor(1, 5, Direction.DOWN);
-		testQueue.addFloor(4, 5, Direction.DOWN);
+		testQueue.addFloor(3, 5, 0, Direction.DOWN);
+		testQueue.addFloor(1, 5, 0, Direction.DOWN);
+		testQueue.addFloor(4, 5, 0, Direction.DOWN);
 		assertTrue(testQueue.isMissedqueueEmpty());
-		testQueue.addFloor(8, 5, Direction.DOWN); // Should be added to missed Requests
-		testQueue.addFloor(6, 5, Direction.DOWN); // Should be added to missed Requests
+		testQueue.addFloor(8, 5, 4, Direction.DOWN); // Should be added to missed Requests
+		testQueue.addFloor(6, 5, 5, Direction.DOWN); // Should be added to missed Requests
 		assertFalse(testQueue.isMissedqueueEmpty());
 
 		// Test for proper ordering added in downwardRequests
 		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 4);
 		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 3);
 		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 1);
+		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 0);
+		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 0);
+		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 0);
 		// Test for missed requests update
 		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 8);
 		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 6);
+		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 5);
+		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 4);
 
 		// Test for invalid floor number
 		try {
-			testQueue.addFloor(-6, 2, Direction.DOWN);
+			testQueue.addFloor(-6, 2, -8, Direction.DOWN);
 			fail(); // If not an Exception, then fail the test
 		} catch (RuntimeException e) {
 		}
@@ -60,17 +70,21 @@ class FloorsQueueTest {
 
 	@Test
 	void testVisitNextFloor() {
-		testQueue.addFloor(3, 0, Direction.UP);
-		testQueue.addFloor(1, 0, Direction.UP);
+		testQueue.addFloor(3, 0, 6, Direction.UP);
+		testQueue.addFloor(1, 0, 8, Direction.UP);
 
-		testQueue.addFloor(3, 4, Direction.DOWN);
-		testQueue.addFloor(1, 4, Direction.DOWN);
+		testQueue.addFloor(3, 4, 2, Direction.DOWN);
+		testQueue.addFloor(1, 4, 0, Direction.DOWN);
 
 		// Testing for visiting proper floor
 		assertEquals(testQueue.visitNextFloor(Direction.UP), 1);
 		assertEquals(testQueue.visitNextFloor(Direction.UP), 3);
+		assertEquals(testQueue.visitNextFloor(Direction.UP), 6);
+		assertEquals(testQueue.visitNextFloor(Direction.UP), 8);
 		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 3);
+		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 2);
 		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 1);
+		assertEquals(testQueue.visitNextFloor(Direction.DOWN), 0);
 
 		// Testing for emptying queue after dequeueing all floors
 		assertTrue(testQueue.isUpqueueEmpty());
@@ -79,8 +93,8 @@ class FloorsQueueTest {
 
 	@Test
 	void testPeekNextFloor() {
-		testQueue.addFloor(3, 0, Direction.UP);
-		testQueue.addFloor(3, 4, Direction.DOWN);
+		testQueue.addFloor(3, 0, 7, Direction.UP);
+		testQueue.addFloor(3, 4, 2, Direction.DOWN);
 
 		// Testing that it peeks the expected number
 		assertEquals(testQueue.peekNextFloor(Direction.UP), 3);
@@ -89,8 +103,8 @@ class FloorsQueueTest {
 
 	@Test
 	void testSwapQueues() {
-		testQueue.addFloor(2, 3, Direction.UP); // Should be added to missed Requests
-		testQueue.addFloor(1, 3, Direction.UP); // Should be added to missed Requests
+		testQueue.addFloor(2, 3, 4, Direction.UP); // Should be added to missed Requests
+		testQueue.addFloor(1, 3, 5, Direction.UP); // Should be added to missed Requests
 		testQueue.swapQueues(Direction.UP);
 		assertEquals(testQueue.visitNextFloor(Direction.UP), 1);
 		assertEquals(testQueue.visitNextFloor(Direction.UP), 2);
@@ -102,10 +116,11 @@ class FloorsQueueTest {
 		assertTrue(testQueue.isUpqueueEmpty());
 
 		// Testing not empty after adding floor
-		testQueue.addFloor(3, 0, Direction.UP);
+		testQueue.addFloor(3, 0, 6, Direction.UP);
 		assertFalse(testQueue.isUpqueueEmpty());
 
 		// Testing not empty after adding floor
+		testQueue.visitNextFloor(Direction.UP);
 		testQueue.visitNextFloor(Direction.UP);
 		assertTrue(testQueue.isUpqueueEmpty());
 	}
@@ -116,10 +131,11 @@ class FloorsQueueTest {
 		assertTrue(testQueue.isDownqueueEmpty());
 
 		// Testing not empty after adding floor
-		testQueue.addFloor(3, 4, Direction.DOWN);
+		testQueue.addFloor(3, 4, 0, Direction.DOWN);
 		assertFalse(testQueue.isDownqueueEmpty());
 
 		// Testing not empty after adding floor
+		testQueue.visitNextFloor(Direction.DOWN);
 		testQueue.visitNextFloor(Direction.DOWN);
 		assertTrue(testQueue.isDownqueueEmpty());
 	}
@@ -130,7 +146,7 @@ class FloorsQueueTest {
 		assertTrue(testQueue.isMissedqueueEmpty());
 
 		// Testing not empty after adding floor
-		testQueue.addFloor(3, 4, Direction.UP);
+		testQueue.addFloor(3, 4, 6, Direction.UP);
 		assertFalse(testQueue.isMissedqueueEmpty());
 
 		// Testing not empty after adding floor
