@@ -70,6 +70,20 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Checks if there are any more requests to process and processes
+	 * and new requests
+	 */
+	@Override
+	public void run() {
+		while(true){
+			if (!requests.isEmpty()) {
+				System.out.println("attempt to process");
+				processRequest(getNextRequest());
+			}
+		}
+	}
+
+	/**
 	 * Returns the elevator number
 	 *
 	 * @return an integer corresponding to the elevator's number
@@ -291,19 +305,5 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
 		// do thing
-	}
-
-	/**
-	 * Checks if there are any more requests to process and processes
-	 * and new requests
-	 */
-	@Override
-	public void run() {
-		while(true){
-			if (!requests.isEmpty()) {
-				System.out.println("attempt to process");
-				processRequest(getNextRequest());
-			}
-		}
 	}
 }

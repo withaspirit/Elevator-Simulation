@@ -30,15 +30,6 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	}
 
 	/**
-	 * Adds a floor to the subsystem's list of floors.
-	 *
-	 * @param floor a floor
-	 */
-	public void addFloor(Floor floor) {
-		floorList.add(floor);
-	}
-
-	/**
 	 * Simple message requesting and sending between subsystems.
 	 * FloorSubsystem
 	 * Sends: ApproachEvent, ElevatorRequest
@@ -59,6 +50,15 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");
 			}
 		}
+	}
+
+	/**
+	 * Adds a floor to the subsystem's list of floors.
+	 *
+	 * @param floor a floor
+	 */
+	public void addFloor(Floor floor) {
+		floorList.add(floor);
 	}
 
 	/**
