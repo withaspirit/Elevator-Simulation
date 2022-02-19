@@ -61,7 +61,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.elevatorSubsystem = elevatorSubsystem;
 		speed = 0;
 		displacement = 0;
-		direction = Direction.STOP;
+		direction = Direction.NONE;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
