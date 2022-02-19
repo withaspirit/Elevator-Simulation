@@ -5,6 +5,7 @@ import systemwide.Direction;
 import elevatorsystem.MovementState;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 /**
  * Elevator is a model for simulating an elevator.
@@ -43,6 +44,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private final double queueTime;
 
 	private ElevatorRequest request;
+	// list must be volatile so that thread checks if it's been updated
+	private volatile ArrayList<SystemEvent> requests;
 
 	/**
 	 * Constructor for Elevator class
@@ -58,10 +61,20 @@ public class Elevator implements Runnable, SubsystemPasser {
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		request = null;
+		requests = new ArrayList<>();
 	}
 
 	public int getElevatorNumber() {
 		return elevatorNumber;
+	}
+
+	public void addRequest(SystemEvent systemEvent) {
+		requests.add(systemEvent);
+	}
+
+	public SystemEvent getNextFloor() {
+		ServiceRequest serviceRequest = (ServiceRequest) requests.remove(requests.size() - 1);
+		return serviceRequest;
 	}
 
 	/**
@@ -200,6 +213,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			while (currentFloor != requestFloor) {
 				setCurrentFloor(motor.move(currentFloor, requestedDirection));
 			}
+			System.out.println("Elevator " + elevatorNumber + " new floor: " + getCurrentFloor());
 			// Set to idle once floor reached
 			motor.stop();
 		} else if(serviceRequest instanceof FloorRequest) {
@@ -256,8 +270,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while(true){
-			if(request != null && request.getDesiredFloor() != currentFloor){
-				processRequest(request);
+			if (!requests.isEmpty()) {
+				System.out.println("attempt to process");
+					processRequest((ServiceRequest) getNextFloor());
 			}
 		}
 	}
