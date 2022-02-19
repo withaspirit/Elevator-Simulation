@@ -1,7 +1,5 @@
 package elevatorsystem;
 
-import java.util.Locale;
-
 /**
  * MovementState indicates the state of movement activity of the elevator.
  *
@@ -14,31 +12,32 @@ public enum MovementState {
 
     private String name;
 
-
     /**
      * Constructor for MovementState class
      * @param name the name of the MovementState
      */
-    MovementState(String name){ this.name = name;}
-
+    MovementState(String name){
+        this.name = name;
+    }
 
     /**
      * Gets the name of the MovementState as a String
      *
      * @return name of MovementState
      */
-    public String getName(){ return name; }
-
+    public String getName(){
+        return name;
+    }
 
     /**
      * Returns the MovementState with the specified name
      *
-     * @param s the name of the MovementState as a String
+     * @param name the name of the MovementState as a String
      * @return the MovementState and it's name
      */
-    public static MovementState getState(String s) {
+    public static MovementState getState(String name) {
         try{
-            return valueOf(s.trim().toUpperCase());
+            return valueOf(name.trim().toUpperCase());
         } catch (IllegalArgumentException e){
             System.out.println("State does not exist");
             e.printStackTrace();
