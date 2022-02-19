@@ -73,6 +73,8 @@ Note that this project is set up as a Maven project.
 5. SchedulerTest.java does tests related to passing data between the systems
 6. DirectionTest does tests related to the Direction enum search function
 7. BoundedBufferTest does tests related tothe BoundedBuffer methods for Thread-Safe messaging
+8. ElevatorMotorTest does tests for the proper updating of states in the elevator motor class.
+9. FloorsQueueTest does test for realted to the proper manipulation of the queues.
 
 </details>
 
