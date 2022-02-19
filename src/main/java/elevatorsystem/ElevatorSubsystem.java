@@ -64,10 +64,10 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener, Syst
 //			sendMessage(new StatusRequest(elevatorRequest,Thread.currentThread(), i), elevatorSubsystemBuffer, Thread.currentThread());
 //			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
 			double tempExpectedTime = elevator.getExpectedTime(elevatorRequest);
-			if (elevator.getState() == MovementState.IDLE) {
+			if (elevator.getMotor().isIdle()) {
 				return elevator.getElevatorNumber();
 
-			} else if (elevator.getState() == MovementState.STUCK) {
+			} else if (!elevator.getMotor().isActive()) {
 				System.err.println("Elevator is stuck");
 
 			} else if (elevator.getDirection() == elevatorRequest.getDirection()) {

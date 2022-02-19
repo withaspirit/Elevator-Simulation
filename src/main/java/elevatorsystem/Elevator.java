@@ -2,7 +2,6 @@ package elevatorsystem;
 
 import requests.*;
 import systemwide.Direction;
-import elevatorsystem.MovementState;
 
 import java.time.LocalTime;
 
@@ -35,16 +34,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private float speed;
 	private float displacement;
 	private int elevatorNumber;
+	private final double queueTime;
 
 	private final ElevatorMotor motor;
 	private Direction currentDirection;
 	private double queueTime;
 	private FloorsQueue floorsQueue;
-
-	// Request Properties
-	private double requestTime;
-	private int requestFloor;
-	private Direction requestedDirection;
+  
 	private ElevatorRequest request;
 
 	/**
@@ -58,7 +54,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.subsystem = elevatorSubsystem;
 		this.elevatorNumber = elevatorNumber;
 		speed = 0;
-		currentDirection = Direction.STOP;
+		direction = Direction.STOP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
@@ -99,21 +95,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Checks if the elevator is currently active (in motion)
+	 * Returns the motor associated with the Elevator.
 	 *
-	 * @return true if elevator is moving
+	 * @return elevatorMotor the elevatorMotor for the elevator
 	 */
-	public boolean isActive(){
-		return motor.getMovementState().equals(MovementState.ACTIVE);
-	}
-
-	/**
-	 * Gets the state of the elevator
-	 *
-	 * @return MovementState value
-	 */
-	public MovementState getState() {
-		return motor.getMovementState();
+	public ElevatorMotor getMotor() {
+		return motor;
 	}
 
 	/**
@@ -229,29 +216,24 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// If request is an elevator request
 		if(serviceRequest instanceof ElevatorRequest){
 			// Set time of request
-			this.requestTime = requestTime((ElevatorRequest) serviceRequest);
+			// Request Properties
+			double requestTime = requestTime((ElevatorRequest) serviceRequest);
 
 			// Set floor of request
-			this.requestFloor = ((ElevatorRequest) serviceRequest).getDesiredFloor();
+			int requestFloor = ((ElevatorRequest) serviceRequest).getDesiredFloor();
 
 			// Set direction of request
-			this.requestedDirection = serviceRequest.getDirection();
+			Direction requestedDirection = serviceRequest.getDirection();
 
-			if(requestedDirection == Direction.UP){
-				this.moveUp();
+			motor.setMovementState(MovementState.ACTIVE);
+			while (currentFloor != requestFloor) {
+				setCurrentFloor(motor.move(currentFloor, requestFloor, requestedDirection));
 			}
-			else if(requestedDirection == Direction.DOWN){
-				this.moveDown();
-			}
-			else if(requestedDirection == Direction.STOP){
-				this.stop();
-			}
-		}
-		else if(serviceRequest instanceof FloorRequest){
+			// Set to idle once floor reached
+			motor.stop();
+		} else if(serviceRequest instanceof FloorRequest) {
 			// do something
 		}
-		// Set to idle once floor reached
-		motor.setMovementState(MovementState.IDLE);
 	}
 
 	/**
@@ -266,9 +248,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Gets the expected time of a new request for the current elevator
+	 * based on distance.
 	 *
-	 * @param elevatorRequest
-	 * @return
+	 * @param elevatorRequest an elevatorRequest from a floor
+	 * @return a double containing the time to fulfil the request
 	 */
 	public double requestTime(ElevatorRequest elevatorRequest) {
 		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
@@ -277,55 +261,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		} else {
 			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
 		}
-	}
-
-	/**
-	 * Stops the elevator
-	 */
-	public void stop(){
-		// Set state and direction
-		motor.setMovementState(MovementState.IDLE);
-		this.setDirection(Direction.STOP);
-
-		System.out.println("Status: Stopped");
-	}
-
-	/**
-	 * Simulates the elevator moving up
-	 */
-	public void moveUp(){
-		// Set state and direction
-		motor.setMovementState(MovementState.ACTIVE);
-		this.setDirection(Direction.UP);
-
-		// Simulate time
-		try{
-			Thread.sleep((long) requestTime);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		// Update location
-		setCurrentFloor(getCurrentFloor() + Math.abs(getCurrentFloor() - requestFloor));
-	}
-
-	/**
-	 * Simulates the elevator moving down
-	 */
-	public void moveDown(){
-		// Set state and direction
-		motor.setMovementState(MovementState.ACTIVE);
-		setDirection(Direction.DOWN);
-
-		// Simulate time
-		try{
-			Thread.sleep((long) requestTime);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		// Update location
-		setCurrentFloor(getCurrentFloor() - Math.abs(getCurrentFloor() - requestFloor));
 	}
 
 	/**
@@ -350,10 +285,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while(true){
-			while(!isActive()){
-				if(request != null && request.getDesiredFloor() != currentFloor){
-					processRequest(request);
-				}
+			if(request != null && request.getDesiredFloor() != currentFloor){
+				processRequest(request);
 			}
 		}
 	}
