@@ -199,7 +199,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 			motor.setMovementState(MovementState.ACTIVE);
 			while (currentFloor != requestFloor) {
-				setCurrentFloor(motor.move(currentFloor, requestedDirection));
+				setCurrentFloor(motor.move(currentFloor, requestFloor, requestedDirection));
 			}
 			// Set to idle once floor reached
 			motor.stop();

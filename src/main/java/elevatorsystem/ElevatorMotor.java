@@ -59,25 +59,28 @@ public class ElevatorMotor {
 	/**
 	 * Simulates elevator movement.
 	 */
-	public int move(int currentFloor, Direction requestDirection) {
+	public int move(int currentFloor, int requestFloor, Direction requestDirection) {
 
 //		try{
 //			Thread.sleep((long) requestTime);
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
 //		}
+		int floorDifference = currentFloor - requestFloor;
+		int nextFloor = currentFloor;
 
-		switch (requestDirection) {
-			case UP:
-				setDirection(Direction.UP);
-				return currentFloor + 1;
-			case DOWN:
-				setDirection(Direction.DOWN);
-				return currentFloor - 1;
-			default:
-				setDirection(Direction.STOP);
-				return 0;
+		// if floor is above
+		if (floorDifference < 0) {
+			setDirection(Direction.UP);
+			nextFloor += 1;
+		// floor is below
+		} else if (floorDifference > 0) {
+			setDirection(Direction.DOWN);
+			nextFloor -= 1;
+		} else {
+			setDirection(Direction.STOP);
 		}
+		return nextFloor;
 	}
 
 	/**
