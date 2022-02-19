@@ -280,7 +280,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 
 		// Update location
-		this.setCurrentFloor(this.getCurrentFloor() + requestFloor);
+		setCurrentFloor(getCurrentFloor() + Math.abs(getCurrentFloor() - requestFloor));
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void moveDown(){
 		// Set state and direction
 		motor.setMovementState(MovementState.ACTIVE);
-		this.setDirection(Direction.DOWN);
+		setDirection(Direction.DOWN);
 
 		// Simulate time
 		try{
@@ -299,7 +299,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 
 		// Update location
-		this.setCurrentFloor(this.getCurrentFloor() - requestFloor);
+		setCurrentFloor(getCurrentFloor() - Math.abs(getCurrentFloor() - requestFloor));
 	}
 
 	/**
