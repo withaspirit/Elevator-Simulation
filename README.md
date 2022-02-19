@@ -132,7 +132,9 @@ Note that this project is set up as a Maven project.
   
   The FloorsQueue is the data structure used to store the floors to visit by an elevator. It uses two priority queues, one in ascending order and one in descending order for the floors to visit in the corresponding direction. Also, it has an extra queue, which temporarily saves the floors that were missed when going in a direction and swaps them to this direction queue when this queue has visited all of its floors.
 
-  The ElevatorSelectAlgorithm is an algorithm to select the best elevator to perform a new elevator request. The current implementation first checks for idle elevators and makes them perform requests. If all elevators are active then it will prioritise elevators based on expected completion of each elevator's queue time, the direction that the elevator is traveling, and if the new request is in between the current floor and destination floor of each elevator.
+  The ElevatorSelectAlgorithm is an algorithm to select the best elevator to perform a new elevator request. The current implementation first checks for idle elevators and makes them perform requests. If all elevators are active then it will prioritize elevators based on expected completion of each elevator's queue time, the direction that the elevator is traveling, and if the new request is in between the current floor and destination floor of each elevator.
+
+  The ElevatorServiceAlgorithm is an algorithm to perform appropriate actions for each type of request that the elevator receives.
 
   ### Contributions
 
