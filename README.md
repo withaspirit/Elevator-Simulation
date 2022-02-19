@@ -127,6 +127,8 @@ Note that this project is set up as a Maven project.
   [Elevator Description]
 
   [ElevatorMotor Description]
+  
+  The FloorsQueue is the data structure used to store the floors to visit by an elevator. It uses two priority queues, one in ascending order and one in descending order for the floors to visit in the corresponding direction. Also, it has an extra queue, which temporarily saves the floors that were missed when going in a direction and swaps them to this direction queue when this queue has visited all of its floors. 
 
   ### Contributions
 
