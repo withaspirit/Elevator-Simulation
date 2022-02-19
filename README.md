@@ -145,5 +145,13 @@ Note that this project is set up as a Maven project.
   | Brady Norton | MovementState, ElevatorMotor, Elevator Properties, Elevator Movement | Elevator Movement State Machine Diagram |
   | Julian Obando Velez | FloorsQueue, FloorsQueueTest, ElevatorMotorTest | | | 
   | Liam Tripp | MovementState, Elevator, ApproachEvent, SystemEvent |  | Requirements Analysis, System Design, Delegating Tasks, Code Review
+  
+  #### UML State Machine Diagram for Service Algorithm
+
+  ![Elevator_Service_Algorithm drawio](https://user-images.githubusercontent.com/72238857/154823114-e9cef20e-3e09-4f46-947e-410c7e1a37e0.png)
+
+  #### UML State Machine Diagram for Movement Algorithm
+
+  ![Iteration_2_-_Elevator_State_Machine](https://user-images.githubusercontent.com/72238857/154823152-b08a9599-aa06-4256-a7a8-1a40c1235297.png)
 
   </details>
