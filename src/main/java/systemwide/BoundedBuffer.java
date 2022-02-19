@@ -1,6 +1,6 @@
 package systemwide;
 
-import requests.ServiceRequest;
+import requests.SystemEvent;
 
 /**
  * BoundedBuffer for managing Thread-Safe messaging between system components
@@ -12,7 +12,7 @@ public class BoundedBuffer {
 
     // buffer capacity
     private static final int SIZE = 5;
-    private final ServiceRequest[] buffer = new ServiceRequest[SIZE];
+    private final SystemEvent[] buffer = new SystemEvent[SIZE];
     private int inIndex = 0, outIndex = 0, count = 0;
 
     // If true, there is room for at least one object in the buffer.
@@ -31,12 +31,12 @@ public class BoundedBuffer {
     }
 
     /**
-     * Adds the item to the end of the ring buffer.
+     * Adds a SystemEvent to the end of the ring buffer.
      *
      * @param item a request sent to the buffer
-     * @param origin the system from which the request came
+     * @param origin the thread from which the request came
      */
-    public synchronized void addLast(ServiceRequest item, Thread origin)
+    public synchronized void addLast(SystemEvent item, Thread origin)
     {
         while (!writeable) {
             try { 
@@ -57,13 +57,13 @@ public class BoundedBuffer {
     }
 
     /**
-     * Removes the first item from the ring buffer
+     * Removes the first SystemEvent from the ring buffer
      *
-     * @param origin the system making the request to remove an object from the buffer
+     * @param origin the thread making the request to remove an object from the buffer
      */
-    public synchronized ServiceRequest removeFirst(Thread origin)
+    public synchronized SystemEvent removeFirst(Thread origin)
     {
-        ServiceRequest item;
+        SystemEvent item;
         
         while (!readable || identicalOrigin(buffer[outIndex], origin)) {
             try { 
@@ -89,11 +89,11 @@ public class BoundedBuffer {
     /**
      * Determines whether the request's origin is the same as the provided origin.
      *
-     * @param request the topmost request in the buffer
-     * @param origin the origin of the system attempting to remove an object
+     * @param request the topmost SystemEvent in the buffer
+     * @param origin the thread that is attempting to remove a SystemEvent
      * @return true if successful, false otherwise
      */
-    public boolean identicalOrigin(ServiceRequest request, Thread origin) {
+    public boolean identicalOrigin(SystemEvent request, Thread origin) {
         return origin == request.getOrigin();
     }
 

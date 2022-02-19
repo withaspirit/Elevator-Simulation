@@ -18,18 +18,18 @@ public class FloorsQueue {
 	 * Constructor for the class
 	 */
 	public FloorsQueue() {
-		this.upwardRequests = new PriorityQueue<Integer>();
-		this.downwardRequests = new PriorityQueue<Integer>(Collections.reverseOrder());
+		this.upwardRequests = new PriorityQueue<>();
+		this.downwardRequests = new PriorityQueue<>(Collections.reverseOrder());
 		this.missedRequests = new LinkedList<>();
 	}
 
 	/**
 	 * Adds a floor to be visited
-	 * 
-	 * @param floorNum  the number of the floor to be visited
+	 *  @param floorNum  the number of the floor to be visited
+	 * @param desiredFloor the floor that a person travels to
 	 * @param direction the direction the elevator comes to the floor
 	 */
-	public void addFloor(int floorNum, int currFloor, Direction direction) {
+	public void addFloor(int floorNum, int currFloor, int desiredFloor, Direction direction) {
 		if (floorNum < 0) {
 			throw new RuntimeException("Invalid floor number");
 		}
@@ -37,19 +37,24 @@ public class FloorsQueue {
 		if (direction == Direction.UP) {
 			if (floorNum > currFloor) {
 				upwardRequests.add(floorNum);
+				upwardRequests.add(desiredFloor);
 			} else {
 				missedRequests.add(floorNum);
+				missedRequests.add(desiredFloor);
 			}
 
 		} else if (direction == Direction.DOWN) {
 			if (floorNum < currFloor) {
 				downwardRequests.add(floorNum);
+				downwardRequests.add(desiredFloor);
 			} else {
 				missedRequests.add(floorNum);
+				missedRequests.add(desiredFloor);
 			}
 		} else {
 			throw new RuntimeException("Direction is invalid");
 		}
+		System.out.println("Floor #" + floorNum + " QueueUP# "+ upwardRequests.size()+ " QueueDOWN# "+ downwardRequests.size()+"\n");
 	}
 
 	/**

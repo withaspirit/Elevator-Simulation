@@ -38,7 +38,7 @@ class SchedulerTest {
         floorBuffer = new BoundedBuffer();
 
         // Set up systems
-        scheduler = new Scheduler(elevatorBuffer, floorBuffer);
+        scheduler = new Scheduler(floorBuffer, elevatorBuffer);
         elevatorSubsystem = new ElevatorSubsystem(elevatorBuffer);
         floorSubsystem = new FloorSubsystem(floorBuffer);
         schedulerThread = new Thread(scheduler);
@@ -56,7 +56,7 @@ class SchedulerTest {
         assertEquals(1, elevatorBuffer.getSize());
 
         // Elevator receives request from buffer
-        ServiceRequest result = elevatorSubsystem.receiveMessage(elevatorBuffer, elevatorThreadSubsystem);
+        ServiceRequest result = (ServiceRequest) elevatorSubsystem.receiveMessage(elevatorBuffer, elevatorThreadSubsystem);
         System.out.println(result);
         assertEquals(0, elevatorBuffer.getSize());
 
@@ -73,7 +73,7 @@ class SchedulerTest {
         assertEquals(1, floorBuffer.getSize());
 
         // Elevator receives request from buffer
-        ServiceRequest result = floorSubsystem.receiveMessage(floorBuffer, floorThreadSubsystem);
+        ServiceRequest result = (ServiceRequest) floorSubsystem.receiveMessage(floorBuffer, floorThreadSubsystem);
         assertEquals(0, floorBuffer.getSize());
 
         // Verify values
@@ -88,7 +88,7 @@ class SchedulerTest {
         elevatorSubsystem.sendMessage(serviceRequest, elevatorBuffer, elevatorThreadSubsystem);
 
         // Scheduler receives request from buffer
-        ServiceRequest result = scheduler.receiveMessage(elevatorBuffer, schedulerThread);
+        ServiceRequest result = (ServiceRequest) scheduler.receiveMessage(elevatorBuffer, schedulerThread);
 
         // Verify values
         assertEquals(LocalTime.NOON, result.getTime());
@@ -105,7 +105,7 @@ class SchedulerTest {
         floorSubsystem.sendMessage(serviceRequest, floorBuffer, floorThreadSubsystem);
 
         // Scheduler receives request from buffer
-        ServiceRequest result = scheduler.receiveMessage(floorBuffer, schedulerThread);
+        ServiceRequest result = (ServiceRequest) scheduler.receiveMessage(floorBuffer, schedulerThread);
 
         // Verify values
         assertEquals(LocalTime.NOON, result.getTime());

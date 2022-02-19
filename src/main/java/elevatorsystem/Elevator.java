@@ -2,10 +2,8 @@ package elevatorsystem;
 
 import requests.*;
 import systemwide.Direction;
-
 import java.time.LocalTime;
 import java.util.ArrayList;
-
 /**
  * Elevator is a model for simulating an elevator.
  *
@@ -23,13 +21,16 @@ import java.util.ArrayList;
 public class Elevator implements Runnable, SubsystemPasser {
 
 	// Elevator Subsystem
-	private ElevatorSubsystem subsystem;
+	private ElevatorSubsystem elevatorSubsystem;
 
 	// Elevator Measurements
 	public static final float MAX_SPEED = 2.67f; // meters/second
 	public static final float ACCELERATION = 0.304f; // meters/second^2
 	public static final float LOAD_TIME = 9.5f; // seconds
 	public static final float FLOOR_HEIGHT = 3.91f; // meters (22 steps/floor @ 0.1778 meters/step)
+	public static final double ACCELERATION_DISTANCE = Math.pow(MAX_SPEED, 2)/ (2 * ACCELERATION); // Vf^2 = Vi^2 + 2as therefore s = vf^2/2a
+	public static final double ACCELERATION_TIME = Math.sqrt((FLOOR_HEIGHT * 2) / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
+
 
 	// Elevator Properties
 
@@ -39,11 +40,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private Direction direction = Direction.UP;
 	private float speed;
 	private float displacement;
-
-	private final double queueTime;
+	private int elevatorNumber;
+	private double queueTime;
 
 	private final ElevatorMotor motor;
-
+	private Direction currentDirection;
+	private FloorsQueue floorsQueue;
+  
 	private ElevatorRequest request;
 
 	// list must be volatile so that thread checks if it's been updated
@@ -57,13 +60,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param elevatorSubsystem
 	 */
 	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
-		this.subsystem = elevatorSubsystem;
 		this.elevatorNumber = elevatorNumber;
+		this.elevatorSubsystem = elevatorSubsystem;
 		speed = 0;
 		displacement = 0;
 		direction = Direction.STOP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
+		floorsQueue = new FloorsQueue();
 		request = null;
 		requests = new ArrayList<>();
 	}
@@ -194,6 +198,22 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void setFloorDisplacement(float displacement) {
 		this.displacement = displacement;
 	}
+  
+  /**
+     * Adds the expected time it will take for the elevator to perform the
+	 * elevator request to the queueTime and adds a request to the queue.
+     *
+     * @param elevatorRequest an elevator request from the floorSubsystem
+     */
+    public void addRequest(ElevatorRequest elevatorRequest) {
+		queueTime = getExpectedTime(elevatorRequest);
+        if (floorsQueue.isDownqueueEmpty() && floorsQueue.isUpqueueEmpty()){
+            currentDirection = elevatorRequest.getDirection();
+        }
+		System.out.print("Elevator# " + elevatorNumber + " ");
+		floorsQueue.addFloor(elevatorRequest.getFloorNumber(), currentFloor, elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
+        motor.setMovementState(MovementState.ACTIVE);
+    }
 
 	/**
 	 * Processes a serviceRequest and moves based on the request type
@@ -245,12 +265,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public double requestTime(ElevatorRequest elevatorRequest) {
 		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
-		double ACCELERATION_DISTANCE = ACCELERATION * FLOOR_HEIGHT;
-		double ACCELERATION_TIME = Math.sqrt(FLOOR_HEIGHT * 2 / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
 		if (distance > ACCELERATION_DISTANCE * 2) {
 			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
 		} else {
-			return Math.sqrt(distance * 2 / ACCELERATION);
+			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
 		}
 	}
 
@@ -260,7 +278,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param approachEvent the ApproachEvent to be passed to the subsystem
 	 */
 	public void passApproachEvent(ApproachEvent approachEvent) {
-		subsystem.handleApproachEvent(approachEvent);
+		elevatorSubsystem.handleApproachEvent(approachEvent);
 	}
 
 	/**
