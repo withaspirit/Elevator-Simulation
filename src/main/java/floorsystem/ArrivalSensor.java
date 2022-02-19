@@ -23,7 +23,7 @@ public class ArrivalSensor {
    /**
 	* Check ApproachEvent's floorNumber with Floor's floorNumber and then allow the elevator to stop
 	*
-	* @param approachEvent the ApproachEvent to be passed to the subsystem
+	* @param approachEvent the ApproachEvent to be passed to the subsystem	
 	*/
 	public void checkFloorNumber(ApproachEvent approachEvent) {
 		if(approachEvent.getFloorNumber() == floorNumber) {
