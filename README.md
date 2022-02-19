@@ -126,7 +126,7 @@ Note that this project is set up as a Maven project.
 
   [ApproachEvent Description]
 
-  [Elevator Description]
+  The elevator receives new requests from the elevator Subsystem to perform actions on other parts of the elevator. With the current implementation a list of requests is stored in the elevator for any type on new request. Requests that are stored in the elevator are sent to the FloorQueue, elevator motor, or handled by the elevator if they involve the elevator's status. Once a request is complete, the elevator uses the elevatorSubsystem to send information to the floorSubsystem and necessary information involving the request.
 
   The Elevator Motor simulates the motor by keeping track of its state for requests like move and stop.
   
