@@ -61,12 +61,26 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.elevatorSubsystem = elevatorSubsystem;
 		speed = 0;
 		displacement = 0;
-		direction = Direction.STOP;
+		direction = Direction.NONE;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
 		request = null;
 		requests = new ArrayList<>();
+	}
+
+	/**
+	 * Checks if there are any more requests to process and processes
+	 * and new requests
+	 */
+	@Override
+	public void run() {
+		while(true){
+			if (!requests.isEmpty()) {
+				System.out.println("attempt to process");
+				processRequest(getNextRequest());
+			}
+		}
 	}
 
 	/**
@@ -291,19 +305,5 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
 		// do thing
-	}
-
-	/**
-	 * Checks if there are any more requests to process and processes
-	 * and new requests
-	 */
-	@Override
-	public void run() {
-		while(true){
-			if (!requests.isEmpty()) {
-				System.out.println("attempt to process");
-				processRequest(getNextRequest());
-			}
-		}
 	}
 }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * 
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class FloorSubsystem implements Runnable, ServiceRequestListener, SystemEventListener {
+public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
@@ -27,15 +27,6 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener, SystemE
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
 		floorList = new ArrayList<>();
-	}
-
-	/**
-	 * Adds a floor to the subsystem's list of floors.
-	 *
-	 * @param floor a floor
-	 */
-	public void addFloor(Floor floor) {
-		floorList.add(floor);
 	}
 
 	/**
@@ -59,6 +50,15 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener, SystemE
 				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");
 			}
 		}
+	}
+
+	/**
+	 * Adds a floor to the subsystem's list of floors.
+	 *
+	 * @param floor a floor
+	 */
+	public void addFloor(Floor floor) {
+		floorList.add(floor);
 	}
 
 	/**

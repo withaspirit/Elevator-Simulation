@@ -17,7 +17,7 @@ public class ElevatorMotor {
 	 */
 	public ElevatorMotor() {
 		this.movementState = MovementState.IDLE;
-		direction = Direction.STOP;
+		direction = Direction.NONE;
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class ElevatorMotor {
 			setDirection(Direction.DOWN);
 			nextFloor -= 1;
 		} else {
-			setDirection(Direction.STOP);
+			setDirection(Direction.NONE);
 		}
 		return nextFloor;
 	}
@@ -89,7 +89,7 @@ public class ElevatorMotor {
 	public void stop(){
 		// Set state and direction
 		setMovementState(MovementState.IDLE);
-		setDirection(Direction.STOP);
+		setDirection(Direction.NONE);
 
 		System.out.println("Status: Stopped");
 	}

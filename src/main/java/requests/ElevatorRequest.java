@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * ElevatorRequest is an event data structure for when a user presses an up/down
+ * ElevatorRequest is a data structure for when a user presses an up/down
  * button on a Floor.
  *
  * @author Liam Tripp, Ramit Mahajan, Ryan Dash
@@ -14,7 +14,6 @@ import java.time.format.DateTimeFormatter;
 public class ElevatorRequest extends ServiceRequest {
 
 	private final int desiredFloor;
-//	private String basicAction;
 
 	/**
 	 * Constructor for ElevatorRequest read from an input file.
@@ -30,17 +29,10 @@ public class ElevatorRequest extends ServiceRequest {
 		this.desiredFloor = desiredFloor;
 	}
 
-//	//TODO move to a different class
-//	public ElevatorRequest(String basicAction) {
-//		this.basicAction = basicAction;
-//	}
-
-	// do not use if created from floorRequest
-
 	/**
 	 * Returns the desired floor's number.
 	 *
-	 * @return desiredFloorNumber the number of the desired floor
+	 * @return desiredFloorNumber the number of a passenger's desired floor
 	 */
 	public int getDesiredFloor() {
 		return desiredFloor;

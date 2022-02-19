@@ -5,8 +5,7 @@ import systemwide.Direction;
 import java.time.LocalTime;
 
 /**
- * ServiceRequest is an abstract event data structure for when a user requests an
- * Elevator's service.
+ * ServiceRequest is a data structure for when a user requests anmElevator's service.
  *
  * @author Liam Tripp, Ramit Mahajan, Ryan Dash
  */
@@ -18,7 +17,7 @@ public class ServiceRequest extends SystemEvent {
 	/**
 	 * Constructor for ServiceRequest.
 	 *
-	 * @param time the time the Request was made
+	 * @param time the time the request was made
 	 * @param floorNumber the number of the floor on which the request was made
 	 * @param direction the direction selected by the user
 	 * @param origin the system from which the message originated
@@ -48,7 +47,9 @@ public class ServiceRequest extends SystemEvent {
 	}
 
 	/**
-	 * Sets the Request's direction to the provided one.
+	 * Sets the request's direction to the provided one.
+	 *
+	 * @param direction the direction to be changed for the request
 	 */
 	public void setDirection(Direction direction) {
 		this.direction = direction;

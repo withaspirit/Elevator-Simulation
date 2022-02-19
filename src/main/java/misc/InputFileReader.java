@@ -26,44 +26,6 @@ public class InputFileReader {
     }
 
     /**
-     * Creates an InputStreamReader for a file with the specified name.
-     * Prepend "[file's package]/" if necessary.
-     *
-     * @param name the name of the file (and optionally, its folder)
-     * @return inputStreamReader an InputStreamReader for the file
-     */
-    private InputStreamReader createInputStreamReader(String name) {
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(name);
-            assert inputStream != null;
-            // Specify CharSet as UTF-8
-            return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        } catch(Exception e) {
-            System.err.println(name + " was not found.");
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Returns a JSON file with the specified name as a JSONObject.
-     *
-     * @param name the name of the file (and optionally, its folder)
-     * @return JSONObject a JSON file as a JSONObject
-     */
-    public JSONObject getJSONFileAsObject(String name) {
-        try {
-            InputStreamReader inputStreamReader = createInputStreamReader(name + ".json");
-            JSONParser parser = new JSONParser();
-            Object obj = parser.parse(inputStreamReader);
-            return (JSONObject) obj;
-        } catch(Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
      * Reads an input file containing events that simulate passengers
      * making requests to travel up or down a floor using an elevator.
      *
@@ -92,6 +54,24 @@ public class InputFileReader {
     }
 
     /**
+     * Returns a JSON file with the specified name as a JSONObject.
+     *
+     * @param name the name of the file (and optionally, its folder)
+     * @return JSONObject a JSON file as a JSONObject
+     */
+    public JSONObject getJSONFileAsObject(String name) {
+        try {
+            InputStreamReader inputStreamReader = createInputStreamReader(name + ".json");
+            JSONParser parser = new JSONParser();
+            Object obj = parser.parse(inputStreamReader);
+            return (JSONObject) obj;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Creates an ElevatorRequest from a given String array.
      *
      * @param jsonObject a ServiceRequest as a JSONObject
@@ -116,5 +96,25 @@ public class InputFileReader {
      */
     public String[] convertJSONToStringArray(JSONObject jsonObject) {
         return ((String) jsonObject.get("event")).split(" ");
+    }
+
+    /**
+     * Creates an InputStreamReader for a file with the specified name.
+     * Prepend "[file's package]/" if necessary.
+     *
+     * @param name the name of the file (and optionally, its folder)
+     * @return inputStreamReader an InputStreamReader for the file
+     */
+    private InputStreamReader createInputStreamReader(String name) {
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(name);
+            assert inputStream != null;
+            // Specify CharSet as UTF-8
+            return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        } catch(Exception e) {
+            System.err.println(name + " was not found.");
+            e.printStackTrace();
+            return null;
+        }
     }
 }

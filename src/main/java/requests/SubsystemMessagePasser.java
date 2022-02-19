@@ -3,11 +3,11 @@ package requests;
 import systemwide.BoundedBuffer;
 
 /**
- * ServiceRequestListener allows ____ and ____ to respond to ServiceRequests.
+ * SubsystemMessagePasser allows ____ and ____ to respond to ServiceRequests.
  *
  * @author Liam Tripp, Ryan Dash
  */
-public interface ServiceRequestListener {
+public interface SubsystemMessagePasser {
 	/**
 	 * Adds an object to a buffer.
 	 *

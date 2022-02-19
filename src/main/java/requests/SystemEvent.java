@@ -3,7 +3,7 @@ package requests;
 import java.time.LocalTime;
 
 /**
- * System event is a generic event that indicates the time an event occurred
+ * SystemEvent is a generic event that indicates the time an event occurred
  * and the event's origin.
  *
  * @author Liam Tripp

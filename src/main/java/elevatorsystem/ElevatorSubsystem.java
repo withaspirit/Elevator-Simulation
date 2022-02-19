@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class ElevatorSubsystem implements Runnable, ServiceRequestListener, SystemEventListener {
+public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
     private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
     private final ArrayList<Elevator> elevatorList;
@@ -26,6 +26,27 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener, Syst
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.elevatorSubsystemBuffer = buffer;
 		elevatorList = new ArrayList<>();
+	}
+
+	/**
+	 * Simple message requesting and sending between subsystems.
+	 * ElevatorSubsystem
+	 * Sends: ApproachEvent
+	 * Receives: ApproachEvent, ElevatorRequest
+	 */
+	public void run() {
+		while (true) {
+			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
+			if (request instanceof ElevatorRequest elevatorRequest) {
+				int chosenElevator = chooseElevator(elevatorRequest);
+				// Choose elevator
+				// Move elevator
+				elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
+
+				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
+				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+			}
+		}
 	}
 
 	/**
@@ -96,25 +117,4 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener, Syst
 		}
 		return chosenBestElevator;
 	}
-
-	/**
-	 * Simple message requesting and sending between subsystems.
-	 * ElevatorSubsystem
-	 * Sends: ApproachEvent
-	 * Receives: ApproachEvent, ElevatorRequest
-	 */
-	public void run() {
-		while (true) {
-			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
-			if (request instanceof ElevatorRequest elevatorRequest) {
-				int chosenElevator = chooseElevator(elevatorRequest);
-				// Choose elevator
-				// Move elevator
-				elevatorList.get(chosenElevator-1).addRequest(elevatorRequest);
-
-				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
-         System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
-       }
-     }
-  }
 }
