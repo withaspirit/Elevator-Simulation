@@ -6,6 +6,8 @@ import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
 
+import java.util.ArrayList;
+
 /**
  * Structure instantiates the overall system.
  * 
@@ -71,9 +73,11 @@ public class Structure {
 		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
+		ArrayList<Elevator> elevatorList = new ArrayList<>();
 		for (int elevatorNumber = 0; elevatorNumber < numberOfElevators; elevatorNumber++) {
 			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
 			elevatorSubsystem.addElevator(elevator);
+			elevatorList.add(elevator);
 		}
 
 		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
@@ -93,6 +97,11 @@ public class Structure {
 		schedulerThread.start();
 		elevatorSubsystemThread.start();
 		floorSubsystemThread.start();
+
+		// Start elevator Threads
+		for (int i = 0; i < numberOfElevators; i++) {
+			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
+		}
 	}
 
 	public static void main(String[] args) {
