@@ -1,10 +1,9 @@
 package elevatorsystem;
 
+import requests.*;
 import systemwide.Direction;
-import elevatorsystem.MovementState;
 
-import java.util.TreeSet;
-
+import java.util.ArrayList;
 /**
  * Elevator is a model for simulating an elevator.
  *
@@ -13,43 +12,88 @@ import java.util.TreeSet;
  * 2. Only services one elevator shaft of a structure
  * 3. Has speed
  * 4. Can stop at floors
- * 5. Knows it's own location
+ * 5. Knows its own location
  * 6. Takes time for elevator to move
  * 7. travels at SPEED to traverse FLOOR HEIGHT per second
  *
  * @author Liam Tripp, Brady Norton
  */
-public class Elevator {
+public class Elevator implements Runnable, SubsystemPasser {
 
 	// Elevator Subsystem
-	private ElevatorSubsystem subsystem;
+	private ElevatorSubsystem elevatorSubsystem;
 
 	// Elevator Measurements
 	public static final float MAX_SPEED = 2.67f; // meters/second
 	public static final float ACCELERATION = 0.304f; // meters/second^2
 	public static final float LOAD_TIME = 9.5f; // seconds
 	public static final float FLOOR_HEIGHT = 3.91f; // meters (22 steps/floor @ 0.1778 meters/step)
+	public static final double ACCELERATION_DISTANCE = Math.pow(MAX_SPEED, 2)/ (2 * ACCELERATION); // Vf^2 = Vi^2 + 2as therefore s = vf^2/2a
+	public static final double ACCELERATION_TIME = Math.sqrt((FLOOR_HEIGHT * 2) / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
+
 
 	// Elevator Properties
-	private MovementState status;
+	private final int elevatorNumber;
 	private int currentFloor;
 	private Direction direction = Direction.UP;
 	private float speed;
 	private float displacement;
-	//private int elevatorNumber;
+	private double queueTime;
+
+	private final ElevatorMotor motor;
+	private Direction currentDirection;
+	private FloorsQueue floorsQueue;
+  
+	private ElevatorRequest request;
+
+	// list must be volatile so that thread checks if it's been updated
+	private volatile ArrayList<ServiceRequest> requests;
 
 	/**
 	 * Constructor for Elevator class
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
 	 *
-	 * @param subsystem
+	 * @param elevatorNumber the number of the elevator
+	 * @param elevatorSubsystem the elevator subsystem for elevators
 	 */
-	public Elevator(ElevatorSubsystem subsystem) {
-		this.subsystem = subsystem;
-		currentFloor = 1;
-		speed = ACCELERATION;
+	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
+		this.elevatorNumber = elevatorNumber;
+		this.elevatorSubsystem = elevatorSubsystem;
+		speed = 0;
 		displacement = 0;
-		status = MovementState.IDLE;
+		direction = Direction.STOP;
+		motor = new ElevatorMotor();
+		queueTime = 0.0;
+		floorsQueue = new FloorsQueue();
+		request = null;
+		requests = new ArrayList<>();
+	}
+
+	/**
+	 * Returns the elevator number
+	 *
+	 * @return an integer corresponding to the elevator's number
+	 */
+	public int getElevatorNumber() {
+		return elevatorNumber;
+	}
+
+	/**
+	 * Adds a new service request to the list of requests
+	 *
+	 * @param serviceRequest a service request for the elevator to perform
+	 */
+	public void addRequest(ServiceRequest serviceRequest) {
+		requests.add(serviceRequest);
+	}
+
+	/**
+	 * Returns the next request to perform
+	 *
+	 * @return a service request containing a request for the elevator to perform
+	 */
+	public ServiceRequest getNextRequest() {
+		return requests.remove(requests.size() - 1);
 	}
 
 	/**
@@ -73,21 +117,21 @@ public class Elevator {
 
 		// Using Kinematics equation: d = vt + (1/2)at^2
 		float part1 = speed*stopTime;
-		System.out.println("Part 1: " + part1);
+		// System.out.println("Part 1: " + part1);
 
 		float part2 = (float) ((0.5)*(ACCELERATION)*(Math.pow(stopTime,2)));
-		System.out.println("Part 2: " + part2);
+		// System.out.println("Part 2: " + part2);
 
 		return part1 - part2;
 	}
 
 	/**
-	 * Checks if the elevator is currently active (in motion)
+	 * Returns the motor associated with the Elevator.
 	 *
-	 * @return true if elevator is moving
+	 * @return elevatorMotor the elevatorMotor for the elevator
 	 */
-	public boolean isActive(){
-		return status.equals(MovementState.ACTIVE);
+	public ElevatorMotor getMotor() {
+		return motor;
 	}
 
 	/**
@@ -137,10 +181,15 @@ public class Elevator {
 
 	/**
 	 * Sets the speed of the elevator
-	 * @param speed
+	 *
+	 * @param speed the speed of the elevator
 	 */
 	public void setSpeed(float speed) {
 		this.speed = speed;
+	}
+
+	public void setRequest(ServiceRequest request){
+		this.request = (ElevatorRequest) request;
 	}
 
 	/**
@@ -161,4 +210,100 @@ public class Elevator {
 		this.displacement = displacement;
 	}
 
+	/**
+	 * Processes a serviceRequest and moves based on the request type
+	 *
+	 * @param serviceRequest the request that's sent to elevator
+	 */
+	public void processRequest(ServiceRequest serviceRequest){
+		// If request is an elevator request
+		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
+			// Set time of request
+			// Request Properties
+
+			queueTime = getExpectedTime(elevatorRequest);
+
+			// Set floor of request
+			int requestFloor = elevatorRequest.getDesiredFloor();
+
+			// Set direction of request
+			Direction requestedDirection = elevatorRequest.getDirection();
+
+			if (floorsQueue.isDownqueueEmpty() && floorsQueue.isUpqueueEmpty()){
+				currentDirection = elevatorRequest.getDirection();
+			}
+			System.out.print("Elevator# " + elevatorNumber + " ");
+			floorsQueue.addFloor(elevatorRequest.getFloorNumber(), currentFloor, elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
+			motor.setMovementState(MovementState.ACTIVE);
+
+			while (currentFloor != requestFloor) {
+				setCurrentFloor(motor.move(currentFloor, requestFloor, requestedDirection));
+			}
+			// Set to idle once floor reached
+			System.out.println("Elevator " + elevatorNumber + " current floor: " + getCurrentFloor());
+			motor.stop();
+		} else if(serviceRequest instanceof ApproachEvent approachEvent) {
+			// do something
+		}
+	}
+
+	/**
+	 * Gets the total expected time that the elevator will need to take to
+	 * perform its current requests along with the new elevatorRequest.
+	 *
+	 * @param elevatorRequest an elevator request from the floorSubsystem
+	 * @return a double containing the elevator's total expected queue time
+	 */
+	public double getExpectedTime(ElevatorRequest elevatorRequest) {
+		return queueTime + LOAD_TIME + requestTime(elevatorRequest);
+	}
+
+	/**
+	 * Gets the expected time of a new request for the current elevator
+	 * based on distance.
+	 *
+	 * @param elevatorRequest an elevatorRequest from a floor
+	 * @return a double containing the time to fulfil the request
+	 */
+	public double requestTime(ElevatorRequest elevatorRequest) {
+		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
+		if (distance > ACCELERATION_DISTANCE * 2) {
+			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
+		} else {
+			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
+		}
+	}
+
+	/**
+	 * Passes an ApproachEvent to the ElevatorSubsystem.
+	 *
+	 * @param approachEvent the ApproachEvent to be passed to the subsystem
+	 */
+	public void passApproachEvent(ApproachEvent approachEvent) {
+		elevatorSubsystem.handleApproachEvent(approachEvent);
+	}
+
+	/**
+	 * Receives an ApproachEvent from the Subsystem and returns it to the component.
+	 *
+	 * @param approachEvent the ApproachEvent to be received from the Subsystem
+	 */
+	@Override
+	public void receiveApproachEvent(ApproachEvent approachEvent) {
+		// do thing
+	}
+
+	/**
+	 * Checks if there are any more requests to process and processes
+	 * and new requests
+	 */
+	@Override
+	public void run() {
+		while(true){
+			if (!requests.isEmpty()) {
+				System.out.println("attempt to process");
+				processRequest(getNextRequest());
+			}
+		}
+	}
 }

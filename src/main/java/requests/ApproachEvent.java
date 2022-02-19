@@ -12,7 +12,7 @@ import java.time.LocalTime;
  */
 public class ApproachEvent extends ServiceRequest {
 
-    private int elevatorNumber;
+    private final int elevatorNumber;
     /**
      * Indicates whether an elevator should stop at a floor
      */
@@ -34,6 +34,17 @@ public class ApproachEvent extends ServiceRequest {
     }
 
     /**
+     * Constructor for ApproachEvent using an ElevatorRequest.
+     *
+     * @param elevatorRequest the request for which the approachEvent is made
+     * @param elevatorNumber the number of the Elevator servicing the ApproachEvent
+     */
+    public ApproachEvent(ElevatorRequest elevatorRequest, int elevatorNumber) {
+        this(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
+                elevatorRequest.getDirection(), elevatorNumber, Thread.currentThread());
+    }
+
+    /**
      * Returns the number of the Elevator that created the event.
      *
      * @return number the number of the elevator that created the event
@@ -47,7 +58,7 @@ public class ApproachEvent extends ServiceRequest {
      *
      * @return true if the elevator may stop, false otherwise
      */
-    public boolean getElevatorStopStatus() {
+    public boolean elevatorMayStop() {
         return elevatorMayStop;
     }
 

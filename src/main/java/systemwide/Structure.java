@@ -5,12 +5,13 @@ import elevatorsystem.ElevatorSubsystem;
 import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
-import systemwide.BoundedBuffer;
+
+import java.util.ArrayList;
 
 /**
  * Structure instantiates the overall system.
  * 
- * @author Liam Tripp, Julian
+ * @author Liam Tripp, Julian, Ryan Dash
  */
 public class Structure {
 	
@@ -71,15 +72,20 @@ public class Structure {
 		BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
 		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
+		numberOfElevators = 2;
+		numberOfFloors = 10;
+
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
-		for (int i = 0; i < numberOfElevators; i++) {
-			Elevator elevator = new Elevator(elevatorSubsystem);
+		ArrayList<Elevator> elevatorList = new ArrayList<>();
+		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
+			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
 			elevatorSubsystem.addElevator(elevator);
+			elevatorList.add(elevator);
 		}
 
 		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
 		for (int i = 0; i < numberOfFloors; i++) {
-			Floor floor = new Floor(i);
+			Floor floor = new Floor(i, floorSubsystem);
 			floorSubsystem.addFloor(floor);
 		}
 
@@ -94,6 +100,11 @@ public class Structure {
 		schedulerThread.start();
 		elevatorSubsystemThread.start();
 		floorSubsystemThread.start();
+
+		// Start elevator Threads
+		for (int i = 0; i < numberOfElevators; i++) {
+			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
+		}
 	}
 
 	public static void main(String[] args) {
