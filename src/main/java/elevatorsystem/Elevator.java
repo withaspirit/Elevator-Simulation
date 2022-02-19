@@ -42,10 +42,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private Direction currentDirection;
 	private final double queueTime;
 
-	// Request Properties
-	private double requestTime;
-	private int requestFloor;
-	private Direction requestedDirection;
 	private ElevatorRequest request;
 
 	/**
@@ -191,24 +187,24 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// If request is an elevator request
 		if(serviceRequest instanceof ElevatorRequest){
 			// Set time of request
-			this.requestTime = requestTime((ElevatorRequest) serviceRequest);
+			// Request Properties
+			double requestTime = requestTime((ElevatorRequest) serviceRequest);
 
 			// Set floor of request
-			this.requestFloor = ((ElevatorRequest) serviceRequest).getDesiredFloor();
+			int requestFloor = ((ElevatorRequest) serviceRequest).getDesiredFloor();
 
 			// Set direction of request
-			this.requestedDirection = serviceRequest.getDirection();
+			Direction requestedDirection = serviceRequest.getDirection();
 
 			motor.setMovementState(MovementState.ACTIVE);
 			while (currentFloor != requestFloor) {
-				currentFloor = motor.move(currentFloor, requestedDirection);
+				setCurrentFloor(motor.move(currentFloor, requestedDirection));
 			}
+			// Set to idle once floor reached
 			motor.stop();
 		} else if(serviceRequest instanceof FloorRequest) {
 			// do something
 		}
-		// Set to idle once floor reached
-		motor.setMovementState(MovementState.IDLE);
 	}
 
 	/**
@@ -260,10 +256,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while(true){
-			while(!motor.isActive()){
-				if(request != null && request.getDesiredFloor() != currentFloor){
-					processRequest(request);
-				}
+			if(request != null && request.getDesiredFloor() != currentFloor){
+				processRequest(request);
 			}
 		}
 	}
