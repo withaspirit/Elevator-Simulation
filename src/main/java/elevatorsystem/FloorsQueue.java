@@ -40,7 +40,7 @@ public class FloorsQueue {
 			} else {
 				missedRequests.add(floorNum);
 			}
-			
+
 		} else if (direction == Direction.DOWN) {
 			if (floorNum < currFloor) {
 				downwardRequests.add(floorNum);
@@ -64,14 +64,14 @@ public class FloorsQueue {
 		if (direction == Direction.UP) {
 			if (!upwardRequests.isEmpty()) {
 				floorVisited = upwardRequests.remove();
-				if (upwardRequests.isEmpty()) {    //It automatically swaps if the upward queue is emptied
-					swapQueues(direction);	
+				if (upwardRequests.isEmpty()) { // It automatically swaps if the upward queue is emptied
+					swapQueues(direction);
 				}
 			}
 		} else if (direction == Direction.DOWN) {
 			if (!downwardRequests.isEmpty()) {
 				floorVisited = downwardRequests.remove();
-				if (downwardRequests.isEmpty()) {  //It automatically swaps if the downward queue is emptied
+				if (downwardRequests.isEmpty()) { // It automatically swaps if the downward queue is emptied
 					swapQueues(direction);
 				}
 			}
@@ -124,8 +124,7 @@ public class FloorsQueue {
 		}
 		return status;
 	}
-	
-	
+
 	/**
 	 * Returns the occupancy status of the upward queue
 	 * 
@@ -134,7 +133,7 @@ public class FloorsQueue {
 	public boolean isUpqueueEmpty() {
 		return upwardRequests.isEmpty();
 	}
-	
+
 	/**
 	 * Returns the occupancy status of the downward queue
 	 * 
@@ -143,9 +142,9 @@ public class FloorsQueue {
 	public boolean isDownqueueEmpty() {
 		return downwardRequests.isEmpty();
 	}
-	
+
 	/**
-	 * Returns the occupancy status of the downward queue
+	 * Returns the occupancy status of the missed requests queue
 	 * 
 	 * @return status true if empty
 	 */
