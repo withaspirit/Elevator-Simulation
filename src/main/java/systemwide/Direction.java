@@ -10,7 +10,7 @@ public enum Direction {
 	DOWN("Down"),
 	STOP("Stop");
 
-	private String name;
+	private final String name;
 
 	/**
 	 * The constructor for Direction.

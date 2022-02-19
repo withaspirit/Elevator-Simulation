@@ -15,7 +15,7 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener, SystemE
 
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<ElevatorRequest> requests;
-	private ArrayList<Floor> floorList;
+	private final ArrayList<Floor> floorList;
 
 	/**
 	 * Constructor for FloorSubsystem.
@@ -53,7 +53,7 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener, SystemE
 				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
 				requests.remove(0);
 			}
-			ServiceRequest request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
+			SystemEvent request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
 			if (request instanceof FloorRequest floorRequest){
 				receive--;
 				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");
