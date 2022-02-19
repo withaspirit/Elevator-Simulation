@@ -103,6 +103,8 @@ public class ElevatorMotorTest {
 	@Test
 	void testIsIdle() {
 		// Test Idle
+		motor.setMovementState(MovementState.ACTIVE);
+		motor.setMovementState(MovementState.IDLE);
 		assertTrue(motor.isIdle());
 
 		// Test not Idle
