@@ -2,7 +2,6 @@ package elevatorsystem;
 
 import requests.*;
 import systemwide.Direction;
-import elevatorsystem.MovementState;
 
 import java.time.LocalTime;
 
@@ -37,10 +36,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private float speed;
 	private float displacement;
 	private int elevatorNumber;
+	private final double queueTime;
 
 	private final ElevatorMotor motor;
-	private Direction currentDirection;
-	private final double queueTime;
 
 	private ElevatorRequest request;
 
@@ -55,7 +53,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.subsystem = elevatorSubsystem;
 		this.elevatorNumber = elevatorNumber;
 		speed = 0;
-		currentDirection = Direction.STOP;
+		direction = Direction.STOP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		request = null;
@@ -95,12 +93,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the state of the elevator
+	 * Returns the motor associated with the Elevator.
 	 *
-	 * @return MovementState value
+	 * @return elevatorMotor the elevatorMotor for the elevator
 	 */
-	public MovementState getState() {
-		return motor.getMovementState();
+	public ElevatorMotor getMotor() {
+		return motor;
 	}
 
 	/**

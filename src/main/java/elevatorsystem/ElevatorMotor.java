@@ -115,11 +115,20 @@ public class ElevatorMotor {
 	}
 
 	/**
-	 * Checks if the elevator is currently active (in motion)
+	 * Checks if the elevator is currently active (in motion).
 	 *
-	 * @return true if elevator is moving
+	 * @return true if elevator is moving, false otherwise
 	 */
 	public boolean isActive(){
 		return getMovementState().equals(MovementState.ACTIVE);
+	}
+
+	/**
+	 * Determines whether the elevator is idle.
+	 *
+	 * @return true if the elevator is not moving, false otherwise
+	 */
+	public boolean isIdle() {
+		return getMovementState().equals(MovementState.IDLE);
 	}
 }
