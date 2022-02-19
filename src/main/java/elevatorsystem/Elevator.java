@@ -55,6 +55,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.subsystem = elevatorSubsystem;
 		this.elevatorNumber = elevatorNumber;
 		speed = 0;
+		currentDirection = Direction.STOP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		request = null;
@@ -219,9 +220,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Gets the expected time of a new request for the current elevator
+	 * based on distance.
 	 *
-	 * @param elevatorRequest
-	 * @return
+	 * @param elevatorRequest an elevatorRequest from a floor
+	 * @return a double containing the time to fulfil the request
 	 */
 	public double requestTime(ElevatorRequest elevatorRequest) {
 		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
