@@ -5,7 +5,7 @@ import systemwide.Direction;
 /**
  * ElevatorMotor is the mechanism that moves an Elevator. 
  * 
- * @author Liam Tripp
+ * @author Liam Tripp, Brady Norton
  */
 public class ElevatorMotor {
 
@@ -59,25 +59,28 @@ public class ElevatorMotor {
 	/**
 	 * Simulates elevator movement.
 	 */
-	public int move(int currentFloor, Direction requestDirection) {
+	public int move(int currentFloor, int requestFloor, Direction requestDirection) {
 
 //		try{
 //			Thread.sleep((long) requestTime);
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
 //		}
+		int floorDifference = currentFloor - requestFloor;
+		int nextFloor = currentFloor;
 
-		switch (requestDirection) {
-			case UP:
-				setDirection(Direction.UP);
-				return currentFloor + 1;
-			case DOWN:
-				setDirection(Direction.DOWN);
-				return currentFloor - 1;
-			default:
-				setDirection(Direction.STOP);
-				return 0;
+		// if floor is above
+		if (floorDifference < 0) {
+			setDirection(Direction.UP);
+			nextFloor += 1;
+		// floor is below
+		} else if (floorDifference > 0) {
+			setDirection(Direction.DOWN);
+			nextFloor -= 1;
+		} else {
+			setDirection(Direction.STOP);
 		}
+		return nextFloor;
 	}
 
 	/**
@@ -112,11 +115,20 @@ public class ElevatorMotor {
 	}
 
 	/**
-	 * Checks if the elevator is currently active (in motion)
+	 * Checks if the elevator is currently active (in motion).
 	 *
-	 * @return true if elevator is moving
+	 * @return true if elevator is moving, false otherwise
 	 */
 	public boolean isActive(){
 		return getMovementState().equals(MovementState.ACTIVE);
+	}
+
+	/**
+	 * Determines whether the elevator is idle.
+	 *
+	 * @return true if the elevator is not moving, false otherwise
+	 */
+	public boolean isIdle() {
+		return getMovementState().equals(MovementState.IDLE);
 	}
 }

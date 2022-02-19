@@ -2,7 +2,6 @@ package elevatorsystem;
 
 import requests.*;
 import systemwide.Direction;
-import elevatorsystem.MovementState;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -33,17 +32,20 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public static final float FLOOR_HEIGHT = 3.91f; // meters (22 steps/floor @ 0.1778 meters/step)
 
 	// Elevator Properties
+
+	private ElevatorSubsystem elevatorSubsystem;
+	private final int elevatorNumber;
 	private int currentFloor;
 	private Direction direction = Direction.UP;
 	private float speed;
 	private float displacement;
-	private int elevatorNumber;
 
-	private final ElevatorMotor motor;
-	private Direction currentDirection;
 	private final double queueTime;
 
+	private final ElevatorMotor motor;
+
 	private ElevatorRequest request;
+
 	// list must be volatile so that thread checks if it's been updated
 	private volatile ArrayList<SystemEvent> requests;
 
@@ -58,6 +60,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.subsystem = elevatorSubsystem;
 		this.elevatorNumber = elevatorNumber;
 		speed = 0;
+		displacement = 0;
+		direction = Direction.STOP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		request = null;
@@ -107,12 +111,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the state of the elevator
+	 * Returns the motor associated with the Elevator.
 	 *
-	 * @return MovementState value
+	 * @return elevatorMotor the elevatorMotor for the elevator
 	 */
-	public MovementState getState() {
-		return motor.getMovementState();
+	public ElevatorMotor getMotor() {
+		return motor;
 	}
 
 	/**
@@ -211,9 +215,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 			motor.setMovementState(MovementState.ACTIVE);
 			while (currentFloor != requestFloor) {
-				setCurrentFloor(motor.move(currentFloor, requestedDirection));
+				setCurrentFloor(motor.move(currentFloor, requestFloor, requestedDirection));
 			}
-			System.out.println("Elevator " + elevatorNumber + " new floor: " + getCurrentFloor());
 			// Set to idle once floor reached
 			motor.stop();
 		} else if(serviceRequest instanceof FloorRequest) {
@@ -233,9 +236,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Gets the expected time of a new request for the current elevator
+	 * based on distance.
 	 *
-	 * @param elevatorRequest
-	 * @return
+	 * @param elevatorRequest an elevatorRequest from a floor
+	 * @return a double containing the time to fulfil the request
 	 */
 	public double requestTime(ElevatorRequest elevatorRequest) {
 		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
