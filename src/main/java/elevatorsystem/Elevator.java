@@ -3,6 +3,7 @@ package elevatorsystem;
 import requests.ApproachEvent;
 import requests.SubsystemPasser;
 import requests.FloorRequest;
+import requests.ElevatorRequest;
 import requests.ServiceRequest;
 import systemwide.Direction;
 import elevatorsystem.MovementState;
@@ -35,25 +36,36 @@ public class Elevator implements SubsystemPasser {
 	public static final float FLOOR_HEIGHT = 3.91f; // meters (22 steps/floor @ 0.1778 meters/step)
 
 	// Elevator Properties
-	private MovementState status;
+
+	private ElevatorSubsystem elevatorSubsystem;
+	private final int elevatorNumber;
 	private int currentFloor;
-	private Direction direction = Direction.UP;
 	private float speed;
 	private float displacement;
-	//private int elevatorNumber;
+
+	private final ElevatorMotor motor;
+	private Direction currentDirection;
+	private final double queueTime;
 
 	/**
 	 * Constructor for Elevator class
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
 	 *
-	 * @param subsystem
+	 * @param elevatorNumber
+	 * @param elevatorSubsystem
 	 */
-	public Elevator(ElevatorSubsystem subsystem) {
-		this.subsystem = subsystem;
-		currentFloor = 1;
-		speed = ACCELERATION;
+	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
+		this.elevatorSubsystem = elevatorSubsystem;
+		this.elevatorNumber = elevatorNumber;
+		speed = 0;
 		displacement = 0;
-		status = MovementState.IDLE;
+		currentDirection = Direction.STOP;
+		motor = new ElevatorMotor();
+		queueTime = 0.0;
+	}
+
+	public int getElevatorNumber() {
+		return elevatorNumber;
 	}
 
 	/**
@@ -90,8 +102,8 @@ public class Elevator implements SubsystemPasser {
 	 *
 	 * @return true if elevator is moving
 	 */
-	public boolean isActive(){
-		return status.equals(MovementState.ACTIVE);
+	public MovementState getState() {
+		return motor.getMovementState();
 	}
 
 	/**
@@ -117,17 +129,17 @@ public class Elevator implements SubsystemPasser {
 	 *
 	 * @return Direction
 	 */
-	public Direction getDirection(){
-		return direction;
+	public Direction getCurrentDirection() {
+		return currentDirection;
 	}
 
 	/**
 	 * Sets the direction of the elevator
 	 *
-	 * @param direction the elevator will be moving
+	 * @param currentDirection the elevator will be moving
 	 */
-	public void setDirection(Direction direction) {
-		this.direction = direction;
+	public void setCurrentDirection(Direction currentDirection) {
+		this.currentDirection = currentDirection;
 	}
 
 	/**
@@ -153,7 +165,7 @@ public class Elevator implements SubsystemPasser {
 	 *
 	 * @return displacement of elevator as float
 	 */
-	public float getFloorDisplacement(){
+	public float getFloorDisplacement() {
 		return displacement;
 	}
 
@@ -183,5 +195,34 @@ public class Elevator implements SubsystemPasser {
 	@Override
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
 		// do thing
+  }
+  
+  /**
+   * Gets the total expected time that the elevator will need to take to
+	 * perform its current requests along with the new elevatorRequest.
+	 *
+	 * @param elevatorRequest an elevator request from the floorSubsystem
+	 * @return a double containing the elevator's total expected queue time
+	 */
+	public double getExpectedTime(ElevatorRequest elevatorRequest) {
+		return queueTime + LOAD_TIME + requestTime(elevatorRequest);
+	}
+
+	/**
+	 * Gets the expected time of a new request for the current elevator
+	 * based on distance.
+	 *
+	 * @param elevatorRequest an elevatorRequest from a floor
+	 * @return a double containing the time to fulfil the request
+	 */
+	public double requestTime(ElevatorRequest elevatorRequest) {
+		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
+		double ACCELERATION_DISTANCE = ACCELERATION * FLOOR_HEIGHT;
+		double ACCELERATION_TIME = Math.sqrt(FLOOR_HEIGHT * 2 / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
+		if (distance > ACCELERATION_DISTANCE * 2) {
+			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
+		} else {
+			return Math.sqrt(distance * 2 / ACCELERATION);
+		}
 	}
 }
