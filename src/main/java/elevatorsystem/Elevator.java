@@ -3,6 +3,7 @@ package elevatorsystem;
 import requests.ElevatorRequest;
 import requests.FloorRequest;
 import requests.ServiceRequest;
+import requests.SystemEvent;
 import systemwide.Direction;
 
 /**
@@ -24,6 +25,8 @@ public class Elevator implements Runnable{
 	// Elevator Subsystem
 	private ElevatorSubsystem subsystem;
 
+	//
+
 	// Elevator Measurements
 	public static final float MAX_SPEED = 2.67f; // meters/second
 	public static final float ACCELERATION = 0.304f; // meters/second^2
@@ -35,13 +38,14 @@ public class Elevator implements Runnable{
 	private int currentFloor;
 	private Direction direction = Direction.UP;
 	private float speed;
-	private float displacement;
-	//private int elevatorNumber;
+	private int elevatorNumber;
 
 	// Request Properties
 	private double requestTime;
 	private int requestFloor;
 	private Direction requestedDirection;
+	private ElevatorRequest request;
+	private final double queueTime;
 
 	/**
 	 * Constructor for Elevator class
@@ -49,12 +53,13 @@ public class Elevator implements Runnable{
 	 *
 	 * @param subsystem
 	 */
-	public Elevator(ElevatorSubsystem subsystem) {
+	public Elevator(int elevatorNumber, ElevatorSubsystem subsystem) {
 		this.subsystem = subsystem;
 		currentFloor = 1;
 		speed = ACCELERATION;
-		displacement = 0;
 		status = MovementState.IDLE;
+		request = null;
+		queueTime = 0.0;
 	}
 
 	/**
@@ -75,63 +80,6 @@ public class Elevator implements Runnable{
 	public double getDistanceUntilNextFloor(int requestFloor){
 		return Math.abs((requestFloor - currentFloor)*3.91);
 	}
-
-	/**
-	 *
-	 * Attempt at method but just saw that it gets replaced by requestTime()
-	 *
-	 *
-	public int simulationTime(int requestFloor, Direction requestDirection){
-		// On current floor
-		if(requestFloor == currentFloor){
-			return 0;
-		}
-
-		// requested floor is higher than the current floor while the elevator's direction is down
-		if(requestFloor > currentFloor && direction == Direction.DOWN){
-			// Return -1 to signify that the elevator will complete this request
-			return -1;
-		}
-
-		// Requested floor is lower than the current floor while the elevator's direction is up
-		if(requestFloor < currentFloor && direction == Direction.UP){
-			// Return -1 to signify that the elevator will complete this request
-			return -1;
-		}
-
-		// Now calculate the time to the requestedFloor
-		// This is calculated using the kinematic equation: Vf = Vo + at
-		// Which can be rearranged to solve for time: t = (Vf - Vo) / a
-		int seconds = 0;
-		float currSpeed = speed;
-		double distanceBetweenFloors = getDistanceUntilNextFloor(requestFloor);
-		double distanceTraveled = 0;
-		boolean requestFloorReached = false;
-
-		// Loop
-		while(!requestFloorReached){
-			// If elevator is at the max speed then continue at that speed
-			if(currSpeed == MAX_SPEED){
-				speed += 0;
-			}
-			// If elevator not at max speed then increase by acceleration rate
-			else{
-				speed += ACCELERATION;
-			}
-			// Update the distance
-			distanceTraveled += speed;
-
-			// Update the time
-			seconds++;
-
-			if(distanceTraveled == distanceBetweenFloors){
-				requestFloorReached = true;
-			}
-		}
-		return seconds;
-	}
-	 **/
-
 
 	/**
 	 * Checks if the elevator is currently active (in motion)
@@ -182,7 +130,7 @@ public class Elevator implements Runnable{
 	 *
 	 * @return Direction
 	 */
-	public Direction getDirection(){
+	public Direction getCurrentDirection(){
 		return direction;
 	}
 
@@ -191,7 +139,7 @@ public class Elevator implements Runnable{
 	 *
 	 * @param direction the elevator will be moving
 	 */
-	public void setDirection(Direction direction) {
+	public void setCurrentDirection(Direction direction) {
 		this.direction = direction;
 	}
 
@@ -212,34 +160,13 @@ public class Elevator implements Runnable{
 		this.speed = speed;
 	}
 
-	// ALL METHODS RELATING TO MOVEMENT
-
-	/**
-	 * First attempt
-	 *
-	public synchronized void move(int requestedFloor){
-		while(this.status != MovementState.IDLE) {
-			try {
-				// Elevator requested a floor it's already at
-				if (requestedFloor == currentFloor) {
-					break;
-				}
-				// Elevator requested a floor that is above
-				else if (requestedFloor > currentFloor) {
-					Thread.sleep(5000);
-					int prevFloor = currentFloor;
-					currentFloor +=1;
-					System.out.println("Moved from: " + prevFloor + " to: " + currentFloor);
-				}
-			} catch(InterruptedException e){
-				e.printStackTrace();
-				System.out.println("Elevator Error");
-				System.exit(1);
-			}
-		}
+	public int getElevatorNumber() {
+		return elevatorNumber;
 	}
-	 **/
 
+	public void setRequest(ServiceRequest request){
+		this.request = (ElevatorRequest) request;
+	}
 
 	/**
 	 * Processes a serviceRequest and moves based on the request type
@@ -271,6 +198,19 @@ public class Elevator implements Runnable{
 		else if(serviceRequest instanceof FloorRequest){
 			// do something
 		}
+		// Set to idle once floor reached
+		status = MovementState.IDLE;
+	}
+
+	/**
+	 * Gets the total expected time that the elevator will need to take to
+	 * perform its current requests along with the new elevatorRequest.
+	 *
+	 * @param elevatorRequest an elevator request from the floorSubsystem
+	 * @return a double containing the elevator's total expected queue time
+	 */
+	public double getExpectedTime(ElevatorRequest elevatorRequest) {
+		return queueTime + LOAD_TIME + requestTime(elevatorRequest);
 	}
 
 	/**
@@ -295,7 +235,7 @@ public class Elevator implements Runnable{
 	public void stop(){
 		// Set state and direction
 		this.setState(MovementState.IDLE);
-		this.setDirection(Direction.STOP);
+		this.setCurrentDirection(Direction.STOP);
 
 		System.out.println("Status: Stopped");
 	}
@@ -306,7 +246,7 @@ public class Elevator implements Runnable{
 	public void moveUp(){
 		// Set state and direction
 		this.setState(MovementState.ACTIVE);
-		this.setDirection(Direction.UP);
+		this.setCurrentDirection(Direction.UP);
 
 		// Simulate time
 		try{
@@ -325,7 +265,7 @@ public class Elevator implements Runnable{
 	public void moveDown(){
 		// Set state and direction
 		this.setState(MovementState.ACTIVE);
-		this.setDirection(Direction.DOWN);
+		this.setCurrentDirection(Direction.DOWN);
 
 		// Simulate time
 		try{
@@ -337,12 +277,16 @@ public class Elevator implements Runnable{
 		// Update location
 		this.setCurrentFloor(this.getCurrentFloor() - requestFloor);
 	}
-	
+
 
 	@Override
 	public void run() {
 		while(true){
-			System.out.println("Processing");
+			while(!isActive()){
+				if(request != null && request.getDesiredFloor() != currentFloor){
+					processRequest(request);
+				}
+			}
 		}
 	}
 }
