@@ -59,7 +59,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.subsystem = elevatorSubsystem;
 		this.elevatorNumber = elevatorNumber;
 		speed = 0;
-		currentDirection = Direction.STOP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		request = null;
@@ -209,14 +208,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Set direction of request
 			this.requestedDirection = serviceRequest.getDirection();
 
-			if(requestedDirection == Direction.UP){
-				this.moveUp();
-			}
-			else if(requestedDirection == Direction.DOWN){
-				this.moveDown();
-			}
-			else if(requestedDirection == Direction.STOP){
-				this.stop();
+			while (currentFloor != requestFloor) {
+				currentFloor = motor.move(currentFloor, requestedDirection);
 			}
 		}
 		else if(serviceRequest instanceof FloorRequest){
@@ -262,44 +255,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.setDirection(Direction.STOP);
 
 		System.out.println("Status: Stopped");
-	}
-
-	/**
-	 * Simulates the elevator moving up
-	 */
-	public void moveUp(){
-		// Set state and direction
-		motor.setMovementState(MovementState.ACTIVE);
-		this.setDirection(Direction.UP);
-
-		// Simulate time
-		try{
-			Thread.sleep((long) requestTime);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		// Update location
-		setCurrentFloor(getCurrentFloor() + Math.abs(getCurrentFloor() - requestFloor));
-	}
-
-	/**
-	 * Simulates the elevator moving down
-	 */
-	public void moveDown(){
-		// Set state and direction
-		motor.setMovementState(MovementState.ACTIVE);
-		setDirection(Direction.DOWN);
-
-		// Simulate time
-		try{
-			Thread.sleep((long) requestTime);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		// Update location
-		setCurrentFloor(getCurrentFloor() - Math.abs(getCurrentFloor() - requestFloor));
 	}
 
 	/**
