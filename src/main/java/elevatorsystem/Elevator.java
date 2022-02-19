@@ -48,6 +48,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	// list must be volatile so that thread checks if it's been updated
 	private volatile ArrayList<ServiceRequest> requests;
+	private volatile ApproachEvent approachEvent;
 
 	/**
 	 * Constructor for Elevator class
@@ -251,7 +252,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 			motor.setMovementState(MovementState.ACTIVE);
 
 			while (currentFloor != requestFloor) {
-				setCurrentFloor(motor.move(currentFloor, requestFloor, requestedDirection));
+				int nextFloor = motor.move(currentFloor, requestFloor, requestedDirection);
+				setCurrentFloor(nextFloor);
 			}
 			// Set to idle once floor reached
 			System.out.println("Elevator " + elevatorNumber + " current floor: " + getCurrentFloor());
@@ -304,6 +306,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	@Override
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
-		// do thing
+		this.approachEvent = approachEvent;
 	}
 }
