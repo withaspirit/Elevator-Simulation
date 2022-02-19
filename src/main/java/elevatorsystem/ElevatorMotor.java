@@ -61,13 +61,11 @@ public class ElevatorMotor {
 	 */
 	public int move(int currentFloor, Direction requestDirection) {
 
-		/*
-		try{
-			Thread.sleep((long) requestTime);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		 */
+//		try{
+//			Thread.sleep((long) requestTime);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 
 		switch (requestDirection) {
 			case UP:
@@ -80,6 +78,17 @@ public class ElevatorMotor {
 				setDirection(Direction.STOP);
 				return 0;
 		}
+	}
+
+	/**
+	 * Stops the elevator.
+	 */
+	public void stop(){
+		// Set state and direction
+		setMovementState(MovementState.IDLE);
+		setDirection(Direction.STOP);
+
+		System.out.println("Status: Stopped");
 	}
 
 	/**
@@ -100,5 +109,14 @@ public class ElevatorMotor {
 		setDirection(Direction.DOWN);
 		// Update location
 		//setCurrentFloor(getCurrentFloor() - Math.abs(getCurrentFloor() - requestFloor));
+	}
+
+	/**
+	 * Checks if the elevator is currently active (in motion)
+	 *
+	 * @return true if elevator is moving
+	 */
+	public boolean isActive(){
+		return getMovementState().equals(MovementState.ACTIVE);
 	}
 }

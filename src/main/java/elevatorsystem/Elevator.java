@@ -98,15 +98,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Checks if the elevator is currently active (in motion)
-	 *
-	 * @return true if elevator is moving
-	 */
-	public boolean isActive(){
-		return motor.getMovementState().equals(MovementState.ACTIVE);
-	}
-
-	/**
 	 * Gets the state of the elevator
 	 *
 	 * @return MovementState value
@@ -208,11 +199,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Set direction of request
 			this.requestedDirection = serviceRequest.getDirection();
 
+			motor.setMovementState(MovementState.ACTIVE);
 			while (currentFloor != requestFloor) {
 				currentFloor = motor.move(currentFloor, requestedDirection);
 			}
-		}
-		else if(serviceRequest instanceof FloorRequest){
+			motor.stop();
+		} else if(serviceRequest instanceof FloorRequest) {
 			// do something
 		}
 		// Set to idle once floor reached
@@ -247,17 +239,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Stops the elevator
-	 */
-	public void stop(){
-		// Set state and direction
-		motor.setMovementState(MovementState.IDLE);
-		this.setDirection(Direction.STOP);
-
-		System.out.println("Status: Stopped");
-	}
-
-	/**
 	 * Passes an ApproachEvent to the ElevatorSubsystem.
 	 *
 	 * @param approachEvent the ApproachEvent to be passed to the subsystem
@@ -279,7 +260,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while(true){
-			while(!isActive()){
+			while(!motor.isActive()){
 				if(request != null && request.getDesiredFloor() != currentFloor){
 					processRequest(request);
 				}
