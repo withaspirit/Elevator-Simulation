@@ -10,12 +10,20 @@ import requests.*;
 
 
 public class ArrivalSensor {
+	/**
+	* Constructor for ArrivalSensor
+	* @param floorNumber floorNumber from Floor class 
+	*/
 	
 	private int floorNumber;
 	public ArrivalSensor(int floorNumber) {
 		this.floorNumber = floorNumber;
 		
 	}
+	/**
+	*Check ApproachEvent's floorNumber with Floor's floorNumber and then allow the elevator to stop
+	*/
+	
 	public void checkFloorNumber(ApproachEvent approachEvent) {
 		if(approachEvent.getFloorNumber()== floorNumber) {
 			approachEvent.allowElevatorStop();		
