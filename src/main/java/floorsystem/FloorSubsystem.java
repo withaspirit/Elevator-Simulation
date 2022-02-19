@@ -57,8 +57,6 @@ public class FloorSubsystem implements Runnable, ServiceRequestListener, SystemE
 			if (request instanceof FloorRequest floorRequest){
 				receive--;
 				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");
-			} else if (request instanceof ApproachEvent approachEvent) {
-				// pass to floorList.get((approachEvent.getFloorNumber());
 			}
 		}
 	}

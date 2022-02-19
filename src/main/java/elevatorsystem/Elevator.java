@@ -2,7 +2,7 @@ package elevatorsystem;
 
 import requests.*;
 import systemwide.Direction;
-import java.time.LocalTime;
+
 import java.util.ArrayList;
 /**
  * Elevator is a model for simulating an elevator.
@@ -33,14 +33,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 
 	// Elevator Properties
-
-	private ElevatorSubsystem elevatorSubsystem;
 	private final int elevatorNumber;
 	private int currentFloor;
 	private Direction direction = Direction.UP;
 	private float speed;
 	private float displacement;
-	private int elevatorNumber;
 	private double queueTime;
 
 	private final ElevatorMotor motor;
@@ -50,14 +47,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private ElevatorRequest request;
 
 	// list must be volatile so that thread checks if it's been updated
-	private volatile ArrayList<SystemEvent> requests;
+	private volatile ArrayList<ServiceRequest> requests;
 
 	/**
 	 * Constructor for Elevator class
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
 	 *
-	 * @param elevatorNumber
-	 * @param elevatorSubsystem
+	 * @param elevatorNumber the number of the elevator
+	 * @param elevatorSubsystem the elevator subsystem for elevators
 	 */
 	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
 		this.elevatorNumber = elevatorNumber;
@@ -72,17 +69,31 @@ public class Elevator implements Runnable, SubsystemPasser {
 		requests = new ArrayList<>();
 	}
 
+	/**
+	 * Returns the elevator number
+	 *
+	 * @return an integer corresponding to the elevator's number
+	 */
 	public int getElevatorNumber() {
 		return elevatorNumber;
 	}
 
-	public void addRequest(SystemEvent systemEvent) {
-		requests.add(systemEvent);
+	/**
+	 * Adds a new service request to the list of requests
+	 *
+	 * @param serviceRequest a service request for the elevator to perform
+	 */
+	public void addRequest(ServiceRequest serviceRequest) {
+		requests.add(serviceRequest);
 	}
 
-	public SystemEvent getNextFloor() {
-		ServiceRequest serviceRequest = (ServiceRequest) requests.remove(requests.size() - 1);
-		return serviceRequest;
+	/**
+	 * Returns the next request to perform
+	 *
+	 * @return a service request containing a request for the elevator to perform
+	 */
+	public ServiceRequest getNextRequest() {
+		return requests.remove(requests.size() - 1);
 	}
 
 	/**
@@ -171,7 +182,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Sets the speed of the elevator
 	 *
-	 * @param speed
+	 * @param speed the speed of the elevator
 	 */
 	public void setSpeed(float speed) {
 		this.speed = speed;
@@ -198,22 +209,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void setFloorDisplacement(float displacement) {
 		this.displacement = displacement;
 	}
-  
-  /**
-     * Adds the expected time it will take for the elevator to perform the
-	 * elevator request to the queueTime and adds a request to the queue.
-     *
-     * @param elevatorRequest an elevator request from the floorSubsystem
-     */
-    public void addRequest(ElevatorRequest elevatorRequest) {
-		queueTime = getExpectedTime(elevatorRequest);
-        if (floorsQueue.isDownqueueEmpty() && floorsQueue.isUpqueueEmpty()){
-            currentDirection = elevatorRequest.getDirection();
-        }
-		System.out.print("Elevator# " + elevatorNumber + " ");
-		floorsQueue.addFloor(elevatorRequest.getFloorNumber(), currentFloor, elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
-        motor.setMovementState(MovementState.ACTIVE);
-    }
 
 	/**
 	 * Processes a serviceRequest and moves based on the request type
@@ -222,25 +217,32 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void processRequest(ServiceRequest serviceRequest){
 		// If request is an elevator request
-		if(serviceRequest instanceof ElevatorRequest){
+		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Set time of request
 			// Request Properties
-			double requestTime = requestTime((ElevatorRequest) serviceRequest);
+
+			queueTime = getExpectedTime(elevatorRequest);
 
 			// Set floor of request
-			int requestFloor = ((ElevatorRequest) serviceRequest).getDesiredFloor();
+			int requestFloor = elevatorRequest.getDesiredFloor();
 
 			// Set direction of request
-			Direction requestedDirection = serviceRequest.getDirection();
+			Direction requestedDirection = elevatorRequest.getDirection();
 
+			if (floorsQueue.isDownqueueEmpty() && floorsQueue.isUpqueueEmpty()){
+				currentDirection = elevatorRequest.getDirection();
+			}
+			System.out.print("Elevator# " + elevatorNumber + " ");
+			floorsQueue.addFloor(elevatorRequest.getFloorNumber(), currentFloor, elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
 			motor.setMovementState(MovementState.ACTIVE);
+
 			while (currentFloor != requestFloor) {
 				setCurrentFloor(motor.move(currentFloor, requestFloor, requestedDirection));
 			}
 			// Set to idle once floor reached
 			System.out.println("Elevator " + elevatorNumber + " current floor: " + getCurrentFloor());
 			motor.stop();
-		} else if(serviceRequest instanceof FloorRequest) {
+		} else if(serviceRequest instanceof ApproachEvent approachEvent) {
 			// do something
 		}
 	}
@@ -291,12 +293,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// do thing
 	}
 
+	/**
+	 * checks if there are any more requests to process and processes
+	 * and new requests
+	 */
 	@Override
 	public void run() {
 		while(true){
 			if (!requests.isEmpty()) {
 				System.out.println("attempt to process");
-				processRequest((ServiceRequest) getNextFloor());
+				processRequest(getNextRequest());
 			}
 		}
 	}
