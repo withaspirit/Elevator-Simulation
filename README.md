@@ -116,12 +116,12 @@ Note that this project is set up as a Maven project.
 
   ### Contributions
 
-  | Member | Coding                                            | Documentation                                  | Misc 
-  |---------------------------------------------------|------------------------------------------------| ------------- |----
-  | Ryan Dash | ElevatorSelectAlgorithm, ElevatorServiceAlgorithm | ElevatorServiceAlgorithm State Machine Diagram | Code Review
-  | Ramit Mahajan |                                                   |                                                |
-  | Brady Norton |                                                   |                                                |
-  | Julian Obando Velez | FloorsQueue, FloorsQueueTest, ElevatorMotorTest              |                                                | |
-  | Liam Tripp |                                                   |                                                |
+  | Member | Coding | Documentation | Misc 
+  | ------ | ------ | ------------- |----
+  | Ryan Dash | ElevatorSelectAlgorithm, ElevatorServiceAlgorithm | ElevatorServiceAlgorithm State Machine Diagram | Code Review|
+  | Ramit Mahajan | | |
+  | Brady Norton | | |
+  | Julian Obando Velez | | |
+  | Liam Tripp | | |
 
   </details>
