@@ -64,10 +64,16 @@ public class FloorsQueue {
 		if (direction == Direction.UP) {
 			if (!upwardRequests.isEmpty()) {
 				floorVisited = upwardRequests.remove();
+				if (upwardRequests.isEmpty()) {    //It automatically swaps if the upward queue is emptied
+					swapQueues(direction);	
+				}
 			}
 		} else if (direction == Direction.DOWN) {
 			if (!downwardRequests.isEmpty()) {
 				floorVisited = downwardRequests.remove();
+				if (downwardRequests.isEmpty()) {  //It automatically swaps if the downward queue is emptied
+					swapQueues(direction);
+				}
 			}
 		} else {
 			throw new RuntimeException("Direction is invalid");
