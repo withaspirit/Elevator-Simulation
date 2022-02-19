@@ -112,16 +112,30 @@ Note that this project is set up as a Maven project.
 
   ### Description
 
-  Lorem ipsum
+  This iteration... 
+
+  The ElevatorSubsystem acts as an ElevatorController. It acts as intermediary between Elevators and the Scheduler. It also selects which Elevator takes a request. It sends ApproachEvents and receives ElevatorRequests and ApproachEvents. 
+
+  A SystemEvent class was created as a parent for all messages. This is because each message has a Thread from which they originated and a Time at which they occurred.
+
+  The Scheduler is an intermediary between the ElevatorSubsystem and the FloorSubsystem. It can receive any type of SystemEvent.
+
+  [FloorSubsystem Description].
+
+  [ApproachEvent Description]
+
+  [Elevator Description]
+
+  [ElevatorMotor Description]
 
   ### Contributions
 
   | Member | Coding | Documentation | Misc 
-  | ------ | ------ | ------------- |----
-  | Ryan Dash | ElevatorSelectAlgorithm, ElevatorServiceAlgorithm | ElevatorServiceAlgorithm State Machine Diagram | Code Review|
-  | Ramit Mahajan | | |
-  | Brady Norton | | |
-  | Julian Obando Velez | FloorsQueue FloorsQueueTest ElevatorMotorTest | |
-  | Liam Tripp | | |
+  |---------------------------------------------------|------------------------------------------------| ------------- |----
+  | Ryan Dash | ElevatorSelectAlgorithm, ElevatorServiceAlgorithm | ElevatorServiceAlgorithm State Machine Diagram | Code Review, Design Consultation
+  | Ramit Mahajan | Arrival Sensor | |
+  | Brady Norton | MovementState, ElevatorMotor, Elevator Properties, Elevator Movement | Elevator Movement State Machine Diagram |
+  | Julian Obando Velez | FloorsQueue, FloorsQueueTest, ElevatorMotorTest | | | 
+  | Liam Tripp | MovementState, Elevator, ApproachEvent, SystemEvent |  | Requirements Analysis, System Design, Delegating Tasks, Code Review
 
   </details>
