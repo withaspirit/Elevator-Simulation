@@ -1,9 +1,6 @@
 package elevatorsystem;
 
-import requests.ElevatorRequest;
-import requests.FloorRequest;
-import requests.ServiceRequestListener;
-import requests.SystemEvent;
+import requests.*;
 import systemwide.BoundedBuffer;
 import systemwide.Direction;
 
@@ -15,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
+public class ElevatorSubsystem implements Runnable, ServiceRequestListener, SystemEventListener {
 
     private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
     private final ArrayList<Elevator> elevatorList;
@@ -39,6 +36,34 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
         elevatorList.add(elevator);
     }
 
+	/**
+	 * Simple message requesting and sending between subsystems.
+	 * ElevatorSubsystem
+	 * Sends: ApproachEvent
+	 * Receives: ApproachEvent, ElevatorRequest
+	 */
+	public void run() {
+		 while (true) {
+       SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
+       if (request instanceof ElevatorRequest elevatorRequest) {
+         int chosenElevator = chooseElevator(elevatorRequest);
+         sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
+         System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+       } else if (request instanceof ApproachEvent approachEvent) {
+               // pass to ElevatorRequest
+       }
+     }
+  }
+
+	/**
+	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
+	 *
+	 * @param approachEvent the approach event for the system
+	 */
+	@Override
+	public void handleApproachEvent(ApproachEvent approachEvent) {
+		sendMessage(approachEvent, elevatorSubsystemBuffer, Thread.currentThread());
+	}
     /**
      * Returns an elevator number corresponding to an elevator that is
      * best suited to perform the given ElevatorRequest based on
@@ -87,19 +112,5 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
             chosenBestElevator = chosenWorstElevator;
         }
         return chosenBestElevator;
-    }
-
-    /**
-     * Simple message requesting and sending between subsystems.
-     */
-    public void run() {
-        while (true) {
-            SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
-            if (request instanceof ElevatorRequest elevatorRequest) {
-                int chosenElevator = chooseElevator(elevatorRequest);
-                sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
-                System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
-            }
-        }
     }
 }

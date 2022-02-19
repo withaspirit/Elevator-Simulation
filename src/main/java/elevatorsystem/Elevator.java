@@ -1,7 +1,14 @@
 package elevatorsystem;
 
+import requests.ApproachEvent;
+import requests.SubsystemPasser;
+import requests.FloorRequest;
 import requests.ElevatorRequest;
+import requests.ServiceRequest;
 import systemwide.Direction;
+import elevatorsystem.MovementState;
+
+import java.time.LocalTime;
 
 /**
  * Elevator is a model for simulating an elevator.
@@ -11,13 +18,13 @@ import systemwide.Direction;
  * 2. Only services one elevator shaft of a structure
  * 3. Has speed
  * 4. Can stop at floors
- * 5. Knows it's own location
+ * 5. Knows its own location
  * 6. Takes time for elevator to move
  * 7. travels at SPEED to traverse FLOOR HEIGHT per second
  *
  * @author Liam Tripp, Brady Norton
  */
-public class Elevator {
+public class Elevator implements SubsystemPasser {
 
 	// Elevator Subsystem
 	private ElevatorSubsystem subsystem;
@@ -55,6 +62,10 @@ public class Elevator {
 		currentDirection = Direction.STOP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
+	}
+
+	public int getElevatorNumber() {
+		return elevatorNumber;
 	}
 
 	/**
@@ -142,6 +153,7 @@ public class Elevator {
 
 	/**
 	 * Sets the speed of the elevator
+	 *
 	 * @param speed
 	 */
 	public void setSpeed(float speed) {
@@ -167,7 +179,26 @@ public class Elevator {
 	}
 
 	/**
-	 * Gets the total expected time that the elevator will need to take to
+	 * Passes an ApproachEvent to the ElevatorSubsystem.
+	 *
+	 * @param approachEvent the ApproachEvent to be passed to the subsystem
+	 */
+	public void passApproachEvent(ApproachEvent approachEvent) {
+		subsystem.handleApproachEvent(approachEvent);
+	}
+
+	/**
+	 * Receives an ApproachEvent from the Subsystem and returns it to the component.
+	 *
+	 * @param approachEvent the ApproachEvent to be received from the Subsystem
+	 */
+	@Override
+	public void receiveApproachEvent(ApproachEvent approachEvent) {
+		// do thing
+  }
+  
+  /**
+   * Gets the total expected time that the elevator will need to take to
 	 * perform its current requests along with the new elevatorRequest.
 	 *
 	 * @param elevatorRequest an elevator request from the floorSubsystem
@@ -193,9 +224,5 @@ public class Elevator {
 		} else {
 			return Math.sqrt(distance * 2 / ACCELERATION);
 		}
-	}
-
-	public int getElevatorNumber() {
-		return elevatorNumber;
 	}
 }
