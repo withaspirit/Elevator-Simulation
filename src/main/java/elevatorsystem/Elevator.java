@@ -218,6 +218,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				setCurrentFloor(motor.move(currentFloor, requestFloor, requestedDirection));
 			}
 			// Set to idle once floor reached
+			System.out.println("Elevator " + elevatorNumber + " current floor: " + getCurrentFloor());
 			motor.stop();
 		} else if(serviceRequest instanceof FloorRequest) {
 			// do something
@@ -277,7 +278,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		while(true){
 			if (!requests.isEmpty()) {
 				System.out.println("attempt to process");
-					processRequest((ServiceRequest) getNextFloor());
+				processRequest((ServiceRequest) getNextFloor());
 			}
 		}
 	}
