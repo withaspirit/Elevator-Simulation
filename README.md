@@ -120,7 +120,7 @@ Note that this project is set up as a Maven project.
 
   The Scheduler is an intermediary between the ElevatorSubsystem and the FloorSubsystem. It can receive any type of SystemEvent.
 
-  [FloorSubsystem Description].
+  The FloorSubsystem sends the ElevatorRequests obtained from the input file. It also receives ElevatorRequests back and sends ApproachEvents. All of which are sent through the scheduler.   
 
   [ApproachEvent Description]
 
