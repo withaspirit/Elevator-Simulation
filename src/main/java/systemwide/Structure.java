@@ -5,7 +5,8 @@ import elevatorsystem.ElevatorSubsystem;
 import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
-import systemwide.BoundedBuffer;
+
+import java.util.ArrayList;
 
 /**
  * Structure instantiates the overall system.
@@ -72,34 +73,35 @@ public class Structure {
 		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
-		Elevator elevator = new Elevator(1,elevatorSubsystem);
-		/**
-		for (int i = 0; i < numberOfElevators; i++) {
-			Elevator elevator = new Elevator(i,elevatorSubsystem);
+		ArrayList<Elevator> elevatorList = new ArrayList<>();
+		for (int elevatorNumber = 0; elevatorNumber < numberOfElevators; elevatorNumber++) {
+			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
 			elevatorSubsystem.addElevator(elevator);
+			elevatorList.add(elevator);
 		}
-		 **/
 
 		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
 		for (int i = 0; i < numberOfFloors; i++) {
-			Floor floor = new Floor(i);
+			Floor floor = new Floor(i, floorSubsystem);
 			floorSubsystem.addFloor(floor);
 		}
 
 		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer);
 
-		Thread schedulerThread, elevatorSubsystemThread, floorSubsystemThread, elevatorThread;
+		Thread schedulerThread, elevatorSubsystemThread, floorSubsystemThread;
 
 		schedulerThread = new Thread(scheduler, scheduler.getClass().getSimpleName());
 		elevatorSubsystemThread = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
 		floorSubsystemThread = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
-		elevatorThread = new Thread(elevator, elevator.getClass().getSimpleName());
-		elevatorSubsystem.addElevator(elevator);
 
 		schedulerThread.start();
 		elevatorSubsystemThread.start();
 		floorSubsystemThread.start();
-		elevatorThread.start();
+
+		// Start elevator Threads
+		for (int i = 0; i < numberOfElevators; i++) {
+			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
+		}
 	}
 
 	public static void main(String[] args) {

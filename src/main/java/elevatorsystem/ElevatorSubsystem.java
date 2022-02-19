@@ -12,10 +12,10 @@ import java.util.ArrayList;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
+public class ElevatorSubsystem implements Runnable, ServiceRequestListener, SystemEventListener {
 
-	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-	private ArrayList<Elevator> elevatorList;
+    private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
+    private final ArrayList<Elevator> elevatorList;
 	private ServiceRequest request;
 
 	/**
@@ -28,7 +28,6 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 		elevatorList = new ArrayList<>();
 	}
 
-
 	/**
 	 * Adds an elevator to the subsystem's list of elevators.
 	 *
@@ -36,6 +35,16 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 	 */
 	public void addElevator(Elevator elevator) {
 		elevatorList.add(elevator);
+	}
+
+	/**
+	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
+	 *
+	 * @param approachEvent the approach event for the system
+	 */
+	@Override
+	public void handleApproachEvent(ApproachEvent approachEvent) {
+		sendMessage(approachEvent, elevatorSubsystemBuffer, Thread.currentThread());
 	}
 
 	/**
@@ -61,7 +70,7 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 			} else if (elevator.getState() == MovementState.STUCK) {
 				System.err.println("Elevator is stuck");
 
-			} else if (elevator.getCurrentDirection() == elevatorRequest.getDirection()) {
+			} else if (elevator.getDirection() == elevatorRequest.getDirection()) {
 				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
 					if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
 						elevatorBestExpectedTime = tempExpectedTime;
@@ -90,21 +99,25 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener {
 
 	/**
 	 * Simple message requesting and sending between subsystems.
+	 * ElevatorSubsystem
+	 * Sends: ApproachEvent
+	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
 		while (true) {
 			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
-			if (request instanceof ElevatorRequest elevatorRequest) {
-				// Choose elevator
-				int chosenElevator = chooseElevator(elevatorRequest);
-
+       if (request instanceof ElevatorRequest elevatorRequest) {
+         int chosenElevator = chooseElevator(elevatorRequest);
+         // Choose elevator
 				// Move elevator
 				elevatorList.get(chosenElevator).processRequest(elevatorRequest);
 				System.out.println("Elevator " + chosenElevator + " new floor: " + elevatorList.get(chosenElevator).getCurrentFloor());
 
 				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
-				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
-			}
-		}
-	}
+         System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+       } else if (request instanceof ApproachEvent approachEvent) {
+               // pass to ElevatorRequest
+       }
+     }
+  }
 }
