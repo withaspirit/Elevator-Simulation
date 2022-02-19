@@ -125,24 +125,31 @@ public class FloorsQueue {
 		return status;
 	}
 	
+	
 	/**
-	 * Returns the occupancy status of the queues
+	 * Returns the occupancy status of the upward queue
 	 * 
-	 * @return status the status of the queues, 3 for both not empty, 2 for
-	 *         downwardRequest not empty, 1 for upwardRequest not empty, 0 for both
-	 *         empty
+	 * @return status true if empty
 	 */
-	public int isEmpty() {
-		int status = 0;
-
-		if (!upwardRequests.isEmpty() && !downwardRequests.isEmpty()) {
-			status = 3;
-		} else if (!downwardRequests.isEmpty()) {
-			status = 2;
-		} else if (!upwardRequests.isEmpty()) {
-			status = 1;
-		}
-
-		return status;
+	public boolean isUpqueueEmpty() {
+		return upwardRequests.isEmpty();
+	}
+	
+	/**
+	 * Returns the occupancy status of the downward queue
+	 * 
+	 * @return status true if empty
+	 */
+	public boolean isDownqueueEmpty() {
+		return downwardRequests.isEmpty();
+	}
+	
+	/**
+	 * Returns the occupancy status of the downward queue
+	 * 
+	 * @return status true if empty
+	 */
+	public boolean isMissedqueueEmpty() {
+		return missedRequests.isEmpty();
 	}
 }
