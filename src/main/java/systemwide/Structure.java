@@ -72,9 +72,6 @@ public class Structure {
 		BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
 		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
-		numberOfElevators = 2;
-		numberOfFloors = 10;
-
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
 		ArrayList<Elevator> elevatorList = new ArrayList<>();
 		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
