@@ -235,6 +235,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Set time of request
 			// Request Properties
+			ApproachEvent approachEvent = new ApproachEvent(elevatorRequest,
+					1, elevatorNumber);
+			passApproachEvent(approachEvent);
 
 			queueTime = getExpectedTime(elevatorRequest);
 

@@ -32,4 +32,16 @@ public interface SubsystemMessagePasser {
 		System.out.println(Thread.currentThread().getName() + " received: " + request);
 		return request;
 	}
+
+	/**
+	 * Removes and returns an object from a buffer.
+	 *
+	 * @param buffer a buffer which holds SystemEvents
+	 * @return the first SystemEvent from the buffer
+	 */
+	default SystemEvent receiveMessage(BoundedBuffer buffer, Thread origin, String type) {
+		SystemEvent request = buffer.removeFirst(origin, type);
+		System.out.println(Thread.currentThread().getName() + " received: " + request);
+		return request;
+	}
 }

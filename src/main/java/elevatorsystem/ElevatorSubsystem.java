@@ -70,6 +70,10 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		sendMessage(approachEvent, elevatorSubsystemBuffer, Thread.currentThread());
 	}
 
+	public ApproachEvent receiveApproachEvent(String type) {
+		return (ApproachEvent) receiveMessage(elevatorSubsystemBuffer, Thread.currentThread(), type);
+	}
+
 	/**
 	 * Returns an elevator number corresponding to an elevator that is
 	 * best suited to perform the given ElevatorRequest based on
