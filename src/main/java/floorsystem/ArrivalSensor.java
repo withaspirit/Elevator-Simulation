@@ -14,7 +14,7 @@ public class ArrivalSensor {
 	private int floorNumber;
 	public ArrivalSensor(int floorNumber) {
 		this.floorNumber = floorNumber;
-		// createButtons(floorNumber);
+		
 	}
 	public void checkFloorNumber(ApproachEvent approachEvent) {
 		if(approachEvent.getFloorNumber()== floorNumber) {
