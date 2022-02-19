@@ -294,7 +294,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * checks if there are any more requests to process and processes
+	 * Checks if there are any more requests to process and processes
 	 * and new requests
 	 */
 	@Override
