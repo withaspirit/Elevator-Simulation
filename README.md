@@ -121,7 +121,7 @@ Note that this project is set up as a Maven project.
   | Ryan Dash | ElevatorSelectAlgorithm, ElevatorServiceAlgorithm | ElevatorServiceAlgorithm State Machine Diagram | Code Review
   | Ramit Mahajan |                                                   |                                                |
   | Brady Norton |                                                   |                                                |
-  | Julian Obando Velez | FloorsQueue, FloorsQueueTest                      |                                                | |
+  | Julian Obando Velez | FloorsQueue, FloorsQueueTest, ElevatorMotorTest              |                                                | |
   | Liam Tripp |                                                   |                                                |
 
   </details>
