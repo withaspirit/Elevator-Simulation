@@ -110,9 +110,11 @@ public class ElevatorSubsystem implements Runnable, ServiceRequestListener, Syst
 				int chosenElevator = chooseElevator(elevatorRequest);
 				// Choose elevator
 				// Move elevator
-				elevatorList.get(chosenElevator).processRequest(elevatorRequest);
-				System.out.println("Elevator " + chosenElevator + " new floor: " + elevatorList.get(chosenElevator).getCurrentFloor());
-			}
-		}
-	}
+				elevatorList.get(chosenElevator-1).addRequest(elevatorRequest);
+
+				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
+         System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+       }
+     }
+  }
 }
