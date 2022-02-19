@@ -121,7 +121,7 @@ Note that this project is set up as a Maven project.
   | Ryan Dash | | |
   | Ramit Mahajan | | |
   | Brady Norton | | |
-  | Julian Obando Velez | | |
+  | Julian Obando Velez | FloorsQueue FloorsQueueTest | | |
   | Liam Tripp | | |
 
   </details>
