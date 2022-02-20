@@ -47,7 +47,7 @@ public class Elevator implements Runnable, SubsystemPasser {
   
 	private ElevatorRequest request;
 
-	// list must be volatile so that Origin checks if it's been updated
+	// list must be volatile so that origin checks if it's been updated
 	private volatile ArrayList<ServiceRequest> requests;
 	private volatile ApproachEvent approachEvent;
 
@@ -254,8 +254,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 			while (currentFloor != requestFloor) {
 
-				// note: changing where the Origin.currentOrigin() is placed doesn't change
-				// that elevator will be the Origin identified
 				int nextFloor = motor.move(currentFloor, requestFloor, requestedDirection);
 				ApproachEvent newApproachEvent = new ApproachEvent(elevatorRequest.getTime(), nextFloor,
 						elevatorRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
