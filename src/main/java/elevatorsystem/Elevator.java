@@ -48,6 +48,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	// list must be volatile so that thread checks if it's been updated
 	private volatile ArrayList<ServiceRequest> requests;
+	private volatile ApproachEvent approachEvent;
 
 	/**
 	 * Constructor for Elevator class
@@ -77,7 +78,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void run() {
 		while(true){
 			if (!requests.isEmpty()) {
-				System.out.println("attempt to process");
 				processRequest(getNextRequest());
 			}
 		}
@@ -235,6 +235,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Set time of request
 			// Request Properties
 
+
 			queueTime = getExpectedTime(elevatorRequest);
 
 			// Set floor of request
@@ -251,10 +252,25 @@ public class Elevator implements Runnable, SubsystemPasser {
 			motor.setMovementState(MovementState.ACTIVE);
 
 			while (currentFloor != requestFloor) {
-				setCurrentFloor(motor.move(currentFloor, requestFloor, requestedDirection));
+
+				// note: changing where the Thread.currentThread() is placed doesn't change
+				// that elevator will be the thread identified
+				int nextFloor = motor.move(currentFloor, requestFloor, requestedDirection);
+				ApproachEvent newApproachEvent = new ApproachEvent(elevatorRequest.getTime(), nextFloor,
+						elevatorRequest.getDirection(), elevatorNumber, Thread.currentThread());
+				passApproachEvent(newApproachEvent);
+
+				// stall while waiting to receive the approachEvent from ElevatorSubsystem
+				// the ApproachEvent is received in Elevator.receiveApproachEvent
+				while (approachEvent == null) {
+				}
+
+				setCurrentFloor(nextFloor);
+				System.out.println("Elevator moved to floor " + nextFloor);
 			}
+			approachEvent = null;
 			// Set to idle once floor reached
-			System.out.println("Elevator " + elevatorNumber + " current floor: " + getCurrentFloor());
+			System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
 			motor.stop();
 		} else if(serviceRequest instanceof ApproachEvent approachEvent) {
 			// do something
@@ -304,6 +320,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	@Override
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
-		// do thing
+		this.approachEvent = approachEvent;
 	}
 }

@@ -45,6 +45,8 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 
 				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
 				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+			} else if (request instanceof ApproachEvent approachEvent) {
+				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
 			}
 		}
 	}
