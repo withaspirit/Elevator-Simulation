@@ -145,7 +145,7 @@ Note that this project is set up as a Maven project.
   | Member | Coding | Documentation | Misc 
   |---------------------------------------------------|------------------------------------------------| ------------- |----
   | Ryan Dash | ElevatorSelectAlgorithm, ElevatorServiceAlgorithm | ElevatorServiceAlgorithm State Machine Diagram | Code Review, Design Consultation
-  | Ramit Mahajan | Arrival Sensor | UML Class Diagram |
+  | Ramit Mahajan | Arrival Sensor | UML Class Diagram | Code Review
   | Brady Norton | MovementState, ElevatorMotor, Elevator Properties, Elevator Movement | Elevator Movement State Machine Diagram | Code Review
   | Julian Obando Velez | FloorsQueue, FloorsQueueTest, ElevatorMotorTest | GitHub Release | Code Review
   | Liam Tripp | MovementState, ApproachEvent, SystemEvent, ApproachEvent ntegration with ElevatorMovement | UML Class Diagram Update, Rough ElevatorMovement State Machine Diagram  | Requirements Analysis, System Design, Delegating Tasks, Code Review
