@@ -1,5 +1,7 @@
 package requests;
 
+import systemwide.Origin;
+
 import java.time.LocalTime;
 
 /**
@@ -11,7 +13,7 @@ import java.time.LocalTime;
 public class SystemEvent {
 
     private final LocalTime time;
-    private Thread origin;
+    private Origin origin;
 
     /**
      * Constructor for SystemEvent.
@@ -19,7 +21,7 @@ public class SystemEvent {
      * @param time the time the event occurred was made
      * @param origin the system from which the message originated
      */
-    public SystemEvent(LocalTime time, Thread origin) {
+    public SystemEvent(LocalTime time, Origin origin) {
         this.time = time;
         this.origin = origin;
     }
@@ -34,11 +36,11 @@ public class SystemEvent {
     }
 
     /**
-     * Returns Origin, a Thread representing the Runnable system from which the event came from.
+     * Returns Origin, a Origin representing the Runnable system from which the event came from.
      *
      * @return origin, the Runnable system representing the event's origin
      */
-    public Thread getOrigin() {
+    public Origin getOrigin() {
         return origin;
     }
 
@@ -47,7 +49,7 @@ public class SystemEvent {
      *
      * @param origin represents the Runnable system from which the event came from
      */
-    public void setOrigin(Thread origin) {
+    public void setOrigin(Origin origin) {
         this.origin = origin;
     }
 }

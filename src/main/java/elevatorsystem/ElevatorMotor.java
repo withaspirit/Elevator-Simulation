@@ -62,7 +62,7 @@ public class ElevatorMotor {
 	public int move(int currentFloor, int requestFloor, Direction requestDirection) {
 
 //		try{
-//			Thread.sleep((long) requestTime);
+//			Origin.sleep((long) requestTime);
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
 //		}

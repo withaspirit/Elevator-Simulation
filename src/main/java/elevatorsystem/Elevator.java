@@ -2,6 +2,7 @@ package elevatorsystem;
 
 import requests.*;
 import systemwide.Direction;
+import systemwide.Origin;
 
 import java.util.ArrayList;
 /**
@@ -46,7 +47,7 @@ public class Elevator implements Runnable, SubsystemPasser {
   
 	private ElevatorRequest request;
 
-	// list must be volatile so that thread checks if it's been updated
+	// list must be volatile so that origin checks if it's been updated
 	private volatile ArrayList<ServiceRequest> requests;
 	private volatile ApproachEvent approachEvent;
 
@@ -253,11 +254,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 			while (currentFloor != requestFloor) {
 
-				// note: changing where the Thread.currentThread() is placed doesn't change
-				// that elevator will be the thread identified
 				int nextFloor = motor.move(currentFloor, requestFloor, requestedDirection);
 				ApproachEvent newApproachEvent = new ApproachEvent(elevatorRequest.getTime(), nextFloor,
-						elevatorRequest.getDirection(), elevatorNumber, Thread.currentThread());
+						elevatorRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
 				passApproachEvent(newApproachEvent);
 
 				// stall while waiting to receive the approachEvent from ElevatorSubsystem

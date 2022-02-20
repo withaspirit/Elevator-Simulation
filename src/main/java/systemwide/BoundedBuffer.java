@@ -34,9 +34,9 @@ public class BoundedBuffer {
      * Adds a SystemEvent to the end of the ring buffer.
      *
      * @param item a request sent to the buffer
-     * @param origin the thread from which the request came
+     * @param origin the origin from which the request came
      */
-    public synchronized void addLast(SystemEvent item, Thread origin)
+    public synchronized void addLast(SystemEvent item, Origin origin)
     {
         while (!writeable) {
             try { 
@@ -59,9 +59,9 @@ public class BoundedBuffer {
     /**
      * Removes the first SystemEvent from the ring buffer
      *
-     * @param origin the thread making the request to remove an object from the buffer
+     * @param origin the origin making the request to remove an object from the buffer
      */
-    public synchronized SystemEvent removeFirst(Thread origin)
+    public synchronized SystemEvent removeFirst(Origin origin)
     {
         SystemEvent item;
         
@@ -90,10 +90,10 @@ public class BoundedBuffer {
      * Determines whether the request's origin is the same as the provided origin.
      *
      * @param request the topmost SystemEvent in the buffer
-     * @param origin the thread that is attempting to remove a SystemEvent
+     * @param origin the origin that is attempting to remove a SystemEvent
      * @return true if successful, false otherwise
      */
-    public boolean identicalOrigin(SystemEvent request, Thread origin) {
+    public boolean identicalOrigin(SystemEvent request, Origin origin) {
         return origin == request.getOrigin();
     }
 

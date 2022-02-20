@@ -1,6 +1,7 @@
 package requests;
 
 import elevatorsystem.MovementState;
+import systemwide.Origin;
 
 import java.time.LocalTime;
 
@@ -8,8 +9,8 @@ public class StatusResponse extends SystemEvent{
     private final double expectedTime;
     private final MovementState status;
 
-    public StatusResponse(LocalTime currentTime, Thread currentThread, double expectedTime, MovementState status) {
-        super(currentTime, currentThread);
+    public StatusResponse(LocalTime currentTime, Origin currentOrigin, double expectedTime, MovementState status) {
+        super(currentTime, currentOrigin);
         this.expectedTime = expectedTime;
         this.status = status;
     }

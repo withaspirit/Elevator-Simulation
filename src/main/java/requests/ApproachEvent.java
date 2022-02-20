@@ -1,6 +1,7 @@
 package requests;
 
 import systemwide.Direction;
+import systemwide.Origin;
 
 import java.time.LocalTime;
 
@@ -27,7 +28,7 @@ public class ApproachEvent extends ServiceRequest {
      * @param elevatorNumber the number of the elevator that created the event
      * @param origin the system from which the message originated
      */
-    public ApproachEvent(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Thread origin) {
+    public ApproachEvent(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Origin origin) {
         super(time, floorNumber, direction, origin);
         this.elevatorNumber = elevatorNumber;
         this.elevatorMayStop = false;
@@ -42,7 +43,7 @@ public class ApproachEvent extends ServiceRequest {
      */
     public ApproachEvent(ElevatorRequest elevatorRequest, int floorNumber, int elevatorNumber) {
         this(elevatorRequest.getTime(), floorNumber,
-                elevatorRequest.getDirection(), elevatorNumber, Thread.currentThread());
+                elevatorRequest.getDirection(), elevatorNumber, elevatorRequest.getOrigin());
     }
 
     /**
