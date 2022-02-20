@@ -87,37 +87,6 @@ public class BoundedBuffer {
     }
 
     /**
-     * Removes the first SystemEvent from the ring buffer
-     *
-     * @param origin the thread making the request to remove an object from the buffer
-     */
-    public synchronized SystemEvent removeFirst(Thread origin, String type)
-    {
-        SystemEvent item;
-
-        while (!readable || identicalOrigin(buffer[outIndex], origin) ||
-                !type.equals(buffer[outIndex].getOrigin().getClass().getSimpleName())) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        // remove item from buffer
-        item = buffer[outIndex];
-        buffer[outIndex] = null;
-        writeable = true;
-        outIndex = (outIndex + 1) % SIZE;
-        count--;
-        if (count == 0)
-            readable = false;
-
-        notifyAll();
-
-        return item;
-    }
-
-    /**
      * Determines whether the request's origin is the same as the provided origin.
      *
      * @param request the topmost SystemEvent in the buffer
