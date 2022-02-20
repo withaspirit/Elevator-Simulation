@@ -229,7 +229,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @param serviceRequest the request that's sent to elevator
 	 */
-	public synchronized void processRequest(ServiceRequest serviceRequest){
+	public void processRequest(ServiceRequest serviceRequest){
 		// If request is an elevator request
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Set time of request
