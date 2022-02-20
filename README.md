@@ -73,6 +73,8 @@ Note that this project is set up as a Maven project.
 5. SchedulerTest.java does tests related to passing data between the systems
 6. DirectionTest does tests related to the Direction enum search function
 7. BoundedBufferTest does tests related tothe BoundedBuffer methods for Thread-Safe messaging
+8. ElevatorMotorTest does tests for the proper updating of states in the elevator motor class.
+9. FloorsQueueTest does test for realted to the proper manipulation of the queues.
 
 </details>
 
@@ -102,8 +104,8 @@ Note that this project is set up as a Maven project.
 
   #### UML Sequence Diagram
 
-  ![UML Sequence Diagram](https://user-images.githubusercontent.com/61635007/152667164-26f422be-fdd9-4bfb-81eb-9de66fbc9595.png)
-
+  ![UML Sequence Diagram](https://user-images.githubusercontent.com/61635007/154827908-c74e2fc4-68de-45b6-9b32-b8b85e857fe9.png)
+  
   </details>
 
 - ## Iteration 2
@@ -112,16 +114,51 @@ Note that this project is set up as a Maven project.
 
   ### Description
 
-  Lorem ipsum
+  This iteration implements Elevator Movement and the order in which Elevators serve ServiceRequests. Note that a bug occurs when the FloorSubsystem runs out of Requests to send, as the other Runnable systems are left waiting for FloorSubsystem to send something it doesn't have. A solution could be to implement one buffer instead of two.
+
+  <details>
+    <summary>Show Long Description</summary>
+
+  - The ElevatorSubsystem acts as an ElevatorController. It acts as intermediary between Elevators and the Scheduler. It also selects which elevator takes a request. It sends ApproachEvents and receives ElevatorRequests and ApproachEvents. 
+
+  - A SystemEvent class was created as a parent for all messages. This is because each message has a Thread from which they originated and a Time at which they occurred.
+
+  - The Scheduler is an intermediary between the ElevatorSubsystem and the FloorSubsystem. It can receive any type of SystemEvent.
+
+  - The FloorSubsystem sends the ElevatorRequests obtained from the input file. It also receives ElevatorRequests back and sends ApproachEvents. All of which are sent through the scheduler.   
+
+  - The elevator receives new requests from the elevator Subsystem to perform actions on other parts of the elevator. With the current implementation a list of requests is stored in the elevator for any type on new request. Requests that are stored in the elevator are sent to the FloorQueue, elevator motor, or handled by the elevator if they involve the elevator's status. Once a request is complete, the elevator uses the elevatorSubsystem to send information to the floorSubsystem and necessary information involving the request.
+
+   - ApproachEvent is a SystemEvent with a true/false value indicating whether an Elevator should stop at a Floor. The ApproachEvents are passed from Elevator to FloorSubsystem each time an Elevator is about to stop at a FLoor. An ArrivalSensor in Floor confirms whether the elevator should stop. The ApproachEvent is then sent back to the Elevator, which proceeds depending on whether the ApproachEvent allows it to stop.
+
+  - The Elevator Motor simulates movement and keeps track of the Elevator's direction and state of movement.
+  
+  - The FloorsQueue is the data structure used to store the floors to visit by an elevator. It uses two priority queues, one in ascending order and one in descending order for the floors to visit in the corresponding direction. Also, it has an extra queue, which temporarily saves the floors that were missed when going in a direction and swaps them to this direction queue when this queue has visited all of its floors.
+
+  - The ElevatorSelectAlgorithm is an algorithm to select the best elevator to perform a new elevator request. The current implementation first checks for idle elevators and makes them perform requests. If all elevators are active then it will prioritize elevators based on expected completion of each elevator's queue time, the direction that the elevator is traveling, and if the new request is in between the current floor and destination floor of each elevator.
+    
+  - The ElevatorServiceAlgorithm is an algorithm to perform appropriate actions for each type of request that the elevator receives.
+  </details>
 
   ### Contributions
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- |----
-  | Ryan Dash | | |
-  | Ramit Mahajan | | |
-  | Brady Norton | | |
-  | Julian Obando Velez | | |
-  | Liam Tripp | | |
+  | Ryan Dash | ElevatorSelectAlgorithm, ElevatorServiceAlgorithm | ElevatorServiceAlgorithm State Machine Diagram, UML Class Diagram, README | Code Review, Design Consultation
+  | Ramit Mahajan | Arrival Sensor | UML Class Diagram, README | Code Review
+  | Brady Norton | MovementState, ElevatorMotor, Elevator Properties, Elevator Movement | Elevator Movement State Machine Diagram, README| Code Review
+  | Julian Obando Velez | FloorsQueue, FloorsQueueTest, ElevatorMotorTest | GitHub Release, README | Code Review
+  | Liam Tripp | MovementState, ApproachEvent, SystemEvent, ApproachEvent ntegration with ElevatorMovement | UML Class Diagram, Rough ElevatorMovement State Machine Diagram, README | Requirements Analysis, System Design, Delegating Tasks, Code Review
+  
+  #### UML Class Diagram
+  ![image](https://user-images.githubusercontent.com/56605453/154828075-8269786d-84cd-4a64-8c7a-4cdaa294ca0e.png)
+  
+  #### UML State Machine Diagram for Service Algorithm
 
+  ![Elevator_Service_Algorithm drawio](https://user-images.githubusercontent.com/56605453/154823993-ff5cb3f7-f500-4696-9f78-be6f628d8068.png)
+  
+  #### UML State Machine Diagram for Movement Algorithm
+
+  ![Iteration_2_-_Elevator_State_Machine](https://user-images.githubusercontent.com/56605453/154823989-936bc6f0-0ebe-435c-99ae-941525b7de60.png)
+  
   </details>
