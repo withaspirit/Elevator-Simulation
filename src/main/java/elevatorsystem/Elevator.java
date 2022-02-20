@@ -78,7 +78,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void run() {
 		while(true){
 			if (!requests.isEmpty()) {
-				System.out.println("attempt to process");
 				processRequest(getNextRequest());
 			}
 		}
@@ -230,14 +229,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @param serviceRequest the request that's sent to elevator
 	 */
-	public void processRequest(ServiceRequest serviceRequest){
+	public synchronized void processRequest(ServiceRequest serviceRequest){
 		// If request is an elevator request
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Set time of request
 			// Request Properties
-			ApproachEvent approachEvent = new ApproachEvent(elevatorRequest,
-					1, elevatorNumber);
-			passApproachEvent(approachEvent);
+
 
 			queueTime = getExpectedTime(elevatorRequest);
 
@@ -255,11 +252,23 @@ public class Elevator implements Runnable, SubsystemPasser {
 			motor.setMovementState(MovementState.ACTIVE);
 
 			while (currentFloor != requestFloor) {
+
+				ApproachEvent newApproachEvent = new ApproachEvent(elevatorRequest,
+						1, elevatorNumber);
+				passApproachEvent(newApproachEvent);
+
+				// stall while waiting to receive the approachEvent from ElevatorSubsystem
+				// the ApproachEvent is received in Elevator.receiveApproachEvent
+				while (approachEvent == null) {
+				}
+
 				int nextFloor = motor.move(currentFloor, requestFloor, requestedDirection);
 				setCurrentFloor(nextFloor);
+				System.out.println("Elevator moved to floor " + nextFloor);
 			}
+			approachEvent = null;
 			// Set to idle once floor reached
-			System.out.println("Elevator " + elevatorNumber + " current floor: " + getCurrentFloor());
+			System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
 			motor.stop();
 		} else if(serviceRequest instanceof ApproachEvent approachEvent) {
 			// do something
