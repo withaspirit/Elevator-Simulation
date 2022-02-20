@@ -1,6 +1,7 @@
 package requests;
 
 import systemwide.Direction;
+import systemwide.Origin;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +25,7 @@ public class FloorRequest extends ServiceRequest {
 	 * @param elevatorNumber the number of the elevator taking the request
 	 * @param origin the system from which the message originated
 	 */
-	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Thread origin) {
+	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Origin origin) {
 		super(time ,floorNumber, direction, origin);
 		this.elevatorNumber = elevatorNumber;
 	}

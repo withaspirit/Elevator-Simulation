@@ -16,7 +16,6 @@ public class BoundedBufferTest {
 
 	BoundedBuffer buffer;
 	ServiceRequest request1, request2;
-	Thread origin, temp;
 	
 	/**
 	 *Initializes the objects for testing
@@ -25,10 +24,8 @@ public class BoundedBufferTest {
 	@BeforeEach
 	void setUp() {
 		buffer = new BoundedBuffer();
-		origin = Thread.currentThread();
-		temp = new Thread();
-		request1 = new ServiceRequest(LocalTime.NOON, 1, Direction.UP, origin);
-		request2 = new ServiceRequest(LocalTime.NOON, 2, Direction.DOWN, origin);
+		request1 = new ServiceRequest(LocalTime.NOON, 1, Direction.UP, Origin.FLOOR_SYSTEM);
+		request2 = new ServiceRequest(LocalTime.NOON, 2, Direction.DOWN, Origin.FLOOR_SYSTEM);
 	}
 
 	@Test
@@ -37,28 +34,28 @@ public class BoundedBufferTest {
 		assertEquals(0, buffer.getSize());
 
 		// Test size 1 after one service is added
-		buffer.addLast(request1, origin);
+		buffer.addLast(request1, Origin.FLOOR_SYSTEM);
 		assertEquals(1, buffer.getSize());
 
 		// Test size 5 when reaching limit
-		buffer.addLast(request1, origin);
-		buffer.addLast(request1, origin);
-		buffer.addLast(request1, origin);
-		buffer.addLast(request1, origin);
+		buffer.addLast(request1, Origin.FLOOR_SYSTEM);
+		buffer.addLast(request1, Origin.FLOOR_SYSTEM);
+		buffer.addLast(request1, Origin.FLOOR_SYSTEM);
+		buffer.addLast(request1, Origin.FLOOR_SYSTEM);
 		assertEquals(5, buffer.getSize());
 
 		// Test size 4 when removing a request
-		buffer.removeFirst(temp);
+		buffer.removeFirst(Origin.SCHEDULER);
 		assertEquals(4, buffer.getSize());
 	}
 
 	@Test
 	void testRemoveFirst() {
 		// test that it adds and removes the proper request
-		buffer.addLast(request1, origin);
-		buffer.addLast(request2, origin);
-		assertEquals(request1, buffer.removeFirst(temp));
-		assertEquals(request2, buffer.removeFirst(temp));
+		buffer.addLast(request1, Origin.FLOOR_SYSTEM);
+		buffer.addLast(request2, Origin.FLOOR_SYSTEM);
+		assertEquals(request1, buffer.removeFirst(Origin.SCHEDULER));
+		assertEquals(request2, buffer.removeFirst(Origin.SCHEDULER));
 	}
 
 	@Test
@@ -67,11 +64,11 @@ public class BoundedBufferTest {
 		assertTrue(buffer.isEmpty());
 
 		// test not empty with 1 request in buffer
-		buffer.addLast(request1, origin);
+		buffer.addLast(request1, Origin.FLOOR_SYSTEM);
 		assertFalse(buffer.isEmpty());
 
 		// test not empty with 2 requests in buffer
-		buffer.addLast(request1, origin);
+		buffer.addLast(request1, Origin.FLOOR_SYSTEM);
 		assertFalse(buffer.isEmpty());
 	}
 }

@@ -12,6 +12,7 @@ import org.json.simple.parser.JSONParser;
 import requests.ElevatorRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
+import systemwide.Origin;
 
 /**
  * InputFileReader takes a given file name and returns the file as a usable object.
@@ -85,7 +86,7 @@ public class InputFileReader {
         Direction direction = Direction.getDirection(data[2]);
         int floorToVisit = Integer.parseInt(data[3]);
         // FIXME: this is true only for origin
-        return new ElevatorRequest(time, floorNumber, direction, floorToVisit, Thread.currentThread());
+        return new ElevatorRequest(time, floorNumber, direction, floorToVisit, Origin.FLOOR_SYSTEM);
     }
 
     /**

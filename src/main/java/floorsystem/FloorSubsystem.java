@@ -3,6 +3,7 @@ package floorsystem;
 import misc.*;
 import requests.*;
 import systemwide.BoundedBuffer;
+import systemwide.Origin;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +18,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<SystemEvent> requests;
 	private final ArrayList<Floor> floorList;
+	private Origin origin;
 
 	/**
 	 * Constructor for FloorSubsystem.
@@ -28,6 +30,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");
 		floorList = new ArrayList<>();
+		origin = Origin.FLOOR_SYSTEM;
 	}
 
 	/**
@@ -44,10 +47,10 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 				// Sending Data to Scheduler
 				SystemEvent event = requests.remove(requests.size() -1);
 
-				sendMessage(event, floorSubsystemBuffer, Thread.currentThread());
-				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+				sendMessage(event, floorSubsystemBuffer, origin);
+				System.out.println(origin + " Sent Request Successful to Scheduler");
 			}
-			SystemEvent request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
+			SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
 			if (request instanceof FloorRequest floorRequest) {
 				System.out.println("FloorSubsystem: Received FloorRequest: in  Elevator# " +
 						floorRequest.getElevatorNumber() + " Arrived \n");
@@ -75,6 +78,6 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		sendMessage(approachEvent, floorSubsystemBuffer, Thread.currentThread());
+		sendMessage(approachEvent, floorSubsystemBuffer, origin);
 	}
 }

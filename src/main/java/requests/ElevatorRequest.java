@@ -1,6 +1,7 @@
 package requests;
 
 import systemwide.Direction;
+import systemwide.Origin;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +25,7 @@ public class ElevatorRequest extends ServiceRequest {
 	 * @param desiredFloor the floor the user wishes to visit
 	 * @param origin the system from which the message originated
 	 */
-	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction, int desiredFloor, Thread origin) {
+	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction, int desiredFloor, Origin origin) {
 		super(time ,floorNumber, direction, origin);
 		this.desiredFloor = desiredFloor;
 	}

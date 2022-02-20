@@ -3,6 +3,7 @@ package elevatorsystem;
 import requests.*;
 import systemwide.BoundedBuffer;
 import systemwide.Direction;
+import systemwide.Origin;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 
     private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
     private final ArrayList<Elevator> elevatorList;
-	private ServiceRequest request;
+	private Origin origin;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
@@ -26,6 +27,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.elevatorSubsystemBuffer = buffer;
 		elevatorList = new ArrayList<>();
+		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
 	/**
@@ -36,15 +38,15 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	public void run() {
 		while (true) {
-			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
+			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
 			if (request instanceof ElevatorRequest elevatorRequest) {
 				int chosenElevator = chooseElevator(elevatorRequest);
 				// Choose elevator
 				// Move elevator
 				elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
 
-				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Thread.currentThread());
-				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
+				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, origin);
+				System.out.println(origin + " Sent Request Successful to Scheduler");
 			} else if (request instanceof ApproachEvent approachEvent) {
 				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
 			}
@@ -67,7 +69,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		sendMessage(approachEvent, elevatorSubsystemBuffer, Thread.currentThread());
+		sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
 	}
 
 	/**
@@ -84,8 +86,8 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		int chosenBestElevator = 0;
 		int chosenWorstElevator = 0;
 		for (Elevator elevator : elevatorList) {
-//			sendMessage(new StatusRequest(elevatorRequest,Thread.currentThread(), i), elevatorSubsystemBuffer, Thread.currentThread());
-//			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Thread.currentThread());
+//			sendMessage(new StatusRequest(elevatorRequest,Origin.currentOrigin(), i), elevatorSubsystemBuffer, Origin.currentOrigin());
+//			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.currentOrigin());
 			double tempExpectedTime = elevator.getExpectedTime(elevatorRequest);
 			if (elevator.getMotor().isIdle()) {
 				return elevator.getElevatorNumber();

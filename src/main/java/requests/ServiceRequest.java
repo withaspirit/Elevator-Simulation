@@ -1,6 +1,7 @@
 package requests;
 
 import systemwide.Direction;
+import systemwide.Origin;
 
 import java.time.LocalTime;
 
@@ -22,7 +23,7 @@ public class ServiceRequest extends SystemEvent {
 	 * @param direction the direction selected by the user
 	 * @param origin the system from which the message originated
 	 */
-	public ServiceRequest(LocalTime time, int floorNumber, Direction direction, Thread origin) {
+	public ServiceRequest(LocalTime time, int floorNumber, Direction direction, Origin origin) {
 		super(time, origin);
 		this.floorNumber = floorNumber;
 		this.direction = direction;

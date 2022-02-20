@@ -88,17 +88,17 @@ public class Structure {
 
 		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer);
 
-		Thread schedulerThread, elevatorSubsystemThread, floorSubsystemThread;
+		Thread schedulerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
 
-		schedulerThread = new Thread(scheduler, scheduler.getClass().getSimpleName());
-		elevatorSubsystemThread = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
-		floorSubsystemThread = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
+		schedulerOrigin = new Thread(scheduler, scheduler.getClass().getSimpleName());
+		elevatorSubsystemOrigin = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
+		floorSubsystemOrigin = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
 
-		schedulerThread.start();
-		elevatorSubsystemThread.start();
-		floorSubsystemThread.start();
+		schedulerOrigin.start();
+		elevatorSubsystemOrigin.start();
+		floorSubsystemOrigin.start();
 
-		// Start elevator Threads
+		// Start elevator Origins
 		for (int i = 0; i < numberOfElevators; i++) {
 			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
 		}
