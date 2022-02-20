@@ -114,7 +114,7 @@ Note that this project is set up as a Maven project.
 
   ### Description
 
-  This iteration... 
+  This iteration implements Elevator Movement and the order in which Elevators serve ServiceRequests. Note that a bug occurs when the FloorSubsystem runs out of files to send, as the other Runnable systems are left waiting for FloorSubsystem to send something. A solution could be to implement one buffer instead of two.
 
   <details>
     <summary>Show Long Description</summary>
