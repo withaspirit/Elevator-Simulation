@@ -253,8 +253,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 			while (currentFloor != requestFloor) {
 
-				ApproachEvent newApproachEvent = new ApproachEvent(elevatorRequest,
-						1, elevatorNumber);
+				// note: changing where the Thread.currentThread() is placed doesn't change
+				// that elevator will be the thread identified
+				int nextFloor = motor.move(currentFloor, requestFloor, requestedDirection);
+				ApproachEvent newApproachEvent = new ApproachEvent(elevatorRequest.getTime(), nextFloor,
+						elevatorRequest.getDirection(), elevatorNumber, Thread.currentThread());
 				passApproachEvent(newApproachEvent);
 
 				// stall while waiting to receive the approachEvent from ElevatorSubsystem
@@ -262,7 +265,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 				while (approachEvent == null) {
 				}
 
-				int nextFloor = motor.move(currentFloor, requestFloor, requestedDirection);
 				setCurrentFloor(nextFloor);
 				System.out.println("Elevator moved to floor " + nextFloor);
 			}
