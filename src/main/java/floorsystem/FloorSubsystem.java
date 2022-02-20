@@ -5,6 +5,7 @@ import requests.*;
 import systemwide.BoundedBuffer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * FloorSubsystem manages the floors and their requests to the Scheduler
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
-	private final ArrayList<ElevatorRequest> requests;
+	private final ArrayList<SystemEvent> requests;
 	private final ArrayList<Floor> floorList;
 
 	/**
@@ -36,18 +37,24 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 * Receives: ApproachEvent
 	 */
 	public void run() {
-		int receive = requests.size();
-		while (receive != 0) {
+		Collections.reverse(requests);
+
+		while (true) {
 			if (!requests.isEmpty()) {
 				// Sending Data to Scheduler
-				sendMessage(requests.get(0), floorSubsystemBuffer, Thread.currentThread());
+				SystemEvent event = requests.remove(requests.size() -1);
+
+				sendMessage(event, floorSubsystemBuffer, Thread.currentThread());
 				System.out.println(Thread.currentThread().getName() + " Sent Request Successful to Scheduler");
-				requests.remove(0);
 			}
 			SystemEvent request = receiveMessage(floorSubsystemBuffer, Thread.currentThread());
-			if (request instanceof FloorRequest floorRequest){
-				receive--;
-				System.out.println("Expected Elevator# " + (floorRequest).getElevatorNumber() + " Arrived \n");
+			if (request instanceof FloorRequest floorRequest) {
+				System.out.println("FloorSubsystem: Received FloorRequest: in  Elevator# " +
+						floorRequest.getElevatorNumber() + " Arrived \n");
+			} else if (request instanceof ApproachEvent approachEvent) {
+				Floor floor = floorList.get(approachEvent.getFloorNumber());
+				floor.receiveApproachEvent(approachEvent);
+				requests.add(approachEvent);
 			}
 		}
 	}

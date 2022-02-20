@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
+import requests.SystemEvent;
 import systemwide.Direction;
 
 import java.time.LocalTime;
@@ -79,7 +80,7 @@ public class InputFileReaderTest {
     @Test
     void testReadInputFileEquality() {
         // Fill queue with inputs
-        ArrayList<ElevatorRequest> queue = inputFileReader.readInputFile("inputs");
+        ArrayList<SystemEvent> queue = inputFileReader.readInputFile("inputs");
 
         // Fill JSONArray with inputs
         initStandardInputArray();
@@ -89,7 +90,7 @@ public class InputFileReaderTest {
 
         // Assure contents of each method is the same
         for (int i = 0; i < queue.size(); i++) {
-            elevatorRequest1 = queue.get(i);
+            elevatorRequest1 = (ElevatorRequest) queue.get(i);
             jsonObject = (JSONObject) jsonArray.get(i);
             elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
             assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());

@@ -10,6 +10,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import requests.ElevatorRequest;
+import requests.SystemEvent;
 import systemwide.Direction;
 
 /**
@@ -32,8 +33,8 @@ public class InputFileReader {
      * @param name the name of the file for reading inputs
      * @return an ArrayList containing ElevatorRequests for the FloorSubsystem
      */
-    public ArrayList<ElevatorRequest> readInputFile(String name){
-        ArrayList<ElevatorRequest> queue = new ArrayList<>();
+    public ArrayList<SystemEvent> readInputFile(String name){
+        ArrayList<SystemEvent> queue = new ArrayList<>();
         JSONArray jsonArray = createJSONArray(name);
 
         for (Object obj: jsonArray) {
