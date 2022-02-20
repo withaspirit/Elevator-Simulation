@@ -158,4 +158,7 @@ Note that this project is set up as a Maven project.
 
   ![Iteration_2_-_Elevator_State_Machine](https://user-images.githubusercontent.com/56605453/154823989-936bc6f0-0ebe-435c-99ae-941525b7de60.png)
 
+  #### UML Class Diagram
+  ![image](https://user-images.githubusercontent.com/56605453/154828075-8269786d-84cd-4a64-8c7a-4cdaa294ca0e.png)
+  
   </details>
