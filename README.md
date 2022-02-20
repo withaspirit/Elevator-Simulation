@@ -150,6 +150,9 @@ Note that this project is set up as a Maven project.
   | Julian Obando Velez | FloorsQueue, FloorsQueueTest, ElevatorMotorTest | GitHub Release, README | Code Review
   | Liam Tripp | MovementState, ApproachEvent, SystemEvent, ApproachEvent ntegration with ElevatorMovement | UML Class Diagram, Rough ElevatorMovement State Machine Diagram, README | Requirements Analysis, System Design, Delegating Tasks, Code Review
   
+  #### UML Class Diagram
+  ![image](https://user-images.githubusercontent.com/56605453/154828075-8269786d-84cd-4a64-8c7a-4cdaa294ca0e.png)
+  
   #### UML State Machine Diagram for Service Algorithm
 
   ![Elevator_Service_Algorithm drawio](https://user-images.githubusercontent.com/56605453/154823993-ff5cb3f7-f500-4696-9f78-be6f628d8068.png)
@@ -157,8 +160,5 @@ Note that this project is set up as a Maven project.
   #### UML State Machine Diagram for Movement Algorithm
 
   ![Iteration_2_-_Elevator_State_Machine](https://user-images.githubusercontent.com/56605453/154823989-936bc6f0-0ebe-435c-99ae-941525b7de60.png)
-
-  #### UML Class Diagram
-  ![image](https://user-images.githubusercontent.com/56605453/154828075-8269786d-84cd-4a64-8c7a-4cdaa294ca0e.png)
   
   </details>
