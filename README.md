@@ -104,8 +104,8 @@ Note that this project is set up as a Maven project.
 
   #### UML Sequence Diagram
 
-  ![UML Sequence Diagram](https://user-images.githubusercontent.com/61635007/152667164-26f422be-fdd9-4bfb-81eb-9de66fbc9595.png)
-
+  ![UML Sequence Diagram](https://user-images.githubusercontent.com/61635007/154827908-c74e2fc4-68de-45b6-9b32-b8b85e857fe9.png)
+  
   </details>
 
 - ## Iteration 2
