@@ -148,10 +148,10 @@ Note that this project is set up as a Maven project.
   
   #### UML State Machine Diagram for Service Algorithm
 
-  ![img_1.png](img_1.png)
+  ![Elevator_Service_Algorithm drawio](https://user-images.githubusercontent.com/56605453/154823993-ff5cb3f7-f500-4696-9f78-be6f628d8068.png)
   
   #### UML State Machine Diagram for Movement Algorithm
 
-  ![img_2.png](img_2.png)
+  ![Iteration_2_-_Elevator_State_Machine](https://user-images.githubusercontent.com/56605453/154823989-936bc6f0-0ebe-435c-99ae-941525b7de60.png)
 
   </details>
