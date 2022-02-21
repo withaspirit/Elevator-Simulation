@@ -51,6 +51,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	// list must be volatile so that origin checks if it's been updated
 	private volatile CopyOnWriteArrayList<ServiceRequest> requests;
 	private volatile ApproachEvent approachEvent;
+	// variable for allowing / disallowing Elevator's message transfer
+	private boolean messageTransferEnabled;
 
 	/**
 	 * Constructor for Elevator class
@@ -70,6 +72,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		floorsQueue = new FloorsQueue();
 		request = null;
 		requests = new CopyOnWriteArrayList<>();
+		messageTransferEnabled = true;
 	}
 
 	/**
@@ -228,6 +231,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Toggles whether the elevator may send / receive messages
+	 * to and from the Scheduler.
+	 */
+	public void toggleMessageTransfer() {
+		messageTransferEnabled = !messageTransferEnabled;
+	}
+
+	/**
 	 * Processes a serviceRequest and moves based on the request type
 	 *
 	 * @param serviceRequest the request that's sent to elevator
@@ -264,22 +275,26 @@ public class Elevator implements Runnable, SubsystemPasser {
 //		floorsQueue.addFloor(serviceRequest.getFloorNumber(), requestFloor, currentFloor, serviceRequest.getDirection());
 //		motor.setMovementState(MovementState.ACTIVE);
 
+		// loop until Elevator has reached the requested floor
 		while (currentFloor != requestFloor) {
 
 			int nextFloor = motor.move(currentFloor, requestFloor, requestedDirection);
-			ApproachEvent newApproachEvent = new ApproachEvent(serviceRequest.getTime(), nextFloor,
-					serviceRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
-			passApproachEvent(newApproachEvent);
 
-			// stall while waiting to receive the approachEvent from ElevatorSubsystem
-			// the ApproachEvent is received in Elevator.receiveApproachEvent
-			while (approachEvent == null) {
+			if (messageTransferEnabled) {
+				// communicate with Scheduler to see if Elevator should stop at this floor
+				ApproachEvent newApproachEvent = new ApproachEvent(serviceRequest.getTime(), nextFloor,
+						serviceRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
+				passApproachEvent(newApproachEvent);
+				// stall while waiting to receive the approachEvent from ElevatorSubsystem
+				// [the ApproachEvent is received in Elevator.receiveApproachEvent]
+				while (approachEvent == null) {
+				}
+				approachEvent = null;
 			}
 
 			setCurrentFloor(nextFloor);
 			System.out.println("Elevator moved to floor " + nextFloor);
 		}
-		approachEvent = null;
 		// Set to idle once floor reached
 		System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
 		motor.stop();
