@@ -49,6 +49,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private ElevatorRequest request;
 
 	// list must be volatile so that origin checks if it's been updated
+	// functionally, this is a stack (FIFO)
 	private volatile CopyOnWriteArrayList<ServiceRequest> requests;
 	private volatile ApproachEvent approachEvent;
 	// variable for allowing / disallowing Elevator's message transfer
@@ -108,12 +109,22 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Returns the next request to perform
+	 * Returns the request at the front of the request list
+	 * and removes it from the list.
 	 *
-	 * @return a service request containing a request for the elevator to perform
+	 * @return serviceRequest a service request containing a request for the elevator to perform
 	 */
 	public ServiceRequest getNextRequest() {
 		return requests.remove(requests.size() - 1);
+	}
+
+	/**
+	 * Returns the number of requests the elevator has left to fulfill.
+	 *
+	 * @return numberOfRequests the number of requests the elevator has remaining
+	 */
+	public int getNumberOfRequests() {
+		return requests.size();
 	}
 
 	/**
