@@ -45,7 +45,7 @@ public class BoundedBufferTest {
 		assertEquals(5, buffer.getSize());
 
 		// Test size 4 when removing a request
-		buffer.removeFirst(Origin.SCHEDULER);
+		buffer.removeFirst(Origin.ELEVATOR_SYSTEM);
 		assertEquals(4, buffer.getSize());
 	}
 
@@ -54,8 +54,8 @@ public class BoundedBufferTest {
 		// test that it adds and removes the proper request
 		buffer.addLast(request1, Origin.FLOOR_SYSTEM);
 		buffer.addLast(request2, Origin.FLOOR_SYSTEM);
-		assertEquals(request1, buffer.removeFirst(Origin.SCHEDULER));
-		assertEquals(request2, buffer.removeFirst(Origin.SCHEDULER));
+		assertEquals(request1, buffer.removeFirst(Origin.ELEVATOR_SYSTEM));
+		assertEquals(request2, buffer.removeFirst(Origin.ELEVATOR_SYSTEM));
 	}
 
 	@Test

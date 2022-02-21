@@ -80,13 +80,13 @@ public class Structure {
 			elevatorList.add(elevator);
 		}
 
-		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
+		FloorSubsystem floorSubsystem = new FloorSubsystem(elevatorSubsystemBuffer);
 		for (int i = 0; i < numberOfFloors; i++) {
 			Floor floor = new Floor(i, floorSubsystem);
 			floorSubsystem.addFloor(floor);
 		}
 
-		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer);
+		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer);
 
 		Thread schedulerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
 
