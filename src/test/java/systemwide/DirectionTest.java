@@ -2,7 +2,6 @@ package systemwide;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import systemwide.Direction;
 
 /**
  * DirectionTest ensures that Direction's search method functions correctly.
