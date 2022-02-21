@@ -272,7 +272,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * Moves elevator to a floor, sending ApproachEvents just before a floor
 	 * is reached if allowed.
 	 *
-	 * @param serviceRequest
+	 * @param serviceRequest the request for which the elevator will move to
 	 */
 	public void moveToFloor(ServiceRequest serviceRequest) {
 		// Set time of request
@@ -303,7 +303,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 						serviceRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
 				passApproachEvent(newApproachEvent);
 				// stall while waiting to receive the approachEvent from ElevatorSubsystem
-				// [the ApproachEvent is received in Elevator.receiveApproachEvent]
+				// NOTE: the ApproachEvent is received through Elevator.receiveApproachEvent
 				while (approachEvent == null) {
 				}
 				approachEvent = null;
