@@ -236,7 +236,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Set time of request
 			// Request Properties
 
-
 			queueTime = getExpectedTime(elevatorRequest);
 
 			// Set floor of request
@@ -280,26 +279,27 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * Gets the total expected time that the elevator will need to take to
 	 * perform its current requests along with the new elevatorRequest.
 	 *
-	 * @param elevatorRequest an elevator request from the floorSubsystem
+	 * @param serviceRequest a request to visit a floor
 	 * @return a double containing the elevator's total expected queue time
 	 */
-	public double getExpectedTime(ElevatorRequest elevatorRequest) {
-		return queueTime + LOAD_TIME + requestTime(elevatorRequest);
+	public double getExpectedTime (ServiceRequest serviceRequest){
+		return queueTime + LOAD_TIME + requestTime(serviceRequest);
 	}
 
 	/**
 	 * Gets the expected time of a new request for the current elevator
 	 * based on distance.
 	 *
-	 * @param elevatorRequest an elevatorRequest from a floor
+	 * @param serviceRequest a serviceRequest to visit a floor
 	 * @return a double containing the time to fulfil the request
 	 */
-	public double requestTime(ElevatorRequest elevatorRequest) {
-		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
+	public double requestTime(ServiceRequest serviceRequest) {
+		double distance = Math.abs(serviceRequest.getFloorNumber() - currentFloor) * FLOOR_HEIGHT;
 		if (distance > ACCELERATION_DISTANCE * 2) {
 			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
 		} else {
-			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
+			// elevator accelerates and decelerates continuously
+			return Math.sqrt(distance * 2 / ACCELERATION);
 		}
 	}
 
