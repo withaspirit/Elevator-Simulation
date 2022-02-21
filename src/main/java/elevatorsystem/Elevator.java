@@ -257,6 +257,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 	}
 
+	/**
+	 * Moves elevator to a floor, sending ApproachEvents just before a floor
+	 * is reached if allowed.
+	 *
+	 * @param serviceRequest
+	 */
 	public void moveToFloor(ServiceRequest serviceRequest) {
 		// Set time of request
 		// Request Properties
