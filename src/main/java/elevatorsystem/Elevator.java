@@ -302,7 +302,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				ApproachEvent newApproachEvent = new ApproachEvent(serviceRequest.getTime(), nextFloor,
 						serviceRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
 				passApproachEvent(newApproachEvent);
-				// stall while waiting to receive the approachEvent from ElevatorSubsystem
+				// stall while waiting to receive the updated ApproachEvent
 				// NOTE: the ApproachEvent is received through Elevator.receiveApproachEvent
 				while (approachEvent == null) {
 				}

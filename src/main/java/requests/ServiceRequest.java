@@ -6,7 +6,7 @@ import systemwide.Origin;
 import java.time.LocalTime;
 
 /**
- * ServiceRequest is a data structure for when a user requests anmElevator's service.
+ * ServiceRequest is a data structure for when a user requests an Elevator's service.
  *
  * @author Liam Tripp, Ramit Mahajan, Ryan Dash
  */

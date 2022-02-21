@@ -3,9 +3,11 @@ package elevatorsystem;
 import misc.InputFileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import requests.ElevatorRequest;
 import requests.ServiceRequest;
 import requests.SystemEvent;
 import systemwide.BoundedBuffer;
+import systemwide.Origin;
 
 import java.util.ArrayList;
 
@@ -34,8 +36,10 @@ class ElevatorTest {
         InputFileReader inputFileReader = new InputFileReader();
         ArrayList<SystemEvent> eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
         for (SystemEvent event : eventList) {
-            ServiceRequest serviceRequest = (ServiceRequest) event;
-            elevator.addRequest(serviceRequest);
+            ElevatorRequest elevatorRequest = (ElevatorRequest) event;
+            // this set origin is defensive in case origin ends up affecting elevator request
+            elevatorRequest.setOrigin(Origin.ELEVATOR_SYSTEM);
+            elevator.addRequest(elevatorRequest);
         }
         // disallowed message passing
         elevator.toggleMessageTransfer();
@@ -44,7 +48,8 @@ class ElevatorTest {
     @Test
     void testElevatorGoesToCompletion() {
         while (elevator.getNumberOfRequests() != 0) {
-            ServiceRequest serviceRequest = elevator.getNextRequest();
+            ServiceRequest serviceRequest = (ServiceRequest) elevator.getNextRequest();
+            System.out.println("Request: " + serviceRequest);
             elevator.processRequest(serviceRequest);
         }
         assertEquals(0, elevator.getNumberOfRequests());
