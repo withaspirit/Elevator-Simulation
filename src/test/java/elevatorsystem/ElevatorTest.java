@@ -3,8 +3,9 @@ package elevatorsystem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * Tests the Elevator's overall functioning without communicating with Scheduler.
+ */
 class ElevatorTest {
 
     @BeforeEach

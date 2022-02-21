@@ -4,7 +4,8 @@ import requests.*;
 import systemwide.Direction;
 import systemwide.Origin;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * Elevator is a model for simulating an elevator.
  *
@@ -48,7 +49,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private ElevatorRequest request;
 
 	// list must be volatile so that origin checks if it's been updated
-	private volatile ArrayList<ServiceRequest> requests;
+	private volatile CopyOnWriteArrayList<ServiceRequest> requests;
 	private volatile ApproachEvent approachEvent;
 
 	/**
@@ -68,7 +69,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
 		request = null;
-		requests = new ArrayList<>();
+		requests = new CopyOnWriteArrayList<>();
 	}
 
 	/**
@@ -80,6 +81,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		while(true){
 			if (!requests.isEmpty()) {
 				processRequest(getNextRequest());
+				System.out.println("Elevator Requests: " + requests);
 			}
 		}
 	}
@@ -233,69 +235,76 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void processRequest(ServiceRequest serviceRequest){
 		// If request is an elevator request
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
-			// Set time of request
-			// Request Properties
-
-
-			queueTime = getExpectedTime(elevatorRequest);
-
-			// Set floor of request
-			int requestFloor = elevatorRequest.getDesiredFloor();
-
-			// Set direction of request
-			Direction requestedDirection = elevatorRequest.getDirection();
-
-			if (floorsQueue.isDownqueueEmpty() && floorsQueue.isUpqueueEmpty()){
-				currentDirection = elevatorRequest.getDirection();
-			}
-			System.out.print("Elevator# " + elevatorNumber + " ");
-			floorsQueue.addFloor(elevatorRequest.getFloorNumber(), currentFloor, elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
-			motor.setMovementState(MovementState.ACTIVE);
-
-			while (currentFloor != requestFloor) {
-
-				int nextFloor = motor.move(currentFloor, requestFloor, requestedDirection);
-				ApproachEvent newApproachEvent = new ApproachEvent(elevatorRequest.getTime(), nextFloor,
-						elevatorRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
-				passApproachEvent(newApproachEvent);
-
-				// stall while waiting to receive the approachEvent from ElevatorSubsystem
-				// the ApproachEvent is received in Elevator.receiveApproachEvent
-				while (approachEvent == null) {
-				}
-
-				setCurrentFloor(nextFloor);
-				System.out.println("Elevator moved to floor " + nextFloor);
-			}
-			approachEvent = null;
-			// Set to idle once floor reached
-			System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
-			motor.stop();
-		} else if(serviceRequest instanceof ApproachEvent approachEvent) {
-			// do something
+			// Move to floor from which elevatorRequest originated
+			moveToFloor(elevatorRequest);
+			// created a ServiceRequest going to the desired floor for the desired floor
+			ServiceRequest request = new ServiceRequest(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
+					elevatorRequest.getDirection(), elevatorRequest.getOrigin());
+			addRequest(request);
+		} else {
+			moveToFloor(serviceRequest);
 		}
+	}
+
+	public void moveToFloor(ServiceRequest serviceRequest) {
+		// Set time of request
+		// Request Properties
+//		queueTime = getExpectedTime(serviceRequest);
+
+		// Set floor of request
+		int requestFloor = serviceRequest.getFloorNumber();
+
+		// Set direction of request
+		Direction requestedDirection = serviceRequest.getDirection();
+
+//		if (floorsQueue.isDownqueueEmpty() && floorsQueue.isUpqueueEmpty()){
+//			currentDirection = serviceRequest.getDirection();
+//		}
+//		System.out.print("Elevator# " + elevatorNumber + " ");
+//		floorsQueue.addFloor(serviceRequest.getFloorNumber(), requestFloor, currentFloor, serviceRequest.getDirection());
+//		motor.setMovementState(MovementState.ACTIVE);
+
+		while (currentFloor != requestFloor) {
+
+			int nextFloor = motor.move(currentFloor, requestFloor, requestedDirection);
+			ApproachEvent newApproachEvent = new ApproachEvent(serviceRequest.getTime(), nextFloor,
+					serviceRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
+			passApproachEvent(newApproachEvent);
+
+			// stall while waiting to receive the approachEvent from ElevatorSubsystem
+			// the ApproachEvent is received in Elevator.receiveApproachEvent
+			while (approachEvent == null) {
+			}
+
+			setCurrentFloor(nextFloor);
+			System.out.println("Elevator moved to floor " + nextFloor);
+		}
+		approachEvent = null;
+		// Set to idle once floor reached
+		System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
+		motor.stop();
 	}
 
 	/**
 	 * Gets the total expected time that the elevator will need to take to
 	 * perform its current requests along with the new elevatorRequest.
 	 *
-	 * @param elevatorRequest an elevator request from the floorSubsystem
+	 * @param serviceRequest a service request to visit a floor
 	 * @return a double containing the elevator's total expected queue time
 	 */
-	public double getExpectedTime(ElevatorRequest elevatorRequest) {
-		return queueTime + LOAD_TIME + requestTime(elevatorRequest);
+	public double getExpectedTime(ServiceRequest serviceRequest) {
+		return queueTime + LOAD_TIME + requestTime(serviceRequest);
 	}
 
 	/**
 	 * Gets the expected time of a new request for the current elevator
 	 * based on distance.
 	 *
-	 * @param elevatorRequest an elevatorRequest from a floor
+	 * @param serviceRequest a serviceRequest to visit a floor
 	 * @return a double containing the time to fulfil the request
 	 */
-	public double requestTime(ElevatorRequest elevatorRequest) {
-		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
+	public double requestTime(ServiceRequest serviceRequest) {
+		double distance = Math.abs(serviceRequest.getFloorNumber() - currentFloor) * FLOOR_HEIGHT;
 		if (distance > ACCELERATION_DISTANCE * 2) {
 			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
 		} else {
