@@ -18,7 +18,6 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
 	//private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
-	private Origin origin;
 	private final ArrayList<ElevatorSubsystem> elevatorSubsystemList;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
@@ -34,7 +33,6 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		// add subsystems to elevators, pass # floors
 		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
 		this.elevatorSubsystemList = elevatorSubsystemList;
-		origin = Origin.SCHEDULER;
 	}
 
 	/**
@@ -96,17 +94,18 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 */
 	public void run() {
 		while(true) {
-			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
+			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.SCHEDULER);
 			if (request instanceof ElevatorRequest elevatorRequest){
 				int chosenElevator = chooseElevator(elevatorRequest);
 				// Choose elevator
 				// Move elevator
 				elevatorSubsystemList.get(chosenElevator - 1).addRequest(elevatorRequest);
-				//sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
-				//System.out.println("Scheduler Sent Request to Elevator Successful");
+				System.out.println("Scheduler Sent Request to Elevator Successful");
 			} else if (request instanceof ApproachEvent approachEvent) {
 				// FIXME: this code might be redundant as it's identical to the one above
-				sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
+				//sendMessage(approachEvent, elevatorSubsystemBuffer, Origin.ELEVATOR_SYSTEM);
+			} else if (request instanceof FloorRequest floorRequest){
+				sendMessage(floorRequest, elevatorSubsystemBuffer, Origin.FLOOR_SYSTEM);
 			}
 		}
 	}

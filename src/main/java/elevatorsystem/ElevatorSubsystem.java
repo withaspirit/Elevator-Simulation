@@ -17,7 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser {
 
     private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-	private Origin origin;
 	private Elevator elevator;
 	private FloorsQueue floorsQueue;
 	private ElevatorMotor motor;
@@ -36,7 +35,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser {
 		motor = new ElevatorMotor();
 		elevator = new Elevator(elevatorNumber, floorsQueue, motor);
 		new Thread(elevator).start();
-		origin = Origin.ELEVATOR_SYSTEM;
 		requests = new CopyOnWriteArrayList<>();
 	}
 
@@ -89,8 +87,11 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser {
 		floorsQueue.addFloor(elevatorRequest.getFloorNumber(),elevator.getCurrentFloor(),elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
 		System.out.println("Elevator #" + elevator.getElevatorNumber() + " added request " + elevatorRequest);
 		motor.setMovementState(MovementState.ACTIVE);
+		if (motor.getDirection() == Direction.NONE) {
+			motor.setDirection(elevatorRequest.getDirection());
+		}
 		floorsQueue.setQueueTime(getExpectedTime(elevatorRequest));
 		System.out.println("Time remaining for Elevator #"+ elevator.getElevatorNumber()+" request : " + floorsQueue.getQueueTime());
-		sendMessage(new FloorRequest(elevatorRequest, elevator.getElevatorNumber()), elevatorSubsystemBuffer, origin);
+		sendMessage(new FloorRequest(elevatorRequest, elevator.getElevatorNumber()), elevatorSubsystemBuffer, Origin.SCHEDULER);
 	}
 }

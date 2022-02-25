@@ -18,7 +18,6 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<SystemEvent> requests;
 	private final ArrayList<Floor> floorList;
-	private Origin origin;
 
 	/**
 	 * Constructor for FloorSubsystem.
@@ -30,7 +29,6 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 		floorList = new ArrayList<>();
-		origin = Origin.FLOOR_SYSTEM;
 	}
 
 	/**
@@ -44,26 +42,21 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 
 		while (true) {
 			if (!requests.isEmpty()) {
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				// Sending Data to Scheduler
 				SystemEvent event = requests.remove(requests.size() -1);
 
-				sendMessage(event, floorSubsystemBuffer, origin);
-				System.out.println(origin + " Sent Request Successful to Scheduler");
+				sendMessage(event, floorSubsystemBuffer, Origin.SCHEDULER);
+				System.out.println(Origin.FLOOR_SYSTEM + " Sent Request Successful to Scheduler");
 			}
-//			SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
-//			if (request instanceof FloorRequest floorRequest) {
-//				System.out.println("FloorSubsystem: Received FloorRequest: in  Elevator# " +
-//						floorRequest.getElevatorNumber() + " Arrived \n");
-//			} else if (request instanceof ApproachEvent approachEvent) {
-//				Floor floor = floorList.get(approachEvent.getFloorNumber());
-//				floor.receiveApproachEvent(approachEvent);
-//				requests.add(approachEvent);
-//			}
+			SystemEvent request = receiveMessage(floorSubsystemBuffer, Origin.FLOOR_SYSTEM);
+			if (request instanceof FloorRequest floorRequest) {
+				System.out.println("FloorSubsystem: Received FloorRequest: in  Elevator# " +
+						floorRequest.getElevatorNumber() + " Arrived \n");
+			} else if (request instanceof ApproachEvent approachEvent) {
+				Floor floor = floorList.get(approachEvent.getFloorNumber());
+				floor.receiveApproachEvent(approachEvent);
+				requests.add(approachEvent);
+			}
 		}
 	}
 
@@ -83,6 +76,6 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		sendMessage(approachEvent, floorSubsystemBuffer, origin);
+		sendMessage(approachEvent, floorSubsystemBuffer, Origin.SCHEDULER);
 	}
 }

@@ -5,7 +5,6 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Elevator is a model for simulating an elevator.
@@ -73,16 +72,22 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void run() {
 		while(true){
 			if (motor.isActive()) {
-				ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), currentFloor, motor.getDirection(), floorsQueue.visitNextFloor(direction), Origin.ELEVATOR_SYSTEM);
+				int nextFloor = floorsQueue.visitNextFloor(motor.getDirection());
+				ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), currentFloor, motor.getDirection(), nextFloor, Origin.ELEVATOR_SYSTEM);
 				double time = requestTime(elevatorRequest);
-				System.out.println("Elevator#"+ elevatorNumber +" is waiting for " + time + " for request to finish");
 				try {
-					Thread.sleep((long) time * 1000);
+					Thread.sleep((long) time);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				System.out.println("Elevator#"+ elevatorNumber +" is waiting for " + time + " for request: "+elevatorRequest);
 				floorsQueue.setQueueTime(floorsQueue.getQueueTime() - time);
-				System.out.println("Request: " + elevatorRequest + " completed");
+				currentFloor = nextFloor;
+				System.out.println("Elevator#"+ elevatorNumber +" arrived at floor#:" + currentFloor);
+				if (floorsQueue.isUpqueueEmpty() && floorsQueue.isDownqueueEmpty() && floorsQueue.isMissedqueueEmpty()){
+					motor.setMovementState(MovementState.IDLE);
+					motor.setDirection(Direction.NONE);
+				}
 			}
 		}
 	}
