@@ -75,12 +75,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 			if (motor.isActive()) {
 				ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), currentFloor, motor.getDirection(), floorsQueue.visitNextFloor(direction), Origin.ELEVATOR_SYSTEM);
 				double time = requestTime(elevatorRequest);
-				System.out.println("Elevator#"+ elevatorNumber +" is waiting for " + time);
+				System.out.println("Elevator#"+ elevatorNumber +" is waiting for " + time + " for request to finish");
 				try {
 					Thread.sleep((long) time * 1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				floorsQueue.setQueueTime(floorsQueue.getQueueTime() - time);
 				System.out.println("Request: " + elevatorRequest + " completed");
 			}
 		}

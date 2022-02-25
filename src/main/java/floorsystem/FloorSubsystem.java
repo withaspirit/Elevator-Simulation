@@ -45,7 +45,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 		while (true) {
 			if (!requests.isEmpty()) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(3000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

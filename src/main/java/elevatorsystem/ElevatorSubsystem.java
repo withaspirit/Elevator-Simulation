@@ -25,8 +25,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser {
 	// functionally, this is a stack (FIFO)
 	private volatile CopyOnWriteArrayList<ServiceRequest> requests;
 
-	private double queueTime;
-
 	/**
 	 * Constructor for ElevatorSubsystem.
 	 *
@@ -39,7 +37,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser {
 		elevator = new Elevator(elevatorNumber, floorsQueue, motor);
 		new Thread(elevator).start();
 		origin = Origin.ELEVATOR_SYSTEM;
-		queueTime = 0.0;
 		requests = new CopyOnWriteArrayList<>();
 	}
 
@@ -72,7 +69,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser {
 	 * @return a double containing the elevator's total expected queue time
 	 */
 	public double getExpectedTime(ElevatorRequest elevatorRequest) {
-		return queueTime + elevator.LOAD_TIME + elevator.requestTime(elevatorRequest);
+		return floorsQueue.getQueueTime() + elevator.LOAD_TIME + elevator.requestTime(elevatorRequest);
 	}
 
 	/**
@@ -92,6 +89,8 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser {
 		floorsQueue.addFloor(elevatorRequest.getFloorNumber(),elevator.getCurrentFloor(),elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
 		System.out.println("Elevator #" + elevator.getElevatorNumber() + " added request " + elevatorRequest);
 		motor.setMovementState(MovementState.ACTIVE);
+		floorsQueue.setQueueTime(getExpectedTime(elevatorRequest));
+		System.out.println("Time remaining for Elevator #"+ elevator.getElevatorNumber()+" request : " + floorsQueue.getQueueTime());
 		sendMessage(new FloorRequest(elevatorRequest, elevator.getElevatorNumber()), elevatorSubsystemBuffer, origin);
 	}
 }
