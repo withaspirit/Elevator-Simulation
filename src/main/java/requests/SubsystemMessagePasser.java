@@ -12,13 +12,16 @@ public interface SubsystemMessagePasser {
 	/**
 	 * Adds an object to a buffer.
 	 *
+	 *
+	 * @param fromOrigin the origin which sent the message
 	 * @param event a SystemEvent which holds a request
-	 * @param buffer a BoundedBuffer which holds serviceRequests
+	 * @param buffer a BoundedBuffer which holds serviceRequest
+	 * @param toOrigin the origin which the message is being sent
 	 * @return true if request is successful, false otherwise
 	 */
-	default boolean sendMessage(SystemEvent event, BoundedBuffer buffer, Origin origin) {
-		System.out.println(origin + " sending: " + event);
-		buffer.addLast(event, origin);
+	default boolean sendMessage(Origin fromOrigin, SystemEvent event, BoundedBuffer buffer, Origin toOrigin) {
+		System.out.println(fromOrigin + " sending: " + event);
+		buffer.addLast(event, toOrigin);
 		return true;
 	}
 

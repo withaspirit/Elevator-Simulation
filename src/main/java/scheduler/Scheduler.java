@@ -11,7 +11,7 @@ import systemwide.Origin;
  */
 public class Scheduler implements Runnable, SubsystemMessagePasser {
 
-	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
+	private final BoundedBuffer buffer; // ElevatorSubsystem - Scheduler link
 //	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
 	private Origin origin;
 	// private ArrayList<Elevator> elevators;
@@ -20,12 +20,13 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	/**
 	 * Constructor for Scheduler
 	 *
-	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
+	 * @param buffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
 	 */
-	public Scheduler(BoundedBuffer elevatorSubsystemBuffer) {
+	public Scheduler(BoundedBuffer buffer) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
-		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
+		this.buffer = buffer;
+		origin = Origin.SCHEDULER;
 	}
 
 	/**
@@ -35,24 +36,23 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
-//		while(true) {
-//			SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
-//			if (request instanceof ElevatorRequest elevatorRequest){
-//				sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
-//				System.out.println("Scheduler Sent Request to Elevator Successful");
-//			} else if (request instanceof ApproachEvent approachEvent) {
-//				// FIXME: this code might be redundant as it's identical to the one above
-//				sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
-//			}
-//
-//			request = receiveMessage(elevatorSubsystemBuffer, origin);
-//			if (request instanceof StatusResponse) {
-//
-//			} else if (request instanceof FloorRequest floorRequest){
-//				sendMessage(floorRequest, floorSubsystemBuffer, origin);
-//			} else if (request instanceof ApproachEvent approachEvent) {
-//				sendMessage(approachEvent, floorSubsystemBuffer, origin);
-//			}
-//		}
+		while(true) {
+			SystemEvent request = receiveMessage(buffer, origin);
+			Origin sendOrigin;
+			if (request.getOrigin() == Origin.FLOOR_SYSTEM){
+				sendOrigin = Origin.ELEVATOR_SYSTEM;
+			} else {
+				sendOrigin = Origin.FLOOR_SYSTEM;
+			}
+			if (request instanceof ElevatorRequest elevatorRequest){
+				sendMessage(origin, elevatorRequest, buffer, sendOrigin);
+				System.out.println("Scheduler Sent Request to Elevator Successful");
+			} else if (request instanceof ApproachEvent approachEvent) {
+				// FIXME: this code might be redundant as it's identical to the one above
+				sendMessage(origin, approachEvent, buffer, sendOrigin);
+			} else if (request instanceof FloorRequest floorRequest){
+				sendMessage(origin, floorRequest, buffer, sendOrigin);
+			}
+		}
 	}
 }

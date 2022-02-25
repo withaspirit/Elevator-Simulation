@@ -45,7 +45,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 				// Move elevator
 				elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
 
-				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, origin);
+				sendMessage(origin, new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, Origin.SCHEDULER);
 				System.out.println(origin + " Sent Request Successful to Scheduler");
 			} else if (request instanceof ApproachEvent approachEvent) {
 				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
@@ -69,7 +69,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
+		sendMessage(origin, approachEvent, elevatorSubsystemBuffer, Origin.SCHEDULER);
 	}
 
 	/**

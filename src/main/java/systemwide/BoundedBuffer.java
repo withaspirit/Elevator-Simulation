@@ -65,7 +65,7 @@ public class BoundedBuffer {
     {
         SystemEvent item;
         
-        while (!readable || identicalOrigin(buffer[outIndex], origin)) {
+        while (!readable || !identicalOrigin(buffer[outIndex], origin)) {
             try { 
                 wait();
             } catch (InterruptedException e) {

@@ -47,8 +47,8 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 				// Sending Data to Scheduler
 				SystemEvent event = requests.remove(requests.size() -1);
 
-				sendMessage(event, floorSubsystemBuffer, origin);
-				System.out.println(origin + " Sent Request Successful to Scheduler");
+				sendMessage(origin, event, floorSubsystemBuffer, Origin.SCHEDULER);
+				System.out.println(origin + " Sent Request Successful to " + Origin.SCHEDULER);
 			}
 			SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
 			if (request instanceof FloorRequest floorRequest) {
@@ -78,6 +78,6 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		sendMessage(approachEvent, floorSubsystemBuffer, origin);
+		sendMessage(origin, approachEvent, floorSubsystemBuffer, Origin.SCHEDULER);
 	}
 }
