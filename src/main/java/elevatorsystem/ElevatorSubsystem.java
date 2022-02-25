@@ -92,6 +92,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser {
 		floorsQueue.addFloor(elevatorRequest.getFloorNumber(),elevator.getCurrentFloor(),elevatorRequest.getDesiredFloor(), elevatorRequest.getDirection());
 		System.out.println("Elevator #" + elevator.getElevatorNumber() + " added request " + elevatorRequest);
 		motor.setMovementState(MovementState.ACTIVE);
-		System.out.println(motor.isActive());
+		sendMessage(new FloorRequest(elevatorRequest, elevator.getElevatorNumber()), elevatorSubsystemBuffer, origin);
 	}
 }
