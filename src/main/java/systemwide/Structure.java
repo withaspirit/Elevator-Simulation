@@ -1,7 +1,9 @@
 package systemwide;
 
 import elevatorsystem.Elevator;
+import elevatorsystem.ElevatorMotor;
 import elevatorsystem.ElevatorSubsystem;
+import elevatorsystem.FloorsQueue;
 import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
@@ -72,12 +74,11 @@ public class Structure {
 		BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
 		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
-		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
-		ArrayList<Elevator> elevatorList = new ArrayList<>();
+		ArrayList<ElevatorSubsystem> elevatorSubsystemList = new ArrayList<>();
 		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
-			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
-			elevatorSubsystem.addElevator(elevator);
-			elevatorList.add(elevator);
+			ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer, elevatorNumber);
+			new Thread(elevatorSubsystem).start();
+			elevatorSubsystemList.add(elevatorSubsystem);
 		}
 
 		FloorSubsystem floorSubsystem = new FloorSubsystem(elevatorSubsystemBuffer);
@@ -86,22 +87,15 @@ public class Structure {
 			floorSubsystem.addFloor(floor);
 		}
 
-		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer);
+		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, elevatorSubsystemList);
 
-		Thread schedulerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
+		Thread schedulerOrigin, floorSubsystemOrigin;
 
-		schedulerOrigin = new Thread(scheduler, scheduler.getClass().getSimpleName());
-		elevatorSubsystemOrigin = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
-		floorSubsystemOrigin = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
+		schedulerOrigin = new Thread(scheduler);
+		floorSubsystemOrigin = new Thread(floorSubsystem);
 
 		schedulerOrigin.start();
-		elevatorSubsystemOrigin.start();
 		floorSubsystemOrigin.start();
-
-		// Start elevator Origins
-		for (int i = 0; i < numberOfElevators; i++) {
-			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
-		}
 	}
 
 	public static void main(String[] args) {

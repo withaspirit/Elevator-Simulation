@@ -9,7 +9,7 @@ import systemwide.Direction;
  */
 public class ElevatorMotor {
 
-	private MovementState movementState;
+	private volatile MovementState movementState;
 	private Direction direction;
 
 	/**

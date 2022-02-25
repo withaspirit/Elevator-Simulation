@@ -4,6 +4,7 @@ import requests.*;
 import systemwide.Direction;
 import systemwide.Origin;
 
+import java.time.LocalTime;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -22,9 +23,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Elevator implements Runnable, SubsystemPasser {
 
-	// Elevator Subsystem
-	private ElevatorSubsystem elevatorSubsystem;
-
 	// Elevator Measurements
 	public static final float MAX_SPEED = 2.67f; // meters/second
 	public static final float ACCELERATION = 0.304f; // meters/second^2
@@ -40,17 +38,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private Direction direction = Direction.UP;
 	private float speed;
 	private float displacement;
-	private double queueTime;
 
-	private final ElevatorMotor motor;
-	private Direction currentDirection;
 	private FloorsQueue floorsQueue;
-  
-	private ElevatorRequest request;
+	private ElevatorMotor motor;
+	private Direction currentDirection;
 
-	// list must be volatile so that origin checks if it's been updated
-	// functionally, this is a stack (FIFO)
-	private volatile CopyOnWriteArrayList<ServiceRequest> requests;
+
 	private volatile ApproachEvent approachEvent;
 	// variable for allowing / disallowing Elevator's message transfer
 	private boolean messageTransferEnabled;
@@ -58,21 +51,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Constructor for Elevator class
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
+	 *  @param elevatorNumber the number of the elevator
 	 *
-	 * @param elevatorNumber the number of the elevator
-	 * @param elevatorSubsystem the elevator subsystem for elevators
 	 */
-	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
+	public Elevator(int elevatorNumber, FloorsQueue floorsQueue, ElevatorMotor motor) {
 		this.elevatorNumber = elevatorNumber;
-		this.elevatorSubsystem = elevatorSubsystem;
 		speed = 0;
 		displacement = 0;
-		direction = Direction.NONE;
-		motor = new ElevatorMotor();
-		queueTime = 0.0;
-		floorsQueue = new FloorsQueue();
-		request = null;
-		requests = new CopyOnWriteArrayList<>();
+		currentFloor = 0;
+		direction = Direction.UP;
+		this.floorsQueue = floorsQueue;
+		this.motor = motor;
 		messageTransferEnabled = true;
 	}
 
@@ -83,9 +72,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while(true){
-			if (getNumberOfRequests() != 0) {
-				processRequest(getNextRequest());
-				System.out.println("Elevator Requests: " + requests);
+			if (motor.isActive()) {
+				ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), currentFloor, motor.getDirection(), floorsQueue.visitNextFloor(direction), Origin.ELEVATOR_SYSTEM);
+				double time = requestTime(elevatorRequest);
+				System.out.println(time);
+				try {
+					Thread.sleep((long) time * 1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.out.println("Request: " + elevatorRequest + " completed");
+				System.exit(0);
 			}
 		}
 	}
@@ -97,34 +94,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public int getElevatorNumber() {
 		return elevatorNumber;
-	}
-
-	/**
-	 * Adds a new service request to the list of requests
-	 *
-	 * @param serviceRequest a service request for the elevator to perform
-	 */
-	public void addRequest(ServiceRequest serviceRequest) {
-		requests.add(serviceRequest);
-	}
-
-	/**
-	 * Returns the request at the front of the request list
-	 * and removes it from the list.
-	 *
-	 * @return serviceRequest a service request containing a request for the elevator to perform
-	 */
-	public ServiceRequest getNextRequest() {
-		return requests.remove(requests.size() - 1);
-	}
-
-	/**
-	 * Returns the number of requests the elevator has left to fulfill.
-	 *
-	 * @return numberOfRequests the number of requests the elevator has remaining
-	 */
-	public int getNumberOfRequests() {
-		return requests.size();
 	}
 
 	/**
@@ -154,15 +123,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// System.out.println("Part 2: " + part2);
 
 		return part1 - part2;
-	}
-
-	/**
-	 * Returns the motor associated with the Elevator.
-	 *
-	 * @return elevatorMotor the elevatorMotor for the elevator
-	 */
-	public ElevatorMotor getMotor() {
-		return motor;
 	}
 
 	/**
@@ -219,10 +179,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.speed = speed;
 	}
 
-	public void setRequest(ServiceRequest request){
-		this.request = (ElevatorRequest) request;
-	}
-
 	/**
 	 * Gets the displacement that the elevator has moved on the current floor
 	 *
@@ -247,25 +203,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void toggleMessageTransfer() {
 		messageTransferEnabled = !messageTransferEnabled;
-	}
-
-	/**
-	 * Processes a serviceRequest and moves based on the request type
-	 *
-	 * @param serviceRequest the request that's sent to elevator
-	 */
-	public void processRequest(ServiceRequest serviceRequest){
-		// If request is an elevator request
-		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
-			// Move to floor from which elevatorRequest originated
-			moveToFloor(elevatorRequest);
-			// created a ServiceRequest going to the desired floor for the desired floor
-			ServiceRequest request = new ServiceRequest(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
-					elevatorRequest.getDirection(), elevatorRequest.getOrigin());
-			addRequest(request);
-		} else {
-			moveToFloor(serviceRequest);
-		}
 	}
 
 	/**
@@ -318,25 +255,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the total expected time that the elevator will need to take to
-	 * perform its current requests along with the new elevatorRequest.
-	 *
-	 * @param serviceRequest a service request to visit a floor
-	 * @return a double containing the elevator's total expected queue time
-	 */
-	public double getExpectedTime(ServiceRequest serviceRequest) {
-		return queueTime + LOAD_TIME + requestTime(serviceRequest);
-	}
-
-	/**
 	 * Gets the expected time of a new request for the current elevator
 	 * based on distance.
 	 *
-	 * @param serviceRequest a serviceRequest to visit a floor
+	 * @param elevatorRequest a serviceRequest to visit a floor
 	 * @return a double containing the time to fulfil the request
 	 */
-	public double requestTime(ServiceRequest serviceRequest) {
-		double distance = Math.abs(serviceRequest.getFloorNumber() - currentFloor) * FLOOR_HEIGHT;
+	public double requestTime(ElevatorRequest elevatorRequest) {
+		double distance = Math.abs(elevatorRequest.getDesiredFloor() - currentFloor) * FLOOR_HEIGHT;
 		if (distance > ACCELERATION_DISTANCE * 2) {
 			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
 		} else {
@@ -350,7 +276,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param approachEvent the ApproachEvent to be passed to the subsystem
 	 */
 	public void passApproachEvent(ApproachEvent approachEvent) {
-		elevatorSubsystem.handleApproachEvent(approachEvent);
+
 	}
 
 	/**
