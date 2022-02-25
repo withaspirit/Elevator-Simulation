@@ -162,3 +162,81 @@ Note that this project is set up as a Maven project.
   ![Iteration_2_-_Elevator_State_Machine](https://user-images.githubusercontent.com/56605453/154823989-936bc6f0-0ebe-435c-99ae-941525b7de60.png)
   
   </details>
+
+- ## Iteration 3
+  <details>
+    <summary>Display</summary>
+
+  ### Description
+
+  Lorem ipsum
+
+  <details>
+    <summary>Show Long Description</summary>
+    
+  </details>
+
+
+  ### Contributions
+
+  | Member | Coding | Documentation | Misc 
+  | ------ | ------ | ------------- |----
+  | Ryan Dash | | |
+  | Ramit Mahajan | | |
+  | Brady Norton | | |
+  | Julian Obando Velez | | |
+  | Liam Tripp | | |
+
+  </details>
+  
+- ## Iteration 4
+  <details>
+    <summary>Display</summary>
+
+  ### Description
+
+  Lorem ipsum
+
+  <details>
+    <summary>Show Long Description</summary>
+    
+  </details>
+
+
+  ### Contributions
+
+  | Member | Coding | Documentation | Misc 
+  | ------ | ------ | ------------- |----
+  | Ryan Dash | | |
+  | Ramit Mahajan | | |
+  | Brady Norton | | |
+  | Julian Obando Velez | | |
+  | Liam Tripp | | |
+
+  </details>
+
+- ## Iteration 5
+  <details>
+    <summary>Display</summary>
+
+  ### Description
+
+  Lorem ipsum
+
+  <details>
+    <summary>Show Long Description</summary>
+    
+  </details>
+
+
+  ### Contributions
+
+  | Member | Coding | Documentation | Misc 
+  | ------ | ------ | ------------- |----
+  | Ryan Dash | | |
+  | Ramit Mahajan | | |
+  | Brady Norton | | |
+  | Julian Obando Velez | | |
+  | Liam Tripp | | |
+
+  </details>
