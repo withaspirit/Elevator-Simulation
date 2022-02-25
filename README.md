@@ -92,7 +92,7 @@ Note that this project is set up as a Maven project.
   ### Contributions
 
   | Member | Coding | Documentation | Misc
-  | ------ | ------ | ------------- |----
+  | ------ | ------ | ------------- | ----
   | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer Implementation and Bug Fixes | Project Requirements Summary, UML Diagram Contributions | Code Review
   | Ramit Mahajan | Data Structure abstraction for the Request Systems / Subsystems | README Editing Instructions |
   | Brady Norton | Message transfer tests, InputFileReaderTest | README Testing + Installation Instructions, UML Sequence Diagram | Code Review
@@ -143,7 +143,7 @@ Note that this project is set up as a Maven project.
   ### Contributions
 
   | Member | Coding | Documentation | Misc 
-  | ------ | ------ | ------------- |----
+  | ------ | ------ | ------------- | ----
   | Ryan Dash | ElevatorSelectAlgorithm, ElevatorServiceAlgorithm | ElevatorServiceAlgorithm State Machine Diagram, UML Class Diagram, README | Code Review, Design Consultation
   | Ramit Mahajan | Arrival Sensor | UML Class Diagram, README | Code Review
   | Brady Norton | MovementState, ElevatorMotor, Elevator Properties, Elevator Movement | Elevator Movement State Machine Diagram, README| Code Review
@@ -176,11 +176,10 @@ Note that this project is set up as a Maven project.
     
   </details>
 
-
   ### Contributions
 
   | Member | Coding | Documentation | Misc 
-  | ------ | ------ | ------------- |----
+  | ------ | ------ | ------------- | ----
   | Ryan Dash | | |
   | Ramit Mahajan | | |
   | Brady Norton | | |
@@ -202,11 +201,10 @@ Note that this project is set up as a Maven project.
     
   </details>
 
-
   ### Contributions
 
   | Member | Coding | Documentation | Misc 
-  | ------ | ------ | ------------- |----
+  | ------ | ------ | ------------- | ----
   | Ryan Dash | | |
   | Ramit Mahajan | | |
   | Brady Norton | | |
@@ -228,11 +226,10 @@ Note that this project is set up as a Maven project.
     
   </details>
 
-
   ### Contributions
 
   | Member | Coding | Documentation | Misc 
-  | ------ | ------ | ------------- |----
+  | ------ | ------ | ------------- | ----
   | Ryan Dash | | |
   | Ramit Mahajan | | |
   | Brady Norton | | |
