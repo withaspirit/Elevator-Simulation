@@ -12,10 +12,12 @@ public class Floor implements SubsystemPasser {
 	
 	private int floorNumber;
 	private FloorSubsystem floorSubsystem;
+	private ArrivalSensor arrivalSensor;
 
 	public Floor(int floorNumber, FloorSubsystem floorSubsystem) {
 		this.floorNumber = floorNumber;
 		this.floorSubsystem = floorSubsystem;
+		arrivalSensor = new ArrivalSensor(floorNumber);
 		// createButtons(floorNumber);
 	}
 
@@ -45,6 +47,6 @@ public class Floor implements SubsystemPasser {
 	 * @param approachEvent the ApproachEvent to be received from the Subsystem
 	 */
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
-		// do thing
+		arrivalSensor.checkFloorNumber(approachEvent);
 	}
 }

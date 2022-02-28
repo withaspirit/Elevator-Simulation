@@ -39,11 +39,6 @@ public class FloorRequest extends ServiceRequest {
 	public FloorRequest(ElevatorRequest elevatorRequest, int elevatorNumber) {
 		this(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
 				elevatorRequest.getDirection(), elevatorNumber, elevatorRequest.getOrigin());
-		if (getDirection().equals(Direction.UP)){
-			setDirection(Direction.DOWN);
-		} else {
-			setDirection(Direction.UP);
-		}
 	}
 
 	/**
