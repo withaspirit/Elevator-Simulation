@@ -4,13 +4,14 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * ServiceRequest is a data structure for when a user requests anmElevator's service.
  *
  * @author Liam Tripp, Ramit Mahajan, Ryan Dash
  */
-public class ServiceRequest extends SystemEvent {
+public class ServiceRequest extends SystemEvent implements Comparable<ServiceRequest> {
 
 	private final int floorNumber;
 	private Direction direction;
@@ -54,5 +55,19 @@ public class ServiceRequest extends SystemEvent {
 	 */
 	public void setDirection(Direction direction) {
 		this.direction = direction;
+	}
+
+	@Override
+	public String toString() {
+		DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+		String formattedDate = getTime().format(dateTimeFormat);
+		String formattedString = formattedDate + " " + getFloorNumber() + " " + getDirection().getName();
+		return formattedString;
+	}
+
+
+	@Override
+	public int compareTo(ServiceRequest request) {
+		return Integer.compare(this.getFloorNumber(), request.getFloorNumber());
 	}
 }
