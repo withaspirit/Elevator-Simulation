@@ -37,7 +37,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	// Elevator Properties
 	private final int elevatorNumber;
 	private int currentFloor;
-	private Direction direction = Direction.UP;
+	private Direction direction;
 	private float speed;
 	private float displacement;
 	private double queueTime;
@@ -67,7 +67,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.elevatorSubsystem = elevatorSubsystem;
 		speed = 0;
 		displacement = 0;
-		direction = Direction.NONE;
+		direction = Direction.UP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
@@ -82,12 +82,38 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	@Override
 	public void run() {
-		while(true){
+		while (true) {
 			if (!requests.isEmpty()) {
 				System.out.println("Requests in list: " + requests);
 				processRequest(getNextRequest());
-				System.out.println("Elevator Requests: " + requests);
 			}
+		}
+	}
+
+	/**
+	 * Changes the floorsQueue as needed.
+	 */
+	public void swapQueuesIfNecessary() {
+		floorsQueue.swapQueues(motor.getDirection());
+	}
+
+
+	/**
+	 * Moves the Elevator to the next floor, stopping if it's the next floor.
+	 */
+	public void moveToNextFloor() {
+		int requestFloor = floorsQueue.peekNextFloor(motor.getDirection());
+		int nextFloor = motor.move(currentFloor, requestFloor, motor.getDirection());
+		// in future iterations, shouldStopAtNextFloor will be followed by sending an ApproachRequest
+		boolean shouldStopAtNextFloor = nextFloor == requestFloor;
+
+		setCurrentFloor(nextFloor);
+		if (shouldStopAtNextFloor) {
+			System.out.println("Elevator reached destination: floor " + requestFloor);
+			motor.stop();
+			floorsQueue.visitNextFloor(motor.getDirection());
+		} else {
+			System.out.println("Elevator moved to floor " + requestFloor);
 		}
 	}
 
@@ -101,7 +127,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Adds a new service request to the list of requests
+	 * Adds a request to the queue of requests for Elevator to service.
 	 *
 	 * @param serviceRequest a service request for the elevator to perform
 	 */
@@ -312,7 +338,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			}
 			setCurrentFloor(nextFloor);
 			System.out.println("Elevator moved to floor " + nextFloor);
-    }
+    	}
 		// Set to idle once floor reached
 		System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
 		motor.stop();
