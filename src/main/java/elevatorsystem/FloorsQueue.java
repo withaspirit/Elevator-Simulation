@@ -35,7 +35,7 @@ public class FloorsQueue {
 		}
 
 		if (direction == Direction.UP) {
-			if (floorNum > currFloor) {
+			if (floorNum >= currFloor) {
 				upwardRequests.add(floorNum);
 				upwardRequests.add(desiredFloor);
 			} else {
@@ -44,7 +44,7 @@ public class FloorsQueue {
 			}
 
 		} else if (direction == Direction.DOWN) {
-			if (floorNum < currFloor) {
+			if (floorNum <= currFloor) {
 				downwardRequests.add(floorNum);
 				downwardRequests.add(desiredFloor);
 			} else {
@@ -70,14 +70,14 @@ public class FloorsQueue {
 			if (!upwardRequests.isEmpty()) {
 				floorVisited = upwardRequests.remove();
 				if (upwardRequests.isEmpty()) { // It automatically swaps if the upward queue is emptied
-					swapQueues(direction);
+//					swapQueues(direction);
 				}
 			}
 		} else if (direction == Direction.DOWN) {
 			if (!downwardRequests.isEmpty()) {
 				floorVisited = downwardRequests.remove();
 				if (downwardRequests.isEmpty()) { // It automatically swaps if the downward queue is emptied
-					swapQueues(direction);
+//					swapQueues(direction);
 				}
 			}
 		} else {
@@ -87,7 +87,8 @@ public class FloorsQueue {
 	}
 
 	/**
-	 * Returns the next floor in queue for the direction
+	 * Returns the next floor in queue for the direction.
+	 * This method shouldn't be called if the FloorsQueue is empty.
 	 * 
 	 * @param direction the direction wanting to peek
 	 * @return nextFloor the next floor in queue, -1 if not successful
@@ -126,8 +127,19 @@ public class FloorsQueue {
 				downwardRequests.add(missedRequests.remove());
 			}
 			status = 0;
+		} else {
+			System.err.println("FloorsQueue did not swap when it was told to swap.");
 		}
 		return status;
+	}
+
+	/**
+	 * Determines whether the FloorQueue is empty.
+	 *
+	 * @return true if all the FloorQueue's queues are empty, false otherwise
+	 */
+	public boolean isEmpty() {
+		return isMissedqueueEmpty() && isDownqueueEmpty() && isUpqueueEmpty();
 	}
 
 	/**
