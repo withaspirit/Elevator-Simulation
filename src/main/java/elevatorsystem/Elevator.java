@@ -37,6 +37,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private final int elevatorNumber;
 	private int currentFloor;
 	private Direction direction = Direction.UP;
+	private Direction serviceDirection;
 	private float speed;
 	private float displacement;
 	private double queueTime;
@@ -64,6 +65,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		speed = 0;
 		displacement = 0;
 		direction = Direction.NONE;
+		serviceDirection = Direction.UP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
