@@ -16,7 +16,6 @@ public class FloorsQueue {
 	private Queue<Integer> missedRequests;
 	private volatile PriorityQueue<Integer> currentDirectionQueue;
 
-
 	/**
 	 * Constructor for the class
 	 */
@@ -29,7 +28,8 @@ public class FloorsQueue {
 
 	/**
 	 * Adds a floor to be visited
-	 *  @param floorNum  the number of the floor to be visited
+	 *
+	 * @param floorNum  the number of the floor to be visited
 	 * @param desiredFloor the floor that a person travels to
 	 * @param direction the direction the elevator comes to the floor
 	 */
@@ -62,6 +62,20 @@ public class FloorsQueue {
 	}
 
 	/**
+	 * Removes a request from the head of the currentDirectionQueue.
+	 *
+	 * @return the request at the head of the currentDirectionQueue,
+	 *         -1 if queue is empty.
+	 */
+	public int removeRequest() {
+		if (!currentDirectionQueue.isEmpty()) {
+			return currentDirectionQueue.remove();
+		} else {
+			return -1;
+		}
+	}
+
+	/**
 	 * Removes the next floor to flag that the floor has been visited
 	 * 
 	 * @param serviceDirection the serviceDirection the elevator came to the floor
@@ -73,14 +87,10 @@ public class FloorsQueue {
 		if (serviceDirection == Direction.UP) {
 			if (!upwardRequests.isEmpty()) {
 				floorVisited = upwardRequests.remove();
-				if (upwardRequests.isEmpty()) { // It automatically swaps if the upward queue is emptied
-				}
 			}
 		} else if (serviceDirection == Direction.DOWN) {
 			if (!downwardRequests.isEmpty()) {
 				floorVisited = downwardRequests.remove();
-				if (downwardRequests.isEmpty()) { // It automatically swaps if the downward queue is emptied
-				}
 			}
 		} else {
 			throw new RuntimeException("Direction is invalid");
@@ -90,11 +100,10 @@ public class FloorsQueue {
 
 	/**
 	 * Returns the next floor in queue for the direction
-	 * 
-	 * @param direction the direction wanting to peek
+	 *
 	 * @return nextFloor the next floor in queue, -1 if not successful
 	 */
-	public int peekNextFloor(Direction direction) {
+	public int peekNextRequest() {
 		if (!currentDirectionQueue.isEmpty()) {
 			return currentDirectionQueue.peek();
 		} else {
@@ -102,8 +111,16 @@ public class FloorsQueue {
 					"while the active queue is empty. Swapping should be done beforehand.");
 			return -1;
 		}
+	}
 
-		/*
+	/**
+	 * Returns the next floor in queue for the direction
+	 * 
+	 * @param direction the direction wanting to peek
+	 * @return nextFloor the next floor in queue, -1 if not successful
+	 */
+	public int peekNextFloor(Direction direction) {
+		int nextFloor = -1;
 		if (direction == Direction.UP) {
 			if (!upwardRequests.isEmpty()) {
 				nextFloor = upwardRequests.peek();
@@ -115,12 +132,13 @@ public class FloorsQueue {
 		} else {
 			throw new RuntimeException("Direction is invalid");
 		}
-		 */
+		return nextFloor;
 	}
+
 
 	/**
 	 * Updates / Swaps the queues to include the missed requests
-	 * 
+	 *
 	 * @param serviceDirection the direction of the queue wanting to swap
 	 * @return status 0 if successful, -1 if not successful
 	 */
