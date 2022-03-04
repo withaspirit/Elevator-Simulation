@@ -101,7 +101,7 @@ public class FloorsQueue {
 	/**
 	 * Returns the next floor in queue for the direction
 	 *
-	 * @return nextFloor the next floor in queue, -1 if not successful
+	 * @return nextFloor the next floor in queue, -1 if the currentDirectionQueue is empty
 	 */
 	public int peekNextRequest() {
 		if (!currentDirectionQueue.isEmpty()) {
@@ -135,7 +135,6 @@ public class FloorsQueue {
 		return nextFloor;
 	}
 
-
 	/**
 	 * Updates / Swaps the queues to include the missed requests
 	 *
@@ -152,6 +151,13 @@ public class FloorsQueue {
 			}
 
 			// switch to opposite direction queue if possible
+			/*
+			if (!oppositeDirectionQueue.isEmpty()) {
+				PriorityQueue<Integer> tempQueue = currentDirectionQueue;
+				currentDirectionQueue = oppositeDirectionQueue;
+				oppositeDirectionQueue = tempQueue;
+			}
+			 */
 			if (serviceDirection == Direction.UP) {
 				if (!downwardRequests.isEmpty()) {
 					currentDirectionQueue = downwardRequests;
