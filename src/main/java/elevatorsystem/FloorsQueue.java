@@ -31,14 +31,14 @@ public class FloorsQueue {
 	 *
 	 * @param floorNum  the number of the floor to be visited
 	 * @param desiredFloor the floor that a person travels to
-	 * @param direction the direction the elevator comes to the floor
+	 * @param serviceDirection the direction the elevator comes to the floor
 	 */
-	public void addFloor(int floorNum, int currFloor, int desiredFloor, Direction direction) {
+	public void addFloor(int floorNum, int currFloor, int desiredFloor, Direction serviceDirection) {
 		if (floorNum < 0) {
 			throw new RuntimeException("Invalid floor number");
 		}
 
-		if (direction == Direction.UP) {
+		if (serviceDirection == Direction.UP) {
 			if (floorNum > currFloor) {
 				upwardRequests.add(floorNum);
 				upwardRequests.add(desiredFloor);
@@ -47,7 +47,7 @@ public class FloorsQueue {
 				missedRequests.add(desiredFloor);
 			}
 
-		} else if (direction == Direction.DOWN) {
+		} else if (serviceDirection == Direction.DOWN) {
 			if (floorNum < currFloor) {
 				downwardRequests.add(floorNum);
 				downwardRequests.add(desiredFloor);
