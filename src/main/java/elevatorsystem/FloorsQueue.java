@@ -7,7 +7,7 @@ import systemwide.Direction;
 /**
  * Data Structure that manages the floors to visit by the elevator
  * 
- * @author Julian
+ * @author Julian, Liam Tripp
  */
 public class FloorsQueue {
 
