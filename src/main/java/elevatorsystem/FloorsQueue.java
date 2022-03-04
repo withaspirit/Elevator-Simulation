@@ -64,8 +64,7 @@ public class FloorsQueue {
 	/**
 	 * Removes a request from the head of the currentDirectionQueue.
 	 *
-	 * @return the request at the head of the currentDirectionQueue,
-	 *         -1 if queue is empty.
+	 * @return the request at the head of the currentDirectionQueue, -1 if queue is empty
 	 */
 	public int removeRequest() {
 		if (!currentDirectionQueue.isEmpty()) {
@@ -141,6 +140,7 @@ public class FloorsQueue {
 	 * @param serviceDirection the direction of the queue wanting to swap
 	 * @return status 0 if successful, -1 if not successful
 	 */
+	// FIXME: change from int to boolean
 	public int swapQueues(Direction serviceDirection) {
 		int status = -1;
 
@@ -156,6 +156,7 @@ public class FloorsQueue {
 				PriorityQueue<Integer> tempQueue = currentDirectionQueue;
 				currentDirectionQueue = oppositeDirectionQueue;
 				oppositeDirectionQueue = tempQueue;
+				status = 0;
 			}
 			 */
 			if (serviceDirection == Direction.UP) {
