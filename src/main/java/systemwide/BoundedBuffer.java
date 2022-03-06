@@ -11,7 +11,7 @@ public class BoundedBuffer {
     // A simple ring buffer is used to hold the data
 
     // buffer capacity
-    private static final int SIZE = 5;
+    private static final int SIZE = 10;
     private final SystemEvent[] buffer = new SystemEvent[SIZE];
     private int inIndex = 0, outIndex = 0, count = 0;
 
