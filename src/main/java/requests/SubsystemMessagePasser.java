@@ -17,7 +17,7 @@ public interface SubsystemMessagePasser {
 	 * @return true if request is successful, false otherwise
 	 */
 	default boolean sendMessage(SystemEvent event, BoundedBuffer buffer, Origin origin) {
-		System.out.println(origin + " sending: " + event);
+		System.out.println(origin + " sending: " + event.getClass() + " " + event);
 		buffer.addLast(event, origin);
 		return true;
 	}

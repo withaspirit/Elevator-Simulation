@@ -233,6 +233,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void processRequest(ServiceRequest serviceRequest){
 		// If request is an elevator request
+		System.out.println("Processing " + serviceRequest);
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Set time of request
 			// Request Properties
