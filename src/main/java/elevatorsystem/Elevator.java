@@ -94,23 +94,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void swapServiceDirectionIfNecessary() {
 		System.out.println("Elevator attempting to change queues.");
 		if (floorsQueue.swapQueues(serviceDirection) == 0) {
-			serviceDirection = swapDirection(serviceDirection);
+			serviceDirection = Direction.swapDirection(serviceDirection);
 		}
-	}
-
-	/**
-	 * Changes the provided direction from Up to Down and vice-versa.
-	 *
-	 * @param direction the provided direction
-	 * @return direction the opposite direction of the provided direction
-	 */
-	public Direction swapDirection(Direction direction) {
-		if (direction == Direction.UP) {
-			direction = Direction.DOWN;
-		} else if (direction == Direction.DOWN) {
-			direction = Direction.UP;
-		}
-		return direction;
 	}
 
 	/**
