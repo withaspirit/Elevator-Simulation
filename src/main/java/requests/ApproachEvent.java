@@ -4,6 +4,7 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * ApproachEvent is a SystemEvent that is sent by an Elevator to a Floor's ArrivalSensor when
@@ -69,5 +70,16 @@ public class ApproachEvent extends ServiceRequest {
      */
     public void allowElevatorStop() {
         elevatorMayStop = true;
+    }
+
+    /**
+     * Convert ApproachEvent to a String.
+     */
+    @Override
+    public String toString() {
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+        String formattedDate = getTime().format(dateTimeFormat);
+        String formattedString = formattedDate + " " + getFloorNumber() + " " + getDirection().getName() + " " + getElevatorNumber() + " " + elevatorMayStop;
+        return formattedString;
     }
 }
