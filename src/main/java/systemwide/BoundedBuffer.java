@@ -87,6 +87,18 @@ public class BoundedBuffer {
     }
 
     /**
+     * Determines  whether a SubsystemMessagePasser can remove the item
+     * from the top of the BoundedBuffer.
+     *
+     * @param origin the identity of the SubsystemMessagePasser
+     * @return true if the buffer isn't empty and the request to remove's origin is not the given origin, false otherwise
+     */
+    public synchronized boolean canRemoveFromBuffer(Origin origin) {
+        // Buffer can't be full and the
+        return readable && !identicalOrigin(buffer[outIndex], origin);
+    }
+
+    /**
      * Determines whether the request's origin is the same as the provided origin.
      *
      * @param request the topmost SystemEvent in the buffer
