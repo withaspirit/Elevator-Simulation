@@ -124,4 +124,13 @@ public class BoundedBuffer {
     public boolean isEmpty() {
         return count == 0;
     }
+
+    /**
+     * Determines whether the Buffer is writable.
+     *
+     * @return true if the buffer is at maximum capacity, false otherwise
+     */
+    public synchronized boolean isWritable() {
+        return writeable;
+    }
 }
