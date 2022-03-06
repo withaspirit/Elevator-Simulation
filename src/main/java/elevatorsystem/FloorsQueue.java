@@ -191,6 +191,15 @@ public class FloorsQueue {
 	}
 
 	/**
+	 * Determines whether the FloorsQueue is empty.
+	 *
+	 * @return true if the floorsQueue's active queue is empty, false otherwise
+	 */
+	public boolean isCurrentQueueEmpty() {
+		return currentDirectionQueue.isEmpty();
+	}
+
+	/**
 	 * Returns the occupancy status of the upward queue
 	 * 
 	 * @return status true if empty
