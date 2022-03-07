@@ -2,12 +2,17 @@ package systemwide;
 
 import requests.SystemEvent;
 
+import java.util.concurrent.ConcurrentLinkedDeque;
+
 /**
  * BoundedBuffer for managing Thread-Safe messaging between system components
  * 
  * @author Lynn Marshall, Julian, Ryan Dash
  */
 public class BoundedBuffer {
+
+    private final ConcurrentLinkedDeque<SystemEvent> bufferList;
+
     // A simple ring buffer is used to hold the data
 
     // buffer capacity
@@ -20,6 +25,13 @@ public class BoundedBuffer {
 
     // If true, there is at least one object stored in the buffer.    
     private boolean readable = false;
+
+    /**
+     * Constructor for BoundedBuffer.
+     */
+    public BoundedBuffer() {
+        bufferList = new ConcurrentLinkedDeque<>();
+    }
 
     /**
      * Returns the amount of items in the buffer.
@@ -38,8 +50,11 @@ public class BoundedBuffer {
      */
     public synchronized void addLast(SystemEvent item, Origin origin)
     {
+        bufferList.addLast(item);
+        item.setOrigin(origin);
+        /*
         while (!writeable) {
-            try { 
+            try {
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -53,6 +68,7 @@ public class BoundedBuffer {
         if (count == SIZE)
             writeable = false;
 
+         */
         notifyAll();
     }
 
@@ -63,8 +79,8 @@ public class BoundedBuffer {
      */
     public synchronized SystemEvent removeFirst(Origin origin)
     {
-        SystemEvent item;
-        
+        SystemEvent item = bufferList.removeFirst();
+        /*
         while (!readable || identicalOrigin(buffer[outIndex], origin)) {
             try { 
                 wait();
@@ -80,6 +96,7 @@ public class BoundedBuffer {
         count--;
         if (count == 0)
             readable = false;
+         */
 
         notifyAll();
 
@@ -94,19 +111,20 @@ public class BoundedBuffer {
      * @return true if the buffer isn't empty and the request to remove's origin is not the given origin, false otherwise
      */
     public synchronized boolean canRemoveFromBuffer(Origin origin) {
-        // Buffer can't be full and the
-        return readable && !identicalOrigin(buffer[outIndex], origin);
+        if (bufferList.isEmpty()) {
+            return false;
+        }
+        return !identicalOrigin(origin);
     }
 
     /**
      * Determines whether the request's origin is the same as the provided origin.
      *
-     * @param request the topmost SystemEvent in the buffer
      * @param origin the origin that is attempting to remove a SystemEvent
      * @return true if successful, false otherwise
      */
-    public boolean identicalOrigin(SystemEvent request, Origin origin) {
-        return origin == request.getOrigin();
+    public synchronized boolean identicalOrigin(Origin origin) {
+        return origin == bufferList.peek().getOrigin();
     }
 
     /**
@@ -121,8 +139,8 @@ public class BoundedBuffer {
     /**
      * Determines if Buffer is empty
      */
-    public boolean isEmpty() {
-        return count == 0;
+    public synchronized boolean isEmpty() {
+        return bufferList.isEmpty();
     }
 
     /**

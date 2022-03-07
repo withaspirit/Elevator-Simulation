@@ -55,7 +55,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 			}
 
 			// send a request if possible
-			if (!requestQueue.isEmpty() && floorSubsystemBuffer.isWritable() && elevatorSubsystemBuffer.isWritable()) {
+			if (!requestQueue.isEmpty()) {
 				request = requestQueue.remove();
 
 				if (request.getOrigin() == Origin.FLOOR_SYSTEM) {
