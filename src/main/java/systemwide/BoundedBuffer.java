@@ -12,12 +12,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class BoundedBuffer {
 
     private final ConcurrentLinkedDeque<SystemEvent> bufferList;
-
-    // A simple ring buffer is used to hold the data
-
-    // buffer capacity
-    private static final int SIZE = 10;
-    private final SystemEvent[] buffer = new SystemEvent[SIZE];
     private int count = 0;
 
     /**
@@ -89,12 +83,12 @@ public class BoundedBuffer {
     }
 
     /**
-     * Prints the contents of a Buffer.
+     * Prints the contents of the Buffer.
      */
-    public void printBufferContents() {
-        // expand upon this
-        System.out.println("Buffer contents: buffer0: " + buffer[0] + "\n"
-                + "buffer1: "+ buffer[1] + "\n");
+    public synchronized void printBufferContents() {
+        bufferList.forEach(systemEvent -> {
+            System.out.println(systemEvent.getClass().toString());
+        });
     }
 
     /**
