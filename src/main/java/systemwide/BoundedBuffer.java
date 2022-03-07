@@ -11,14 +11,14 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class BoundedBuffer {
 
-    private final ConcurrentLinkedDeque<SystemEvent> bufferList;
+    private final ConcurrentLinkedDeque<SystemEvent> itemQueue;
     private int count = 0;
 
     /**
      * Constructor for BoundedBuffer.
      */
     public BoundedBuffer() {
-        bufferList = new ConcurrentLinkedDeque<>();
+        itemQueue = new ConcurrentLinkedDeque<>();
     }
 
     /**
@@ -37,7 +37,7 @@ public class BoundedBuffer {
      * @param origin the origin from which the request came
      */
     public synchronized void addLast(SystemEvent item, Origin origin) {
-        bufferList.addLast(item);
+        itemQueue.addLast(item);
         item.setOrigin(origin);
         count++;
         notifyAll();
@@ -49,7 +49,7 @@ public class BoundedBuffer {
      * @param origin the origin making the request to remove an object from the buffer
      */
     public synchronized SystemEvent removeFirst(Origin origin) {
-        SystemEvent item = bufferList.removeFirst();
+        SystemEvent item = itemQueue.removeFirst();
         count--;
         notifyAll();
         return item;
@@ -63,7 +63,7 @@ public class BoundedBuffer {
      * @return true if the buffer isn't empty and the request to remove's origin is not the given origin, false otherwise
      */
     public synchronized boolean canRemoveFromBuffer(Origin origin) {
-        if (bufferList.isEmpty()) {
+        if (itemQueue.isEmpty()) {
             return false;
         }
         return !identicalOrigin(origin);
@@ -76,14 +76,14 @@ public class BoundedBuffer {
      * @return true if successful, false otherwise
      */
     public synchronized boolean identicalOrigin(Origin origin) {
-        return origin == bufferList.peek().getOrigin();
+        return origin == itemQueue.peek().getOrigin();
     }
 
     /**
      * Prints the contents of the Buffer.
      */
     public synchronized void printBufferContents() {
-        bufferList.forEach(systemEvent -> {
+        itemQueue.forEach(systemEvent -> {
             System.out.println(systemEvent.getClass().toString());
         });
     }
@@ -92,6 +92,6 @@ public class BoundedBuffer {
      * Determines if Buffer is empty
      */
     public synchronized boolean isEmpty() {
-        return bufferList.isEmpty();
+        return itemQueue.isEmpty();
     }
 }
