@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 /**
  * BoundedBuffer for managing Thread-Safe messaging between system components
  * 
- * @author Lynn Marshall, Julian, Ryan Dash
+ * @author Lynn Marshall, Julian, Ryan Dash, Liam Tripp
  */
 public class BoundedBuffer {
 
@@ -36,7 +36,7 @@ public class BoundedBuffer {
     /**
      * Returns the amount of items in the buffer.
      *
-     * @return number the amount of items int the buffer
+     * @return number the amount of items in the buffer
      */
     public int getSize() {
         return count;
@@ -52,6 +52,7 @@ public class BoundedBuffer {
     {
         bufferList.addLast(item);
         item.setOrigin(origin);
+        count++;
         /*
         while (!writeable) {
             try {
@@ -80,6 +81,7 @@ public class BoundedBuffer {
     public synchronized SystemEvent removeFirst(Origin origin)
     {
         SystemEvent item = bufferList.removeFirst();
+        count--;
         /*
         while (!readable || identicalOrigin(buffer[outIndex], origin)) {
             try { 
