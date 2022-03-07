@@ -67,7 +67,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 * @param approachEvent the ApproachEvent used to determine whether the Elevator should stop
 	 */
 	public void processApproachEvent(ApproachEvent approachEvent) {
-		Floor floor = floorList.get(approachEvent.getFloorNumber());
+		Floor floor = floorList.get(approachEvent.getFloorNumber() - 1);
 		floor.receiveApproachEvent(approachEvent);
 		requests.add(approachEvent);
 	}
