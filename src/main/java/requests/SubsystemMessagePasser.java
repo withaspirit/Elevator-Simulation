@@ -30,7 +30,7 @@ public interface SubsystemMessagePasser {
 	 */
 	default SystemEvent receiveMessage(BoundedBuffer buffer, Origin origin) {
 		SystemEvent request = buffer.removeFirst(origin);
-		System.out.println(origin + " received: " + request);
+		System.out.println(origin + " received: "  + request.getClass() + " "+ request);
 		return request;
 	}
 }
