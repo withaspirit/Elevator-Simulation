@@ -5,9 +5,9 @@ import requests.SystemEvent;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
- * BoundedBuffer for managing Thread-Safe messaging between system components
+ * BoundedBuffer maintains a Thread-Safe queue of SystemEvents.
  * 
- * @author Lynn Marshall, Julian, Ryan Dash, Liam Tripp
+ * @author Julian, Ryan Dash, Liam Tripp, Lynn Marshall
  */
 public class BoundedBuffer {
 
@@ -36,8 +36,7 @@ public class BoundedBuffer {
      * @param item a request sent to the buffer
      * @param origin the origin from which the request came
      */
-    public synchronized void addLast(SystemEvent item, Origin origin)
-    {
+    public synchronized void addLast(SystemEvent item, Origin origin) {
         bufferList.addLast(item);
         item.setOrigin(origin);
         count++;
@@ -49,12 +48,10 @@ public class BoundedBuffer {
      *
      * @param origin the origin making the request to remove an object from the buffer
      */
-    public synchronized SystemEvent removeFirst(Origin origin)
-    {
+    public synchronized SystemEvent removeFirst(Origin origin) {
         SystemEvent item = bufferList.removeFirst();
         count--;
         notifyAll();
-
         return item;
     }
 
