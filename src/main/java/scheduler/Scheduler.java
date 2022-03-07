@@ -118,9 +118,12 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 			} else if (request instanceof FloorRequest floorRequest){
 				sendMessage(floorRequest, floorSubsystemBuffer, origin);
-				System.out.println("Scheduler Sent Request to Elevator Successful");
+				System.out.println("Scheduler Sent Request to Floor Successful");
 			} else if (request instanceof ApproachEvent approachEvent) {
 				sendMessage(approachEvent, floorSubsystemBuffer, origin);
+				System.out.println("Scheduler Sent Request to Floor Successful");
+			} else {
+				System.out.println(request.toString());
 			}
 		}
 	}

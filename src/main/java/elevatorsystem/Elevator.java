@@ -61,6 +61,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			if (motor.isActive()) {
 				int nextFloor = floorsQueue.visitNextFloor(motor.getDirection());
 				ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), currentFloor, motor.getDirection(), nextFloor, Origin.ELEVATOR_SYSTEM);
+				moveToFloor(elevatorRequest);
 				currentFloor = nextFloor;
 				System.out.println("Elevator#"+ elevatorNumber +" arrived at floor#:" + currentFloor);
 				if (floorsQueue.isUpqueueEmpty() && floorsQueue.isDownqueueEmpty() && floorsQueue.isMissedqueueEmpty()){
@@ -172,7 +173,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 				passApproachEvent(newApproachEvent);
 				// stall while waiting to receive the approachEvent from ElevatorSubsystem
 				// the ApproachEvent is received in Elevator.receiveApproachEvent
-
+				while (approachEvent == null) {
+				}
+				System.out.println("Approach event: " + approachEvent.toString());
+				approachEvent = null;
 				setCurrentFloor(nextFloor);
 				System.out.println("Elevator moved to floor " + nextFloor);
 			}
