@@ -79,6 +79,22 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	}
 
 	/**
+	 * Adds a new service request to the list of requests
+	 *
+	 * @param elevatorRequest a service request for the elevator to perform
+	 */
+	public void addRequest(ElevatorRequest elevatorRequest) {
+		floorsQueue.setQueueTime(getExpectedTime(elevatorRequest));
+		if (motor.getDirection() == Direction.NONE){
+			motor.setDirection(elevatorRequest.getDirection());
+		}
+		floorsQueue.addFloor(elevatorRequest.getFloorNumber(),elevator.getCurrentFloor(), elevatorRequest.getDesiredFloor(), motor.getDirection());
+		if (motor.isIdle()){
+			motor.setMovementState(MovementState.ACTIVE);
+		}
+	}
+
+	/**
 	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
 	 *
 	 * @param approachEvent the approach event for the system
@@ -136,8 +152,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		while (true) {
 			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
 			if(request instanceof ElevatorRequest elevatorRequest){
-				floorsQueue.setQueueTime(getExpectedTime(elevatorRequest));
-
+				addRequest(elevatorRequest);
 			} else if(request instanceof ApproachEvent approachEvent) {
 				// do something
 			}
