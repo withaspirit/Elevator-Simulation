@@ -18,13 +18,7 @@ public class BoundedBuffer {
     // buffer capacity
     private static final int SIZE = 10;
     private final SystemEvent[] buffer = new SystemEvent[SIZE];
-    private int inIndex = 0, outIndex = 0, count = 0;
-
-    // If true, there is room for at least one object in the buffer.
-    private boolean writeable = true;
-
-    // If true, there is at least one object stored in the buffer.    
-    private boolean readable = false;
+    private int count = 0;
 
     /**
      * Constructor for BoundedBuffer.
@@ -53,23 +47,6 @@ public class BoundedBuffer {
         bufferList.addLast(item);
         item.setOrigin(origin);
         count++;
-        /*
-        while (!writeable) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        item.setOrigin(origin);
-        buffer[inIndex] = item;
-        readable = true;
-        inIndex = (inIndex + 1) % SIZE;
-        count++;
-        if (count == SIZE)
-            writeable = false;
-
-         */
         notifyAll();
     }
 
@@ -82,24 +59,6 @@ public class BoundedBuffer {
     {
         SystemEvent item = bufferList.removeFirst();
         count--;
-        /*
-        while (!readable || identicalOrigin(buffer[outIndex], origin)) {
-            try { 
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        // remove item from buffer
-        item = buffer[outIndex];
-        buffer[outIndex] = null;
-        writeable = true;
-        outIndex = (outIndex + 1) % SIZE;
-        count--;
-        if (count == 0)
-            readable = false;
-         */
-
         notifyAll();
 
         return item;
@@ -143,14 +102,5 @@ public class BoundedBuffer {
      */
     public synchronized boolean isEmpty() {
         return bufferList.isEmpty();
-    }
-
-    /**
-     * Determines whether the Buffer is writable.
-     *
-     * @return true if the buffer is at maximum capacity, false otherwise
-     */
-    public synchronized boolean isWritable() {
-        return writeable;
     }
 }
