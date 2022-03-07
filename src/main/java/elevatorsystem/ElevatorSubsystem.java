@@ -15,51 +15,67 @@ import java.util.ArrayList;
  */
 public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
-    private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-    private final ArrayList<Elevator> elevatorList;
+	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
+	private Elevator elevator;
+	private ElevatorMotor motor;
+	private FloorsQueue floorsQueue;
 	private Origin origin;
+
+	// Elevator Measurements
+	public static final float MAX_SPEED = 2.67f; // meters/second
+	public static final float ACCELERATION = 0.304f; // meters/second^2
+	public static final float LOAD_TIME = 9.5f; // seconds
+	public static final float FLOOR_HEIGHT = 3.91f; // meters (22 steps/floor @ 0.1778 meters/step)
+	public static final double ACCELERATION_DISTANCE = Math.pow(MAX_SPEED, 2)/ (2 * ACCELERATION); // Vf^2 = Vi^2 + 2as therefore s = vf^2/2a
+	public static final double ACCELERATION_TIME = Math.sqrt((FLOOR_HEIGHT * 2) / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
 
 	/**
 	 * Constructor for ElevatorSubsystem.
 	 *
 	 * @param buffer the buffer the ElevatorSubsystem passes messages to and receives messages from
 	 */
-	public ElevatorSubsystem(BoundedBuffer buffer) {
+	public ElevatorSubsystem(BoundedBuffer buffer, Elevator elevator, ElevatorMotor motor, FloorsQueue floorsQueue) {
 		this.elevatorSubsystemBuffer = buffer;
-		elevatorList = new ArrayList<>();
+		this.elevator = elevator;
+		this.motor = motor;
+		this.floorsQueue = floorsQueue;
 		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
 	/**
-	 * Simple message requesting and sending between subsystems.
-	 * ElevatorSubsystem
-	 * Sends: ApproachEvent
-	 * Receives: ApproachEvent, ElevatorRequest
+	 * Returns the motor associated with the Elevator.
+	 *
+	 * @return elevatorMotor the elevatorMotor for the elevator
 	 */
-	public void run() {
-		while (true) {
-			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
-			if (request instanceof ElevatorRequest elevatorRequest) {
-				int chosenElevator = chooseElevator(elevatorRequest);
-				// Choose elevator
-				// Move elevator
-				elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-
-				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, origin);
-				System.out.println(origin + " Sent Request Successful to Scheduler");
-			} else if (request instanceof ApproachEvent approachEvent) {
-				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-			}
-		}
+	public ElevatorMotor getMotor() {
+		return motor;
 	}
 
 	/**
-	 * Adds an elevator to the subsystem's list of elevators.
+	 * Gets the total expected time that the elevator will need to take to
+	 * perform its current requests along with the new elevatorRequest.
 	 *
-	 * @param elevator an elevator
+	 * @param elevatorRequest an elevator request from the floorSubsystem
+	 * @return a double containing the elevator's total expected queue time
 	 */
-	public void addElevator(Elevator elevator) {
-		elevatorList.add(elevator);
+	public double getExpectedTime(ElevatorRequest elevatorRequest) {
+		return floorsQueue.getQueueTime() + LOAD_TIME + requestTime(elevatorRequest);
+	}
+
+	/**
+	 * Gets the expected time of a new request for the current elevator
+	 * based on distance.
+	 *
+	 * @param elevatorRequest a serviceRequest to visit a floor
+	 * @return a double containing the time to fulfil the request
+	 */
+	public double requestTime(ElevatorRequest elevatorRequest) {
+		double distance = Math.abs(elevatorRequest.getDesiredFloor() - elevator.getCurrentFloor()) * FLOOR_HEIGHT;
+		if (distance > ACCELERATION_DISTANCE * 2) {
+			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
+		} else {
+			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
+		}
 	}
 
 	/**
@@ -73,52 +89,58 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	}
 
 	/**
-	 * Returns an elevator number corresponding to an elevator that is
-	 * best suited to perform the given ElevatorRequest based on
-	 * expected time to fulfill the request and direction of elevator.
+	 * Returns the instance of elevator that the subsystem has.
 	 *
-	 * @param elevatorRequest an ElevatorRequest
-	 * @return a number corresponding to an elevator
+	 * @return the instance of the elevator that the subsystem has.
 	 */
-	public int chooseElevator(ElevatorRequest elevatorRequest) {
-		double elevatorBestExpectedTime = 0.0;
-		double elevatorWorstExpectedTime = 0.0;
-		int chosenBestElevator = 0;
-		int chosenWorstElevator = 0;
-		for (Elevator elevator : elevatorList) {
-//			sendMessage(new StatusRequest(elevatorRequest,Origin.currentOrigin(), i), elevatorSubsystemBuffer, Origin.currentOrigin());
-//			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.currentOrigin());
-			double tempExpectedTime = elevator.getExpectedTime(elevatorRequest);
-			if (elevator.getMotor().isIdle()) {
-				return elevator.getElevatorNumber();
+	public Elevator getElevator(){
+		return elevator;
+	}
 
-			} else if (!elevator.getMotor().isActive()) {
-				System.err.println("Elevator is stuck");
+	/**
+	 * Calculates the amount of time it will take for the elevator to stop at it's current speed
+	 *
+	 * @return total time it will take to stop as a float
+	 */
+	public float stopTime() {
+		float numerator = 0 - elevator.getSpeed();
+		return numerator / ACCELERATION;
+	}
 
-			} else if (elevator.getDirection() == elevatorRequest.getDirection()) {
-				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
-					if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
-						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
+	/**
+	 * Gets the distance until the next floor as a float
+	 *
+	 * @return distance until next floor
+	 */
+	public float getDistanceUntilNextFloor(){
+		float distance = 0;
+		float stopTime = stopTime();
 
-					} else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
-						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
-            
-					} else {
-						// Add to the third queue of the elevator
-					}
-				}
-			} else {
-				if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime) {
-					elevatorWorstExpectedTime = tempExpectedTime;
-					chosenWorstElevator = elevator.getElevatorNumber();
-				}
+		// Using Kinematics equation: d = vt + (1/2)at^2
+		float part1 = elevator.getSpeed() * stopTime;
+		// System.out.println("Part 1: " + part1);
+
+		float part2 = (float) ((0.5)*(ACCELERATION)*(Math.pow(stopTime,2)));
+		// System.out.println("Part 2: " + part2);
+
+		return part1 - part2;
+	}
+
+	/**
+	 * Simple message requesting and sending between subsystems.
+	 * ElevatorSubsystem
+	 * Sends: ApproachEvent
+	 * Receives: ApproachEvent, ElevatorRequest
+	 */
+	public void run() {
+		while (true) {
+			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
+			if(request instanceof ElevatorRequest elevatorRequest){
+				floorsQueue.setQueueTime(getExpectedTime(elevatorRequest));
+
+			} else if(request instanceof ApproachEvent approachEvent) {
+				// do something
 			}
 		}
-		if (chosenBestElevator == 0) {
-			chosenBestElevator = chosenWorstElevator;
-		}
-		return chosenBestElevator;
 	}
 }

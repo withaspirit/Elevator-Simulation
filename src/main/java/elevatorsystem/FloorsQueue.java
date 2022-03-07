@@ -13,6 +13,7 @@ public class FloorsQueue {
 	private PriorityQueue<Integer> upwardRequests;
 	private PriorityQueue<Integer> downwardRequests;
 	private Queue<Integer> missedRequests;
+	private double queueTime;
 
 	/**
 	 * Constructor for the class
@@ -21,6 +22,7 @@ public class FloorsQueue {
 		this.upwardRequests = new PriorityQueue<>();
 		this.downwardRequests = new PriorityQueue<>(Collections.reverseOrder());
 		this.missedRequests = new LinkedList<>();
+		queueTime = 0.0;
 	}
 
 	/**
@@ -155,5 +157,13 @@ public class FloorsQueue {
 	 */
 	public boolean isMissedqueueEmpty() {
 		return missedRequests.isEmpty();
+	}
+
+	public double getQueueTime() {
+		return queueTime;
+	}
+
+	public void setQueueTime(double queueTime) {
+		this.queueTime = queueTime;
 	}
 }
