@@ -11,7 +11,7 @@ public enum Port {
     CLIENT_TO_SERVER(23),
     SERVER_TO_CLIENT(25);
 
-    private int number;
+    private final int number;
 
     /**
      * Constructor for Port.
