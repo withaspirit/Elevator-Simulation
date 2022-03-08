@@ -6,6 +6,8 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 /**
@@ -19,6 +21,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	private Elevator elevator;
 	private ElevatorMotor motor;
 	private FloorsQueue floorsQueue;
+	private Queue<SystemEvent> requestQueue;
 	private Origin origin;
 
 	// Elevator Measurements
@@ -39,6 +42,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		this.elevator = elevator;
 		this.motor = motor;
 		this.floorsQueue = floorsQueue;
+		requestQueue = new LinkedList<>();
 		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
@@ -101,7 +105,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
+		requestQueue.add(approachEvent);
 	}
 
 	/**
@@ -158,4 +162,25 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 			}
 		}
 	}
+  
+  public void run() {
+		while (true) {
+			if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+				SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
+				if (request instanceof ElevatorRequest elevatorRequest) {
+					int chosenElevator = chooseElevator(elevatorRequest);
+					// Choose elevator
+					// Move elevator
+					elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
+					requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
+				} else if (request instanceof ApproachEvent approachEvent) {
+					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+				}
+			}
+			// send message if possible
+			if (!requestQueue.isEmpty()) {
+				SystemEvent request = requestQueue.remove();
+				sendMessage(request, elevatorSubsystemBuffer, origin);
+				System.out.println(origin + " Sent Request Successful to Scheduler");
+			}
 }

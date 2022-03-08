@@ -29,6 +29,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private FloorsQueue floorsQueue;
 	private ElevatorSubsystem elevatorSubsystem;
 	private int currentFloor;
+	private Direction direction = Direction.UP;
+	private Direction serviceDirection;
 	private float speed;
 	private float displacement;
 
@@ -42,6 +44,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public Elevator(int elevatorNumber, BoundedBuffer buffer) {
 		this.elevatorNumber = elevatorNumber;
+		this.elevatorSubsystem = elevatorSubsystem;
+		speed = 0;
+		displacement = 0;
+		direction = Direction.NONE;
+		serviceDirection = Direction.UP;
 		motor = new ElevatorMotor();
 		floorsQueue = new FloorsQueue();
 		elevatorSubsystem = new ElevatorSubsystem(buffer, this, motor, floorsQueue);
@@ -68,6 +75,18 @@ public class Elevator implements Runnable, SubsystemPasser {
 					motor.stop();
 				}
 			}
+		}
+	}
+
+	/**
+	 * Swaps the floorQueue and changes the service direction before elevator moves to next floor.
+	 * TODO: In the future, there should be a check when the ElevatorMotor
+	 * TODO: MovementState is IDLE. If so, the elevator uses this method.
+	 */
+	public void swapServiceDirectionIfNecessary() {
+		System.out.println("Elevator attempting to change queues.");
+		if (floorsQueue.swapQueues(serviceDirection) == 0) {
+			serviceDirection = Direction.swapDirection(serviceDirection);
 		}
 	}
 
@@ -132,15 +151,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void setFloorDisplacement(float displacement) {
 		this.displacement = displacement;
-	}
-
-	/**
-	 * TEMPORARY method to get the attached elevator Subsystem from elevator.
-	 *
-	 * @return the elevatorSubsystem attached to the elevator
-	 */
-	public ElevatorSubsystem getElevatorSubsystem() {
-		return elevatorSubsystem;
 	}
 
 	/**

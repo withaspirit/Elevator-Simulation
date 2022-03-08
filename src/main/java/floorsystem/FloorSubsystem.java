@@ -45,6 +45,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 		Collections.reverse(requests);
 
 		while (true) {
+			//  add to floorBuffer if possible
 			if (!requests.isEmpty()) {
 				// Sending Data to Scheduler
 				SystemEvent event = requests.remove(requests.size() -1);
@@ -55,22 +56,36 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 				//Send dummy useless message
 				sendMessage(new FloorRequest(LocalTime.now(), -1, Direction.NONE, -1, origin), floorSubsystemBuffer, origin);
 			}
-			SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
-			if (request instanceof FloorRequest floorRequest) {
-				System.out.println("FloorSubsystem: Received FloorRequest: in  Elevator# " +
-						floorRequest.getElevatorNumber() + " Arrived \n");
-			} else if (request instanceof ApproachEvent approachEvent) {
-				Floor floor = floorList.get(approachEvent.getFloorNumber());
-				floor.receiveApproachEvent(approachEvent);
-				requests.add(approachEvent);
+      
+			// check if can remove from buffer before trying to remove
+			if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+				SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
+				if (request instanceof FloorRequest floorRequest) {
+					System.out.println("FloorSubsystem: Received FloorRequest: in  Elevator# " +
+							floorRequest.getElevatorNumber() + " Arrived \n");
+				} else if (request instanceof ApproachEvent approachEvent) {
+							processApproachEvent(approachEvent);
+				}
 			}
 		}
 	}
 
 	/**
+	 * Processes an ApproachEvent, checking its corresponding floor to see whether
+	 * an Elevator should stop.
+	 *
+	 * @param approachEvent the ApproachEvent used to determine whether the Elevator should stop
+	 */
+	public void processApproachEvent(ApproachEvent approachEvent) {
+		Floor floor = floorList.get(approachEvent.getFloorNumber() - 1);
+		floor.receiveApproachEvent(approachEvent);
+		requests.add(approachEvent);
+	}
+
+	/**
 	 * Adds a floor to the subsystem's list of floors.
 	 *
-	 * @param floor a floor
+	 * @param floor a floor in the FloorSubsystem
 	 */
 	public void addFloor(Floor floor) {
 		floorList.add(floor);

@@ -8,6 +8,8 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Scheduler handles the requests from all system components
@@ -20,6 +22,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
 	private ArrayList<ElevatorSubsystem> elevatorSubsystemList;
 	private Origin origin;
+	private Queue<SystemEvent> requestQueue;
 
 	/**
 	 * Constructor for Scheduler
@@ -33,6 +36,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
 		this.floorSubsystemBuffer = floorSubsystemBuffer;
 		this.elevatorSubsystemList = elevatorSubsystemList;
+		requestQueue = new LinkedList<>();
 		origin = Origin.SCHEDULER;
 	}
 
@@ -96,24 +100,19 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 */
 	public void run() {
 		while(true) {
-			SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
-			if (request instanceof ElevatorRequest elevatorRequest) {
-				int chosenElevator = chooseElevator(elevatorRequest);
-				elevatorSubsystemList.get(chosenElevator-1).addRequest(elevatorRequest);
-				sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
-				//TODO destination ElevatorSubsystem = default port e.g. 5000 + ElevatorNumber.
-				//TODO Current implementation can choose an Elevator but not send to a specific Elevator as that
-				//TODO requires an ElevatorNumber in the ElevatorRequest for the ElevatorSubsystem to compare to.
-				//TODO This will be resolved when changing from bounded buffer to UDP.
-				System.out.println(origin+" Sent Reply to Floor Successful");
-			} else if (request instanceof ApproachEvent approachEvent) {
-				// FIXME: this code might be redundant as it's identical to the one above
-				sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
+			SystemEvent request;
+			// remove from either floorBuffer or ElevatorBuffer
+			if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+				request = receiveMessage(floorSubsystemBuffer, origin);
+				requestQueue.add(request);
+			} else if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+				request = receiveMessage(elevatorSubsystemBuffer, origin);
+				requestQueue.add(request);
 			}
 
-			request = receiveMessage(elevatorSubsystemBuffer, origin);
-			if (request instanceof StatusResponse) {
-
+			// send a request if possible
+			if (!requestQueue.isEmpty()) {
+				request = requestQueue.remove();
 			} else if (request instanceof FloorRequest floorRequest){
 				sendMessage(floorRequest, floorSubsystemBuffer, origin);
 				System.out.println("Scheduler Sent Request to Floor Successful");
@@ -123,6 +122,27 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 			} else {
 				System.out.println(request.toString());
 			}
+				if (request.getOrigin() == Origin.FLOOR_SYSTEM) {
+					if (request instanceof ElevatorRequest elevatorRequest){
+						sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
+						System.out.println("Scheduler Sent Request to Elevator Successful");
+					} else if (request instanceof ApproachEvent approachEvent) {
+						// FIXME: this code might be redundant as it's identical to the one above
+						sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
+					}
+				} else if (request.getOrigin() == Origin.ELEVATOR_SYSTEM) {
+					if (request instanceof StatusResponse) {
+
+					} else if (request instanceof FloorRequest floorRequest){
+						sendMessage(floorRequest, floorSubsystemBuffer, origin);
+						System.out.println("Scheduler Sent Request to Floor Successful");
+					} else if (request instanceof ApproachEvent approachEvent) {
+						sendMessage(approachEvent, floorSubsystemBuffer, origin);
+					}
+				} else {
+					System.err.println("Scheduler should not contain items whose origin is Scheduler: " + request);
+				}
+ 			}
 		}
 	}
 }

@@ -45,4 +45,21 @@ public enum Direction {
 			return null;
 		}
 	}
+
+	/**
+	 * Changes the provided direction from Up to Down and vice-versa.
+	 *
+	 * @param direction the provided direction
+	 * @return direction the opposite direction of the provided direction
+	 */
+	public static Direction swapDirection(Direction direction) {
+		if (direction == Direction.UP) {
+			direction = Direction.DOWN;
+		} else if (direction == Direction.DOWN) {
+			direction = Direction.UP;
+		} else {
+			throw new IllegalArgumentException("Direction provided is not valid.");
+		}
+		return direction;
+	}
 }
