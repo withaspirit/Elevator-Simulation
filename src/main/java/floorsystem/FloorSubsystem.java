@@ -44,7 +44,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 
 		while (true) {
 			//  add to floorBuffer if possible
-			if (!requests.isEmpty() && floorSubsystemBuffer.isWritable()) {
+			if (!requests.isEmpty()) {
 				// Sending Data to Scheduler
 				SystemEvent event = requests.remove(requests.size() -1);
 
