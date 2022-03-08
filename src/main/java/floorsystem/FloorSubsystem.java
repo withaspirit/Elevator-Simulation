@@ -3,8 +3,10 @@ package floorsystem;
 import misc.*;
 import requests.*;
 import systemwide.BoundedBuffer;
+import systemwide.Direction;
 import systemwide.Origin;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -49,6 +51,9 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 
 				sendMessage(event, floorSubsystemBuffer, origin);
 				System.out.println(origin + " Sent Request Successful to Scheduler");
+			} else {
+				//Send dummy useless message
+				sendMessage(new FloorRequest(LocalTime.now(), -1, Direction.NONE, -1, origin), floorSubsystemBuffer, origin);
 			}
 			SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
 			if (request instanceof FloorRequest floorRequest) {

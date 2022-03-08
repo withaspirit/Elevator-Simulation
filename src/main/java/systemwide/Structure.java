@@ -72,10 +72,11 @@ public class Structure {
 		BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
 		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
-		ArrayList<Elevator> elevatorList = new ArrayList<>();
+		ArrayList<ElevatorSubsystem> elevatorList = new ArrayList<>();
 		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
 			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystemBuffer);
-			elevatorList.add(elevator);
+			new Thread (elevator, elevator.getClass().getSimpleName()).start();
+			elevatorList.add(elevator.getElevatorSubsystem());
 		}
 
 		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
@@ -86,18 +87,13 @@ public class Structure {
 
 		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer, elevatorList);
 
-		Thread schedulerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
+		Thread schedulerOrigin, floorSubsystemOrigin;
 
 		schedulerOrigin = new Thread(scheduler, scheduler.getClass().getSimpleName());
 		floorSubsystemOrigin = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
 
 		schedulerOrigin.start();
 		floorSubsystemOrigin.start();
-
-		// Start elevator Origins
-		for (int i = 0; i < numberOfElevators; i++) {
-			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
-		}
 	}
 
 	public static void main(String[] args) {

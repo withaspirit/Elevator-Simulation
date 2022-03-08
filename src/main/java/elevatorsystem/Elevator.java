@@ -65,8 +65,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				currentFloor = nextFloor;
 				System.out.println("Elevator#"+ elevatorNumber +" arrived at floor#:" + currentFloor);
 				if (floorsQueue.isUpqueueEmpty() && floorsQueue.isDownqueueEmpty() && floorsQueue.isMissedqueueEmpty()){
-					motor.setMovementState(MovementState.IDLE);
-					motor.setDirection(Direction.NONE);
+					motor.stop();
 				}
 			}
 		}
@@ -157,6 +156,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Set floor of request
 			int requestFloor = elevatorRequest.getDesiredFloor();
 
+			if (requestFloor == -1){
+				System.exit(1);
+			}
+
 			// Set direction of request
 			Direction requestedDirection = elevatorRequest.getDirection();
 
@@ -171,6 +174,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				ApproachEvent newApproachEvent = new ApproachEvent(elevatorRequest.getTime(), nextFloor,
 						elevatorRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
 				passApproachEvent(newApproachEvent);
+				System.out.println("Sent Approach event: " + newApproachEvent);
 				// stall while waiting to receive the approachEvent from ElevatorSubsystem
 				// the ApproachEvent is received in Elevator.receiveApproachEvent
 				while (approachEvent == null) {
@@ -178,11 +182,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 				System.out.println("Approach event: " + approachEvent.toString());
 				approachEvent = null;
 				setCurrentFloor(nextFloor);
-				System.out.println("Elevator moved to floor " + nextFloor);
+				System.err.println("Elevator moved to floor " + nextFloor);
 			}
 			// Set to idle once floor reached
 			System.out.println("Elevator " + elevatorNumber + " reached floor " + currentFloor);
-			motor.stop();
 		}
 	}
 

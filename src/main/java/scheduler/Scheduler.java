@@ -18,21 +18,21 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
-	private ArrayList<Elevator> elevatorList;;
+	private ArrayList<ElevatorSubsystem> elevatorSubsystemList;
 	private Origin origin;
 
 	/**
 	 * Constructor for Scheduler
-	 *
-	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
+	 *  @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
 	 * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
+	 * @param elevatorSubsystemList
 	 */
-	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer, ArrayList<Elevator> elevatorList) {
+	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer, ArrayList<ElevatorSubsystem> elevatorSubsystemList) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
 		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
 		this.floorSubsystemBuffer = floorSubsystemBuffer;
-		this.elevatorList = elevatorList;
+		this.elevatorSubsystemList = elevatorSubsystemList;
 		origin = Origin.SCHEDULER;
 	}
 
@@ -50,11 +50,9 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		double elevatorWorstExpectedTime = 0.0;
 		int chosenBestElevator = 0;
 		int chosenWorstElevator = 0;
-		for (Elevator elevator : elevatorList) {
-//			sendMessage(new StatusRequest(elevatorRequest,Origin.currentOrigin(), i), elevatorSubsystemBuffer, Origin.currentOrigin());
-//			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.currentOrigin());
+		for (ElevatorSubsystem elevatorSubsystem : elevatorSubsystemList) {
 			//TODO this is a temporary way to access the elevatorSubsystem, UDP messaging will be direct using port
-			ElevatorSubsystem elevatorSubsystem = elevator.getElevatorSubsystem();
+			Elevator elevator = elevatorSubsystem.getElevator();
 
 			double tempExpectedTime = elevatorSubsystem.getExpectedTime(elevatorRequest);
 			if (elevatorSubsystem.getMotor().isIdle()) {
@@ -101,13 +99,13 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 			SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
 			if (request instanceof ElevatorRequest elevatorRequest) {
 				int chosenElevator = chooseElevator(elevatorRequest);
-
+				elevatorSubsystemList.get(chosenElevator-1).addRequest(elevatorRequest);
 				sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
 				//TODO destination ElevatorSubsystem = default port e.g. 5000 + ElevatorNumber.
 				//TODO Current implementation can choose an Elevator but not send to a specific Elevator as that
 				//TODO requires an ElevatorNumber in the ElevatorRequest for the ElevatorSubsystem to compare to.
 				//TODO This will be resolved when changing from bounded buffer to UDP.
-				System.out.println("Scheduler Sent Request to Elevator Successful");
+				System.out.println(origin+" Sent Reply to Floor Successful");
 			} else if (request instanceof ApproachEvent approachEvent) {
 				// FIXME: this code might be redundant as it's identical to the one above
 				sendMessage(approachEvent, elevatorSubsystemBuffer, origin);

@@ -152,7 +152,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		while (true) {
 			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
 			if(request instanceof ElevatorRequest elevatorRequest){
-				addRequest(elevatorRequest);
 				sendMessage(new FloorRequest(elevatorRequest, elevator.getElevatorNumber()), elevatorSubsystemBuffer, origin);
 			} else if(request instanceof ApproachEvent approachEvent) {
 				elevator.receiveApproachEvent(approachEvent);

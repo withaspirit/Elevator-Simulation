@@ -20,18 +20,16 @@ public class ElevatorSelectionTest {
     Scheduler scheduler;
     Elevator elevator1, elevator2;
     ElevatorSubsystem elevatorSubsystem1, elevatorSubsystem2;
-    ArrayList<Elevator> elevatorList;
+    ArrayList<ElevatorSubsystem> elevatorSubsystemList;
 
     @BeforeEach
     void setUp() {
         elevator1 = new Elevator(1, elevatorSubsystemBuffer);
         elevator2 = new Elevator(2, elevatorSubsystemBuffer);
-        elevatorSubsystem1 = elevator1.getElevatorSubsystem();
-        elevatorSubsystem2 = elevator2.getElevatorSubsystem();
-        elevatorList = new ArrayList<>();
-        elevatorList.add(elevator1);
-        elevatorList.add(elevator2);
-        scheduler = new Scheduler(new BoundedBuffer(), elevatorSubsystemBuffer, elevatorList);
+        elevatorSubsystemList = new ArrayList<>();
+        elevatorSubsystemList.add(elevator1.getElevatorSubsystem());
+        elevatorSubsystemList.add(elevator2.getElevatorSubsystem());
+        scheduler = new Scheduler(new BoundedBuffer(), elevatorSubsystemBuffer, elevatorSubsystemList);
     }
 
     @Test

@@ -28,7 +28,7 @@ class SchedulerTest {
     private Scheduler scheduler;
     private Elevator elevator;
     private ElevatorSubsystem elevatorSubsystem;
-    private ArrayList<Elevator> elevatorList;
+    private ArrayList<ElevatorSubsystem> elevatorSubsystemList;
     private FloorSubsystem floorSubsystem;
     private ServiceRequest serviceRequest;
 
@@ -41,11 +41,10 @@ class SchedulerTest {
         elevatorBuffer = new BoundedBuffer();
         floorBuffer = new BoundedBuffer();
         elevator = new Elevator(1, elevatorBuffer);
-        elevatorSubsystem = elevator.getElevatorSubsystem();
-        elevatorList = new ArrayList<>();
-        elevatorList.add(elevator);
+        elevatorSubsystemList = new ArrayList<>();
+        elevatorSubsystemList.add(elevator.getElevatorSubsystem());
         // Set up systems
-        scheduler = new Scheduler(floorBuffer, elevatorBuffer, elevatorList);
+        scheduler = new Scheduler(floorBuffer, elevatorBuffer, elevatorSubsystemList);
         floorSubsystem = new FloorSubsystem(floorBuffer);
     }
 
