@@ -2,29 +2,29 @@ package systemwide;
 
 import requests.SystemEvent;
 
+import java.util.concurrent.ConcurrentLinkedDeque;
+
 /**
- * BoundedBuffer for managing Thread-Safe messaging between system components
+ * BoundedBuffer maintains a Thread-Safe queue of SystemEvents.
  * 
- * @author Lynn Marshall, Julian, Ryan Dash
+ * @author Julian, Ryan Dash, Liam Tripp, Lynn Marshall
  */
 public class BoundedBuffer {
-    // A simple ring buffer is used to hold the data
 
-    // buffer capacity
-    private static final int SIZE = 5;
-    private final SystemEvent[] buffer = new SystemEvent[SIZE];
-    private int inIndex = 0, outIndex = 0, count = 0;
+    private final ConcurrentLinkedDeque<SystemEvent> itemQueue;
+    private int count = 0;
 
-    // If true, there is room for at least one object in the buffer.
-    private boolean writeable = true;
-
-    // If true, there is at least one object stored in the buffer.    
-    private boolean readable = false;
+    /**
+     * Constructor for BoundedBuffer.
+     */
+    public BoundedBuffer() {
+        itemQueue = new ConcurrentLinkedDeque<>();
+    }
 
     /**
      * Returns the amount of items in the buffer.
      *
-     * @return number the amount of items int the buffer
+     * @return number the amount of items in the buffer
      */
     public int getSize() {
         return count;
@@ -36,23 +36,10 @@ public class BoundedBuffer {
      * @param item a request sent to the buffer
      * @param origin the origin from which the request came
      */
-    public synchronized void addLast(SystemEvent item, Origin origin)
-    {
-        while (!writeable) {
-            try { 
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public synchronized void addLast(SystemEvent item, Origin origin) {
+        itemQueue.addLast(item);
         item.setOrigin(origin);
-        buffer[inIndex] = item;
-        readable = true;
-        inIndex = (inIndex + 1) % SIZE;
         count++;
-        if (count == SIZE)
-            writeable = false;
-
         notifyAll();
     }
 
@@ -61,55 +48,50 @@ public class BoundedBuffer {
      *
      * @param origin the origin making the request to remove an object from the buffer
      */
-    public synchronized SystemEvent removeFirst(Origin origin)
-    {
-        SystemEvent item;
-        
-        while (!readable || identicalOrigin(buffer[outIndex], origin)) {
-            try { 
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        // remove item from buffer
-        item = buffer[outIndex];
-        buffer[outIndex] = null;
-        writeable = true;
-        outIndex = (outIndex + 1) % SIZE;
+    public synchronized SystemEvent removeFirst(Origin origin) {
+        SystemEvent item = itemQueue.removeFirst();
         count--;
-        if (count == 0)
-            readable = false;
-
         notifyAll();
-
         return item;
+    }
+
+    /**
+     * Determines  whether a SubsystemMessagePasser can remove the item
+     * from the top of the BoundedBuffer.
+     *
+     * @param origin the identity of the SubsystemMessagePasser
+     * @return true if the buffer isn't empty and the request to remove's origin is not the given origin, false otherwise
+     */
+    public synchronized boolean canRemoveFromBuffer(Origin origin) {
+        if (itemQueue.isEmpty()) {
+            return false;
+        }
+        return !identicalOrigin(origin);
     }
 
     /**
      * Determines whether the request's origin is the same as the provided origin.
      *
-     * @param request the topmost SystemEvent in the buffer
      * @param origin the origin that is attempting to remove a SystemEvent
      * @return true if successful, false otherwise
      */
-    public boolean identicalOrigin(SystemEvent request, Origin origin) {
-        return origin == request.getOrigin();
+    public synchronized boolean identicalOrigin(Origin origin) {
+        return origin == itemQueue.peek().getOrigin();
     }
 
     /**
-     * Prints the contents of a Buffer.
+     * Prints the contents of the Buffer.
      */
-    public void printBufferContents() {
-        // expand upon this
-        System.out.println("Buffer contents: buffer0: " + buffer[0] + "\n"
-                + "buffer1: "+ buffer[1] + "\n");
+    public synchronized void printBufferContents() {
+        itemQueue.forEach(systemEvent -> {
+            System.out.println(systemEvent.getClass().toString());
+        });
     }
 
     /**
      * Determines if Buffer is empty
      */
-    public boolean isEmpty() {
-        return count == 0;
+    public synchronized boolean isEmpty() {
+        return itemQueue.isEmpty();
     }
 }

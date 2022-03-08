@@ -6,6 +6,8 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 /**
@@ -15,8 +17,9 @@ import java.util.ArrayList;
  */
 public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
-    private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-    private final ArrayList<Elevator> elevatorList;
+  private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
+  private final ArrayList<Elevator> elevatorList;
+	private Queue<SystemEvent> requestQueue;
 	private Origin origin;
 
 	/**
@@ -27,6 +30,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.elevatorSubsystemBuffer = buffer;
 		elevatorList = new ArrayList<>();
+		requestQueue = new LinkedList<>();
 		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
@@ -38,17 +42,23 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	public void run() {
 		while (true) {
-			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
-			if (request instanceof ElevatorRequest elevatorRequest) {
-				int chosenElevator = chooseElevator(elevatorRequest);
-				// Choose elevator
-				// Move elevator
-				elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-
-				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, origin);
+			if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+				SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
+				if (request instanceof ElevatorRequest elevatorRequest) {
+					int chosenElevator = chooseElevator(elevatorRequest);
+					// Choose elevator
+					// Move elevator
+					elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
+					requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
+				} else if (request instanceof ApproachEvent approachEvent) {
+					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+				}
+			}
+			// send message if possible
+			if (!requestQueue.isEmpty()) {
+				SystemEvent request = requestQueue.remove();
+				sendMessage(request, elevatorSubsystemBuffer, origin);
 				System.out.println(origin + " Sent Request Successful to Scheduler");
-			} else if (request instanceof ApproachEvent approachEvent) {
-				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
 			}
 		}
 	}
@@ -69,7 +79,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
+		requestQueue.add(approachEvent);
 	}
 
 	/**
