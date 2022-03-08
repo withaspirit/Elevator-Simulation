@@ -12,11 +12,15 @@ import java.util.Queue;
 public class IntermediateHost {
 
     private Queue<DatagramPacket> messageQueue;
+    private int portNumber;
 
     /**
      * Constructor for IntermediateHost.
+     *
+     * @param portNumber the port number corresponding to the IntermediateHost thread
      */
-    public IntermediateHost() {
+    public IntermediateHost(int portNumber) {
+        this.portNumber = portNumber;
         messageQueue = new LinkedList<>();
     }
 }
