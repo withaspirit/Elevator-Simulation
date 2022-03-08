@@ -22,6 +22,22 @@ public class MessageTransfer {
     }
 
     /**
+     * Sends a message from the socket to the packet's destination port.
+     *
+     * @param socket the DatagramSocket sending the message
+     * @param packet the DatagramPacket being sent
+     */
+    public void sendMessage(DatagramSocket socket, DatagramPacket packet) {
+        try {
+            socket.send(packet);
+        } catch (IOException e) {
+            System.err.print("Send error");
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    /**
      * Receives a message from the socket and transfers it to the
      * packet's specified port.
      *
@@ -40,20 +56,17 @@ public class MessageTransfer {
         }
     }
 
-    /**
-     * Sends a message from the socket to the packet's destination port.
-     *
-     * @param socket the DatagramSocket sending the message
-     * @param packet the DatagramPacket being sent
-     */
-    public void sendMessage(DatagramSocket socket, DatagramPacket packet) {
-        try {
-            socket.send(packet);
-        } catch (IOException e) {
-            System.err.print("Send error");
-            e.printStackTrace();
-            System.exit(1);
-        }
+    public void printSendMessage(String name, DatagramPacket packet) {
+        System.out.println(name + ": Sending packet:");
+//		System.out.println("To host: " + packet.getAddress());
+        System.out.println("Destination host port: " + packet.getPort());
+        int len = packet.getLength();
+        System.out.println("Length: " + len);
+        System.out.print("Containing: ");
+        // Form a String from the byte array.
+        String sent = new String(packet.getData(), 0, len, StandardCharsets.UTF_8);
+        System.out.println(sent);
+        System.out.println();
     }
 
     // host prints out information it has received
@@ -71,19 +84,7 @@ public class MessageTransfer {
         System.out.println();
     }
 
-    public void printSendMessage(String name, DatagramPacket packet) {
-        System.out.println(name + ": Sending packet:");
-//		System.out.println("To host: " + packet.getAddress());
-        System.out.println("Destination host port: " + packet.getPort());
-        int len = packet.getLength();
-        System.out.println("Length: " + len);
-        System.out.print("Containing: ");
-        // Form a String from the byte array.
-        String sent = new String(packet.getData(), 0, len, StandardCharsets.UTF_8);
-        System.out.println(sent);
-        System.out.println();
-    }
-
+    // FIXME: this could be easily be removed
     public DatagramPacket createPacket(byte[] msg, int portNumber) {
         DatagramPacket packet = null;
         try {
