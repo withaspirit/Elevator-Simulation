@@ -5,19 +5,19 @@ import requests.SystemEvent;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
- * BoundedBuffer maintains a Thread-Safe queue of SystemEvents.
+ * UnboundedBuffer maintains a Thread-Safe queue of SystemEvents.
  * 
  * @author Julian, Ryan Dash, Liam Tripp, Lynn Marshall
  */
-public class BoundedBuffer {
+public class UnboundedBuffer {
 
     private final ConcurrentLinkedDeque<SystemEvent> itemQueue;
     private int count = 0;
 
     /**
-     * Constructor for BoundedBuffer.
+     * Constructor for UnboundedBuffer.
      */
-    public BoundedBuffer() {
+    public UnboundedBuffer() {
         itemQueue = new ConcurrentLinkedDeque<>();
     }
 
@@ -57,7 +57,7 @@ public class BoundedBuffer {
 
     /**
      * Determines  whether a SubsystemMessagePasser can remove the item
-     * from the top of the BoundedBuffer.
+     * from the top of the UnboundedBuffer.
      *
      * @param origin the identity of the SubsystemMessagePasser
      * @return true if the buffer isn't empty and the request to remove's origin is not the given origin, false otherwise
@@ -93,14 +93,5 @@ public class BoundedBuffer {
      */
     public synchronized boolean isEmpty() {
         return itemQueue.isEmpty();
-    }
-
-    /**
-     * Determines whether the Buffer is writable.
-     *
-     * @return true if the buffer is at maximum capacity, false otherwise
-     */
-    public synchronized boolean isWritable() {
-        return writeable;
     }
 }

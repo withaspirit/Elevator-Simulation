@@ -2,7 +2,7 @@ package floorsystem;
 
 import misc.*;
 import requests.*;
-import systemwide.BoundedBuffer;
+import systemwide.UnboundedBuffer;
 import systemwide.Origin;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.Collections;
  */
 public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
-	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
+	private final UnboundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final ArrayList<SystemEvent> requests;
 	private final ArrayList<Floor> floorList;
 	private Origin origin;
@@ -25,7 +25,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 *
 	 * @param buffer the buffer the FloorSubsystem passes messages to and receives messages from
 	 */
-	public FloorSubsystem(BoundedBuffer buffer) {
+	public FloorSubsystem(UnboundedBuffer buffer) {
 		this.floorSubsystemBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile("inputs");

@@ -3,7 +3,7 @@ package floorsystem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ApproachEvent;
-import systemwide.BoundedBuffer;
+import systemwide.UnboundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
 
@@ -25,7 +25,7 @@ public class FloorTest {
 
     @BeforeEach
     void setUp() {
-        BoundedBuffer buffer = new BoundedBuffer();
+        UnboundedBuffer buffer = new UnboundedBuffer();
         FloorSubsystem floorSubsystem = new FloorSubsystem(buffer);
         floor = new Floor(1, floorSubsystem);
     }

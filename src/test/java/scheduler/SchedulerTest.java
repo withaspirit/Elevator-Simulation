@@ -2,7 +2,7 @@ package scheduler;
 
 import elevatorsystem.ElevatorSubsystem;
 import floorsystem.FloorSubsystem;
-import systemwide.BoundedBuffer;
+import systemwide.UnboundedBuffer;
 import requests.ServiceRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SchedulerTest {
 
-    private BoundedBuffer elevatorBuffer;
-    private BoundedBuffer floorBuffer;
+    private UnboundedBuffer elevatorBuffer;
+    private UnboundedBuffer floorBuffer;
     private Scheduler scheduler;
     private ElevatorSubsystem elevatorSubsystem;
     private FloorSubsystem floorSubsystem;
@@ -34,8 +34,8 @@ class SchedulerTest {
         serviceRequest = new ServiceRequest(LocalTime.NOON, 1, Direction.UP, Origin.FLOOR_SYSTEM);
 
         // Set up buffers
-        elevatorBuffer = new BoundedBuffer();
-        floorBuffer = new BoundedBuffer();
+        elevatorBuffer = new UnboundedBuffer();
+        floorBuffer = new UnboundedBuffer();
 
         // Set up systems
         scheduler = new Scheduler(floorBuffer, elevatorBuffer);

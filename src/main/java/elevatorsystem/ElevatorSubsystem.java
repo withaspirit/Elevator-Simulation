@@ -1,7 +1,7 @@
 package elevatorsystem;
 
 import requests.*;
-import systemwide.BoundedBuffer;
+import systemwide.UnboundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
 
@@ -17,7 +17,7 @@ import java.util.Queue;
  */
 public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
-  private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
+  private final UnboundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
   private final ArrayList<Elevator> elevatorList;
 	private Queue<SystemEvent> requestQueue;
 	private Origin origin;
@@ -27,7 +27,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 *
 	 * @param buffer the buffer the ElevatorSubsystem passes messages to and receives messages from
 	 */
-	public ElevatorSubsystem(BoundedBuffer buffer) {
+	public ElevatorSubsystem(UnboundedBuffer buffer) {
 		this.elevatorSubsystemBuffer = buffer;
 		elevatorList = new ArrayList<>();
 		requestQueue = new LinkedList<>();
