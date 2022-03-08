@@ -8,9 +8,10 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 /**
- * MessageTransfer provides methods for other classes to send and receive messages.
+ * MessageTransfer provides methods for other classes to send, receive, and
+ * print DatagramPacket data using DatagramSockets.
  *
- * @author Liam Tripp, Gregory Franks?
+ * @author Liam Tripp, Ryan Dash, Gregory Franks?
  */
 public class MessageTransfer {
 
