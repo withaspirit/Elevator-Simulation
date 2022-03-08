@@ -57,6 +57,12 @@ public class MessageTransfer {
         }
     }
 
+    /**
+     * Prints the contents of a packet and what class is sending the packet.
+     *
+     * @param name the name of the class sending the packet
+     * @param packet the DatagramPacket containing data
+     */
     public void printSendMessage(String name, DatagramPacket packet) {
         System.out.println(name + ": Sending packet:");
 //		System.out.println("To host: " + packet.getAddress());
@@ -70,8 +76,12 @@ public class MessageTransfer {
         System.out.println();
     }
 
-    // host prints out information it has received
-    // Process the received datagram.
+    /**
+     * Prints the contents of a packet and what class is receiving the packet.
+     *
+     * @param name the name of the class receiving the packet
+     * @param packet the DatagramPacket containing data
+     */
     public void printReceiveMessage(String name, DatagramPacket packet) {
         System.out.println(name + ": Packet received:");
 //		System.out.println("From host: " + packet.getAddress());
