@@ -5,7 +5,8 @@ import java.util.*;
 import systemwide.Direction;
 
 /**
- * Data Structure that manages the floors to visit by the elevator
+ * FloorsQueue maintains queues of floors to visit for an elevator.
+ * It also provides methods to manage and modify the lists.
  * 
  * @author Julian, Liam Tripp
  */
