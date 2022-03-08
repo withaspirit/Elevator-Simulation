@@ -1,4 +1,4 @@
-package model.client_server;
+package client_server_host;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

@@ -1,4 +1,4 @@
-package model.client_server;
+package client_server_host;
 
 /**
  * Port indicates the specified ports and their port numbers.
