@@ -1,7 +1,7 @@
 package scheduler;
 
 import requests.*;
-import systemwide.BoundedBuffer;
+import systemwide.UnboundedBuffer;
 import systemwide.Origin;
 
 import java.util.LinkedList;
@@ -14,8 +14,8 @@ import java.util.Queue;
  */
 public class Scheduler implements Runnable, SubsystemMessagePasser {
 
-	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
-	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
+	private final UnboundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
+	private final UnboundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
 	private Origin origin;
 	private Queue<SystemEvent> requestQueue;
 	// private ArrayList<Elevator> elevators;
@@ -24,10 +24,10 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	/**
 	 * Constructor for Scheduler
 	 *
-	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
-	 * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
+	 * @param elevatorSubsystemBuffer an UnboundedBuffer for Requests between the Scheduler and elevatorSubsystem
+	 * @param floorSubsystemBuffer an UnboundedBuffer for Requests between the Scheduler and floorSubsystem
 	 */
-	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer) {
+	public Scheduler(UnboundedBuffer elevatorSubsystemBuffer, UnboundedBuffer floorSubsystemBuffer) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
 		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;

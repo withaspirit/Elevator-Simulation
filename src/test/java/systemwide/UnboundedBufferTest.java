@@ -8,13 +8,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import requests.ServiceRequest;
 
 /**
- * Test class for BoundedBuffer methods
+ * Test class for UnboundedBuffer methods
  * 
  * @author Julian, Ryan Dash
  */
-public class BoundedBufferTest {
+public class UnboundedBufferTest {
 
-	BoundedBuffer buffer;
+	UnboundedBuffer buffer;
 	ServiceRequest request1, request2;
 	
 	/**
@@ -23,7 +23,7 @@ public class BoundedBufferTest {
 	 */
 	@BeforeEach
 	void setUp() {
-		buffer = new BoundedBuffer();
+		buffer = new UnboundedBuffer();
 		request1 = new ServiceRequest(LocalTime.NOON, 1, Direction.UP, Origin.FLOOR_SYSTEM);
 		request2 = new ServiceRequest(LocalTime.NOON, 2, Direction.DOWN, Origin.FLOOR_SYSTEM);
 	}

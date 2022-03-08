@@ -69,8 +69,8 @@ public class Structure {
 	 * Initializes the Structure's properties.
 	 */
 	public void initializeStructure() {
-		BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
-		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
+		UnboundedBuffer elevatorSubsystemBuffer = new UnboundedBuffer();
+		UnboundedBuffer floorSubsystemBuffer = new UnboundedBuffer();
 
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
 		ArrayList<Elevator> elevatorList = new ArrayList<>();
