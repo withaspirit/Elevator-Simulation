@@ -22,10 +22,11 @@ public class MessageTransfer {
     }
 
     /**
-     * Sends a message from the socket to the packet's destination port.
+     * Sends a message from a given socket to the socket corresponding to the
+     * packet's destination port.
      *
-     * @param socket the DatagramSocket sending the message
-     * @param packet the DatagramPacket being sent
+     * @param socket the DatagramSocket sending the DatagramPacket
+     * @param packet a DatagramPacket containing data to be sent
      */
     public void sendMessage(DatagramSocket socket, DatagramPacket packet) {
         try {
@@ -38,11 +39,11 @@ public class MessageTransfer {
     }
 
     /**
-     * Receives a message from the socket and transfers it to the
-     * packet's specified port.
+     * Receives a message from a given socket and transfers it to the socket
+     * associated with the packet's specified port.
      *
-     * @param socket the dDatagramSocket receiving the message
-     * @param packet the DatagramPacket receiving the information
+     * @param socket a DatagramSocket receiving a DatagramPacket
+     * @param packet the DatagramPacket containing data received from the DatagramSocket
      */
     public void receiveMessage(DatagramSocket socket, DatagramPacket packet) {
         // Block until a DatagramPacket is received from a socket
