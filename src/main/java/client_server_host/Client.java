@@ -7,10 +7,12 @@ package client_server_host;
  */
 public class Client {
 
+    private MessageTransfer messageTransfer;
+
     /**
      * Constructor for Client.
      */
     public Client() {
-
+        messageTransfer = new MessageTransfer();
     }
 }

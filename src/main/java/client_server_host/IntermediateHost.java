@@ -11,8 +11,9 @@ import java.util.Queue;
  */
 public class IntermediateHost {
 
-    private Queue<DatagramPacket> messageQueue;
     private int portNumber;
+    private Queue<DatagramPacket> messageQueue;
+    private MessageTransfer messageTransfer;
 
     /**
      * Constructor for IntermediateHost.
@@ -22,5 +23,6 @@ public class IntermediateHost {
     public IntermediateHost(int portNumber) {
         this.portNumber = portNumber;
         messageQueue = new LinkedList<>();
+        messageTransfer = new MessageTransfer();
     }
 }
