@@ -17,8 +17,8 @@ import java.util.Queue;
  */
 public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
-    private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-    private final ArrayList<Elevator> elevatorList;
+  private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
+  private final ArrayList<Elevator> elevatorList;
 	private Queue<SystemEvent> requestQueue;
 	private Origin origin;
 
