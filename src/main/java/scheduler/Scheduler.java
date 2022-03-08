@@ -15,7 +15,7 @@ import java.util.Queue;
 public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
-  private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
+	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
 	private Origin origin;
 	private Queue<SystemEvent> requestQueue;
 	// private ArrayList<Elevator> elevators;
@@ -25,7 +25,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * Constructor for Scheduler
 	 *
 	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
-   * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
+     * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
 	 */
 	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer) {
 		// create floors and elevators here? or in a SchedulerModel

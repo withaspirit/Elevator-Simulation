@@ -91,33 +91,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Changes the floorsQueue as needed.
-	 */
-	public void swapQueuesIfNecessary() {
-		floorsQueue.swapQueues(motor.getDirection());
-	}
-
-
-	/**
-	 * Moves the Elevator to the next floor, stopping if it's the next floor.
-	 */
-	public void moveToNextFloor() {
-		int requestFloor = floorsQueue.peekNextFloor(motor.getDirection());
-		int nextFloor = motor.move(currentFloor, requestFloor, motor.getDirection());
-		// in future iterations, shouldStopAtNextFloor will be followed by sending an ApproachRequest
-		boolean shouldStopAtNextFloor = nextFloor == requestFloor;
-
-		setCurrentFloor(nextFloor);
-		if (shouldStopAtNextFloor) {
-			System.out.println("Elevator reached destination: floor " + requestFloor);
-			motor.stop();
-			floorsQueue.visitNextFloor(motor.getDirection());
-		} else {
-			System.out.println("Elevator moved to floor " + requestFloor);
-		}
-	}
-
-	/**
 	 * Returns the elevator number
 	 *
 	 * @return an integer corresponding to the elevator's number
@@ -313,12 +286,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// Set direction of request
 		Direction requestedDirection = serviceRequest.getDirection();
 
-//		if (floorsQueue.isDownqueueEmpty() && floorsQueue.isUpqueueEmpty()){
-//			currentDirection = serviceRequest.getDirection();
-//		}
-//		System.out.print("Elevator# " + elevatorNumber + " ");
-//		floorsQueue.addFloor(serviceRequest.getFloorNumber(), requestFloor, currentFloor, serviceRequest.getDirection());
-//		motor.setMovementState(MovementState.ACTIVE);
+		/*
+		if (floorsQueue.isDownqueueEmpty() && floorsQueue.isUpqueueEmpty()){
+			currentDirection = serviceRequest.getDirection();
+		}
+		System.out.print("Elevator# " + elevatorNumber + " ");
+		floorsQueue.addFloor(serviceRequest.getFloorNumber(), requestFloor, currentFloor, serviceRequest.getDirection());
+		motor.setMovementState(MovementState.ACTIVE);
+		 */
 
 		// loop until Elevator has reached the requested floor
 		while (currentFloor != requestFloor) {

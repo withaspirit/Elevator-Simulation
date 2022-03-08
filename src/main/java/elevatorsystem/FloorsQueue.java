@@ -87,8 +87,7 @@ public class FloorsQueue {
 	}
 
 	/**
-	 * Returns the next floor in queue for the direction.
-	 * This method shouldn't be called if the FloorsQueue is empty.
+	 * Returns the next floor in queue for the direction
 	 * 
 	 * @param direction the direction wanting to peek
 	 * @return nextFloor the next floor in queue, -1 if not successful
@@ -127,19 +126,8 @@ public class FloorsQueue {
 				downwardRequests.add(missedRequests.remove());
 			}
 			status = 0;
-		} else {
-			System.err.println("FloorsQueue did not swap when it was told to swap.");
 		}
 		return status;
-	}
-
-	/**
-	 * Determines whether the FloorQueue is empty.
-	 *
-	 * @return true if all the FloorQueue's queues are empty, false otherwise
-	 */
-	public boolean isEmpty() {
-		return isMissedqueueEmpty() && isDownqueueEmpty() && isUpqueueEmpty();
 	}
 
 	/**
