@@ -13,7 +13,7 @@ public interface SubsystemMessagePasser {
 	 * Adds an object to a buffer.
 	 *
 	 * @param event a SystemEvent which holds a request
-	 * @param buffer a UnboundedBuffer which holds serviceRequests
+	 * @param buffer an UnboundedBuffer that holds SystemEvents
 	 * @return true if request is successful, false otherwise
 	 */
 	default boolean sendMessage(SystemEvent event, UnboundedBuffer buffer, Origin origin) {
@@ -25,7 +25,7 @@ public interface SubsystemMessagePasser {
 	/**
 	 * Removes and returns an object from a buffer.
 	 *
-	 * @param buffer a buffer which holds SystemEvents
+	 * @param buffer an UnboundedBuffer that holds SystemEvents
 	 * @return the first SystemEvent from the buffer
 	 */
 	default SystemEvent receiveMessage(UnboundedBuffer buffer, Origin origin) {
