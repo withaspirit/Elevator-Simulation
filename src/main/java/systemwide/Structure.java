@@ -79,9 +79,9 @@ public class Structure {
 			elevatorSubsystem.addElevator(elevator);
 			elevatorList.add(elevator);
 		}
-
-		FloorSubsystem floorSubsystem = new FloorSubsystem(elevatorSubsystemBuffer);
-		for (int i = 0; i < numberOfFloors; i++) {
+    
+		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
+		for (int i = 1; i <= numberOfFloors; i++) {
 			Floor floor = new Floor(i, floorSubsystem);
 			floorSubsystem.addFloor(floor);
 		}

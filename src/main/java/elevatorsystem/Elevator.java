@@ -83,7 +83,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while(true){
-			if (getNumberOfRequests() != 0) {
+			if (!requests.isEmpty()) {
+				System.out.println("Requests in list: " + requests);
 				processRequest(getNextRequest());
 				System.out.println("Elevator Requests: " + requests);
 			}
@@ -256,6 +257,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void processRequest(ServiceRequest serviceRequest){
 		// If request is an elevator request
+		System.out.println("Processing " + serviceRequest);
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Move to floor from which elevatorRequest originated
 			moveToFloor(elevatorRequest);
@@ -302,16 +304,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 				ApproachEvent newApproachEvent = new ApproachEvent(serviceRequest.getTime(), nextFloor,
 						serviceRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
 				passApproachEvent(newApproachEvent);
-				// stall while waiting to receive the updated ApproachEvent
-				// NOTE: the ApproachEvent is received through Elevator.receiveApproachEvent
+				// stall while waiting to receive the approachEvent from ElevatorSubsystem
+				// the ApproachEvent is received in Elevator.receiveApproachEvent
 				while (approachEvent == null) {
 				}
 				approachEvent = null;
 			}
-
 			setCurrentFloor(nextFloor);
 			System.out.println("Elevator moved to floor " + nextFloor);
-		}
+    }
 		// Set to idle once floor reached
 		System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
 		motor.stop();

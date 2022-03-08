@@ -4,6 +4,7 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * ServiceRequest is a data structure for when a user requests an Elevator's service.
@@ -54,5 +55,15 @@ public class ServiceRequest extends SystemEvent {
 	 */
 	public void setDirection(Direction direction) {
 		this.direction = direction;
+	}
+
+	/**
+	 * Convert ServiceRequest to a String.
+	 */
+	@Override
+	public String toString() {
+		DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+		String formattedDate = getTime().format(dateTimeFormat);
+		return formattedDate + " " + getFloorNumber() + " " + getDirection().getName();
 	}
 }

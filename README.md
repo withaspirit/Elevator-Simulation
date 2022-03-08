@@ -92,7 +92,7 @@ Note that this project is set up as a Maven project.
   ### Contributions
 
   | Member | Coding | Documentation | Misc
-  | ------ | ------ | ------------- |----
+  | ------ | ------ | ------------- | ----
   | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer Implementation and Bug Fixes | Project Requirements Summary, UML Diagram Contributions | Code Review
   | Ramit Mahajan | Data Structure abstraction for the Request Systems / Subsystems | README Editing Instructions |
   | Brady Norton | Message transfer tests, InputFileReaderTest | README Testing + Installation Instructions, UML Sequence Diagram | Code Review
@@ -143,12 +143,12 @@ Note that this project is set up as a Maven project.
   ### Contributions
 
   | Member | Coding | Documentation | Misc 
-  | ------ | ------ | ------------- |----
+  | ------ | ------ | ------------- | ----
   | Ryan Dash | ElevatorSelectAlgorithm, ElevatorServiceAlgorithm | ElevatorServiceAlgorithm State Machine Diagram, UML Class Diagram, README | Code Review, Design Consultation
   | Ramit Mahajan | Arrival Sensor | UML Class Diagram, README | Code Review
   | Brady Norton | MovementState, ElevatorMotor, Elevator Properties, Elevator Movement | Elevator Movement State Machine Diagram, README| Code Review
   | Julian Obando Velez | FloorsQueue, FloorsQueueTest, ElevatorMotorTest | GitHub Release, README | Code Review
-  | Liam Tripp | MovementState, ApproachEvent, SystemEvent, ApproachEvent ntegration with ElevatorMovement | UML Class Diagram, Rough ElevatorMovement State Machine Diagram, README | Requirements Analysis, System Design, Delegating Tasks, Code Review
+  | Liam Tripp | MovementState, ApproachEvent, SystemEvent, ApproachEvent Integration with ElevatorMovement | UML Class Diagram, Rough ElevatorMovement State Machine Diagram, README | Requirements Analysis, System Design, Delegating Tasks, Code Review
   
   #### UML Class Diagram
   ![image](https://user-images.githubusercontent.com/56605453/154828075-8269786d-84cd-4a64-8c7a-4cdaa294ca0e.png)
@@ -161,4 +161,79 @@ Note that this project is set up as a Maven project.
 
   ![Iteration_2_-_Elevator_State_Machine](https://user-images.githubusercontent.com/56605453/154823989-936bc6f0-0ebe-435c-99ae-941525b7de60.png)
   
+  </details>
+
+- ## Iteration 3
+  <details>
+    <summary>Display</summary>
+
+  ### Description
+
+  Lorem ipsum
+
+  <details>
+    <summary>Show Long Description</summary>
+    
+  </details>
+
+  ### Contributions
+
+  | Member | Coding | Documentation | Misc 
+  | ------ | ------ | ------------- | ----
+  | Ryan Dash | | |
+  | Ramit Mahajan | | |
+  | Brady Norton | | |
+  | Julian Obando Velez | | |
+  | Liam Tripp | | |
+
+  </details>
+  
+- ## Iteration 4
+  <details>
+    <summary>Display</summary>
+
+  ### Description
+
+  Lorem ipsum
+
+  <details>
+    <summary>Show Long Description</summary>
+    
+  </details>
+
+  ### Contributions
+
+  | Member | Coding | Documentation | Misc 
+  | ------ | ------ | ------------- | ----
+  | Ryan Dash | | |
+  | Ramit Mahajan | | |
+  | Brady Norton | | |
+  | Julian Obando Velez | | |
+  | Liam Tripp | | |
+
+  </details>
+
+- ## Iteration 5
+  <details>
+    <summary>Display</summary>
+
+  ### Description
+
+  Lorem ipsum
+
+  <details>
+    <summary>Show Long Description</summary>
+    
+  </details>
+
+  ### Contributions
+
+  | Member | Coding | Documentation | Misc 
+  | ------ | ------ | ------------- | ----
+  | Ryan Dash | | |
+  | Ramit Mahajan | | |
+  | Brady Norton | | |
+  | Julian Obando Velez | | |
+  | Liam Tripp | | |
+
   </details>
