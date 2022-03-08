@@ -94,13 +94,4 @@ public class BoundedBuffer {
     public synchronized boolean isEmpty() {
         return itemQueue.isEmpty();
     }
-
-    /**
-     * Determines whether the Buffer is writable.
-     *
-     * @return true if the buffer is at maximum capacity, false otherwise
-     */
-    public synchronized boolean isWritable() {
-        return writeable;
-    }
 }
