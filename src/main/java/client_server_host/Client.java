@@ -1,7 +1,7 @@
 package client_server_host;
 
 /**
- * Client sends and receives messages from the IntermediateHost.
+ * Client sends and receives messages from an IntermediateHost.
  *
  * @author Liam Tripp
  */
