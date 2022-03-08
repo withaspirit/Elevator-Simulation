@@ -51,6 +51,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 				sendMessage(event, floorSubsystemBuffer, origin);
 				System.out.println(origin + " Sent Request Successful to Scheduler");
 			}
+      
 			// check if can remove from buffer before trying to remove
 			if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
 				SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
@@ -58,18 +59,28 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 					System.out.println("FloorSubsystem: Received FloorRequest: in  Elevator# " +
 							floorRequest.getElevatorNumber() + " Arrived \n");
 				} else if (request instanceof ApproachEvent approachEvent) {
-					Floor floor = floorList.get(approachEvent.getFloorNumber());
-					floor.receiveApproachEvent(approachEvent);
-					requests.add(approachEvent);
+							processApproachEvent(approachEvent);
 				}
 			}
 		}
 	}
 
 	/**
+	 * Processes an ApproachEvent, checking its corresponding floor to see whether
+	 * an Elevator should stop.
+	 *
+	 * @param approachEvent the ApproachEvent used to determine whether the Elevator should stop
+	 */
+	public void processApproachEvent(ApproachEvent approachEvent) {
+		Floor floor = floorList.get(approachEvent.getFloorNumber() - 1);
+		floor.receiveApproachEvent(approachEvent);
+		requests.add(approachEvent);
+	}
+
+	/**
 	 * Adds a floor to the subsystem's list of floors.
 	 *
-	 * @param floor a floor
+	 * @param floor a floor in the FloorSubsystem
 	 */
 	public void addFloor(Floor floor) {
 		floorList.add(floor);
