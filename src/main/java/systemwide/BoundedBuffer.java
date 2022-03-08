@@ -11,7 +11,7 @@ public class BoundedBuffer {
     // A simple ring buffer is used to hold the data
 
     // buffer capacity
-    private static final int SIZE = 5;
+    private static final int SIZE = 10;
     private final SystemEvent[] buffer = new SystemEvent[SIZE];
     private int inIndex = 0, outIndex = 0, count = 0;
 
@@ -87,6 +87,18 @@ public class BoundedBuffer {
     }
 
     /**
+     * Determines  whether a SubsystemMessagePasser can remove the item
+     * from the top of the BoundedBuffer.
+     *
+     * @param origin the identity of the SubsystemMessagePasser
+     * @return true if the buffer isn't empty and the request to remove's origin is not the given origin, false otherwise
+     */
+    public synchronized boolean canRemoveFromBuffer(Origin origin) {
+        // Buffer can't be full and the
+        return readable && !identicalOrigin(buffer[outIndex], origin);
+    }
+
+    /**
      * Determines whether the request's origin is the same as the provided origin.
      *
      * @param request the topmost SystemEvent in the buffer
@@ -111,5 +123,14 @@ public class BoundedBuffer {
      */
     public boolean isEmpty() {
         return count == 0;
+    }
+
+    /**
+     * Determines whether the Buffer is writable.
+     *
+     * @return true if the buffer is at maximum capacity, false otherwise
+     */
+    public synchronized boolean isWritable() {
+        return writeable;
     }
 }
