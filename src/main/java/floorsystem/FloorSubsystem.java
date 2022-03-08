@@ -52,9 +52,6 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 
 				sendMessage(event, floorSubsystemBuffer, origin);
 				System.out.println(origin + " Sent Request Successful to Scheduler");
-			} else {
-				//Send dummy useless message
-				sendMessage(new FloorRequest(LocalTime.now(), -1, Direction.NONE, -1, origin), floorSubsystemBuffer, origin);
 			}
       
 			// check if can remove from buffer before trying to remove

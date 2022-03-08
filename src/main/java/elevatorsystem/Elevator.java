@@ -217,4 +217,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
 		this.approachEvent = approachEvent;
 	}
+
+	public ElevatorSubsystem getElevatorSubsystem() {
+		return elevatorSubsystem;
+	}
 }
