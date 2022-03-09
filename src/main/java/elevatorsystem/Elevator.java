@@ -79,7 +79,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void run() {
 		while(true){
 			if (!requests.isEmpty()) {
-				System.out.println("Requests in list: " + requests);
+				System.out.println("Elevator #" + elevatorNumber + "'s remaining requests: " + requests);
 				processRequest(getNextRequest());
 			}
 		}
@@ -233,7 +233,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void processRequest(ServiceRequest serviceRequest){
 		// If request is an elevator request
-		System.out.println("Processing " + serviceRequest);
+		System.out.println("Elevator #" + elevatorNumber + " processing: " + serviceRequest);
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Set time of request
 			// Request Properties
@@ -266,10 +266,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 				}
 				approachEvent = null;
 				setCurrentFloor(nextFloor);
-				System.out.println("Elevator moved to floor " + nextFloor);
+				System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor);
 			}
 			// Set to idle once floor reached
-			System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
+			System.out.println("Elevator #" + elevatorNumber + " reached floor " + getCurrentFloor());
 			motor.stop();
 		} else if(serviceRequest instanceof ApproachEvent approachEvent) {
 			// do something
