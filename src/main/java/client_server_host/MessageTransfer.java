@@ -112,6 +112,13 @@ public class MessageTransfer {
         return packet;
     }
 
+    /**
+     * Encodes the object into an Byte Array, which can be used to prepare
+     * requests to be sent through UDP packets. 
+     *
+     * @param object   the object to encode
+     * @return objectBytes the object coded into a byte array.
+     */
     public byte[] encodeObject(Object object) {
         byte[] objectBytes = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -133,6 +140,13 @@ public class MessageTransfer {
         return objectBytes;
     }
 
+    /**
+     * Decodes the Byte Array to its object instance, which can be used to read
+     * requests received from UDP packets. 
+     *
+     * @param objectBytes   the byte array of the object
+     * @return object the object instance decoded.
+     */
     public Object decodeObject(byte[] objectBytes) {
         Object object = null;
         ByteArrayInputStream bis = new ByteArrayInputStream(objectBytes);
