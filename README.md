@@ -181,11 +181,11 @@ Note that this project is set up as a Maven project.
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | | |
+  | Ryan Dash | | Design |
   | Ramit Mahajan | | |
   | Brady Norton | | |
-  | Julian Obando Velez | | |
-  | Liam Tripp | | |
+  | Julian Obando Velez | | | TA contact
+  | Liam Tripp | Elevator Movement updarte, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, Client-Server-Host outline | Design, Work Breakdown Structure, Dependency Diagram |
 
   </details>
   
