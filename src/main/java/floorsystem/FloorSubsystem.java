@@ -28,7 +28,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	public FloorSubsystem(BoundedBuffer buffer) {
 		this.floorSubsystemBuffer = buffer;
 		InputFileReader inputFileReader = new InputFileReader();
-		requests = inputFileReader.readInputFile("inputs");
+		requests = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 		floorList = new ArrayList<>();
 		origin = Origin.FLOOR_SYSTEM;
 	}
