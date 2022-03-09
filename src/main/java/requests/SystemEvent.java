@@ -3,6 +3,7 @@ package requests;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+import java.io.Serializable;
 
 /**
  * SystemEvent is a generic event that indicates the time an event occurred
@@ -10,7 +11,7 @@ import java.time.LocalTime;
  *
  * @author Liam Tripp
  */
-public class SystemEvent {
+public class SystemEvent implements Serializable {
 
     private final LocalTime time;
     private Origin origin;
