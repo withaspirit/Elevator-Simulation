@@ -28,6 +28,7 @@ Note that this project is set up as a Maven project.
 ![Picture2](https://user-images.githubusercontent.com/71390371/152629981-84ec3fa3-29d4-42db-82a5-b4ed0a5f4e82.png)
 
 3. Unzip the folder and import the project into the IDE.
+4. Proceed to step 9. of "Editing."
   
 </details>
 
