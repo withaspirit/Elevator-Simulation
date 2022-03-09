@@ -271,6 +271,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Set to idle once floor reached
 			System.out.println("Elevator #" + elevatorNumber + " reached floor " + getCurrentFloor());
 			motor.stop();
+			System.out.println("Status: Stopped\n");
 		} else if(serviceRequest instanceof ApproachEvent approachEvent) {
 			// do something
 		}

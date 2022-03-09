@@ -90,8 +90,6 @@ public class ElevatorMotor {
 		// Set state and direction
 		setMovementState(MovementState.IDLE);
 		setDirection(Direction.NONE);
-
-		System.out.println("Status: Stopped");
 	}
 
 	/**
