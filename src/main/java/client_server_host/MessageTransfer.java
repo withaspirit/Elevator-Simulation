@@ -99,6 +99,17 @@ public class MessageTransfer {
         System.out.println();
     }
 
+    /**
+     * Creates an DatagramPacket at the local address and port that can hold
+     * up to 256 unallocated bytes.
+     *
+     * @return a DatagramPacket with 256 unallocated bytes
+     */
+    public DatagramPacket createEmptyPacket() {
+        byte[] data = new byte[256];
+        return new DatagramPacket(data, data.length);
+    }
+
     // FIXME: this could be easily be removed
     public DatagramPacket createPacket(byte[] msg, int portNumber) {
         DatagramPacket packet = null;
