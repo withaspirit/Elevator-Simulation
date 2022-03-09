@@ -54,7 +54,6 @@ public class FloorsQueue {
 		} else {
 			throw new RuntimeException("Direction is invalid");
 		}
-		System.out.println("Floor #" + floorNum + " QueueUP# "+ upwardRequests.size()+ " QueueDOWN# "+ downwardRequests.size()+"\n");
 	}
 
 	/**

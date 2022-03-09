@@ -49,15 +49,13 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 				SystemEvent event = requests.remove(requests.size() -1);
 
 				sendMessage(event, floorSubsystemBuffer, origin);
-				System.out.println(origin + " Sent Request Successful to Scheduler");
 			}
       
 			// check if can remove from buffer before trying to remove
 			if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
 				SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
 				if (request instanceof FloorRequest floorRequest) {
-					System.out.println("FloorSubsystem: Received FloorRequest: in  Elevator# " +
-							floorRequest.getElevatorNumber() + " Arrived \n");
+
 				} else if (request instanceof ApproachEvent approachEvent) {
 							processApproachEvent(approachEvent);
 				}
