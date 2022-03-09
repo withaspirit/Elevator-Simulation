@@ -13,6 +13,6 @@ public class Server {
      * Constructor for Server.
      */
     public Server() {
-        messageTransfer = new MessageTransfer();
+        messageTransfer = new MessageTransfer(Port.SERVER.getNumber());
     }
 }

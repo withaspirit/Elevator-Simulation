@@ -1,34 +1,39 @@
 package client_server_host;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 /**
  * MessageTransfer provides methods for other classes to send, receive, and
- * print DatagramPacket data using DatagramSockets.
+ * print DatagramPacket data using a DatagramSocket.
  *
  * @author Liam Tripp, Ryan Dash, Gregory Franks?
  */
 public class MessageTransfer {
 
+    private DatagramSocket socket;
+
     /**
      * Constructor for MessageTransfer.
+     *
+     * @param portNumber number of the port associated with the DatagramSocket
      */
-    public MessageTransfer() {
+    public MessageTransfer(int portNumber) {
+        try {
+            socket = new DatagramSocket(portNumber);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
-     * Sends a message from a given socket to the socket corresponding to the
-     * packet's destination port.
+     * Sends a message from this object's socket to the socket corresponding
+     * to the packet's destination.
      *
-     * @param socket the DatagramSocket sending the DatagramPacket
      * @param packet a DatagramPacket containing data to be sent
      */
-    public void sendMessage(DatagramSocket socket, DatagramPacket packet) {
+    public void sendMessage(DatagramPacket packet) {
         try {
             socket.send(packet);
         } catch (IOException e) {
@@ -39,13 +44,12 @@ public class MessageTransfer {
     }
 
     /**
-     * Receives a message from a given socket and transfers it to the socket
+     * Receives a message from a socket and transfers it to the socket
      * associated with the packet's specified port.
      *
-     * @param socket a DatagramSocket receiving a DatagramPacket
      * @param packet the DatagramPacket containing data received from the DatagramSocket
      */
-    public void receiveMessage(DatagramSocket socket, DatagramPacket packet) {
+    public void receiveMessage(DatagramPacket packet) {
         // Block until a DatagramPacket is received from a socket
         try {
             socket.receive(packet);

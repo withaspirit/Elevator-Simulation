@@ -23,6 +23,6 @@ public class IntermediateHost {
     public IntermediateHost(int portNumber) {
         this.portNumber = portNumber;
         messageQueue = new LinkedList<>();
-        messageTransfer = new MessageTransfer();
+        messageTransfer = new MessageTransfer(portNumber);
     }
 }
