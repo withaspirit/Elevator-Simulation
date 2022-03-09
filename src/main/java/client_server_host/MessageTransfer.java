@@ -1,6 +1,6 @@
 package client_server_host;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 
@@ -28,8 +28,8 @@ public class MessageTransfer {
     }
 
     /**
-     * Sends a message from this object's socket to the socket corresponding
-     * to the packet's destination.
+     * Sends a message from this object's socket to the socket corresponding to the
+     * packet's destination.
      *
      * @param packet a DatagramPacket containing data to be sent
      */
@@ -44,8 +44,8 @@ public class MessageTransfer {
     }
 
     /**
-     * Receives a message from a socket and transfers it to the socket
-     * associated with the packet's specified port.
+     * Receives a message from a socket and transfers it to the socket associated
+     * with the packet's specified port.
      *
      * @param packet the DatagramPacket containing data received from the DatagramSocket
      */
@@ -64,7 +64,7 @@ public class MessageTransfer {
     /**
      * Prints the contents of a packet and what class is sending the packet.
      *
-     * @param name the name of the class sending the packet
+     * @param name   the name of the class sending the packet
      * @param packet the DatagramPacket containing data
      */
     public void printSendMessage(String name, DatagramPacket packet) {
@@ -83,7 +83,7 @@ public class MessageTransfer {
     /**
      * Prints the contents of a packet and what class is receiving the packet.
      *
-     * @param name the name of the class receiving the packet
+     * @param name   the name of the class receiving the packet
      * @param packet the DatagramPacket containing data
      */
     public void printReceiveMessage(String name, DatagramPacket packet) {
@@ -103,12 +103,69 @@ public class MessageTransfer {
     public DatagramPacket createPacket(byte[] msg, int portNumber) {
         DatagramPacket packet = null;
         try {
-            packet = new DatagramPacket(msg, msg.length,
-                    InetAddress.getLocalHost(), portNumber);
+            packet = new DatagramPacket(msg, msg.length, InetAddress.getLocalHost(), portNumber);
         } catch (UnknownHostException e) {
             e.printStackTrace();
             System.exit(1);
         }
         return packet;
     }
+
+    /**
+     * Encodes the object into an Byte Array, which can be used to prepare
+     * requests to be sent through UDP packets. 
+     *
+     * @param object   the object to encode
+     * @return objectBytes the object coded into a byte array.
+     */
+    public byte[] encodeObject(Object object) {
+        byte[] objectBytes = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = null;
+        try {
+            out = new ObjectOutputStream(bos);
+            out.writeObject(object);
+            out.flush();
+            objectBytes = bos.toByteArray();
+        } catch (Exception ex) {
+            // ignore exception
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+        }
+        return objectBytes;
+    }
+
+    /**
+     * Decodes the Byte Array to its object instance, which can be used to read
+     * requests received from UDP packets. 
+     *
+     * @param objectBytes   the byte array of the object
+     * @return object the object instance decoded.
+     */
+    public Object decodeObject(byte[] objectBytes) {
+        Object object = null;
+        ByteArrayInputStream bis = new ByteArrayInputStream(objectBytes);
+        ObjectInput in = null;
+        try {
+            in = new ObjectInputStream(bis);
+            object = in.readObject();
+        } catch (Exception ex) {
+            // ignore exception
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+        }
+
+        return object;
+    }
+
 }
