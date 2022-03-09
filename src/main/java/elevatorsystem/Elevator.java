@@ -37,7 +37,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	// Elevator Properties
 	private final int elevatorNumber;
 	private int currentFloor;
-	private Direction direction;
+	private Direction direction = Direction.UP;
+	private Direction serviceDirection;
 	private float speed;
 	private float displacement;
 	private double queueTime;
@@ -68,6 +69,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		speed = 0;
 		displacement = 0;
 		direction = Direction.UP;
+		serviceDirection = Direction.UP;
 		motor = new ElevatorMotor();
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
@@ -87,6 +89,18 @@ public class Elevator implements Runnable, SubsystemPasser {
 				System.out.println("Requests in list: " + requests);
 				processRequest(getNextRequest());
 			}
+		}
+	}
+
+	/**
+	 * Swaps the floorQueue and changes the service direction before elevator moves to next floor.
+	 * TODO: In the future, there should be a check when the ElevatorMotor
+	 * TODO: MovementState is IDLE. If so, the elevator uses this method.
+	 */
+	public void swapServiceDirectionIfNecessary() {
+		System.out.println("Elevator attempting to change queues.");
+		if (floorsQueue.swapQueues(serviceDirection) == 0) {
+			serviceDirection = Direction.swapDirection(serviceDirection);
 		}
 	}
 
