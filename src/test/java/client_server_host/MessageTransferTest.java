@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import requests.ElevatorRequest;
 import requests.FloorRequest;
 import requests.SystemEvent;
+import requests.ApproachEvent;
 import systemwide.Direction;
 import systemwide.Origin;
 
@@ -21,6 +22,7 @@ public class MessageTransferTest {
 	MessageTransfer msgTransfer; 
 	ElevatorRequest elevatorRequest;
 	FloorRequest floorRequest;
+	ApproachEvent approachEvent;
 	LocalTime timeNow;
 	
 	@BeforeEach
@@ -30,6 +32,7 @@ public class MessageTransferTest {
 		msgTransfer = new MessageTransfer(portNumber);
 		elevatorRequest = new ElevatorRequest(timeNow, 2, Direction.UP, 4, Origin.FLOOR_SYSTEM);
 		floorRequest = new FloorRequest(timeNow, 7, Direction.DOWN, 0, Origin.SCHEDULER);
+		approachEvent = new ApproachEvent(elevatorRequest, 3, 5);
 	}
 	
 	@Test
@@ -66,5 +69,23 @@ public class MessageTransferTest {
 		assertEquals(requestOut.getFloorNumber(), 7);
 		assertEquals(requestOut.getDirection(), Direction.DOWN);
 		assertEquals(requestOut.getElevatorNumber(), 0);
+	}
+	
+	@Test
+	void testEncodingWithApproachEvent() {
+		byte[] requestIn;
+		requestIn = msgTransfer.encodeObject(approachEvent);
+		SystemEvent systemEventOut = (SystemEvent)msgTransfer.decodeObject(requestIn);
+	
+		//Test for correct class instance
+		assertTrue(systemEventOut instanceof ApproachEvent);
+		
+		//Test for proper attributes
+		ApproachEvent requestOut = (ApproachEvent)systemEventOut;
+		assertEquals(requestOut.getOrigin(), approachEvent.getOrigin());
+		assertEquals(requestOut.getTime(), approachEvent.getTime());
+		assertEquals(requestOut.getFloorNumber(), approachEvent.getFloorNumber());
+		assertEquals(requestOut.getDirection(), approachEvent.getDirection());
+		assertEquals(requestOut.getElevatorNumber(), approachEvent.getElevatorNumber());
 	}
 }

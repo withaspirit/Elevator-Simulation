@@ -47,8 +47,7 @@ public class MessageTransfer {
      * Receives a message from a socket and transfers it to the socket associated
      * with the packet's specified port.
      *
-     * @param packet the DatagramPacket containing data received from the
-     *               DatagramSocket
+     * @param packet the DatagramPacket containing data received from the DatagramSocket
      */
     public void receiveMessage(DatagramPacket packet) {
         // Block until a DatagramPacket is received from a socket
