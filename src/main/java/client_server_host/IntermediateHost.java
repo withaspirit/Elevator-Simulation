@@ -68,7 +68,7 @@ public class IntermediateHost {
         return event;
     }
 
-    public void addNewMessageToQueue(SystemEvent event, DatagramPacket packet) {
+    public void addNewPacketToQueue(SystemEvent event, DatagramPacket packet) {
         // encode the altered event into a new packet
         byte[] newByteArray = messageTransfer.encodeObject(event);
         DatagramPacket newPacket = new DatagramPacket(newByteArray, newByteArray.length, packet.getAddress(), packet.getPort());

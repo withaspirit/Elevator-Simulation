@@ -90,7 +90,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		}
 		event.setOrigin(Origin.changeOrigin(eventOrigin));
 		// intermediate host
-		intermediateHost.addNewMessageToQueue(event, packet);
+		intermediateHost.addNewPacketToQueue(event, packet);
 	}
 
 	/**
