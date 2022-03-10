@@ -3,6 +3,8 @@ package client_server_host;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * MessageTransfer provides methods for other classes to send, receive, and
@@ -13,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class MessageTransfer {
 
     private DatagramSocket socket;
+    private Queue<DatagramPacket> messageQueue;
 
     /**
      * Constructor for MessageTransfer.
@@ -22,9 +25,22 @@ public class MessageTransfer {
     public MessageTransfer(int portNumber) {
         try {
             socket = new DatagramSocket(portNumber);
+            messageQueue = new LinkedList<>();
         } catch (SocketException e) {
             e.printStackTrace();
         }
+    }
+
+    public void addPacketToQueue(DatagramPacket packet) {
+        messageQueue.add(packet);
+    }
+
+    public DatagramPacket getPacketFromQueue() {
+        return messageQueue.remove();
+    }
+
+    public boolean queueIsEmpty() {
+        return messageQueue.isEmpty();
     }
 
     /**
@@ -178,5 +194,4 @@ public class MessageTransfer {
 
         return object;
     }
-
 }
