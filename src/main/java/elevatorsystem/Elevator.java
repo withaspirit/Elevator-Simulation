@@ -122,7 +122,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void addRequest(ServiceRequest serviceRequest) {
 		requests.add(serviceRequest);
 		motor.setMovementState(MovementState.ACTIVE);
-		motor.setDirection(serviceRequest.getDirection());
 		if (serviceRequest instanceof ElevatorRequest elevatorRequest){
 			queueTime = getExpectedTime(elevatorRequest);
 			System.err.println("Elevator #" + elevatorNumber + " " + queueTime);
