@@ -153,6 +153,12 @@ public class MessageTransfer {
         return packet;
     }
 
+    // FIXME: this could be easily be removed
+    public DatagramPacket createPacket(byte[] msg, InetAddress inetAddress, int portNumber) {
+        DatagramPacket newPacket = new DatagramPacket(msg, msg.length, inetAddress, portNumber);
+        return newPacket;
+    }
+
     /**
      * Encodes the object into a Byte Array, which can be used to prepare
      * requests to be sent through UDP packets. 
