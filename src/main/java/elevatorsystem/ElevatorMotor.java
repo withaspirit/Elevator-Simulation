@@ -17,7 +17,7 @@ public class ElevatorMotor {
 	 */
 	public ElevatorMotor() {
 		this.movementState = MovementState.IDLE;
-		direction = Direction.UP;
+		direction = Direction.NONE;
 	}
 
 	/**
