@@ -55,8 +55,9 @@ public class IntermediateHost {
             return false;
         } else {
             // packet is data
-            // send acknowledge message to recipient
-            DatagramPacket acknowledgePacket = createAcknowledgeMessage(receivePacket);
+            // send message to recipient acknowledging that message was received
+            byte[] acknowledgeByteArray = "ack".getBytes();
+            DatagramPacket acknowledgePacket = messageTransfer.createPacket(acknowledgeByteArray, receivePacket.getAddress(), receivePacket.getPort());
             messageTransfer.sendMessage(acknowledgePacket);
             return true;
         }
@@ -89,20 +90,9 @@ public class IntermediateHost {
             // printSendMessage(name, packetToSend);
         } else {
             // otherwise, send a placeholder message
-            packetToSend = createEmptyQueueMessage(packet);
+            byte[] emptyQueueByteArray = "emptyQueue".getBytes();
+            packetToSend = messageTransfer.createPacket(emptyQueueByteArray, packet.getAddress(), packet.getPort());
         }
         messageTransfer.sendMessage(packetToSend);
-    }
-
-    private DatagramPacket createEmptyQueueMessage(DatagramPacket packet) {
-        byte[] emptyQueueByteArray = "emptyQueue".getBytes();
-        DatagramPacket emptyQueuePacket = new DatagramPacket(emptyQueueByteArray, emptyQueueByteArray.length, packet.getAddress(), packet.getPort());
-        return emptyQueuePacket;
-    }
-
-    private DatagramPacket createAcknowledgeMessage(DatagramPacket packet) {
-        byte[] ackMessageByteArray = "ack".getBytes();
-        DatagramPacket acknowledgePacket = new DatagramPacket(ackMessageByteArray, ackMessageByteArray.length, packet.getAddress(), packet.getPort());
-        return acknowledgePacket;
     }
 }
