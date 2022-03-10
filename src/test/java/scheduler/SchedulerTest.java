@@ -38,7 +38,7 @@ class SchedulerTest {
         floorBuffer = new BoundedBuffer();
 
         // Set up systems
-        scheduler = new Scheduler(floorBuffer, elevatorBuffer);
+        scheduler = new Scheduler(elevatorBuffer, floorBuffer);
         elevatorSubsystem = new ElevatorSubsystem(elevatorBuffer);
         floorSubsystem = new FloorSubsystem(floorBuffer);
     }

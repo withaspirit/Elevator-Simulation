@@ -25,7 +25,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * Constructor for Scheduler
 	 *
 	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
-	 * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
+     * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
 	 */
 	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer) {
 		// create floors and elevators here? or in a SchedulerModel

@@ -21,6 +21,8 @@ import systemwide.Origin;
  */
 public class InputFileReader {
 
+    public static final String INPUTS_FILENAME = "inputs";
+
     /**
      * Constructor for InputFileReader (No-args for now).
      */

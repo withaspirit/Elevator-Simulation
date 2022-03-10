@@ -26,7 +26,7 @@ public class FloorRequest extends ServiceRequest {
 	 * @param origin the system from which the message originated
 	 */
 	public FloorRequest(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Origin origin) {
-		super(time ,floorNumber, direction, origin);
+		super(time, floorNumber, direction, origin);
 		this.elevatorNumber = elevatorNumber;
 	}
 
