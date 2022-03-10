@@ -14,7 +14,6 @@ import java.time.format.DateTimeFormatter;
  */
 public class ApproachEvent extends ServiceRequest {
 
-    private final int elevatorNumber;
     /**
      * Indicates whether an elevator should stop at a floor
      */
@@ -31,8 +30,8 @@ public class ApproachEvent extends ServiceRequest {
      */
     public ApproachEvent(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Origin origin) {
         super(time, floorNumber, direction, origin);
-        this.elevatorNumber = elevatorNumber;
         this.elevatorMayStop = false;
+        setElevatorNumber(elevatorNumber);
     }
 
     /**
@@ -45,15 +44,6 @@ public class ApproachEvent extends ServiceRequest {
     public ApproachEvent(ElevatorRequest elevatorRequest, int floorNumber, int elevatorNumber) {
         this(elevatorRequest.getTime(), floorNumber,
                 elevatorRequest.getDirection(), elevatorNumber, elevatorRequest.getOrigin());
-    }
-
-    /**
-     * Returns the number of the Elevator that created the event.
-     *
-     * @return number the number of the elevator that created the event
-     */
-    public int getElevatorNumber() {
-        return elevatorNumber;
     }
 
     /**

@@ -1,5 +1,7 @@
 package systemwide;
 
+import requests.ElevatorRequest;
+import requests.ServiceRequest;
 import requests.SystemEvent;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -86,6 +88,19 @@ public class BoundedBuffer {
         itemQueue.forEach(systemEvent -> {
             System.out.println(systemEvent.getClass().toString());
         });
+    }
+
+    /**
+     * Determine if an elevator can take the request
+     *
+     * @param elevatorNumber the elevator's number who the SystemEvent is intended for
+     * @return true if the elevator can remove from the buffer, false otherwise
+     */
+    public synchronized boolean elevatorRemoveFromBuffer(int elevatorNumber){
+        if (elevatorNumber != itemQueue.peekFirst().getElevatorNumber()){
+            return false;
+        }
+        return true;
     }
 
     /**

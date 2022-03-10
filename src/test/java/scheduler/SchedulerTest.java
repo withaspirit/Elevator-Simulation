@@ -1,5 +1,6 @@
 package scheduler;
 
+import elevatorsystem.Elevator;
 import elevatorsystem.ElevatorSubsystem;
 import floorsystem.FloorSubsystem;
 import systemwide.BoundedBuffer;
@@ -11,6 +12,7 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,12 +23,14 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SchedulerTest {
 
+    private ServiceRequest serviceRequest;
     private BoundedBuffer elevatorBuffer;
     private BoundedBuffer floorBuffer;
-    private Scheduler scheduler;
     private ElevatorSubsystem elevatorSubsystem;
+    private ArrayList<Elevator> elevators;
+    private Elevator elevator;
+    private Scheduler scheduler;
     private FloorSubsystem floorSubsystem;
-    private ServiceRequest serviceRequest;
 
     @BeforeEach
     void setUp() {
@@ -38,8 +42,11 @@ class SchedulerTest {
         floorBuffer = new BoundedBuffer();
 
         // Set up systems
-        scheduler = new Scheduler(elevatorBuffer, floorBuffer);
         elevatorSubsystem = new ElevatorSubsystem(elevatorBuffer);
+        elevators = new ArrayList<>();
+        elevator = new Elevator(1, elevatorSubsystem);
+        elevators.add(elevator);
+        scheduler = new Scheduler(elevatorBuffer, floorBuffer, elevators);
         floorSubsystem = new FloorSubsystem(floorBuffer);
     }
 

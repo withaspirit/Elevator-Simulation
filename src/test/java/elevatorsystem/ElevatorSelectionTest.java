@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
+import scheduler.Scheduler;
 import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 
 public class ElevatorSelectionTest {
@@ -17,6 +19,8 @@ public class ElevatorSelectionTest {
     BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
     ElevatorSubsystem elevatorSubsystem;
     Elevator elevator1, elevator2;
+    ArrayList<Elevator> elevators;
+    Scheduler scheduler;
 
     @BeforeEach
     void setUp() {
@@ -25,15 +29,18 @@ public class ElevatorSelectionTest {
         elevator2 = new Elevator(2, elevatorSubsystem);
         elevatorSubsystem.addElevator(elevator1);
         elevatorSubsystem.addElevator(elevator2);
+        elevators = new ArrayList<>();
+        elevators.add(elevator1);
+        elevators.add(elevator2);
+        scheduler = new Scheduler(new BoundedBuffer(), elevatorSubsystemBuffer, elevators);
     }
 
     @Test
     void testSelectingIdleElevators(){
-        assertEquals(elevatorSubsystem.chooseElevator(elevatorRequest), 1);
+        assertEquals(scheduler.chooseElevator(elevatorRequest), 1);
         elevator1.addRequest(elevatorRequest);
-        elevator1.processRequest(elevator1.getNextRequest());
         elevator1.getMotor().setMovementState(MovementState.ACTIVE);
-        assertEquals(elevatorSubsystem.chooseElevator(elevatorRequest), 2);
+        assertEquals(scheduler.chooseElevator(elevatorRequest), 2);
     }
 
     @Test
@@ -41,18 +48,13 @@ public class ElevatorSelectionTest {
         elevator1.addRequest(elevatorRequest);
         elevator1.addRequest(elevatorRequest);
         elevator1.addRequest(elevatorRequest);
-        elevator1.processRequest(elevator1.getNextRequest());
-        elevator1.processRequest(elevator1.getNextRequest());
-        elevator1.processRequest(elevator1.getNextRequest());
 
         elevator2.addRequest(elevatorRequest);
         elevator2.addRequest(elevatorRequest);
-        elevator2.processRequest(elevator2.getNextRequest());
-        elevator2.processRequest(elevator2.getNextRequest());
 
         elevator1.getMotor().setMovementState(MovementState.ACTIVE);
         elevator2.getMotor().setMovementState(MovementState.ACTIVE);
 
-        assertEquals(elevatorSubsystem.chooseElevator(elevatorRequest), 2);
+        assertEquals(scheduler.chooseElevator(elevatorRequest), 2);
     }
 }

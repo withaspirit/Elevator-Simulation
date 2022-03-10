@@ -85,7 +85,7 @@ public class Structure {
 			floorSubsystem.addFloor(floor);
 		}
 
-		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer);
+		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer, elevatorList);
 
 		Thread schedulerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
 

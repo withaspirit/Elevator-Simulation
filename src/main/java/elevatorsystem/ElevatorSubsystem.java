@@ -43,15 +43,18 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	public void run() {
 		while (true) {
 			if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-				SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
-				if (request instanceof ElevatorRequest elevatorRequest) {
-					int chosenElevator = chooseElevator(elevatorRequest);
-					// Choose elevator
-					// Move elevator
-					elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-					requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
-				} else if (request instanceof ApproachEvent approachEvent) {
-					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+				for (Elevator elevator : elevatorList){
+					if (elevatorSubsystemBuffer.elevatorRemoveFromBuffer(elevator.getElevatorNumber())){
+						SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
+						if (request instanceof ElevatorRequest elevatorRequest) {
+							elevatorList.get(elevatorRequest.getElevatorNumber() - 1).addRequest(elevatorRequest);
+							requestQueue.add(new FloorRequest(elevatorRequest));
+						} else if (request instanceof ApproachEvent approachEvent) {
+							elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+						}
+					} else {
+						System.out.println(elevator.getElevatorNumber() + "is not the correct elevator");
+					}
 				}
 			}
 			// send message if possible
@@ -80,55 +83,5 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
 		requestQueue.add(approachEvent);
-	}
-
-	/**
-	 * Returns an elevator number corresponding to an elevator that is
-	 * best suited to perform the given ElevatorRequest based on
-	 * expected time to fulfill the request and direction of elevator.
-	 *
-	 * @param elevatorRequest an ElevatorRequest
-	 * @return a number corresponding to an elevator
-	 */
-	public int chooseElevator(ElevatorRequest elevatorRequest) {
-		double elevatorBestExpectedTime = 0.0;
-		double elevatorWorstExpectedTime = 0.0;
-		int chosenBestElevator = 0;
-		int chosenWorstElevator = 0;
-		for (Elevator elevator : elevatorList) {
-//			sendMessage(new StatusRequest(elevatorRequest,Origin.currentOrigin(), i), elevatorSubsystemBuffer, Origin.currentOrigin());
-//			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.currentOrigin());
-			double tempExpectedTime = elevator.getExpectedTime(elevatorRequest);
-			if (elevator.getMotor().isIdle()) {
-				return elevator.getElevatorNumber();
-
-			} else if (!elevator.getMotor().isActive()) {
-				System.err.println("Elevator is stuck");
-
-			} else if (elevator.getDirection() == elevatorRequest.getDirection()) {
-				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
-					if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
-						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
-
-					} else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
-						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
-            
-					} else {
-						// Add to the third queue of the elevator
-					}
-				}
-			} else {
-				if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime) {
-					elevatorWorstExpectedTime = tempExpectedTime;
-					chosenWorstElevator = elevator.getElevatorNumber();
-				}
-			}
-		}
-		if (chosenBestElevator == 0) {
-			chosenBestElevator = chosenWorstElevator;
-		}
-		return chosenBestElevator;
 	}
 }

@@ -1,9 +1,12 @@
 package scheduler;
 
+import elevatorsystem.Elevator;
 import requests.*;
 import systemwide.BoundedBuffer;
+import systemwide.Direction;
 import systemwide.Origin;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -16,6 +19,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
+	private final ArrayList<Elevator> elevatorList;
 	private Origin origin;
 	private Queue<SystemEvent> requestQueue;
 	// private ArrayList<Elevator> elevators;
@@ -27,13 +31,64 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
      * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
 	 */
-	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer) {
+	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer, ArrayList<Elevator> elevatorList) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
 		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
 		this.floorSubsystemBuffer = floorSubsystemBuffer;
+		this.elevatorList = elevatorList;
 		requestQueue = new LinkedList<>();
 		origin = Origin.SCHEDULER;
+	}
+
+	/**
+	 * Returns an elevator number corresponding to an elevator that is
+	 * best suited to perform the given ElevatorRequest based on
+	 * expected time to fulfill the request and direction of elevator.
+	 *
+	 * @param elevatorRequest an ElevatorRequest
+	 * @return a number corresponding to an elevator
+	 */
+	public int chooseElevator(ElevatorRequest elevatorRequest) {
+		double elevatorBestExpectedTime = 0.0;
+		double elevatorWorstExpectedTime = 0.0;
+		int chosenBestElevator = 0;
+		int chosenWorstElevator = 0;
+		for (Elevator elevator : elevatorList) {
+//			sendMessage(new StatusRequest(elevatorRequest,Origin.currentOrigin(), i), elevatorSubsystemBuffer, Origin.currentOrigin());
+//			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.currentOrigin());
+			double tempExpectedTime = elevator.getExpectedTime(elevatorRequest);
+			if (elevator.getMotor().isIdle()) {
+				return elevator.getElevatorNumber();
+
+			} else if (!elevator.getMotor().isActive()) {
+				System.err.println("Elevator is stuck");
+
+			} else if (elevator.getDirection() == elevatorRequest.getDirection()) {
+				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
+					if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
+						elevatorBestExpectedTime = tempExpectedTime;
+						chosenBestElevator = elevator.getElevatorNumber();
+
+					} else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
+						elevatorBestExpectedTime = tempExpectedTime;
+						chosenBestElevator = elevator.getElevatorNumber();
+
+					} else {
+						// Add to the third queue of the elevator
+					}
+				}
+			} else {
+				if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime) {
+					elevatorWorstExpectedTime = tempExpectedTime;
+					chosenWorstElevator = elevator.getElevatorNumber();
+				}
+			}
+		}
+		if (chosenBestElevator == 0) {
+			chosenBestElevator = chosenWorstElevator;
+		}
+		return chosenBestElevator;
 	}
 
 	/**
@@ -60,6 +115,10 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 				if (request.getOrigin() == Origin.FLOOR_SYSTEM) {
 					if (request instanceof ElevatorRequest elevatorRequest){
+						int chosenElevator = chooseElevator(elevatorRequest);
+						// Choose elevator
+						// Move elevator
+						elevatorRequest.setElevatorNumber(chosenElevator);
 						sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
 						System.out.println("Scheduler Sent Request to Elevator Successful");
 					} else if (request instanceof ApproachEvent approachEvent) {
