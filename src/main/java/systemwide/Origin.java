@@ -12,9 +12,11 @@ public enum Origin {
 
     /**
      * Provides an Origin in the opposite direction of the Origin provided.
+     * If origin is ELEVATOR_SYSTEM, return FLOOR_SYSTEM. Otherwise, return
+     * FLOOR_SUBSYSTEM.
      *
      * @param origin the Origin provided
-     * @return an Origin in the opposite direction of the Origin provided.
+     * @return return Origin
      */
     public static Origin changeOrigin(Origin origin) {
         if (origin == FLOOR_SYSTEM) {

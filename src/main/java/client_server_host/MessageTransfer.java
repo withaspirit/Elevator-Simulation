@@ -31,14 +31,29 @@ public class MessageTransfer {
         }
     }
 
+    /**
+     * Adds a DatagramPacket to the queue of packets to be processed.
+     *
+     * @param packet the packet to be added to the queue
+     */
     public void addPacketToQueue(DatagramPacket packet) {
         messageQueue.add(packet);
     }
 
+    /**
+     * Removes and returns a DatagramPacket from the queue of packets to be processed.
+     *
+     * @return a packet from the queue
+     */
     public DatagramPacket getPacketFromQueue() {
         return messageQueue.remove();
     }
 
+    /**
+     * Determines whether the queue of DatagramPackets is empty.
+     *
+     * @return true if the queue is empty, false otherwise
+     */
     public boolean queueIsEmpty() {
         return messageQueue.isEmpty();
     }
@@ -139,10 +154,10 @@ public class MessageTransfer {
     }
 
     /**
-     * Encodes the object into an Byte Array, which can be used to prepare
+     * Encodes the object into a Byte Array, which can be used to prepare
      * requests to be sent through UDP packets. 
      *
-     * @param object   the object to encode
+     * @param object the object to encode
      * @return objectBytes the object coded into a byte array.
      */
     public byte[] encodeObject(Object object) {
@@ -170,7 +185,7 @@ public class MessageTransfer {
      * Decodes the Byte Array to its object instance, which can be used to read
      * requests received from UDP packets. 
      *
-     * @param objectBytes   the byte array of the object
+     * @param objectBytes the byte array of the object
      * @return object the object instance decoded.
      */
     public Object decodeObject(byte[] objectBytes) {
@@ -191,7 +206,6 @@ public class MessageTransfer {
                 // ignore close exception
             }
         }
-
         return object;
     }
 }
