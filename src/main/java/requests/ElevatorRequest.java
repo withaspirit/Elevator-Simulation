@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 public class ElevatorRequest extends ServiceRequest {
 
 	private final int desiredFloor;
-	private int elevatorNumber;
 
 	/**
 	 * Constructor for ElevatorRequest read from an input file.
@@ -29,7 +28,6 @@ public class ElevatorRequest extends ServiceRequest {
 	public ElevatorRequest(LocalTime time, int floorNumber, Direction direction, int desiredFloor, Origin origin) {
 		super(time ,floorNumber, direction, origin);
 		this.desiredFloor = desiredFloor;
-		elevatorNumber = 0;
 	}
 
 	/**
@@ -39,24 +37,6 @@ public class ElevatorRequest extends ServiceRequest {
 	 */
 	public int getDesiredFloor() {
 		return desiredFloor;
-	}
-
-	/**
-	 * Sets the elevatorNumber of the request
-	 *
-	 * @param elevatorNumber the elevator number to send the request to
-	 */
-	public void setElevatorNumber(int elevatorNumber){
-		this.elevatorNumber = elevatorNumber;
-	}
-
-	/**
-	 * Gets the elevatorNumber of the request to reply to that specific elevator
-	 *
-	 * @return the elevatorNumber of the request
-	 */
-	public int getElevatorNumber(){
-		return elevatorNumber;
 	}
 
 	/**
