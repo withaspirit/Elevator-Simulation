@@ -115,7 +115,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 				if (request.getOrigin() == Origin.FLOOR_SYSTEM) {
 					if (request instanceof ElevatorRequest elevatorRequest){
-						elevatorRequest.setElevatorNumber(chooseElevator(elevatorRequest);
+						elevatorRequest.setElevatorNumber(chooseElevator(elevatorRequest));
 						sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
 						System.out.println("Scheduler Sent Request to Elevator Successful");
 					} else if (request instanceof ApproachEvent approachEvent) {
@@ -123,8 +123,9 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 						sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
 					}
 				} else if (request.getOrigin() == Origin.ELEVATOR_SYSTEM) {
-					if (request instanceof StatusResponse) {
-
+					if (request instanceof StatusUpdate statusUpdate) {
+						//elevatorList.get(statusUpdate.getElevatorNumber()-1).updateStatus(statusUpdate);
+						sendMessage(statusUpdate, floorSubsystemBuffer, origin);
 					} else if (request instanceof FloorRequest floorRequest){
 						sendMessage(floorRequest, floorSubsystemBuffer, origin);
 						System.out.println("Scheduler Sent Request to Floor Successful");

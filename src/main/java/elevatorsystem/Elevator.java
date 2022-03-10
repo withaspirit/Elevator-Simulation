@@ -121,7 +121,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		requests.add(serviceRequest);
-		queueTime = getExpectedTime(serviceRequest);
+		motor.setMovementState(MovementState.ACTIVE);
+		motor.setDirection(serviceRequest.getDirection());
+		if (serviceRequest instanceof ElevatorRequest elevatorRequest){
+			queueTime = getExpectedTime(elevatorRequest);
+			System.err.println("Elevator #" + elevatorNumber + " " + queueTime);
+		}
 	}
 
 	/**
@@ -339,22 +344,22 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * Gets the total expected time that the elevator will need to take to
 	 * perform its current requests along with the new elevatorRequest.
 	 *
-	 * @param serviceRequest a service request to visit a floor
+	 * @param elevatorRequest a service request to visit a floor
 	 * @return a double containing the elevator's total expected queue time
 	 */
-	public double getExpectedTime(ServiceRequest serviceRequest) {
-		return queueTime + LOAD_TIME + requestTime(serviceRequest);
+	public double getExpectedTime(ElevatorRequest elevatorRequest) {
+		return queueTime + LOAD_TIME + requestTime(elevatorRequest);
 	}
 
 	/**
 	 * Gets the expected time of a new request for the current elevator
 	 * based on distance.
 	 *
-	 * @param serviceRequest a serviceRequest to visit a floor
+	 * @param elevatorRequest a elevatorRequest to visit a floor
 	 * @return a double containing the time to fulfil the request
 	 */
-	public double requestTime(ServiceRequest serviceRequest) {
-		double distance = Math.abs(serviceRequest.getFloorNumber() - currentFloor) * FLOOR_HEIGHT;
+	public double requestTime(ElevatorRequest elevatorRequest) {
+		double distance = Math.abs(elevatorRequest.getFloorNumber() - currentFloor) * FLOOR_HEIGHT;
 		if (distance > ACCELERATION_DISTANCE * 2) {
 			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
 		} else {
@@ -379,5 +384,27 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
 		this.approachEvent = approachEvent;
+	}
+
+
+	/**
+	 * Create a status response when a rew elevator request is added
+	 * that will change the status.
+	 *
+	 * @return a StatusUpdate containing new elevator information.
+	 */
+	public StatusUpdate makeStatusUpdate() {
+		return new StatusUpdate(queueTime, motor.getMovementState(), currentFloor, motor.getDirection(), elevatorNumber);
+	}
+
+	/**
+	 * Updates the instance of elevator's that is stored in the Scheduler with new information.
+	 *
+	 * @param statusUpdate A status update for an elevator
+	 */
+	public void updateStatus(StatusUpdate statusUpdate) {
+		queueTime = statusUpdate.getExpectedTime();
+		motor.setMovementState(statusUpdate.getState());
+		currentFloor = statusUpdate.getCurrentFloor();
 	}
 }
