@@ -63,6 +63,11 @@ public class IntermediateHost {
         }
     }
 
+    /**
+     *
+     * @param packet
+     * @return
+     */
     public SystemEvent convertPacketToSystemEvent(DatagramPacket packet) {
         SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());
         return event;
@@ -76,20 +81,21 @@ public class IntermediateHost {
     }
 
     /**
-     * Responds to a dataRequest depending on whether the queue of messages is empty.
+     * Responds to a data request depending on whether the queue of messages is empty.
      *
      * @param packet a packet received from a system
      */
     private void respondToDataRequest(DatagramPacket packet) {
         DatagramPacket packetToSend;
 
+        // if queue is not empty, send a packet from the list of queues
+        // otherwise, send a placeholder message
         if (!messageTransfer.queueIsEmpty()) {
-            // if queue is not empty, send an actual message
+
             // printReceiveMessage(name, packet);
             packetToSend = messageTransfer.getPacketFromQueue();
             // printSendMessage(name, packetToSend);
         } else {
-            // otherwise, send a placeholder message
             byte[] emptyQueueByteArray = "emptyQueue".getBytes();
             packetToSend = messageTransfer.createPacket(emptyQueueByteArray, packet.getAddress(), packet.getPort());
         }
