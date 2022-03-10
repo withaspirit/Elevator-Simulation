@@ -153,7 +153,6 @@ public class MessageTransfer {
         return packet;
     }
 
-    // FIXME: this could be easily be removed
     public DatagramPacket createPacket(byte[] msg, InetAddress inetAddress, int portNumber) {
         DatagramPacket newPacket = new DatagramPacket(msg, msg.length, inetAddress, portNumber);
         return newPacket;
