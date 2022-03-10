@@ -1,9 +1,12 @@
 package scheduler;
 
+import client_server_host.IntermediateHost;
+import client_server_host.Port;
 import requests.*;
 import systemwide.BoundedBuffer;
 import systemwide.Origin;
 
+import java.net.DatagramPacket;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -16,8 +19,9 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
-	private Origin origin;
+	private final Origin origin = Origin.SCHEDULER;
 	private Queue<SystemEvent> requestQueue;
+	private IntermediateHost intermediateHost;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
 
@@ -33,7 +37,59 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
 		this.floorSubsystemBuffer = floorSubsystemBuffer;
 		requestQueue = new LinkedList<>();
-		origin = Origin.SCHEDULER;
+	}
+
+	/**
+	 * Constructor for Scheduler.
+	 *
+	 * @param portNumber the port number associated with the class's DatagramSocket
+	 */
+	public Scheduler(int portNumber) {
+		elevatorSubsystemBuffer = null;
+		floorSubsystemBuffer = null;
+		intermediateHost = new IntermediateHost(portNumber);
+		requestQueue = new LinkedList<>();
+	}
+
+	/**
+	 * Takes a DatagramPacket from the IntermediateHost and processes it if it's Data rather
+	 * than a request for data.
+	 */
+	public void receiveAndProcessPacket() {
+		DatagramPacket receivePacket = intermediateHost.receivePacket();
+
+		// if request is data, proceed. otherwise,
+		if (intermediateHost.processReceivePacket(receivePacket)) {
+			processData(receivePacket);
+		}
+	}
+
+	/**
+	 * Process data that Scheduler's DatagramSocket has received.
+	 *
+	 * @param packet a DatagramPacket containing a SystemEvent
+	 */
+	// FIXME: this is the only part of the code that Scheduler needs access to, all other parts are optional
+	public void processData(DatagramPacket packet) {
+
+		// identify the Origin of the packet, take action accordingly
+		SystemEvent event = intermediateHost.convertPacketToSystemEvent(packet);
+		Origin eventOrigin = event.getOrigin();
+
+		if (eventOrigin == Origin.ELEVATOR_SYSTEM) {
+			// scheduler method here to do FLOORSUBSYSTEM stuff
+			event.setOrigin(Origin.changeOrigin(eventOrigin));
+			packet.setPort(Port.CLIENT.getNumber());
+		} else if (eventOrigin == Origin.FLOOR_SYSTEM) {
+			// scheduler method here to do ELEVATORSUBSYSTEM stuff
+			event.setOrigin(Origin.changeOrigin(eventOrigin));
+			packet.setPort(Port.SERVER.getNumber());
+		} else {
+			System.err.println("Error: unexpected origin: ");
+			// printReceiveMessage(name, packet);
+		}
+		// intermediate host
+		intermediateHost.addNewMessageToQueue(event, packet);
 	}
 
 	/**
