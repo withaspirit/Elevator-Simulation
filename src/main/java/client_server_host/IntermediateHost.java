@@ -5,7 +5,8 @@ import requests.SystemEvent;
 import java.net.DatagramPacket;
 
 /**
- * IntermediateHost receives and sends message from both Client and Server.
+ * IntermediateHost provides methods that manipulate MessageTransfer
+ * to receive and send messages to both Client and Server.
  *
  * @author Liam Tripp
  */
@@ -16,7 +17,7 @@ public class IntermediateHost {
     /**
      * Constructor for IntermediateHost.
      *
-     * @param portNumber the port number corresponding to the IntermediateHost thread
+     * @param portNumber the port number corresponding to a DatagramSocket
      */
     public IntermediateHost(int portNumber) {
         messageTransfer = new MessageTransfer(portNumber);
@@ -39,15 +40,17 @@ public class IntermediateHost {
      * @param receivePacket
      * @return true if the receivePacket is data, false if it is a request for data
      */
-    public boolean processReceivePacket(DatagramPacket receivePacket) {
+    public boolean processPacketObject(DatagramPacket receivePacket) {
         // receive message
         // convert bytes to object
         byte[] byteArray = receivePacket.getData();
         Object object = messageTransfer.decodeObject(byteArray);
-
-        // take action depending on object type
+        /*
+            take action depending on object type
+            if packet is a data request (i.e. a String), respond to data request here
+            otherwise, send a packet acknowledging that data was received
+         */
         if (object instanceof String) {
-            // packet is a data request
             respondToDataRequest(receivePacket);
             return false;
         } else {
