@@ -53,16 +53,19 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	}
 
 	/**
-	 * Takes a DatagramPacket from the IntermediateHost. If it's data
-	 * (i.e. contains a SystemEvent), Scheduler processes it. Otherwise,
-	 * it's a request for data and IntermediateHost processes it.
+	 * Takes a DatagramPacket from the IntermediateHost and processes it.
+	 * If it's data (i.e. contains a SystemEvent), it is processed by Scheduler.
+	 * Otherwise, it's a request for data and is processed by IntermediateHost.
 	 */
 	public void receiveAndProcessPacket() {
 		DatagramPacket receivePacket = intermediateHost.receivePacket();
 
-		// if request is data, proceed. otherwise, do nothing
+		// if request is data, process it as data.
+		// otherwise it is a data request
 		if (intermediateHost.processPacketObject(receivePacket)) {
 			processData(receivePacket);
+		} else {
+			intermediateHost.respondToDataRequest(receivePacket);
 		}
 	}
 

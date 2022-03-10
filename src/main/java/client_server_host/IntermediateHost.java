@@ -5,8 +5,8 @@ import requests.SystemEvent;
 import java.net.DatagramPacket;
 
 /**
- * IntermediateHost provides methods that manipulate MessageTransfer
- * to receive and send messages to both Client and Server.
+ * IntermediateHost is a service class used by Scheduler. It provides methods
+ * that manipulate MessageTransfer to receive and send messages to both Client and Server.
  *
  * @author Liam Tripp
  */
@@ -51,7 +51,6 @@ public class IntermediateHost {
             otherwise, send a packet acknowledging that data was received
          */
         if (object instanceof String) {
-            respondToDataRequest(receivePacket);
             return false;
         } else {
             // packet is data
@@ -85,7 +84,7 @@ public class IntermediateHost {
      *
      * @param packet a packet received from a system
      */
-    private void respondToDataRequest(DatagramPacket packet) {
+    public void respondToDataRequest(DatagramPacket packet) {
         DatagramPacket packetToSend;
 
         // if queue is not empty, send a packet from the list of queues
