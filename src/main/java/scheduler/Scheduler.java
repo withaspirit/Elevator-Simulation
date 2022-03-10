@@ -36,6 +36,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		// add subsystems to elevators, pass # floors
 		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
 		this.floorSubsystemBuffer = floorSubsystemBuffer;
+		intermediateHost = null;
 		requestQueue = new LinkedList<>();
 	}
 
@@ -52,42 +53,42 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	}
 
 	/**
-	 * Takes a DatagramPacket from the IntermediateHost and processes it if it's Data rather
-	 * than a request for data.
+	 * Takes a DatagramPacket from the IntermediateHost. If it's data
+	 * (i.e. contains a SystemEvent), Scheduler processes it. Otherwise,
+	 * it's a request for data and IntermediateHost processes it.
 	 */
 	public void receiveAndProcessPacket() {
 		DatagramPacket receivePacket = intermediateHost.receivePacket();
 
-		// if request is data, proceed. otherwise,
-		if (intermediateHost.processReceivePacket(receivePacket)) {
+		// if request is data, proceed. otherwise, do nothing
+		if (intermediateHost.processPacketObject(receivePacket)) {
 			processData(receivePacket);
 		}
 	}
 
 	/**
 	 * Process data that Scheduler's DatagramSocket has received.
+	 * Create a new packet and manipulate it according to the packet's Origin.
 	 *
 	 * @param packet a DatagramPacket containing a SystemEvent
 	 */
-	// FIXME: this is the only part of the code that Scheduler needs access to, all other parts are optional
 	public void processData(DatagramPacket packet) {
 
-		// identify the Origin of the packet, take action accordingly
+		// identify the Origin of the packet
 		SystemEvent event = intermediateHost.convertPacketToSystemEvent(packet);
 		Origin eventOrigin = event.getOrigin();
 
+		// manipulate the packet according to its origin
 		if (eventOrigin == Origin.ELEVATOR_SYSTEM) {
 			// scheduler method here to do FLOORSUBSYSTEM stuff
-			event.setOrigin(Origin.changeOrigin(eventOrigin));
 			packet.setPort(Port.CLIENT.getNumber());
 		} else if (eventOrigin == Origin.FLOOR_SYSTEM) {
 			// scheduler method here to do ELEVATORSUBSYSTEM stuff
-			event.setOrigin(Origin.changeOrigin(eventOrigin));
 			packet.setPort(Port.SERVER.getNumber());
 		} else {
-			System.err.println("Error: unexpected origin: ");
-			// printReceiveMessage(name, packet);
+			throw new IllegalArgumentException("Error: Invalid Origin");
 		}
+		event.setOrigin(Origin.changeOrigin(eventOrigin));
 		// intermediate host
 		intermediateHost.addNewMessageToQueue(event, packet);
 	}
@@ -100,6 +101,11 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 */
 	public void run() {
 		while(true) {
+			// take action depending on if using buffers or IntermediateHost
+			if (intermediateHost != null) {
+				receiveAndProcessPacket();
+			} else {
+			// FIXME: indent this in a future branch
 			SystemEvent request;
 			// remove from either floorBuffer or ElevatorBuffer
 			if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
@@ -135,6 +141,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 					System.err.println("Scheduler should not contain items whose origin is Scheduler: " + request);
 				}
  			}
+			}
 		}
 	}
 }
