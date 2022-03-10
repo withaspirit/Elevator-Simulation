@@ -43,7 +43,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private float displacement;
 	private double queueTime;
 
-	private final Doors doors;
+	//private final Doors doors;
 	private final ElevatorMotor motor;
 	private Direction currentDirection;
 	private FloorsQueue floorsQueue;
