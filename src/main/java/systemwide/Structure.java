@@ -104,7 +104,7 @@ public class Structure {
 	}
 
 	public static void main(String[] args) {
-		Structure structure = new Structure(10, 1);
+		Structure structure = new Structure(10, 2);
 		structure.initializeStructure();
 	}
 }

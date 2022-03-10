@@ -52,6 +52,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 						} else if (request instanceof ApproachEvent approachEvent) {
 							elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
 						}
+						break;
 					} else {
 						System.out.println(elevator.getElevatorNumber() + "is not the correct elevator");
 					}
