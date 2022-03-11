@@ -180,6 +180,31 @@ public class FloorsQueue {
 	}
 
 	/**
+	 * Swaps the currentDirectionQueue if necessary.
+	 *
+	 * @return true if swapped to queue in opposite direction of current queue, false otherwise
+	 */
+	public boolean swapQueues() {
+		boolean status = false;
+
+		if (currentDirectionQueue.isEmpty()) {
+			// add any missed requests to current queue
+			while (!missedRequests.isEmpty()) {
+				currentDirectionQueue.add(missedRequests.remove());
+			}
+
+			// switch to opposite direction queue if possible
+			if (!oppositeDirectionQueue.isEmpty()) {
+				PriorityQueue<Integer> tempQueue = currentDirectionQueue;
+				currentDirectionQueue = oppositeDirectionQueue;
+				oppositeDirectionQueue = tempQueue;
+				status = true;
+			}
+		}
+		return status;
+	}
+
+	/**
 	 * Updates / Swaps the queues to include the missed requests
 	 *
 	 * @param serviceDirection the direction of the queue wanting to swap
@@ -231,31 +256,6 @@ public class FloorsQueue {
 			status = 0;
 		}
 		 */
-		return status;
-	}
-
-	/**
-	 * Swaps the currentDirectionQueue if necessary.
-	 *
-	 * @return true if swapped to queue in opposite direction of current queue, false otherwise
-	 */
-	public boolean swapQueues() {
-		boolean status = false;
-
-		if (currentDirectionQueue.isEmpty()) {
-			// add any missed requests to current queue
-			while (!missedRequests.isEmpty()) {
-				currentDirectionQueue.add(missedRequests.remove());
-			}
-
-			// switch to opposite direction queue if possible
-			if (!oppositeDirectionQueue.isEmpty()) {
-				PriorityQueue<Integer> tempQueue = currentDirectionQueue;
-				currentDirectionQueue = oppositeDirectionQueue;
-				oppositeDirectionQueue = tempQueue;
-				status = true;
-			}
-		}
 		return status;
 	}
 
