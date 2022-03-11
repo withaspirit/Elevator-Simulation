@@ -90,6 +90,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while (true) {
+			/*
+			while (!floorsQueue.isEmpty()) {
+				swapServiceDirectionIfNecessary();
+				while (!floorsQueue.isCurrentQueueEmpty()) {
+					// move elevator and stuff
+				}
+			}
+			 */
+
+
 			if (!requests.isEmpty()) {
 				System.out.println();
 				System.out.println("Elevator #" + elevatorNumber + "'s remaining requests: " + requests);
@@ -129,6 +139,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		requests.add(serviceRequest);
+		floorsQueue.addRequest(currentFloor, serviceDirection, serviceRequest);
 	}
 
 	/**

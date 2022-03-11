@@ -281,6 +281,16 @@ public class FloorsQueue {
 	/**
 	 * Determines whether the FloorsQueue is empty.
 	 *
+	 * @return true if all of the FloorsQueue's queues are empty, false otherwise
+	 */
+	public boolean isEmpty() {
+		return isCurrentQueueEmpty() && isOppositeQueueEmpty() && isMissedqueueEmpty();
+	}
+
+
+	/**
+	 * Determines whether the FloorsQueue's currentQueue is empty.
+	 *
 	 * @return true if the floorsQueue's active queue is empty, false otherwise
 	 */
 	public boolean isCurrentQueueEmpty() {
