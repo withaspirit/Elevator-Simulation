@@ -181,11 +181,11 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | | Design |
+  | Ryan Dash | | Design | Code review
   | Ramit Mahajan | | |
-  | Brady Norton | | |
+  | Brady Norton | | | Code review
   | Julian Obando Velez | | | TA contact
-  | Liam Tripp | Elevator Movement updarte, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, Client-Server-Host outline | Design, Work Breakdown Structure, Dependency Diagram |
+  | Liam Tripp | Elevator Movement updarte, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, Client-Server-Host outline | Design, Work Breakdown Structure, Dependency Diagram | Code review
 
   </details>
   
