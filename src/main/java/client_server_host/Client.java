@@ -13,26 +13,21 @@ import java.net.DatagramPacket;
 public class Client {
 
     private MessageTransfer messageTransfer;
+    private Origin origin;
 
     /**
      * Constructor for Client.
      */
-    public Client() {
-        messageTransfer = new MessageTransfer(Port.CLIENT.getNumber());
+    public Client(int portNumber) {
+        messageTransfer = new MessageTransfer(portNumber);
     }
     
     /**
-     * Constructor for Client based on origin.
+     * Constructor for Client with origin.
      */
-    public Client(Origin origin) {
-        
-    	if (origin == Origin.ELEVATOR_SYSTEM) {
-    		messageTransfer = new MessageTransfer(Port.CLIENT.getNumber());
-    	} else if (origin == Origin.FLOOR_SYSTEM) {
-    		messageTransfer = new MessageTransfer(Port.SERVER.getNumber());
-    	} else {
-    		throw new IllegalArgumentException("Error: Invalid Origin");
-    	}
+    public Client(int portNumber, Origin origin) {
+    	messageTransfer = new MessageTransfer(portNumber);
+    	this.origin = origin;
     }
     
     /**
@@ -44,6 +39,7 @@ public class Client {
     public DatagramPacket buildPacket(Object object) {
     	byte[] newByteArray;
     	
+    	//Determine type of message
         if (object instanceof SystemEvent) {
         	newByteArray = messageTransfer.encodeObject(object);
         } else if (object instanceof String) {
@@ -51,7 +47,17 @@ public class Client {
         } else {
         	throw new IllegalArgumentException("Error: Invalid Object");
         }
-        DatagramPacket newPacket = messageTransfer.createPacket(newByteArray, Port.CLIENT_TO_SERVER.getNumber());
+        
+        //Determine origin
+        DatagramPacket newPacket;
+        if (getOrigin() == Origin.ELEVATOR_SYSTEM) {
+        	newPacket = messageTransfer.createPacket(newByteArray, Port.CLIENT_TO_SERVER.getNumber());
+        } else if (getOrigin() == Origin.FLOOR_SYSTEM) {
+        	newPacket = messageTransfer.createPacket(newByteArray, Port.SERVER_TO_CLIENT.getNumber());
+        } else {
+        	throw new IllegalArgumentException("Error: Invalid Origin");
+        }
+        
         return newPacket;
     }
  
@@ -81,5 +87,14 @@ public class Client {
    public SystemEvent convertPacketToSystemEvent(DatagramPacket packet) {
        SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());
        return event;
+   }
+   
+   /**
+   * Returns the Origin of the Client 
+   *
+   * @return origin of the Client
+   */
+   public Origin getOrigin() {
+	   return origin;
    }
 }
