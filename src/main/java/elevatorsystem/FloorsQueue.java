@@ -81,28 +81,47 @@ public class FloorsQueue {
 
 		Direction requestDirection = request.getDirection();
 
-		// request is in same direction as elevator
-		if (serviceDirection == requestDirection) {
-
-			// elevator can serve requests
-			// case: requestFloor is above elevatorFloor and request direction is Up
-			// OR requestFloor is below elevatorFloor and serviceDirection is DOwn
-			if ((floorNumber < elevatorFloorNumber && serviceDirection == Direction.DOWN) ||
-					(floorNumber > elevatorFloorNumber && serviceDirection == Direction.UP)) {
+		// if the elevator's floor number == request floor number
+		if (elevatorFloorNumber == floorNumber ) {
+			if (serviceDirection == requestDirection) {
 				currentDirectionQueue.add(floorNumber);
 				if (request instanceof ElevatorRequest elevatorRequest) {
 					currentDirectionQueue.add(elevatorRequest.getDesiredFloor());
 				}
 			} else {
-				// elevator can't serve request this cycle
-				missedRequests.add(floorNumber);
+				oppositeDirectionQueue.add(floorNumber);
 				if (request instanceof ElevatorRequest elevatorRequest) {
-					missedRequests.add(elevatorRequest.getDesiredFloor());
+					oppositeDirectionQueue.add(elevatorRequest.getDesiredFloor());
 				}
 			}
 		} else {
-			// serviceDirection is opposite direction to elevatorDirection
-			oppositeDirectionQueue.add(floorNumber);
+			// elevatorFloo
+			// request is in same direction as elevator
+			if (serviceDirection == requestDirection) {
+
+				// elevator can serve requests
+				// case: requestFloor is above elevatorFloor and request direction is Up
+				// OR requestFloor is below elevatorFloor and serviceDirection is DOwn
+				if ((floorNumber < elevatorFloorNumber && serviceDirection == Direction.DOWN) ||
+						(floorNumber > elevatorFloorNumber && serviceDirection == Direction.UP)) {
+					currentDirectionQueue.add(floorNumber);
+					if (request instanceof ElevatorRequest elevatorRequest) {
+						currentDirectionQueue.add(elevatorRequest.getDesiredFloor());
+					}
+				} else {
+					// elevator can't serve request this cycle
+					missedRequests.add(floorNumber);
+					if (request instanceof ElevatorRequest elevatorRequest) {
+						missedRequests.add(elevatorRequest.getDesiredFloor());
+					}
+				}
+			} else {
+				// serviceDirection is opposite direction to elevatorDirection
+				oppositeDirectionQueue.add(floorNumber);
+				if (request instanceof ElevatorRequest elevatorRequest) {
+					oppositeDirectionQueue.add(elevatorRequest.getDesiredFloor());
+				}
+			}
 		}
 	}
 
