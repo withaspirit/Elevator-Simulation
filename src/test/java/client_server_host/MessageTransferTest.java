@@ -18,7 +18,7 @@ import systemwide.Origin;
  * MessageTransferTest ensures the encoding/decoding methods provided by the
  * MessageTransfer class are functional.
  * 
- * @author Julian
+ * @author Julian, Liam Tripp
  */
 public class MessageTransferTest {
 
@@ -91,6 +91,18 @@ public class MessageTransferTest {
 		assertEquals(requestOut.getFloorNumber(), approachEvent.getFloorNumber());
 		assertEquals(requestOut.getDirection(), approachEvent.getDirection());
 		assertEquals(requestOut.getElevatorNumber(), approachEvent.getElevatorNumber());
+	}
+
+	@Test
+	void testMaxByteSizeOfMessageNotExceeded() {
+		byte[] byteArray = msgTransfer.encodeObject(approachEvent);
+		assertTrue(byteArray.length < 1400);
+
+		byteArray = msgTransfer.encodeObject(elevatorRequest);
+		assertTrue(byteArray.length < 1400);
+
+		byteArray = msgTransfer.encodeObject(floorRequest);
+		assertTrue(byteArray.length < 1400);
 	}
 
 	@Test
