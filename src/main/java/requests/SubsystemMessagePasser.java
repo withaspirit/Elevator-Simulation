@@ -14,10 +14,13 @@ public interface SubsystemMessagePasser {
 	 *
 	 * @param event a SystemEvent which holds a request
 	 * @param buffer a BoundedBuffer which holds serviceRequests
+	 * @param origin the origin of the system trying to send a message
 	 * @return true if request is successful, false otherwise
 	 */
 	default boolean sendMessage(SystemEvent event, BoundedBuffer buffer, Origin origin) {
-		System.out.println(origin + " sending: " + event.getClass() + " " + event);
+		if (!(event instanceof ApproachEvent && origin == Origin.SCHEDULER)) {
+			System.out.println(origin + " sending: " + event.getClass().getSimpleName() + " " + event);
+		}
 		buffer.addLast(event, origin);
 		return true;
 	}
@@ -26,11 +29,14 @@ public interface SubsystemMessagePasser {
 	 * Removes and returns an object from a buffer.
 	 *
 	 * @param buffer a buffer which holds SystemEvents
+	 * @param origin the origin of the system trying to receive a message
 	 * @return the first SystemEvent from the buffer
 	 */
 	default SystemEvent receiveMessage(BoundedBuffer buffer, Origin origin) {
-		SystemEvent request = buffer.removeFirst(origin);
-		System.out.println(origin + " received: "  + request.getClass() + " "+ request);
-		return request;
+		SystemEvent event = buffer.removeFirst(origin);
+		if (!(event instanceof ApproachEvent && origin == Origin.SCHEDULER)) {
+			System.out.println(origin + " received: "  + event.getClass().getSimpleName() + " " + event);
+		}
+		return event;
 	}
 }

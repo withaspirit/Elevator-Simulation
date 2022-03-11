@@ -1,8 +1,10 @@
 package elevatorsystem;
 
 import requests.*;
+import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
+import java.time.LocalTime;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -43,10 +45,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private float displacement;
 	private double queueTime;
 
+	private final Doors doors;
 	private final ElevatorMotor motor;
 	private Direction currentDirection;
 	private FloorsQueue floorsQueue;
-  
 	private ElevatorRequest request;
 
 	// list must be volatile so that origin checks if it's been updated
@@ -55,6 +57,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private volatile ApproachEvent approachEvent;
 	// variable for allowing / disallowing Elevator's message transfer
 	private boolean messageTransferEnabled;
+
+	// Variable to track if a passenger has been picked up
 
 	/**
 	 * Constructor for Elevator class
@@ -71,6 +75,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		direction = Direction.UP;
 		serviceDirection = Direction.UP;
 		motor = new ElevatorMotor();
+		doors = new Doors();
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
 		request = null;
@@ -86,6 +91,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void run() {
 		while (true) {
 			if (!requests.isEmpty()) {
+				System.out.println();
+				System.out.println("Elevator #" + elevatorNumber + "'s remaining requests: " + requests);
+				System.out.println("Current Status: ");
+				printStatus();
 				System.out.println("Requests in list: " + requests);
 				processRequest(getNextRequest());
 			}
@@ -233,26 +242,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.speed = speed;
 	}
 
+	/**
+	 * Sets the current service request to process
+	 *
+	 * @param request
+	 */
 	public void setRequest(ServiceRequest request){
 		this.request = (ElevatorRequest) request;
-	}
-
-	/**
-	 * Gets the displacement that the elevator has moved on the current floor
-	 *
-	 * @return displacement of elevator as float
-	 */
-	public float getFloorDisplacement(){
-		return displacement;
-	}
-
-	/**
-	 * Sets the displacement the elevator for the current floor
-	 *
-	 * @param displacement the displacement of the elevator as a float
-	 */
-	public void setFloorDisplacement(float displacement) {
-		this.displacement = displacement;
 	}
 
 	/**
@@ -269,8 +265,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param serviceRequest the request that's sent to elevator
 	 */
 	public void processRequest(ServiceRequest serviceRequest){
-		// If request is an elevator request
-		System.out.println("Processing " + serviceRequest);
+		// If request is an elevator request (from outside the elevator)
+		System.out.println("Elevator #" + elevatorNumber + " processing: " + serviceRequest);
+"Processing " + serviceRequest);
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Move to floor from which elevatorRequest originated
 			moveToFloor(elevatorRequest);
@@ -278,6 +275,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			ServiceRequest request = new ServiceRequest(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
 					elevatorRequest.getDirection(), elevatorRequest.getOrigin());
 			addRequest(request);
+		// Request from within the elevator
 		} else {
 			moveToFloor(serviceRequest);
 		}
@@ -326,8 +324,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 				approachEvent = null;
 			}
 			setCurrentFloor(nextFloor);
-			System.out.println("Elevator moved to floor " + nextFloor);
-    	}
+			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor);
+    }
 		// Set to idle once floor reached
 		System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
 		motor.stop();
@@ -377,5 +375,60 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
 		this.approachEvent = approachEvent;
+	}
+
+	/**
+	 * Prints the status of the elevator (current floor, door state, motor state, motor direction)
+	 *
+	 */
+	public void printStatus(){
+		System.out.println("Elevator " + elevatorNumber + " current floor: " + currentFloor);
+		//System.out.println("Elevator " + elevatorNumber + " doors are: " + );
+		System.out.println("Elevator " + elevatorNumber + " motor is currently: " + motor.getMovementState().getName());
+		System.out.println("Elevator " + elevatorNumber + " motor's current direction: " + motor.getDirection());
+	}
+
+	/**
+	 * Update Motor properties based on the serviceRequest
+	 *
+	 * NOTE: Might be changed to simply use the first request in the queue
+	 *
+	 * @param serviceRequest update the motor
+	 */
+	public void updateMotor(ServiceRequest serviceRequest){
+		// Destination floor
+		int reqFloor = serviceRequest.getFloorNumber();
+
+		// STOPPED
+		if(motor.isIdle()){
+			// Next floor = destination
+			if(currentFloor == reqFloor){
+				// Do nothing
+			}
+			// Next floor != destination
+			else{
+				// Close doors
+				// elevatorDoor.setClose();
+
+				// start moving
+				// Change motor state
+				motor.setMovementState(MovementState.ACTIVE);
+
+				// Set motor Direction
+				motor.changeDirection(currentFloor, reqFloor);
+			}
+		}
+		// ACTIVE
+		else if(motor.isActive()){
+			// Next floor != destination
+			if(currentFloor != reqFloor){
+				// If motor is moving in the wrong direction
+				motor.changeDirection(currentFloor, reqFloor);
+			}
+			// Next floor == destination
+			else{
+				motor.stop();
+			}
+		}
 	}
 }
