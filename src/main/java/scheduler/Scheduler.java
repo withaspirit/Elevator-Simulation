@@ -50,43 +50,63 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * @return a number corresponding to an elevator
 	 */
 	public int chooseElevator(ElevatorRequest elevatorRequest) {
+
 		double elevatorBestExpectedTime = 0.0;
+		// Best elevator is an elevator traveling in path that collides with request floor
+		double elevatorOkExpectedTime = 0.0;
+		// Ok elevator is an elevator that is traveling in the other direction
 		double elevatorWorstExpectedTime = 0.0;
+		// Worst elevator is an elevator that is traveling in the same direction but missed the request
 		int chosenBestElevator = 0;
+		int chosenOkElevator = 0;
 		int chosenWorstElevator = 0;
 		for (Elevator elevator : elevatorList) {
 //			sendMessage(new StatusRequest(elevatorRequest,Origin.currentOrigin(), i), elevatorSubsystemBuffer, Origin.currentOrigin());
 //			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.currentOrigin());
 			double tempExpectedTime = elevator.getExpectedTime(elevatorRequest);
+			Direction requestDirection = elevatorRequest.getDirection();
+			int currentFloor = elevator.getCurrentFloor();
+			int desiredFloor = elevatorRequest.getDesiredFloor();
+			int elevatorNumber = elevator.getElevatorNumber();
+
 			if (elevator.getMotor().isIdle()) {
-				return elevator.getElevatorNumber();
+				return elevatorNumber;
 
 			} else if (!elevator.getMotor().isActive()) {
 				System.err.println("Elevator is stuck");
 
-			} else if (elevator.getDirection() == elevatorRequest.getDirection()) {
+			} else if (elevator.getServiceDirection() == requestDirection) {
 				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
-					if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
+					if (requestDirection == Direction.DOWN && currentFloor > desiredFloor) {
+						//check if request is in path current floor > directed floor going down
 						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
+						chosenBestElevator = elevatorNumber;
 
-					} else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
+					} else if (requestDirection == Direction.UP && currentFloor < desiredFloor) {
+						//check if request is in path current floor < directed floor going up
 						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
+						chosenBestElevator = elevatorNumber;
 
-					} else {
-						// Add to the third queue of the elevator
+					} else if (elevatorOkExpectedTime == 0 || elevatorOkExpectedTime > tempExpectedTime){
+						//if request is in the correct direction but not in path of elevator
+						elevatorWorstExpectedTime = tempExpectedTime;
+						chosenWorstElevator = elevatorNumber;
 					}
 				}
 			} else {
 				if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime) {
-					elevatorWorstExpectedTime = tempExpectedTime;
-					chosenWorstElevator = elevator.getElevatorNumber();
+					//if the elevator traveling in the wrong direction
+					elevatorOkExpectedTime = tempExpectedTime;
+					chosenOkElevator = elevatorNumber;
 				}
 			}
 		}
 		if (chosenBestElevator == 0) {
-			chosenBestElevator = chosenWorstElevator;
+			if (chosenOkElevator == 0){
+				chosenBestElevator = chosenWorstElevator;
+			} else {
+				chosenBestElevator = chosenOkElevator;
+			}
 		}
 		return chosenBestElevator;
 	}

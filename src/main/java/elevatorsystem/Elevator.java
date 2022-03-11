@@ -37,7 +37,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	// Elevator Properties
 	private final int elevatorNumber;
 	private int currentFloor;
-	private Direction direction = Direction.UP;
+	private Direction direction;
 	private Direction serviceDirection;
 	private float speed;
 	private float displacement;
@@ -124,7 +124,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		motor.setMovementState(MovementState.ACTIVE);
 		if (serviceRequest instanceof ElevatorRequest elevatorRequest){
 			queueTime = getExpectedTime(elevatorRequest);
-			System.err.println("Elevator #" + elevatorNumber + " " + queueTime);
+			System.err.println("Elevator #" + elevatorNumber + " " + queueTime + " seconds");
 		}
 	}
 
@@ -206,10 +206,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Gets the Direction the elevator is heading
 	 *
-	 * @return Direction
+	 * @return serviceDirection
 	 */
-	public Direction getDirection(){
-		return direction;
+	public Direction getServiceDirection(){
+		return serviceDirection;
 	}
 
 	/**
