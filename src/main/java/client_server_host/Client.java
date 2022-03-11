@@ -3,8 +3,6 @@ package client_server_host;
 import requests.SystemEvent;
 
 import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * Client sends and receives messages from an IntermediateHost.
@@ -14,20 +12,20 @@ import java.net.UnknownHostException;
 public class Client {
 
     private MessageTransfer messageTransfer;
-    private InetAddress inetAddress;
 
     /**
      * Constructor for Client.
      */
     public Client() {
         messageTransfer = new MessageTransfer(Port.CLIENT.getNumber());
-        try {
-			inetAddress = InetAddress.getLocalHost();
-		}  catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
     }
     
+    /**
+     * Builds a Datagram Packet according to its class type
+     * 
+     * @param object to convert into a packet
+     * @return packet of the object
+     */
     public DatagramPacket buildPacket(Object object) {
     	byte[] newByteArray;
     	
@@ -42,6 +40,12 @@ public class Client {
         return newPacket;
     }
  
+    /**
+     * Builds a Datagram Packet according to its class type
+     * 
+     * @param object with the message to send, either an Event or an Array
+     * @return packet of the object
+     */
     public DatagramPacket sendAndReceiveReply(Object object) {
     	//Sending object
     	DatagramPacket sendPacket = buildPacket(object);
@@ -54,9 +58,10 @@ public class Client {
     }
     
     /**
+    * Converts a packet into it's corresponding SystemEvent object
     *
-    * @param packet
-    * @return
+    * @param packet to convert to event
+    * @return event of packet
     */
    public SystemEvent convertPacketToSystemEvent(DatagramPacket packet) {
        SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());

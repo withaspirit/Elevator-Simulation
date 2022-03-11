@@ -16,10 +16,20 @@ public enum RequestMessage {
 	
 	private String msg;
 	
+    /**
+     * Constructor for RequestMessage.
+     *
+     * @param msg the message of the request
+     */
 	RequestMessage(String msg){
 		this.msg = msg;
 	}
 	
+    /**
+     * Returns the message associated.
+     *
+     * @return msg the message of the request
+     */
 	public String getMsg() {
 		return msg;
 	}
