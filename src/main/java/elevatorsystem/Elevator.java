@@ -294,10 +294,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// Set direction of request
 		Direction requestedDirection = serviceRequest.getDirection();
 
-		// Update Motor
-		motor.setMovementState(MovementState.ACTIVE);
-		motor.setDirection(requestedDirection);
-
 		/*
 		if (floorsQueue.isDownqueueEmpty() && floorsQueue.isUpqueueEmpty()){
 			currentDirection = serviceRequest.getDirection();
@@ -382,10 +378,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 */
 	public void printStatus(){
-		System.out.println("Current floor: " + currentFloor);
-		//System.out.println("Elevator doors: " + );
-		System.out.println("Your motor is currently: " + motor.getMovementState().getName());
-		System.out.println("Your motor's current direction: " + motor.getDirection());
+		System.out.println("Elevator " + elevatorNumber + " current floor: " + currentFloor);
+		//System.out.println("Elevator " + elevatorNumber + " doors are: " + );
+		System.out.println("Elevator " + elevatorNumber + " motor is currently: " + motor.getMovementState().getName());
+		System.out.println("Elevator " + elevatorNumber + " motor's current direction: " + motor.getDirection());
 	}
 
 	/**
@@ -403,8 +399,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if(motor.isIdle()){
 			// Next floor = destination
 			if(currentFloor == reqFloor){
-				// Open doors
-				// elevatorDoor.setOpen(); // placeholder
+				// Do nothing
 			}
 			// Next floor != destination
 			else{
@@ -428,9 +423,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Next floor != destination
 			if(currentFloor != reqFloor){
 				// If motor is moving in the wrong direction
-				if(motor.getDirection() != serviceRequest.getDirection()){
-					// Change motor direction
-					motor.setDirection(serviceRequest.getDirection());
+				if(currentFloor > reqFloor){
+					motor.setDirection(Direction.DOWN);
+				}
+				else{
+					motor.setDirection(Direction.UP);
 				}
 			}
 			// Next floor == destination
