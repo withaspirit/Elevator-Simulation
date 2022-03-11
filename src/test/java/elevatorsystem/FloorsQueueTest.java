@@ -34,7 +34,7 @@ class FloorsQueueTest {
 		int floorNumber = 1;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
-		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isCurrentQueueEmpty());
 	}
 
@@ -46,7 +46,7 @@ class FloorsQueueTest {
 		int floorNumber = 1;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
-		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isOppositeQueueEmpty());
 	}
 
@@ -63,7 +63,7 @@ class FloorsQueueTest {
 		int floorNumber = 2;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
-		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isCurrentQueueEmpty());
 	}
 
@@ -79,7 +79,7 @@ class FloorsQueueTest {
 		int floorNumber = 3;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 1, Origin.ELEVATOR_SYSTEM);
-		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isCurrentQueueEmpty());
 	}
 
@@ -95,7 +95,7 @@ class FloorsQueueTest {
 		int floorNumber = 3;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 1, Origin.ELEVATOR_SYSTEM);
-		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isOppositeQueueEmpty());
 	}
 
@@ -111,7 +111,7 @@ class FloorsQueueTest {
 		int floorNumber = 3;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 4, Origin.ELEVATOR_SYSTEM);
-		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isOppositeQueueEmpty());
 	}
 
@@ -127,7 +127,7 @@ class FloorsQueueTest {
 		int floorNumber = 2;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber , requestDirection, 1, Origin.ELEVATOR_SYSTEM);
-		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isOppositeQueueEmpty());
 	}
 
@@ -143,7 +143,7 @@ class FloorsQueueTest {
 		int floorNumber  = 1;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
-		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isOppositeQueueEmpty());
 	}
 
@@ -159,7 +159,7 @@ class FloorsQueueTest {
 		int floorNumber  = 3;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 1, Origin.ELEVATOR_SYSTEM);
-		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isMissedqueueEmpty());
 	}
 
@@ -175,7 +175,7 @@ class FloorsQueueTest {
 		int floorNumber  = 1;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
-		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isMissedqueueEmpty());
 	}
 

@@ -72,7 +72,7 @@ public class FloorsQueue {
 	 * @param serviceDirection the direction that the elevator is currently serving
 	 * @param request the ServiceRequest to be added to the FloorsQueue.
 	 */
-	public void addFloorOtherMethod(int elevatorFloorNumber, Direction serviceDirection, ServiceRequest request) {
+	public void addRequest(int elevatorFloorNumber, Direction serviceDirection, ServiceRequest request) {
 		int floorNumber = request.getFloorNumber();
 
 		if (floorNumber < 0 || elevatorFloorNumber < 0) {
