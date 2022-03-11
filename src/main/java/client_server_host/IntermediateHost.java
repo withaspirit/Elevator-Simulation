@@ -68,7 +68,7 @@ public class IntermediateHost {
     * @param packet to convert to event
     * @return event of packet
     */
-    public SystemEvent convertPacketToSystemEvent(DatagramPacket packet) {
+    public SystemEvent convertToSystemEvent(DatagramPacket packet) {
         SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());
         return event;
     }
