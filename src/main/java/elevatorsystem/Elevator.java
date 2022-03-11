@@ -407,6 +407,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// Close doors
 				// elevatorDoor.setClose();
 
+				// start moving
 				// Change motor state
 				motor.setMovementState(MovementState.ACTIVE);
 
