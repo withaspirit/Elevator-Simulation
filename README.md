@@ -70,12 +70,15 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 1. Ensure the project is loaded as a Maven project (instructions contained in Editing section)
 2. Locate the test directory in the workspace
 3. Right click on the directory and select "Run As" -> "JUnit Test". This runs all the unit tests
-4. InputReaderTest.java does tests related to reading the json input file
-5. SchedulerTest.java does tests related to passing data between the systems
-6. DirectionTest does tests related to the Direction enum search function
-7. BoundedBufferTest does tests related tothe BoundedBuffer methods for Thread-Safe messaging
-8. ElevatorMotorTest does tests for the proper updating of states in the elevator motor class.
-9. FloorsQueueTest does test for realted to the proper manipulation of the queues.
+
+Tests: 
+- InputReaderTest.java: tests related to reading the JSON input file
+- SchedulerTest.java: tests related to passing data between the systems
+- DirectionTest: tests related to the Direction enum search function
+- BoundedBufferTest: tests related tothe BoundedBuffer methods for Thread-Safe messaging
+- ElevatorMotorTest: tests for the proper updating of states in the elevator motor class.
+- FloorsQueueTest: test for realted to the proper manipulation of the queues.
+- MessageTransferTest: ensures that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets.
 
 </details>
 
@@ -175,6 +178,15 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
   <details>
     <summary>Show Long Description</summary>
     
+    - Doors 
+    - Cardinality of Elevator, ElevatorSubsystem, Scheduler, FloorSubsystem, and Floor
+    - Changes to Scheduler (in terms of message transfer)
+    - Changes to ElevatorSubsystem, Message Transfer (in terms of message transfer)
+    - MessageTransfer
+    - IntermdiateHost, Client, Server,
+    - Changes to Elevator Movement Algorithm
+    - Elevator Selection Algorithm
+         
   </details>
 
   ### Contributions
@@ -185,7 +197,7 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
   | Ramit Mahajan | | |
   | Brady Norton | | | Code review
   | Julian Obando Velez | | | TA contact
-  | Liam Tripp | Elevator Movement updarte, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, Client-Server-Host outline | Design, Work Breakdown Structure, Dependency Diagram | Code review
+  | Liam Tripp | Elevator Movement + FloorsQueue updates, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Server-Host outline, Scheduler-Host Integration | Design, Work Breakdown Structure, Dependency Diagram | Code review
 
   </details>
   
