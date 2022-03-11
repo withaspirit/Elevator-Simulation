@@ -66,32 +66,32 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		int chosenOkElevator = 0;
 		int chosenWorstElevator = 0;
 		for (ElevatorMonitor monitor : elevatorMonitorList) {
-//			sendMessage(new StatusRequest(elevatorRequest,Origin.currentOrigin(), i), elevatorSubsystemBuffer, Origin.currentOrigin());
-//			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.currentOrigin());
-			double tempExpectedTime = monitor.getExpectedTime(elevatorRequest);
+
+			MovementState state = monitor.getState();
 			Direction requestDirection = elevatorRequest.getDirection();
+			double tempExpectedTime = monitor.getQueueTime();
 			int currentFloor = monitor.getCurrentFloor();
 			int desiredFloor = elevatorRequest.getDesiredFloor();
 			int elevatorNumber = monitor.getElevatorNumber();
-			if (monitor.getState() == MovementState.IDLE) {
-				return monitor.getElevatorNumber();
-			
 
-			if (elevator.getMotor().isIdle()) {
+			if (state == MovementState.IDLE) {
+				System.err.println(elevatorNumber + " is idle");
 				return elevatorNumber;
 
-			} else if (monitor.getState() == MovementState.STUCK) {
+			} else if (state == MovementState.STUCK) {
 				System.err.println("Elevator is stuck");
 
-			} else if (monitor.getDirection() == elevatorRequest.getDirection()) {
+			} else if (monitor.getDirection() == requestDirection) {
 				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
-					if (elevatorRequest.getDirection() == Direction.DOWN && monitor.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
+					if (requestDirection == Direction.DOWN && currentFloor > desiredFloor) {
+						//check if request is in path current floor > directed floor going down
 						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = monitor.getElevatorNumber();
+						chosenBestElevator = elevatorNumber;
 
-					} else if (elevatorRequest.getDirection() == Direction.UP && monitor.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
+					} else if (requestDirection == Direction.UP && currentFloor < desiredFloor) {
+						//check if request is in path current floor < directed floor going up
 						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = monitor.getElevatorNumber();
+						chosenBestElevator = elevatorNumber;
 
 					} else if (elevatorOkExpectedTime == 0 || elevatorOkExpectedTime > tempExpectedTime){
 						//if request is in the correct direction but not in path of elevator

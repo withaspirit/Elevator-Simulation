@@ -38,7 +38,6 @@ public class ElevatorMonitor {
      * @param statusUpdate a StatusUpdate request containing new elevator information
      */
     public void updateMonitor(StatusUpdate statusUpdate) {
-        elevatorNumber = statusUpdate.getElevatorNumber();
         queueTime = statusUpdate.getExpectedTime();
         state = statusUpdate.getState();
         currentFloor = statusUpdate.getCurrentFloor();
