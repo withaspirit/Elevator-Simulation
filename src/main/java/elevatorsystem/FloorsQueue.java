@@ -87,8 +87,8 @@ public class FloorsQueue {
 			// elevator can serve requests
 			// case: requestFloor is above elevatorFloor and request direction is Up
 			// OR requestFloor is below elevatorFloor and serviceDirection is DOwn
-			if ((floorNumber > elevatorFloorNumber && serviceDirection == Direction.DOWN) ||
-					(floorNumber < elevatorFloorNumber && serviceDirection == Direction.UP)) {
+			if ((floorNumber < elevatorFloorNumber && serviceDirection == Direction.DOWN) ||
+					(floorNumber > elevatorFloorNumber && serviceDirection == Direction.UP)) {
 				currentDirectionQueue.add(floorNumber);
 				if (request instanceof ElevatorRequest elevatorRequest) {
 					currentDirectionQueue.add(elevatorRequest.getDesiredFloor());

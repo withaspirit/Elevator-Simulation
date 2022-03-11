@@ -4,8 +4,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import requests.ElevatorRequest;
 import systemwide.Direction;
+import systemwide.Origin;
 
+import java.time.LocalTime;
+
+/**
+ * FloorsQueueTest ensures that all the FloorsQueue methods are working properly.
+ * The main methods tested are adding Requests, removing requests, peeking requests,
+ * and swapping the active queue.
+ *
+ * @author Julian, Liam Tripp
+ */
 class FloorsQueueTest {
 
 	FloorsQueue testQueue;
@@ -13,6 +24,134 @@ class FloorsQueueTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		testQueue = new FloorsQueue();
+	}
+
+	// Request: Up
+	// ServiceDirection: Up
+	// Request Location: Above Elevator
+	// should be added to current queue
+	@Test
+	void testUpRequestAboveUpElevator() {
+		Direction requestDirection = Direction.UP;
+		Direction serviceDirection = Direction.UP;
+		int elevatorFloor = 1;
+		int floorNumber = 2;
+
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
+		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		assertFalse(testQueue.isCurrentQueueEmpty());
+	}
+
+	// Request: Down
+	// ServiceDirection: Down
+	// Request Location: Below Elevator
+	// should be added to current queue
+	@Test
+	void testDownRequestBelowDownElevator() {
+		Direction requestDirection = Direction.DOWN;
+		Direction serviceDirection = Direction.DOWN;
+		int elevatorFloor = 4;
+		int floorNumber = 3;
+
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 1, Origin.ELEVATOR_SYSTEM);
+		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		assertFalse(testQueue.isCurrentQueueEmpty());
+	}
+
+	// Request: Down
+	// ServiceDirection: Up
+	// Request Location: Below Elevator
+	// should be added to opposite queue
+	@Test
+	void testDownRequestBelowUpElevator() {
+		Direction requestDirection = Direction.DOWN;
+		Direction serviceDirection = Direction.UP;
+		int elevatorFloor = 4;
+		int floorNumber = 3;
+
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 1, Origin.ELEVATOR_SYSTEM);
+		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		assertFalse(testQueue.isOppositeQueueEmpty());
+	}
+
+	// Request: Up
+	// ServiceDirection: Down
+	// Request Location: Above Elevator
+	// should be added to opposite queue
+	@Test
+	void testUpRequestAboveDownElevator() {
+		Direction requestDirection = Direction.UP;
+		Direction serviceDirection = Direction.DOWN;
+		int elevatorFloor = 2;
+		int floorNumber = 3;
+
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 4, Origin.ELEVATOR_SYSTEM);
+		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		assertFalse(testQueue.isOppositeQueueEmpty());
+	}
+
+	// Request: Down
+	// ServiceDirection: Up
+	// Request Location: Above Elevator
+	// should be added to opposite queue
+	@Test
+	void testDownRequestAboveUpElevator() {
+		Direction requestDirection = Direction.DOWN;
+		Direction serviceDirection = Direction.UP;
+		int elevatorFloor = 1;
+		int floorNumber = 2;
+
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber , requestDirection, 1, Origin.ELEVATOR_SYSTEM);
+		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		assertFalse(testQueue.isOppositeQueueEmpty());
+	}
+
+	// Request: Up
+	// ServiceDirection: Down
+	// Request Location: Below Elevator
+	// should be added to opposite queue
+	@Test
+	void testUpRequestBelowDownElevator() {
+		Direction requestDirection = Direction.UP;
+		Direction serviceDirection = Direction.DOWN;
+		int elevatorFloor = 4;
+		int floorNumber  = 1;
+
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
+		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		assertFalse(testQueue.isOppositeQueueEmpty());
+	}
+
+	// Request: Down
+	// ServiceDirection: Down
+	// Request Location: Above Elevator
+	// should be added to missed queue
+	@Test
+	void testDownRequestAboveDownElevator() {
+		Direction requestDirection = Direction.DOWN;
+		Direction serviceDirection = Direction.DOWN;
+		int elevatorFloor = 1;
+		int floorNumber  = 3;
+
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 1, Origin.ELEVATOR_SYSTEM);
+		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		assertFalse(testQueue.isMissedqueueEmpty());
+	}
+
+	// Request: Up
+	// ServiceDirection: Up
+	// Request Location: Below Elevator
+	// should be added to missed queue
+	@Test
+	void testUpRequestBelowUpElevator() {
+		Direction requestDirection = Direction.UP;
+		Direction serviceDirection = Direction.UP;
+		int elevatorFloor = 2;
+		int floorNumber  = 1;
+
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
+		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		assertFalse(testQueue.isMissedqueueEmpty());
 	}
 
 	@Test
