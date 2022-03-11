@@ -1,6 +1,7 @@
 package client_server_host;
 
 import requests.SystemEvent;
+import systemwide.Origin;
 
 import java.net.DatagramPacket;
 
@@ -18,6 +19,20 @@ public class Client {
      */
     public Client() {
         messageTransfer = new MessageTransfer(Port.CLIENT.getNumber());
+    }
+    
+    /**
+     * Constructor for Client based on origin.
+     */
+    public Client(Origin origin) {
+        
+    	if (origin == Origin.ELEVATOR_SYSTEM) {
+    		messageTransfer = new MessageTransfer(Port.CLIENT.getNumber());
+    	} else if (origin == Origin.FLOOR_SYSTEM) {
+    		messageTransfer = new MessageTransfer(Port.SERVER.getNumber());
+    	} else {
+    		throw new IllegalArgumentException("Error: Invalid Origin");
+    	}
     }
     
     /**
