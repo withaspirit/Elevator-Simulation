@@ -2,6 +2,8 @@ package elevatorsystem;
 
 import java.util.*;
 
+import requests.ElevatorRequest;
+import requests.ServiceRequest;
 import systemwide.Direction;
 
 /**
@@ -16,6 +18,7 @@ public class FloorsQueue {
 	private PriorityQueue<Integer> downwardRequests;
 	private Queue<Integer> missedRequests;
 	private volatile PriorityQueue<Integer> currentDirectionQueue;
+	private volatile PriorityQueue<Integer> oppositeDirectionQueue;
 
 	/**
 	 * Constructor for the class
@@ -25,6 +28,7 @@ public class FloorsQueue {
 		this.downwardRequests = new PriorityQueue<>(Collections.reverseOrder());
 		this.missedRequests = new LinkedList<>();
 		currentDirectionQueue = upwardRequests;
+		oppositeDirectionQueue = downwardRequests;
 	}
 
 	/**
@@ -58,6 +62,47 @@ public class FloorsQueue {
 			}
 		} else {
 			throw new RuntimeException("Direction is invalid");
+		}
+	}
+
+	/**
+	 * Adds a ServiceRequest to the floorsQueue.
+	 *
+	 * @param elevatorFloorNumber the floorNumber of the elevator (nextFloor if moving, currentFloor is stopped)
+	 * @param serviceDirection the direction that the elevator is currently serving
+	 * @param request the ServiceRequest to be added to the FloorsQueue.
+	 */
+	void addFloorOtherMethod(int elevatorFloorNumber, Direction serviceDirection, ServiceRequest request) {
+		int floorNumber = request.getFloorNumber();
+
+		if (floorNumber < 0 || elevatorFloorNumber < 0) {
+			throw new IllegalArgumentException("FloorNumber must be greater than zero.");
+		}
+
+		Direction requestDirection = request.getDirection();
+
+		// request is in same direction as elevator
+		if (serviceDirection == requestDirection) {
+
+			// elevator can serve requests
+			// case: requestFloor is above elevatorFloor and request direction is Up
+			// OR requestFloor is below elevatorFloor and serviceDirection is DOwn
+			if ((floorNumber > elevatorFloorNumber && serviceDirection == Direction.DOWN) ||
+					(floorNumber < elevatorFloorNumber && serviceDirection == Direction.UP)) {
+				currentDirectionQueue.add(floorNumber);
+				if (request instanceof ElevatorRequest elevatorRequest) {
+					currentDirectionQueue.add(elevatorRequest.getDesiredFloor());
+				}
+			} else {
+				// elevator can't serve request this cycle
+				missedRequests.add(floorNumber);
+				if (request instanceof ElevatorRequest elevatorRequest) {
+					missedRequests.add(elevatorRequest.getDesiredFloor());
+				}
+			}
+		} else {
+			// serviceDirection is opposite direction to elevatorDirection
+			oppositeDirectionQueue.add(floorNumber);
 		}
 	}
 
@@ -197,6 +242,15 @@ public class FloorsQueue {
 	 */
 	public boolean isCurrentQueueEmpty() {
 		return currentDirectionQueue.isEmpty();
+	}
+
+	/**
+	 * Determines whether the FloorsQueue is empty in the opposite direction.
+	 *
+	 * @return true if the floorsQueue's active queue is empty, false otherwise
+	 */
+	public boolean isOppositeQueueEmpty() {
+		return oppositeDirectionQueue.isEmpty();
 	}
 
 	/**
