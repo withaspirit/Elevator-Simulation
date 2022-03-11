@@ -137,7 +137,7 @@ public class MessageTransfer {
      * @return a DatagramPacket with 256 unallocated bytes
      */
     public DatagramPacket createEmptyPacket() {
-        byte[] data = new byte[256];
+        byte[] data = new byte[500];
         return new DatagramPacket(data, data.length);
     }
 

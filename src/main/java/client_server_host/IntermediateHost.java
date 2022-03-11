@@ -1,6 +1,7 @@
 package client_server_host;
 
 import requests.SystemEvent;
+import systemwide.Origin;
 
 import java.net.DatagramPacket;
 
@@ -31,6 +32,7 @@ public class IntermediateHost {
     public DatagramPacket receivePacket() {
         DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
         messageTransfer.receiveMessage(receivePacket);
+        messageTransfer.printReceiveMessage(Origin.SCHEDULER.name(), receivePacket);
         return receivePacket;
     }
 
@@ -63,21 +65,12 @@ public class IntermediateHost {
     }
 
     /**
-<<<<<<< HEAD
     * Converts a packet into it's corresponding SystemEvent object
     *
     * @param packet to convert to event
     * @return event of packet
     */
     public SystemEvent convertToSystemEvent(DatagramPacket packet) {
-=======
-     * Converts a packet into it's corresponding SystemEvent object
-     *
-     * @param packet to convert to event
-     * @return event of packet
-     */
-    public SystemEvent convertPacketToSystemEvent(DatagramPacket packet) {
->>>>>>> 4c0ca477594c84a26bcc84c64f86b666fbcaf953
         SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());
         return event;
     }

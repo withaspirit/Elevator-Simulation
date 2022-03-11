@@ -12,22 +12,15 @@ import java.net.DatagramPacket;
  */
 public class Client {
 
+    private final int portNumber;
     private MessageTransfer messageTransfer;
-    private Origin origin;
 
     /**
      * Constructor for Client.
      */
     public Client(int portNumber) {
+        this.portNumber = portNumber;
         messageTransfer = new MessageTransfer(portNumber);
-    }
-    
-    /**
-     * Constructor for Client with origin.
-     */
-    public Client(int portNumber, Origin origin) {
-    	messageTransfer = new MessageTransfer(portNumber);
-    	this.origin = origin;
     }
     
     /**
@@ -50,9 +43,9 @@ public class Client {
         
         //Determine origin
         DatagramPacket newPacket;
-        if (getOrigin() == Origin.ELEVATOR_SYSTEM) {
+        if (portNumber == Port.CLIENT.getNumber()) {
         	newPacket = messageTransfer.createPacket(newByteArray, Port.CLIENT_TO_SERVER.getNumber());
-        } else if (getOrigin() == Origin.FLOOR_SYSTEM) {
+        } else if (portNumber == Port.SERVER.getNumber()) {
         	newPacket = messageTransfer.createPacket(newByteArray, Port.SERVER_TO_CLIENT.getNumber());
         } else {
         	throw new IllegalArgumentException("Error: Invalid Origin");
@@ -71,10 +64,15 @@ public class Client {
     	//Sending object
     	DatagramPacket sendPacket = buildPacket(object);
     	messageTransfer.sendMessage(sendPacket);
-    	
+
     	//Receiving reply
         DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
         messageTransfer.receiveMessage(receivePacket);
+        if (portNumber == Port.CLIENT.getNumber()){
+            messageTransfer.printReceiveMessage(Origin.FLOOR_SYSTEM.name(), receivePacket);
+        } else {
+            messageTransfer.printReceiveMessage(Origin.ELEVATOR_SYSTEM.name(), receivePacket);
+        }
         return receivePacket;
     }
     
@@ -87,14 +85,5 @@ public class Client {
    public SystemEvent convertToSystemEvent(DatagramPacket packet) {
        SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());
        return event;
-   }
-   
-   /**
-   * Returns the Origin of the Client 
-   *
-   * @return origin of the Client
-   */
-   public Origin getOrigin() {
-	   return origin;
    }
 }

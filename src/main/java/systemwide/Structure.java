@@ -1,5 +1,6 @@
 package systemwide;
 
+import client_server_host.Port;
 import elevatorsystem.Elevator;
 import elevatorsystem.ElevatorSubsystem;
 import floorsystem.Floor;
@@ -69,31 +70,34 @@ public class Structure {
 	 * Initializes the Structure's properties.
 	 */
 	public void initializeStructure() {
-		BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
-		BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
+		//BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
+		//BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
-		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
+		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 		ArrayList<Elevator> elevatorList = new ArrayList<>();
 		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
 			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
 			elevatorSubsystem.addElevator(elevator);
 			elevatorList.add(elevator);
 		}
-		FloorSubsystem floorSubsystem = new FloorSubsystem(floorSubsystemBuffer);
+		FloorSubsystem floorSubsystem = new FloorSubsystem();
 		for (int i = 1; i <= numberOfFloors; i++) {
 			Floor floor = new Floor(i, floorSubsystem);
 			floorSubsystem.addFloor(floor);
 		}
 
-		Scheduler scheduler = new Scheduler(elevatorSubsystemBuffer, floorSubsystemBuffer);
+		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
+		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
 
-		Thread schedulerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
+		Thread schedulerClientOrigin, schedulerServerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
 
-		schedulerOrigin = new Thread(scheduler, scheduler.getClass().getSimpleName());
+		schedulerClientOrigin = new Thread(schedulerClient, schedulerClient.getClass().getSimpleName());
+		schedulerServerOrigin = new Thread(schedulerServer, schedulerServer.getClass().getSimpleName());
 		elevatorSubsystemOrigin = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
 		floorSubsystemOrigin = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
 
-		schedulerOrigin.start();
+		schedulerClientOrigin.start();
+		schedulerServerOrigin.start();
 		elevatorSubsystemOrigin.start();
 		floorSubsystemOrigin.start();
 

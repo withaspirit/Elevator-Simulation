@@ -1,5 +1,7 @@
 package floorsystem;
 
+import client_server_host.Client;
+import client_server_host.Port;
 import misc.*;
 import requests.*;
 import systemwide.BoundedBuffer;
@@ -16,6 +18,7 @@ import java.util.Collections;
 public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
 	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
+	private final Client client;
 	private final ArrayList<SystemEvent> requests;
 	private final ArrayList<Floor> floorList;
 	private Origin origin;
@@ -27,6 +30,19 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 */
 	public FloorSubsystem(BoundedBuffer buffer) {
 		this.floorSubsystemBuffer = buffer;
+		client = null;
+		InputFileReader inputFileReader = new InputFileReader();
+		requests = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
+		floorList = new ArrayList<>();
+		origin = Origin.FLOOR_SYSTEM;
+	}
+
+	/**
+	 * Constructor for FloorSubsystem.
+	 */
+	public FloorSubsystem() {
+		this.floorSubsystemBuffer = null;
+		client = new Client(Port.CLIENT.getNumber());
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 		floorList = new ArrayList<>();
@@ -43,21 +59,32 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 		Collections.reverse(requests);
 
 		while (true) {
-			//  add to floorBuffer if possible
-			if (!requests.isEmpty()) {
-				// Sending Data to Scheduler
-				SystemEvent event = requests.remove(requests.size() -1);
+			if (client != null){
+				if (!requests.isEmpty()) {
+					Object object = client.sendAndReceiveReply(requests.remove(requests.size() - 1));
+					if (object instanceof FloorRequest floorRequest) {
 
-				sendMessage(event, floorSubsystemBuffer, origin);
-			}
-      
-			// check if can remove from buffer before trying to remove
-			if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-				SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
-				if (request instanceof FloorRequest floorRequest) {
+					} else if (object instanceof ApproachEvent approachEvent) {
+						processApproachEvent(approachEvent);
+					}
+				}
+			} else {
+				//  add to floorBuffer if possible
+				if (!requests.isEmpty()) {
+					// Sending Data to Scheduler
+					SystemEvent event = requests.remove(requests.size() - 1);
 
-				} else if (request instanceof ApproachEvent approachEvent) {
-							processApproachEvent(approachEvent);
+					sendMessage(event, floorSubsystemBuffer, origin);
+				}
+
+				// check if can remove from buffer before trying to remove
+				if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+					SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
+					if (request instanceof FloorRequest floorRequest) {
+
+					} else if (request instanceof ApproachEvent approachEvent) {
+						processApproachEvent(approachEvent);
+					}
 				}
 			}
 		}
