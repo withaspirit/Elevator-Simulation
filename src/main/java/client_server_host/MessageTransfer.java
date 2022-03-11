@@ -3,6 +3,8 @@ package client_server_host;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * MessageTransfer provides methods for other classes to send, receive, and
@@ -13,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class MessageTransfer {
 
     private DatagramSocket socket;
+    private Queue<DatagramPacket> messageQueue;
 
     /**
      * Constructor for MessageTransfer.
@@ -22,9 +25,37 @@ public class MessageTransfer {
     public MessageTransfer(int portNumber) {
         try {
             socket = new DatagramSocket(portNumber);
+            messageQueue = new LinkedList<>();
         } catch (SocketException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Adds a DatagramPacket to the queue of packets to be processed.
+     *
+     * @param packet the packet to be added to the queue
+     */
+    public void addPacketToQueue(DatagramPacket packet) {
+        messageQueue.add(packet);
+    }
+
+    /**
+     * Removes and returns a DatagramPacket from the queue of packets to be processed.
+     *
+     * @return a packet from the queue
+     */
+    public DatagramPacket getPacketFromQueue() {
+        return messageQueue.remove();
+    }
+
+    /**
+     * Determines whether the queue of DatagramPackets is empty.
+     *
+     * @return true if the queue is empty, false otherwise
+     */
+    public boolean queueIsEmpty() {
+        return messageQueue.isEmpty();
     }
 
     /**
@@ -99,6 +130,17 @@ public class MessageTransfer {
         System.out.println();
     }
 
+    /**
+     * Creates an DatagramPacket at the local address and port that can hold
+     * up to 256 unallocated bytes.
+     *
+     * @return a DatagramPacket with 256 unallocated bytes
+     */
+    public DatagramPacket createEmptyPacket() {
+        byte[] data = new byte[256];
+        return new DatagramPacket(data, data.length);
+    }
+
     // FIXME: this could be easily be removed
     public DatagramPacket createPacket(byte[] msg, int portNumber) {
         DatagramPacket packet = null;
@@ -111,11 +153,16 @@ public class MessageTransfer {
         return packet;
     }
 
+    public DatagramPacket createPacket(byte[] msg, InetAddress inetAddress, int portNumber) {
+        DatagramPacket newPacket = new DatagramPacket(msg, msg.length, inetAddress, portNumber);
+        return newPacket;
+    }
+
     /**
-     * Encodes the object into an Byte Array, which can be used to prepare
+     * Encodes the object into a Byte Array, which can be used to prepare
      * requests to be sent through UDP packets. 
      *
-     * @param object   the object to encode
+     * @param object the object to encode
      * @return objectBytes the object coded into a byte array.
      */
     public byte[] encodeObject(Object object) {
@@ -143,7 +190,7 @@ public class MessageTransfer {
      * Decodes the Byte Array to its object instance, which can be used to read
      * requests received from UDP packets. 
      *
-     * @param objectBytes   the byte array of the object
+     * @param objectBytes the byte array of the object
      * @return object the object instance decoded.
      */
     public Object decodeObject(byte[] objectBytes) {
@@ -164,8 +211,6 @@ public class MessageTransfer {
                 // ignore close exception
             }
         }
-
         return object;
     }
-
 }
