@@ -28,10 +28,6 @@ public class Client {
 		}
     }
     
-    public void sendPacket(DatagramPacket sendPacket) {
-    	messageTransfer.sendMessage(sendPacket);
-    }
-    
     public DatagramPacket buildPacket(Object object) {
     	byte[] newByteArray;
     	
@@ -45,17 +41,15 @@ public class Client {
         DatagramPacket newPacket = messageTransfer.createPacket(newByteArray, Port.CLIENT_TO_SERVER.getNumber());
         return newPacket;
     }
-    
-    /**
-     * Receives and returns a DatagramPacket from the IntermediateHost's MessageTransfer.
-     *
-     * @return packet received from the IntermediateHost's MessageTransfer
-     */
-    public DatagramPacket receivePacket() {
+ 
+    public DatagramPacket sendAndReceiveReply(Object object) {
+    	//Sending object
+    	DatagramPacket sendPacket = buildPacket(object);
+    	messageTransfer.sendMessage(sendPacket);
+    	
+    	//Receiving reply
         DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
         messageTransfer.receiveMessage(receivePacket);
         return receivePacket;
     }
-    
-
 }
