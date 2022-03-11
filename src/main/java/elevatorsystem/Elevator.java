@@ -423,27 +423,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			}
 			// Next floor == destination
 			else{
-				if(serviceRequest instanceof ElevatorRequest elevatorRequest){
-					// Next floor is the floor where the request came from
-					if(currentFloor == elevatorRequest.getFloorNumber()){
-						// Stop at floor
-						motor.stop();
-					}
-					// Next floor is the desired floor for the request (unload passenger)
-					else if(currentFloor == elevatorRequest.getDesiredFloor()){
-						// Stop at floor
-						motor.setMovementState(MovementState.IDLE);
-
-						// Open doors
-						// elevatorDoors.setOpen();
-
-						// No requests in the queue for the current Direction
-						if(requests.isEmpty()){
-							// No direction currently
-							motor.setDirection(Direction.NONE);
-						}
-					}
-				}
+				motor.stop();
 			}
 		}
 	}
