@@ -139,7 +139,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		requests.add(serviceRequest);
-		floorsQueue.addRequest(currentFloor, serviceDirection, serviceRequest);
+		int elevatorFloorToPass = currentFloor;
+		floorsQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
 	}
 
 	/**
