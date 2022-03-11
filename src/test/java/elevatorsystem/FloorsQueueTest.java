@@ -56,7 +56,7 @@ class FloorsQueueTest {
 	// Request Location: Above Elevator
 	// should be added to current queue
 	@Test
-	void testUpRequestAboveUpElevator() {
+	void testAddUpRequestAboveUpElevator() {
 		Direction requestDirection = Direction.UP;
 		Direction serviceDirection = Direction.UP;
 		int elevatorFloor = 1;
@@ -72,7 +72,7 @@ class FloorsQueueTest {
 	// Request Location: Below Elevator
 	// should be added to current queue
 	@Test
-	void testDownRequestBelowDownElevator() {
+	void testAddDownRequestBelowDownElevator() {
 		Direction requestDirection = Direction.DOWN;
 		Direction serviceDirection = Direction.DOWN;
 		int elevatorFloor = 4;
@@ -88,7 +88,7 @@ class FloorsQueueTest {
 	// Request Location: Below Elevator
 	// should be added to opposite queue
 	@Test
-	void testDownRequestBelowUpElevator() {
+	void testAddDownRequestBelowUpElevator() {
 		Direction requestDirection = Direction.DOWN;
 		Direction serviceDirection = Direction.UP;
 		int elevatorFloor = 4;
@@ -104,7 +104,7 @@ class FloorsQueueTest {
 	// Request Location: Above Elevator
 	// should be added to opposite queue
 	@Test
-	void testUpRequestAboveDownElevator() {
+	void testAddUpRequestAboveDownElevator() {
 		Direction requestDirection = Direction.UP;
 		Direction serviceDirection = Direction.DOWN;
 		int elevatorFloor = 2;
@@ -120,7 +120,7 @@ class FloorsQueueTest {
 	// Request Location: Above Elevator
 	// should be added to opposite queue
 	@Test
-	void testDownRequestAboveUpElevator() {
+	void testAddDownRequestAboveUpElevator() {
 		Direction requestDirection = Direction.DOWN;
 		Direction serviceDirection = Direction.UP;
 		int elevatorFloor = 1;
@@ -136,7 +136,7 @@ class FloorsQueueTest {
 	// Request Location: Below Elevator
 	// should be added to opposite queue
 	@Test
-	void testUpRequestBelowDownElevator() {
+	void testAddUpRequestBelowDownElevator() {
 		Direction requestDirection = Direction.UP;
 		Direction serviceDirection = Direction.DOWN;
 		int elevatorFloor = 4;
@@ -152,7 +152,7 @@ class FloorsQueueTest {
 	// Request Location: Above Elevator
 	// should be added to missed queue
 	@Test
-	void testDownRequestAboveDownElevator() {
+	void testAddDownRequestAboveDownElevator() {
 		Direction requestDirection = Direction.DOWN;
 		Direction serviceDirection = Direction.DOWN;
 		int elevatorFloor = 1;
@@ -168,7 +168,7 @@ class FloorsQueueTest {
 	// Request Location: Below Elevator
 	// should be added to missed queue
 	@Test
-	void testUpRequestBelowUpElevator() {
+	void testAddUpRequestBelowUpElevator() {
 		Direction requestDirection = Direction.UP;
 		Direction serviceDirection = Direction.UP;
 		int elevatorFloor = 2;
@@ -181,7 +181,7 @@ class FloorsQueueTest {
 
 	@Test
 	void testSwapQueueWithCurrentQueueNotEmpty() {
-		testDownRequestBelowDownElevator();
+		testAddDownRequestBelowDownElevator();
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertTrue(testQueue.isOppositeQueueEmpty());
@@ -191,7 +191,7 @@ class FloorsQueueTest {
 	@Test
 	void testSwapQueueWithOppositeQueueNotEmpty() {
 		// currentQueue empty, opposite queue has items
-		testUpRequestBelowDownElevator();
+		testAddUpRequestBelowDownElevator();
 
 		assertFalse(testQueue.isOppositeQueueEmpty());
 		assertTrue(testQueue.swapQueues());
@@ -203,7 +203,7 @@ class FloorsQueueTest {
 	void testSwapQueueWithMissedQueueNotEmptyAndOppositeQueueEmpty() {
 		// current queue empty, missed has items
 		// don't swap queues ebcause
-		testDownRequestAboveDownElevator();
+		testAddDownRequestAboveDownElevator();
 
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
@@ -215,8 +215,8 @@ class FloorsQueueTest {
 	void testSwapQueueWithMissedQueueNotEmptyAndOppositeQueueNotEmpty() {
 		// current queue empty, missed has items
 		// don't swap queues ebcause
-		testUpRequestBelowUpElevator();
-		testDownRequestAboveUpElevator();
+		testAddUpRequestBelowUpElevator();
+		testAddDownRequestAboveUpElevator();
 
 		assertTrue(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
@@ -227,7 +227,7 @@ class FloorsQueueTest {
 	@Test
 	void testRemoveRequestsFromMissedQueueWhileElevatorUp() {
 		// missed queue, up
-		testDownRequestAboveDownElevator();
+		testAddDownRequestAboveDownElevator();
 		testQueue.swapQueues(Direction.UP);
 		assertTrue(testQueue.isMissedqueueEmpty());
 
