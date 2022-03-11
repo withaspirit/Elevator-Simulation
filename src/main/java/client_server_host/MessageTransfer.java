@@ -32,6 +32,15 @@ public class MessageTransfer {
     }
 
     /**
+     * Returns the port number associated with the MessageTransfer's DatagramSocket.
+     *
+     * @return the port number of a DatagramSocket
+     */
+    public int getPortNumber() {
+        return socket.getLocalPort();
+    }
+
+    /**
      * Adds a DatagramPacket to the queue of packets to be processed.
      *
      * @param packet the packet to be added to the queue
@@ -137,7 +146,8 @@ public class MessageTransfer {
      * @return a DatagramPacket with 256 unallocated bytes
      */
     public DatagramPacket createEmptyPacket() {
-        byte[] data = new byte[256];
+        // NOTE: byteSize must be big enough to accommodate received message
+        byte[] data = new byte[100000];
         return new DatagramPacket(data, data.length);
     }
 
