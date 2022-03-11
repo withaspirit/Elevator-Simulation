@@ -87,9 +87,11 @@ public class MessageTransfer {
      * Receives a message from a socket and transfers it to the socket associated
      * with the packet's specified port.
      *
-     * @param packet the DatagramPacket containing data received from the DatagramSocket
+     * @return the DatagramPacket containing data received from the DatagramSocket
      */
-    public void receiveMessage(DatagramPacket packet) {
+    public DatagramPacket receiveMessage() {
+        byte[] data = new byte[1400];
+        DatagramPacket packet = new DatagramPacket(data, data.length);
         // Block until a DatagramPacket is received from a socket
         try {
             socket.receive(packet);
@@ -99,6 +101,7 @@ public class MessageTransfer {
             e.printStackTrace();
             System.exit(1);
         }
+        return packet;
     }
 
     /**
@@ -137,18 +140,6 @@ public class MessageTransfer {
         String received = new String(packet.getData(), 0, len, StandardCharsets.UTF_8);
         System.out.println(received);
         System.out.println();
-    }
-
-    /**
-     * Creates an DatagramPacket at the local address and port that can hold
-     * up to 256 unallocated bytes.
-     *
-     * @return a DatagramPacket with 256 unallocated bytes
-     */
-    public DatagramPacket createEmptyPacket() {
-        // NOTE: byteSize must be big enough to accommodate received message
-        byte[] data = new byte[100000];
-        return new DatagramPacket(data, data.length);
     }
 
     // FIXME: this could be easily be removed

@@ -29,9 +29,7 @@ public class IntermediateHost {
      * @return packet received from the IntermediateHost's MessageTransfer
      */
     public DatagramPacket receivePacket() {
-        DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
-        messageTransfer.receiveMessage(receivePacket);
-        return receivePacket;
+        return messageTransfer.receiveMessage();
     }
 
     /**

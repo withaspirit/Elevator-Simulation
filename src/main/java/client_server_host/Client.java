@@ -68,8 +68,7 @@ public class Client {
     	messageTransfer.sendMessage(sendPacket);
     	
     	//Receiving reply
-        DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
-        messageTransfer.receiveMessage(receivePacket);
+        DatagramPacket receivePacket = messageTransfer.receiveMessage();
         return receivePacket;
     }
     
