@@ -86,6 +86,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void run() {
 		while (true) {
 			if (!requests.isEmpty()) {
+				System.out.println();
 				System.out.println("Elevator #" + elevatorNumber + "'s remaining requests: " + requests);
 				processRequest(getNextRequest());
 			}
