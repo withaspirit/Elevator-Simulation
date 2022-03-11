@@ -12,8 +12,7 @@ import java.time.LocalTime;
 
 /**
  * FloorsQueueTest ensures that all the FloorsQueue methods are working properly.
- * The main methods tested are adding Requests, removing requests, peeking requests,
- * and swapping the active queue.
+ * The main methods tested are adding Requests and swapping the active queue.
  *
  * @author Julian, Liam Tripp
  */
@@ -22,7 +21,7 @@ class FloorsQueueTest {
 	FloorsQueue testQueue;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUp() {
 		testQueue = new FloorsQueue();
 	}
 
