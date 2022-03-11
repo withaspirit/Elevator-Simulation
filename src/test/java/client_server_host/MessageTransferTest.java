@@ -115,7 +115,6 @@ public class MessageTransferTest {
 		messageTransfer2.sendMessage(packetToSend);
 
 		// receive message
-		// packet must be at least 419 bytes
 		DatagramPacket receivePacket = msgTransfer.createEmptyPacket();
 		msgTransfer.receiveMessage(receivePacket);
 		Object object = msgTransfer.decodeObject(receivePacket.getData());

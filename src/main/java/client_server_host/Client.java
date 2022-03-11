@@ -8,7 +8,7 @@ import java.net.DatagramPacket;
 /**
  * Client sends and receives messages from an IntermediateHost.
  *
- * @author Liam Tripp
+ * @author Liam Tripp, Julian
  */
 public class Client {
 
@@ -47,6 +47,7 @@ public class Client {
         if (object instanceof SystemEvent) {
         	newByteArray = messageTransfer.encodeObject(object);
         } else if (object instanceof String) {
+            // NOTE: this code might be unnecessary
         	newByteArray = ((String)object).getBytes();
         } else {
         	throw new IllegalArgumentException("Error: Invalid Object");
