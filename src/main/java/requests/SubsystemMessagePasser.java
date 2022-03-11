@@ -19,7 +19,7 @@ public interface SubsystemMessagePasser {
 	 */
 	default boolean sendMessage(SystemEvent event, BoundedBuffer buffer, Origin origin) {
 		if (!(event instanceof ApproachEvent && origin == Origin.SCHEDULER)) {
-			System.out.println(origin + " sending: " + event.getClass().getCanonicalName() + " " + event);
+			System.out.println(origin + " sending: " + event.getClass().getSimpleName() + " " + event);
 		}
 		buffer.addLast(event, origin);
 		return true;
@@ -35,7 +35,7 @@ public interface SubsystemMessagePasser {
 	default SystemEvent receiveMessage(BoundedBuffer buffer, Origin origin) {
 		SystemEvent event = buffer.removeFirst(origin);
 		if (!(event instanceof ApproachEvent && origin == Origin.SCHEDULER)) {
-			System.out.println(origin + " received: "  + event.getClass().getCanonicalName() + " " + event);
+			System.out.println(origin + " received: "  + event.getClass().getSimpleName() + " " + event);
 		}
 		return event;
 	}
