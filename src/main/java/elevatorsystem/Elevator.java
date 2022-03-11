@@ -60,7 +60,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	// Variable to track if a passenger has been picked up
 
-
 	/**
 	 * Constructor for Elevator class
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
@@ -76,6 +75,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		direction = Direction.UP;
 		serviceDirection = Direction.UP;
 		motor = new ElevatorMotor();
+		doors = new Doors();
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
 		request = null;
@@ -410,16 +410,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// Close doors
 				// elevatorDoor.setClose();
 
+				// start moving
 				// Change motor state
 				motor.setMovementState(MovementState.ACTIVE);
 
 				// Set motor Direction
-				if(currentFloor > reqFloor){
-					motor.setDirection(Direction.DOWN);
-				}
-				else{
-					motor.setDirection(Direction.UP);
-				}
+				motor.changeDirection(currentFloor, reqFloor);
 			}
 		}
 		// ACTIVE
@@ -427,38 +423,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Next floor != destination
 			if(currentFloor != reqFloor){
 				// If motor is moving in the wrong direction
-				if(currentFloor > reqFloor){
-					motor.setDirection(Direction.DOWN);
-				}
-				else{
-					motor.setDirection(Direction.UP);
-				}
+				motor.changeDirection(currentFloor, reqFloor);
 			}
 			// Next floor == destination
 			else{
-				if(serviceRequest instanceof ElevatorRequest elevatorRequest){
-					// Next floor is the floor where the request came from
-					if(currentFloor == elevatorRequest.getFloorNumber()){
-						// Stop at floor
-						motor.setMovementState(MovementState.IDLE);
-						// Set motor in the Direction given in elevatorRequest (load passenger)
-						motor.setDirection(elevatorRequest.getDirection());
-					}
-					// Next floor is the desired floor for the request (unload passenger)
-					else if(currentFloor == elevatorRequest.getDesiredFloor()){
-						// Stop at floor
-						motor.setMovementState(MovementState.IDLE);
-
-						// Open doors
-						// elevatorDoors.setOpen();
-
-						// No requests in the queue for the current Direction
-						if(requests.isEmpty()){
-							// No direction currently
-							motor.setDirection(Direction.NONE);
-						}
-					}
-				}
+				motor.stop();
 			}
 		}
 	}
