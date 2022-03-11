@@ -26,6 +26,31 @@ class FloorsQueueTest {
 		testQueue = new FloorsQueue();
 	}
 
+	@Test
+	void testAddRequestSameFloorSameDirection() {
+		Direction requestDirection = Direction.UP;
+		Direction serviceDirection = Direction.UP;
+		int elevatorFloor = 1;
+		int floorNumber = 1;
+
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
+		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		assertFalse(testQueue.isCurrentQueueEmpty());
+	}
+
+	@Test
+	void testAddRequestSameFloorOppositeDirection() {
+		Direction requestDirection = Direction.UP;
+		Direction serviceDirection = Direction.DOWN;
+		int elevatorFloor = 1;
+		int floorNumber = 1;
+
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
+		testQueue.addFloorOtherMethod(elevatorFloor, serviceDirection, elevatorRequest);
+		assertFalse(testQueue.isOppositeQueueEmpty());
+	}
+
+
 	// Request: Up
 	// ServiceDirection: Up
 	// Request Location: Above Elevator

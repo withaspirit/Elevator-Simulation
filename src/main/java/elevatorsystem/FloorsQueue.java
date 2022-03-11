@@ -72,7 +72,7 @@ public class FloorsQueue {
 	 * @param serviceDirection the direction that the elevator is currently serving
 	 * @param request the ServiceRequest to be added to the FloorsQueue.
 	 */
-	void addFloorOtherMethod(int elevatorFloorNumber, Direction serviceDirection, ServiceRequest request) {
+	public void addFloorOtherMethod(int elevatorFloorNumber, Direction serviceDirection, ServiceRequest request) {
 		int floorNumber = request.getFloorNumber();
 
 		if (floorNumber < 0 || elevatorFloorNumber < 0) {
@@ -82,7 +82,8 @@ public class FloorsQueue {
 		Direction requestDirection = request.getDirection();
 
 		// if the elevator's floor number == request floor number
-		if (elevatorFloorNumber == floorNumber ) {
+		if (elevatorFloorNumber == floorNumber) {
+			// if serviceDirection is the same as the request direction,
 			if (serviceDirection == requestDirection) {
 				currentDirectionQueue.add(floorNumber);
 				if (request instanceof ElevatorRequest elevatorRequest) {
@@ -95,7 +96,6 @@ public class FloorsQueue {
 				}
 			}
 		} else {
-			// elevatorFloo
 			// request is in same direction as elevator
 			if (serviceDirection == requestDirection) {
 
