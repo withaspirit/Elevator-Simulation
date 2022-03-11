@@ -32,7 +32,7 @@ public class ElevatorSelectionTest {
         elevators = new ArrayList<>();
         elevators.add(elevator1);
         elevators.add(elevator2);
-        scheduler = new Scheduler(new BoundedBuffer(), elevatorSubsystemBuffer, elevators);
+        scheduler = new Scheduler(new BoundedBuffer(), elevatorSubsystemBuffer, elevators.size());
     }
 
     @Test

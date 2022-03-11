@@ -396,15 +396,4 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public StatusUpdate makeStatusUpdate() {
 		return new StatusUpdate(queueTime, motor.getMovementState(), currentFloor, motor.getDirection(), elevatorNumber);
 	}
-
-	/**
-	 * Updates the instance of elevator's that is stored in the Scheduler with new information.
-	 *
-	 * @param statusUpdate A status update for an elevator
-	 */
-	public void updateStatus(StatusUpdate statusUpdate) {
-		queueTime = statusUpdate.getExpectedTime();
-		motor.setMovementState(statusUpdate.getState());
-		currentFloor = statusUpdate.getCurrentFloor();
-	}
 }

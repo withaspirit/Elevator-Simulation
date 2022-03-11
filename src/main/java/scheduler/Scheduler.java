@@ -1,6 +1,7 @@
 package scheduler;
 
 import elevatorsystem.Elevator;
+import elevatorsystem.MovementState;
 import requests.*;
 import systemwide.BoundedBuffer;
 import systemwide.Direction;
@@ -19,7 +20,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
-	private final ArrayList<Elevator> elevatorList;
+	private final ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private Origin origin;
 	private Queue<SystemEvent> requestQueue;
 	// private ArrayList<Elevator> elevators;
@@ -31,12 +32,16 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
      * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
 	 */
-	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer, ArrayList<Elevator> elevatorList) {
+	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer, int numberOfElevators) {
 		// create floors and elevators here? or in a SchedulerModel
 		// add subsystems to elevators, pass # floors
 		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
 		this.floorSubsystemBuffer = floorSubsystemBuffer;
-		this.elevatorList = elevatorList;
+		elevatorMonitorList = new ArrayList<>();
+		for (int i = 1; i <= numberOfElevators; i++) {
+			ElevatorMonitor monitor = new ElevatorMonitor(i);
+			elevatorMonitorList.add(monitor);
+		}
 		requestQueue = new LinkedList<>();
 		origin = Origin.SCHEDULER;
 	}
@@ -54,34 +59,34 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		double elevatorWorstExpectedTime = 0.0;
 		int chosenBestElevator = 0;
 		int chosenWorstElevator = 0;
-		for (Elevator elevator : elevatorList) {
+		for (ElevatorMonitor monitor : elevatorMonitorList) {
 //			sendMessage(new StatusRequest(elevatorRequest,Origin.currentOrigin(), i), elevatorSubsystemBuffer, Origin.currentOrigin());
 //			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.currentOrigin());
-			double tempExpectedTime = elevator.getExpectedTime(elevatorRequest);
-			if (elevator.getMotor().isIdle()) {
-				return elevator.getElevatorNumber();
+			double tempExpectedTime = monitor.getQueueTime();
+			if (monitor.getState() == MovementState.IDLE) {
+				return monitor.getElevatorNumber();
 
-			} else if (!elevator.getMotor().isActive()) {
+			} else if (monitor.getState() == MovementState.STUCK) {
 				System.err.println("Elevator is stuck");
 
-			} else if (elevator.getDirection() == elevatorRequest.getDirection()) {
+			} else if (monitor.getDirection() == elevatorRequest.getDirection()) {
 				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
-					if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
+					if (elevatorRequest.getDirection() == Direction.DOWN && monitor.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
 						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
+						chosenBestElevator = monitor.getElevatorNumber();
 
-					} else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
+					} else if (elevatorRequest.getDirection() == Direction.UP && monitor.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
 						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
+						chosenBestElevator = monitor.getElevatorNumber();
 
 					} else {
-						// Add to the third queue of the elevator
+						// Add to the third queue of the monitor
 					}
 				}
 			} else {
 				if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime) {
 					elevatorWorstExpectedTime = tempExpectedTime;
-					chosenWorstElevator = elevator.getElevatorNumber();
+					chosenWorstElevator = monitor.getElevatorNumber();
 				}
 			}
 		}
@@ -124,7 +129,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 					}
 				} else if (request.getOrigin() == Origin.ELEVATOR_SYSTEM) {
 					if (request instanceof StatusUpdate statusUpdate) {
-						//elevatorList.get(statusUpdate.getElevatorNumber()-1).updateStatus(statusUpdate);
+						elevatorMonitorList.get(statusUpdate.getElevatorNumber()-1).updateMonitor(statusUpdate);
 						sendMessage(statusUpdate, floorSubsystemBuffer, origin);
 					} else if (request instanceof FloorRequest floorRequest){
 						sendMessage(floorRequest, floorSubsystemBuffer, origin);

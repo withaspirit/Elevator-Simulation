@@ -46,7 +46,7 @@ class SchedulerTest {
         elevators = new ArrayList<>();
         elevator = new Elevator(1, elevatorSubsystem);
         elevators.add(elevator);
-        scheduler = new Scheduler(elevatorBuffer, floorBuffer, elevators);
+        scheduler = new Scheduler(elevatorBuffer, floorBuffer, elevators.size());
         floorSubsystem = new FloorSubsystem(floorBuffer);
     }
 
