@@ -16,6 +16,7 @@ public class MessageTransfer {
 
     private DatagramSocket socket;
     private Queue<DatagramPacket> messageQueue;
+    public final static int MAX_BYTE_ARRAY_SIZE = 1400;
 
     /**
      * Constructor for MessageTransfer.
@@ -90,7 +91,7 @@ public class MessageTransfer {
      * @return the DatagramPacket containing data received from the DatagramSocket
      */
     public DatagramPacket receiveMessage() {
-        byte[] data = new byte[1400];
+        byte[] data = new byte[MAX_BYTE_ARRAY_SIZE];
         DatagramPacket packet = new DatagramPacket(data, data.length);
         // Block until a DatagramPacket is received from a socket
         try {

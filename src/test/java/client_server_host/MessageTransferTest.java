@@ -94,15 +94,17 @@ public class MessageTransferTest {
 	}
 
 	@Test
-	void testMaxByteSizeOfMessageNotExceeded() {
+	void testMaxByteArraySizeOfMessageNotExceeded() {
+		int maxByteArraySize = MessageTransfer.MAX_BYTE_ARRAY_SIZE;
+
 		byte[] byteArray = msgTransfer.encodeObject(approachEvent);
-		assertTrue(byteArray.length < 1400);
+		assertTrue(byteArray.length < maxByteArraySize);
 
 		byteArray = msgTransfer.encodeObject(elevatorRequest);
-		assertTrue(byteArray.length < 1400);
+		assertTrue(byteArray.length < maxByteArraySize);
 
 		byteArray = msgTransfer.encodeObject(floorRequest);
-		assertTrue(byteArray.length < 1400);
+		assertTrue(byteArray.length < maxByteArraySize);
 	}
 
 	@Test
