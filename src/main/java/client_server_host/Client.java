@@ -52,4 +52,14 @@ public class Client {
         messageTransfer.receiveMessage(receivePacket);
         return receivePacket;
     }
+    
+    /**
+    *
+    * @param packet
+    * @return
+    */
+   public SystemEvent convertPacketToSystemEvent(DatagramPacket packet) {
+       SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());
+       return event;
+   }
 }
