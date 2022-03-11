@@ -155,10 +155,12 @@ class FloorsQueueTest {
 	}
 
 	@Test
-	void testSwapQueueWithCurrentQueueHavingItems() {
+	void testSwapQueueWithCurrentQueueNotEmpty() {
 		testDownRequestBelowDownElevator();
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
+		assertTrue(testQueue.isOppositeQueueEmpty());
+		assertTrue(testQueue.isMissedqueueEmpty());
 	}
 
 	@Test
