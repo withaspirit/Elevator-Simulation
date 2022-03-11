@@ -30,7 +30,7 @@ public enum RequestMessage {
      *
      * @return msg the message of the request
      */
-    public String getMsg() {
+    public String getMessage() {
         return msg;
     }
 }
