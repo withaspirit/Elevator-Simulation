@@ -155,6 +155,64 @@ class FloorsQueueTest {
 	}
 
 	@Test
+	void testSwapQueueWithCurrentQueueHavingItems() {
+		testDownRequestBelowDownElevator();
+		assertFalse(testQueue.swapQueues());
+		assertFalse(testQueue.isCurrentQueueEmpty());
+	}
+
+	@Test
+	void testSwapQueueWithOppositeQueueNotEmpty() {
+		// currentQueue empty, opposite queue has items
+		testUpRequestBelowDownElevator();
+
+		assertFalse(testQueue.isOppositeQueueEmpty());
+		assertTrue(testQueue.swapQueues());
+		assertFalse(testQueue.isCurrentQueueEmpty());
+		assertTrue(testQueue.isOppositeQueueEmpty());
+	}
+
+	@Test
+	void testSwapQueueWithMissedQueueNotEmptyAndOppositeQueueEmpty() {
+		// current queue empty, missed has items
+		// don't swap queues ebcause
+		testDownRequestAboveDownElevator();
+
+		assertFalse(testQueue.swapQueues());
+		assertFalse(testQueue.isCurrentQueueEmpty());
+		assertTrue(testQueue.isOppositeQueueEmpty());
+		assertTrue(testQueue.isMissedqueueEmpty());
+	}
+
+	@Test
+	void testSwapQueueWithMissedQueueNotEmptyAndOppositeQueueNotEmpty() {
+		// current queue empty, missed has items
+		// don't swap queues ebcause
+		testUpRequestBelowUpElevator();
+		testDownRequestAboveUpElevator();
+
+		assertTrue(testQueue.swapQueues());
+		assertFalse(testQueue.isCurrentQueueEmpty());
+		assertFalse(testQueue.isOppositeQueueEmpty());
+		assertTrue(testQueue.isMissedqueueEmpty());
+	}
+
+	@Test
+	void testRemoveRequestsFromMissedQueueWhileElevatorUp() {
+		// missed queue, up
+		testDownRequestAboveDownElevator();
+		testQueue.swapQueues(Direction.UP);
+		assertTrue(testQueue.isMissedqueueEmpty());
+
+		int floor1 = testQueue.removeRequest();
+		int floor2 = testQueue.removeRequest();
+		// test proper ordering
+		assertTrue(floor1 < floor2);
+		assertTrue(testQueue.isMissedqueueEmpty());
+		assertTrue(testQueue.isCurrentQueueEmpty());
+	}
+
+	@Test
 	void testAddFloor() {
 
 		assertTrue(testQueue.isMissedqueueEmpty());
