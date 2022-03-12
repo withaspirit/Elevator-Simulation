@@ -4,6 +4,7 @@ import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import requests.*;
+import scheduler.ElevatorMonitor;
 import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
@@ -22,6 +23,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
 	private final ArrayList<Elevator> elevatorList;
+	private final ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private Client server;
 	private final Queue<SystemEvent> requestQueue;
 	private Origin origin;
@@ -34,6 +36,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	public ElevatorSubsystem(BoundedBuffer buffer) {
 		this.elevatorSubsystemBuffer = buffer;
 		elevatorList = new ArrayList<>();
+		elevatorMonitorList = new ArrayList<>();
 		requestQueue = new LinkedList<>();
 		origin = Origin.ELEVATOR_SYSTEM;
 	}
@@ -45,62 +48,8 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		elevatorSubsystemBuffer = null;
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
+		elevatorMonitorList = new ArrayList<>();
 		requestQueue = new LinkedList<>();
-	}
-
-	/**
-	 * Simple message requesting and sending between subsystems.
-	 * ElevatorSubsystem
-	 * Sends: ApproachEvent
-	 * Receives: ApproachEvent, ElevatorRequest
-	 */
-	public void run() {
-		while (true) {
-			if (server != null) {
-				Object object;
-				if (!requestQueue.isEmpty()) {
-					object = server.sendAndReceiveReply(requestQueue.remove());
-				} else {
-					object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
-				}
-
-				if (object instanceof ElevatorRequest elevatorRequest) {
-					int chosenElevator = chooseElevator(elevatorRequest);
-					// Choose elevator
-					// Move elevator
-					elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-					requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
-				} else if (object instanceof ApproachEvent approachEvent) {
-					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-				} else if (object instanceof String string) {
-					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
-						try {
-							Thread.sleep(5);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			} else {
-				if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-					SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
-					if (request instanceof ElevatorRequest elevatorRequest) {
-						int chosenElevator = chooseElevator(elevatorRequest);
-						// Choose elevator
-						// Move elevator
-						elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-						requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
-					} else if (request instanceof ApproachEvent approachEvent) {
-						elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-					}
-				}
-				// send message if possible
-				if (!requestQueue.isEmpty()) {
-					SystemEvent request = requestQueue.remove();
-					sendMessage(request, elevatorSubsystemBuffer, origin);
-				}
-			}
-		}
 	}
 
 	/**
@@ -110,6 +59,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	public void addElevator(Elevator elevator) {
 		elevatorList.add(elevator);
+		elevatorMonitorList.add(new ElevatorMonitor(elevator.getElevatorNumber()));
 	}
 
 	/**
@@ -131,49 +81,131 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 * @return a number corresponding to an elevator
 	 */
 	public int chooseElevator(ElevatorRequest elevatorRequest) {
-		double elevatorBestExpectedTime = 0.0;
-		double elevatorWorstExpectedTime = 0.0;
-		int chosenBestElevator = 0;
-		int chosenWorstElevator = 0;
-		for (Elevator elevator : elevatorList) {
-//			sendMessage(new StatusRequest(elevatorRequest,Origin.currentOrigin(), i), elevatorSubsystemBuffer, Origin.currentOrigin());
-//			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.currentOrigin());
-			double tempExpectedTime = elevator.getExpectedTime(elevatorRequest);
-			if (elevator.getMotor().isIdle()) {
-				return elevator.getElevatorNumber();
 
-			} else if (!elevator.getMotor().isActive()) {
+		double elevatorBestExpectedTime = 0.0;
+		// Best elevator is an elevator traveling in path that collides with request floor
+		double elevatorOkExpectedTime = 0.0;
+		// Ok elevator is an elevator that is traveling in the other direction
+		double elevatorWorstExpectedTime = 0.0;
+		// Worst elevator is an elevator that is traveling in the same direction but missed the request
+		int chosenBestElevator = 0;
+		int chosenOkElevator = 0;
+		int chosenWorstElevator = 0;
+		for (ElevatorMonitor monitor : elevatorMonitorList) {
+
+			MovementState state = monitor.getState();
+			Direction requestDirection = elevatorRequest.getDirection();
+			double tempExpectedTime = monitor.getQueueTime();
+			int currentFloor = monitor.getCurrentFloor();
+			int desiredFloor = elevatorRequest.getDesiredFloor();
+			int elevatorNumber = monitor.getElevatorNumber();
+
+			if (state == MovementState.IDLE) {
+				System.err.println(elevatorNumber + " is idle");
+				return elevatorNumber;
+
+			} else if (state == MovementState.STUCK) {
 				System.err.println("Elevator is stuck");
 
-			} else if (elevator.getDirection() == elevatorRequest.getDirection()) {
+			} else if (monitor.getDirection() == requestDirection) {
 				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
-					if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
+					if (requestDirection == Direction.DOWN && currentFloor > desiredFloor) {
+						//check if request is in path current floor > directed floor going down
 						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
+						chosenBestElevator = elevatorNumber;
 
-					} else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
+					} else if (requestDirection == Direction.UP && currentFloor < desiredFloor) {
+						//check if request is in path current floor < directed floor going up
 						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
-            
-					} else {
-						// Add to the third queue of the elevator
+						chosenBestElevator = elevatorNumber;
+
+					} else if (elevatorOkExpectedTime == 0 || elevatorOkExpectedTime > tempExpectedTime){
+						//if request is in the correct direction but not in path of elevator
+						elevatorWorstExpectedTime = tempExpectedTime;
+						chosenWorstElevator = elevatorNumber;
 					}
 				}
 			} else {
 				if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime) {
-					elevatorWorstExpectedTime = tempExpectedTime;
-					chosenWorstElevator = elevator.getElevatorNumber();
+					//if the elevator traveling in the wrong direction
+					elevatorOkExpectedTime = tempExpectedTime;
+					chosenOkElevator = elevatorNumber;
 				}
 			}
 		}
 		if (chosenBestElevator == 0) {
-			chosenBestElevator = chosenWorstElevator;
+			if (chosenOkElevator == 0){
+				chosenBestElevator = chosenWorstElevator;
+			} else {
+				chosenBestElevator = chosenOkElevator;
+			}
 		}
 		return chosenBestElevator;
 	}
 
 	/**
-	 *
+	 * Simple message requesting and sending between subsystems.
+	 * ElevatorSubsystem
+	 * Sends: ApproachEvent
+	 * Receives: ApproachEvent, ElevatorRequest
+	 */
+	public void run() {
+		while (true) {
+			if (server != null) {
+				Object object;
+				if (!requestQueue.isEmpty()) {
+					object = server.sendAndReceiveReply(requestQueue.remove());
+				} else {
+					object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
+				}
+
+
+				if (object instanceof ElevatorRequest elevatorRequest) {
+					int chosenElevator = chooseElevator(elevatorRequest);
+					// Choose elevator
+					// Move elevator
+					System.err.println(chosenElevator + " expected");
+					Elevator elevator = elevatorList.get(chosenElevator - 1);
+					elevator.addRequest(elevatorRequest);
+					elevatorMonitorList.get(chosenElevator - 1).updateMonitor(elevator.makeStatusUpdate());
+					requestQueue.add(elevator.makeStatusUpdate());
+				} else if (object instanceof ApproachEvent approachEvent) {
+					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+				} else if (object instanceof String string) {
+					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
+						try {
+							Thread.sleep(5);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			} else {
+				if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+					SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
+					if (request instanceof ElevatorRequest elevatorRequest) {
+						int chosenElevator = chooseElevator(elevatorRequest);
+						// Choose elevator
+						// Move elevator
+						Elevator elevator = elevatorList.get(chosenElevator - 1);
+						elevator.addRequest(elevatorRequest);
+						requestQueue.add(elevator.makeStatusUpdate());
+					} else if (request instanceof ApproachEvent approachEvent) {
+						elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+					}
+				}
+				// send message if possible
+				if (!requestQueue.isEmpty()) {
+					SystemEvent request = requestQueue.remove();
+					sendMessage(request, elevatorSubsystemBuffer, origin);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Initialize the elevatorSubsystem with elevators
+	 * and start threads for each elevator and the elevatorSubsystem.
 	 *
 	 * @param args not used
 	 */
