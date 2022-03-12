@@ -77,7 +77,9 @@ public class Client {
     public void send(Object object){
         DatagramPacket sendPacket = buildPacket(object);
         messageTransfer.sendMessage(sendPacket);
-        messageTransfer.printSendMessage(Thread.currentThread().getName(), sendPacket);
+        if (!(object instanceof String)) {
+            messageTransfer.printSendMessage(Thread.currentThread().getName(), sendPacket);
+        }
     }
 
     /**
@@ -89,8 +91,12 @@ public class Client {
     public Object receive(){
         //Receiving reply
         DatagramPacket receivePacket = messageTransfer.receiveMessage();
-        messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
-        return convertToSystemEvent(receivePacket);
+        Object object = convertToSystemEvent(receivePacket);
+
+        if (!(object instanceof String)) {
+            messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
+        }
+        return object;
     }
 
     /**

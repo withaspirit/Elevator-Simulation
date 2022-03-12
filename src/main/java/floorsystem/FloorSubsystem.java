@@ -41,21 +41,22 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 		Collections.reverse(requests);
 		boolean notEmpty = true;
 		while (true) {
-			if (!requests.isEmpty()) {
-				client.sendAndReceiveReply(requests.remove(requests.size() - 1));
-			} else {
-				if (notEmpty) {
-					client.send(RequestMessage.REQUEST.getMessage());
-				}
-				Object object = client.receive();
+			while (true) {
+				if (client != null) {
 
-				if (object instanceof ApproachEvent approachEvent) {
-					processApproachEvent(approachEvent);
-				} else if (object instanceof ElevatorRequest elevatorRequest){
-					requests.add(elevatorRequest);
-				} else if (object instanceof String string) {
-					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
-						notEmpty = false;
+					// if FloorSubsystem has something to send, send it
+					// otherwise, send a data request
+					// Note that the only data FloorSubsystem reacts to atm are ApproachEvents
+					if (!requests.isEmpty()) {
+						SystemEvent requestToSend = requests.remove(requests.size() - 1);
+						client.sendAndReceiveReply(requestToSend);
+					} else {
+						String dataRequest = RequestMessage.REQUEST.getMessage();
+						Object receivedData = client.sendAndReceiveReply(dataRequest);
+
+						if (receivedData instanceof ApproachEvent approachEvent) {
+							processApproachEvent(approachEvent);
+						}
 					}
 				}
 			}
