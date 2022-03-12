@@ -31,7 +31,7 @@ public class IntermediateHost {
      */
     public DatagramPacket receivePacket() {
         DatagramPacket receivePacket = messageTransfer.receiveMessage();
-        messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
+        // messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
         return receivePacket;
     }
 

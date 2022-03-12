@@ -113,19 +113,17 @@ public class MessageTransfer {
     public void printSendMessage(String name, DatagramPacket packet) {
         // Form a String from the byte array.
         Object object = decodeObject(packet.getData());
-        System.out.println(name + ": Sending packet:");
-        // System.out.println("To host: " + packet.getAddress());
-        System.out.println("Destination host port: " + packet.getPort());
-        int len = packet.getLength();
-        System.out.println("Length: " + len);
-        System.out.print("Containing: ");
+        System.out.println(name + ": Sending packet: ");
         if (object instanceof String string) {
             System.out.println(string);
         } else {
-            System.out.println(object);
+            System.out.println(object.getClass().getSimpleName() + ": " + object);
         }
+        // System.out.println("To host: " + packet.getAddress());
+        System.out.print("Destination host port: " + packet.getPort() + ", ");
+        int length = packet.getLength();
+        System.out.println("Length: " + length);
         System.out.println();
-
     }
 
     /**
@@ -137,16 +135,17 @@ public class MessageTransfer {
     public void printReceiveMessage(String name, DatagramPacket packet) {
         // Form a String from the byte array.
         Object object = decodeObject(packet.getData());
-        if (! (object instanceof String)) {
-            System.out.println(name + ": Packet received:");
-    //		System.out.println("From host: " + packet.getAddress());
-            System.out.println("Host port: " + packet.getPort());
-            int len = packet.getLength();
-            System.out.println("Length: " + len);
-            System.out.print("Containing: ");
-            System.out.println(object);
-            System.out.println();
+        System.out.println(name + ": Packet received: " + object.getClass().getSimpleName() + ": ");
+        if (object instanceof String string) {
+            System.out.println(string);
+        } else {
+            System.out.println(object.getClass().getSimpleName() + ": " + object);
         }
+        //		System.out.println("From host: " + packet.getAddress());
+        System.out.print("Host port: " + packet.getPort() + ", ");
+        int length = packet.getLength();
+        System.out.println("Length: " + length);
+        System.out.println();
     }
   
     // FIXME: this could be easily be removed
