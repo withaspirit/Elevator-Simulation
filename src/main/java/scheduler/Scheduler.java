@@ -91,13 +91,11 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 			// scheduler method here to do FLOORSUBSYSTEM stuff
 			packet.setPort(tempPort);
 			tempPort =0;
+			event.setOrigin(Origin.changeOrigin(eventOrigin));
 			intermediateHost.addNewPacketToQueue(event, packet);
 		} else {
 			throw new IllegalArgumentException("Error: Invalid Origin");
 		}
-		event.setOrigin(Origin.changeOrigin(eventOrigin));
-		// intermediate host
-
 	}
 
 	/**

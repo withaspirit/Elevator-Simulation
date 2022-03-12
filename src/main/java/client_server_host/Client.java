@@ -64,6 +64,7 @@ public class Client {
     	//Sending object
     	DatagramPacket sendPacket = buildPacket(object);
     	messageTransfer.sendMessage(sendPacket);
+        messageTransfer.printSendMessage(Thread.currentThread().getName(), sendPacket);
 
     	//Receiving reply
         DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
