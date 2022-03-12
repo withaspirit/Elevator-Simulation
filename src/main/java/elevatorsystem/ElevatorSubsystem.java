@@ -7,6 +7,7 @@ import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -61,8 +62,9 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 				if (!requestQueue.isEmpty()) {
 					object = server.sendAndReceiveReply(requestQueue.remove());
 				} else {
-					//object = server.sendAndReceiveReply(new StatusUpdate());
+					object = server.sendAndReceiveReply(new FloorRequest(LocalTime.now(), 0, Direction.NONE, 0, origin));
 				}
+
 				if (object instanceof ElevatorRequest elevatorRequest) {
 					int chosenElevator = chooseElevator(elevatorRequest);
 					// Choose elevator
