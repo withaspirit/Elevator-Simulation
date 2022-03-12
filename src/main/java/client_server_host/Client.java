@@ -68,8 +68,7 @@ public class Client {
         messageTransfer.printSendMessage(Thread.currentThread().getName(), sendPacket);
 
     	  //Receiving reply
-        DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
-        messageTransfer.receiveMessage(receivePacket);
+        DatagramPacket receivePacket = messageTransfer.receiveMessage();
         messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
 
         return convertToSystemEvent(receivePacket);
