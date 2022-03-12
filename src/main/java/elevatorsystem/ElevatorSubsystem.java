@@ -55,51 +55,10 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
-		while (true) {
-			if (server != null) {
-				Object object;
-				if (!requestQueue.isEmpty()) {
-					object = server.sendAndReceiveReply(requestQueue.remove());
-				} else {
-					object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
-				}
-
-				if (object instanceof ElevatorRequest elevatorRequest) {
-					int chosenElevator = chooseElevator(elevatorRequest);
-					// Choose elevator
-					// Move elevator
-					elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-					requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
-				} else if (object instanceof ApproachEvent approachEvent) {
-					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-				} else if (object instanceof String string) {
-					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
-						try {
-							Thread.sleep(5);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			} else {
-				if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-					SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
-					if (request instanceof ElevatorRequest elevatorRequest) {
-						int chosenElevator = chooseElevator(elevatorRequest);
-						// Choose elevator
-						// Move elevator
-						elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-						requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
-					} else if (request instanceof ApproachEvent approachEvent) {
-						elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-					}
-				}
-				// send message if possible
-				if (!requestQueue.isEmpty()) {
-					SystemEvent request = requestQueue.remove();
-					sendMessage(request, elevatorSubsystemBuffer, origin);
-				}
-			}
+		if (server != null) {
+			subsystemUDPMethod();
+		} else {
+			subsystemBufferMethod();
 		}
 	}
 
@@ -120,6 +79,63 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
 		requestQueue.add(approachEvent);
+	}
+
+	/**
+	 * Sends and receives messages for system using UDP packets.
+	 */
+	private void subsystemUDPMethod() {
+		while (true) {
+			Object object;
+			if (!requestQueue.isEmpty()) {
+				object = server.sendAndReceiveReply(requestQueue.remove());
+			} else {
+				object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
+			}
+
+			if (object instanceof ElevatorRequest elevatorRequest) {
+				int chosenElevator = chooseElevator(elevatorRequest);
+				// Choose elevator
+				// Move elevator
+				elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
+				requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
+			} else if (object instanceof ApproachEvent approachEvent) {
+				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+			} else if (object instanceof String string) {
+				if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Sends and receives messages for the system using the BoundedBuffer.
+	 */
+	private void subsystemBufferMethod() {
+		while (true) {
+			if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+				SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
+				if (request instanceof ElevatorRequest elevatorRequest) {
+					int chosenElevator = chooseElevator(elevatorRequest);
+					// Choose elevator
+					// Move elevator
+					elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
+					requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
+				} else if (request instanceof ApproachEvent approachEvent) {
+					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+				}
+			}
+			// send message if possible
+			if (!requestQueue.isEmpty()) {
+				SystemEvent request = requestQueue.remove();
+				sendMessage(request, elevatorSubsystemBuffer, origin);
+			}
+		}
 	}
 
 	/**
