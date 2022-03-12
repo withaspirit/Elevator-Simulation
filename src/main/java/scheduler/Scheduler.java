@@ -123,8 +123,11 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 					request = requestQueue.remove();
 
 					if (request.getOrigin() == Origin.FLOOR_SYSTEM) {
-						if (request instanceof ServiceRequest serviceRequest) {
-							sendMessage(serviceRequest, elevatorSubsystemBuffer, origin);
+						if (request instanceof ElevatorRequest elevatorRequest) {
+							sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
+						} else if (request instanceof ApproachEvent approachEvent) {
+							// FIXME: this code might be redundant as it's identical to the one above
+							sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
 						}
 					} else if (request.getOrigin() == Origin.ELEVATOR_SYSTEM) {
 						if (request instanceof StatusResponse) {
