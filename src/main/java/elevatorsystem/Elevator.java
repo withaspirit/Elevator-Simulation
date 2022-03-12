@@ -267,7 +267,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void processRequest(ServiceRequest serviceRequest){
 		// If request is an elevator request (from outside the elevator)
 		System.out.println("Elevator #" + elevatorNumber + " processing: " + serviceRequest);
-"Processing " + serviceRequest);
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Move to floor from which elevatorRequest originated
 			moveToFloor(elevatorRequest);
