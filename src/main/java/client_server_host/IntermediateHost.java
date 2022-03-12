@@ -29,16 +29,14 @@ public class IntermediateHost {
      * @return packet received from the IntermediateHost's MessageTransfer
      */
     public DatagramPacket receivePacket() {
-        DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
-        messageTransfer.receiveMessage(receivePacket);
-        return receivePacket;
+        return messageTransfer.receiveMessage();
     }
 
     /**
+     * Processes a DatagramPacket and reacts depending on whether it is data or a data request.
      *
-     *
-     * @param receivePacket
-     * @return true if the receivePacket is data, false if it is a request for data
+     * @param receivePacket a DatagramPacket that has been received by the IntermediateHost
+     * @return true if the receivePacket is data, false if it is a data request
      */
     public boolean processPacketObject(DatagramPacket receivePacket) {
         // receive message
@@ -47,7 +45,7 @@ public class IntermediateHost {
         Object object = messageTransfer.decodeObject(byteArray);
         /*
             take action depending on object type
-            if packet is a data request (i.e. a String), respond to data request here
+            if packet is a data request (i.e. a String), return false
             otherwise, send a packet acknowledging that data was received
          */
         if (object instanceof String) {
@@ -63,21 +61,12 @@ public class IntermediateHost {
     }
 
     /**
-<<<<<<< HEAD
-    * Converts a packet into it's corresponding SystemEvent object
-    *
-    * @param packet to convert to event
-    * @return event of packet
-    */
-    public SystemEvent convertToSystemEvent(DatagramPacket packet) {
-=======
-     * Converts a packet into it's corresponding SystemEvent object
+     * Converts a packet into it's corresponding SystemEvent object.
      *
-     * @param packet to convert to event
+     * @param packet DatagramPacket to convert to an event
      * @return event of packet
      */
     public SystemEvent convertPacketToSystemEvent(DatagramPacket packet) {
->>>>>>> 4c0ca477594c84a26bcc84c64f86b666fbcaf953
         SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());
         return event;
     }
