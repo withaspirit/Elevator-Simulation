@@ -58,14 +58,16 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * Otherwise, it's a request for data and is processed by IntermediateHost.
 	 */
 	public void receiveAndProcessPacket() {
-		DatagramPacket receivePacket = intermediateHost.receivePacket();
+		while (true) {
+			DatagramPacket receivePacket = intermediateHost.receivePacket();
 
-		// if request is data, process it as data.
-		// otherwise it is a data request
-		if (intermediateHost.processPacketObject(receivePacket)) {
-			processData(receivePacket);
-		} else {
-			intermediateHost.respondToDataRequest(receivePacket);
+			// if request is data, process it as data.
+			// otherwise it is a data request
+			if (intermediateHost.processPacketObject(receivePacket)) {
+				processData(receivePacket);
+			} else {
+				intermediateHost.respondToDataRequest(receivePacket);
+			}
 		}
 	}
 
@@ -97,51 +99,58 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	}
 
 	/**
+	 * Sends and receives messages for the system using BoundedBuffers.
+	 */
+	private void subsystemBufferRunMethod() {
+		while (true) {
+    	SystemEvent request;
+      // remove from either floorBuffer or ElevatorBuffer
+      if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+        request = receiveMessage(floorSubsystemBuffer, origin);
+        requestQueue.add(request);
+      } else if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+        request = receiveMessage(elevatorSubsystemBuffer, origin);
+        requestQueue.add(request);
+      }
+
+      // send a request if possible
+      if (!requestQueue.isEmpty()) {
+        request = requestQueue.remove();
+
+        if (request.getOrigin() == Origin.FLOOR_SYSTEM) {
+          if (request instanceof ElevatorRequest elevatorRequest) {
+            sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
+          } else if (request instanceof ApproachEvent approachEvent) {
+            // FIXME: this code might be redundant as it's identical to the one above
+            sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
+          }
+        } else if (request.getOrigin() == Origin.ELEVATOR_SYSTEM) {
+          if (request instanceof StatusUpdate) {
+
+          } else if (request instanceof FloorRequest floorRequest) {
+            sendMessage(floorRequest, floorSubsystemBuffer, origin);
+          } else if (request instanceof ApproachEvent approachEvent) {
+            sendMessage(approachEvent, floorSubsystemBuffer, origin);
+          }
+        } else {
+          System.err.println("Scheduler should not contain items whose origin is Scheduler: " + request);
+        }
+      }
+		}
+	}
+
+	/**
 	 * Simple message requesting and sending between subsystems.
 	 * Scheduler
 	 * Sends: ApproachEvent, FloorRequest, ElevatorRequest
 	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
-		while(true) {
-			// take action depending on if using buffers or IntermediateHost
-			if (intermediateHost != null) {
-				receiveAndProcessPacket();
-			} else {
-				SystemEvent request;
-				// remove from either floorBuffer or ElevatorBuffer
-				if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-					request = receiveMessage(floorSubsystemBuffer, origin);
-					requestQueue.add(request);
-				} else if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-					request = receiveMessage(elevatorSubsystemBuffer, origin);
-					requestQueue.add(request);
-				}
-
-				// send a request if possible
-				if (!requestQueue.isEmpty()) {
-					request = requestQueue.remove();
-
-					if (request.getOrigin() == Origin.FLOOR_SYSTEM) {
-						if (request instanceof ElevatorRequest elevatorRequest) {
-							sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
-						} else if (request instanceof ApproachEvent approachEvent) {
-							// FIXME: this code might be redundant as it's identical to the one above
-							sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
-						}
-					} else if (request.getOrigin() == Origin.ELEVATOR_SYSTEM) {
-						if (request instanceof StatusUpdate) {
-
-						} else if (request instanceof FloorRequest floorRequest) {
-							sendMessage(floorRequest, floorSubsystemBuffer, origin);
-						} else if (request instanceof ApproachEvent approachEvent) {
-							sendMessage(approachEvent, floorSubsystemBuffer, origin);
-						}
-					} else {
-						System.err.println("Scheduler should not contain items whose origin is Scheduler: " + request);
-					}
-				}
-			}
+		// take action depending on if using buffers or IntermediateHost
+		if (intermediateHost != null) {
+			receiveAndProcessPacket();
+		} else {
+			subsystemBufferRunMethod();
 		}
 	}
 

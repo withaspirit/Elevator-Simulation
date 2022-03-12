@@ -59,43 +59,9 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 
 		while (true) {
 			if (client != null) {
-				if (!requests.isEmpty()) {
-					client.sendAndReceiveReply(requests.remove(requests.size() - 1));
-				} else {
-					Object object = client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
-
-					if (object instanceof ApproachEvent approachEvent) {
-						processApproachEvent(approachEvent);
-					} else if (object instanceof ElevatorRequest elevatorRequest) {
-						requests.add(elevatorRequest);
-					} else if (object instanceof String string) {
-						if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
-							try {
-								Thread.sleep(5);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-				}
+				subsystemUDPMethod();
 			} else {
-				//  add to floorBuffer if possible
-				if (!requests.isEmpty()) {
-					// Sending Data to Scheduler
-					SystemEvent event = requests.remove(requests.size() - 1);
-
-					sendMessage(event, floorSubsystemBuffer, origin);
-				}
-
-				// check if can remove from buffer before trying to remove
-				if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-					SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
-					if (request instanceof FloorRequest floorRequest) {
-
-					} else if (request instanceof ApproachEvent approachEvent) {
-						processApproachEvent(approachEvent);
-					}
-				}
+				subsystemBufferMethod();
 			}
 		}
 	}
@@ -130,6 +96,59 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	public void handleApproachEvent(ApproachEvent approachEvent) {
 		requests.add(approachEvent);
 		sendMessage(approachEvent, floorSubsystemBuffer, origin);
+	}
+
+
+	/**
+	 * Sends and receives messages for the system using UDP packets.
+	 */
+	private void subsystemUDPMethod() {
+		while (true) {
+			if (!requests.isEmpty()) {
+				client.sendAndReceiveReply(requests.remove(requests.size() - 1));
+			} else {
+				Object object = client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
+
+				if (object instanceof ApproachEvent approachEvent) {
+					processApproachEvent(approachEvent);
+				} else if (object instanceof ElevatorRequest elevatorRequest) {
+					requests.add(elevatorRequest);
+				} else if (object instanceof String string) {
+					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
+						try {
+							Thread.sleep(5);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Sends and receives messages for the system using BoundedBuffer.
+	 */
+	private void subsystemBufferMethod() {
+		while (true) {
+			//  add to floorBuffer if possible
+			if (!requests.isEmpty()) {
+				// Sending Data to Scheduler
+				SystemEvent event = requests.remove(requests.size() - 1);
+
+				sendMessage(event, floorSubsystemBuffer, origin);
+			}
+
+			// check if can remove from buffer before trying to remove
+			if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+				SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
+				if (request instanceof FloorRequest floorRequest) {
+
+				} else if (request instanceof ApproachEvent approachEvent) {
+					processApproachEvent(approachEvent);
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) {

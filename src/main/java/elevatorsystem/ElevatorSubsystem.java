@@ -53,13 +53,26 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	}
 
 	/**
+	 * Simple message requesting and sending between subsystems.
+	 * ElevatorSubsystem
+	 * Sends: ApproachEvent
+	 * Receives: ApproachEvent, ElevatorRequest
+	 */
+	public void run() {
+		if (server != null) {
+			subsystemUDPMethod();
+		} else {
+			subsystemBufferMethod();
+		}
+	}
+  
+  /**
 	 * Adds an elevator to the subsystem's list of elevators.
 	 *
 	 * @param elevator an elevator
 	 */
 	public void addElevator(Elevator elevator) {
 		elevatorList.add(elevator);
-		elevatorMonitorList.add(new ElevatorMonitor(elevator.getElevatorNumber()));
 	}
 
 	/**
@@ -73,6 +86,68 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	}
 
 	/**
+	 * Sends and receives messages for system using UDP packets.
+	 */
+	private void subsystemUDPMethod() {
+		while (true) {
+			Object object;
+      if (!requestQueue.isEmpty()) {
+        object = server.sendAndReceiveReply(requestQueue.remove());
+      } else {
+        object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
+      }
+
+
+      if (object instanceof ElevatorRequest elevatorRequest) {
+        int chosenElevator = chooseElevator(elevatorRequest);
+        // Choose elevator
+        // Move elevator
+        System.err.println(chosenElevator + " expected");
+        Elevator elevator = elevatorList.get(chosenElevator - 1);
+        elevator.addRequest(elevatorRequest);
+        elevatorMonitorList.get(chosenElevator - 1).updateMonitor(elevator.makeStatusUpdate());
+        requestQueue.add(elevator.makeStatusUpdate());
+      } else if (object instanceof ApproachEvent approachEvent) {
+        elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+      } else if (object instanceof String string) {
+        if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
+          try {
+            Thread.sleep(5);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+		}
+	}
+
+	/**
+	 * Sends and receives messages for the system using the BoundedBuffer.
+	 */
+	private void subsystemBufferMethod() {
+		while (true) {
+			if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
+					SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
+					if (request instanceof ElevatorRequest elevatorRequest) {
+						int chosenElevator = chooseElevator(elevatorRequest);
+						// Choose elevator
+						// Move elevator
+						Elevator elevator = elevatorList.get(chosenElevator - 1);
+						elevator.addRequest(elevatorRequest);
+						requestQueue.add(elevator.makeStatusUpdate());
+					} else if (request instanceof ApproachEvent approachEvent) {
+						elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+					}
+			}
+      // send message if possible
+      if (!requestQueue.isEmpty()) {
+        SystemEvent request = requestQueue.remove();
+        sendMessage(request, elevatorSubsystemBuffer, origin);
+      }
+		}
+	}
+  
+  /**
 	 * Returns an elevator number corresponding to an elevator that is
 	 * best suited to perform the given ElevatorRequest based on
 	 * expected time to fulfill the request and direction of elevator.
@@ -143,70 +218,11 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		return chosenBestElevator;
 	}
 
-	/**
-	 * Simple message requesting and sending between subsystems.
-	 * ElevatorSubsystem
-	 * Sends: ApproachEvent
-	 * Receives: ApproachEvent, ElevatorRequest
-	 */
-	public void run() {
-		while (true) {
-			if (server != null) {
-				Object object;
-				if (!requestQueue.isEmpty()) {
-					object = server.sendAndReceiveReply(requestQueue.remove());
-				} else {
-					object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
-				}
-
-
-				if (object instanceof ElevatorRequest elevatorRequest) {
-					int chosenElevator = chooseElevator(elevatorRequest);
-					// Choose elevator
-					// Move elevator
-					System.err.println(chosenElevator + " expected");
-					Elevator elevator = elevatorList.get(chosenElevator - 1);
-					elevator.addRequest(elevatorRequest);
-					elevatorMonitorList.get(chosenElevator - 1).updateMonitor(elevator.makeStatusUpdate());
-					requestQueue.add(elevator.makeStatusUpdate());
-				} else if (object instanceof ApproachEvent approachEvent) {
-					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-				} else if (object instanceof String string) {
-					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
-						try {
-							Thread.sleep(5);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			} else {
-				if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-					SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
-					if (request instanceof ElevatorRequest elevatorRequest) {
-						int chosenElevator = chooseElevator(elevatorRequest);
-						// Choose elevator
-						// Move elevator
-						Elevator elevator = elevatorList.get(chosenElevator - 1);
-						elevator.addRequest(elevatorRequest);
-						requestQueue.add(elevator.makeStatusUpdate());
-					} else if (request instanceof ApproachEvent approachEvent) {
-						elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-					}
-				}
-				// send message if possible
-				if (!requestQueue.isEmpty()) {
-					SystemEvent request = requestQueue.remove();
-					sendMessage(request, elevatorSubsystemBuffer, origin);
-				}
-			}
-		}
-	}
 
 	/**
 	 * Initialize the elevatorSubsystem with elevators
 	 * and start threads for each elevator and the elevatorSubsystem.
-	 *
+   *
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
