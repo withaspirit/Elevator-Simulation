@@ -5,10 +5,8 @@ import client_server_host.Port;
 import client_server_host.RequestMessage;
 import misc.*;
 import requests.*;
-import systemwide.BoundedBuffer;
 import systemwide.Origin;
 
-import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -19,36 +17,18 @@ import java.util.Collections;
  */
 public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
-	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private final Client client;
 	private final ArrayList<SystemEvent> requests;
 	private final ArrayList<Floor> floorList;
-	private Origin origin;
-
-	/**
-	 * Constructor for FloorSubsystem.
-	 *
-	 * @param buffer the buffer the FloorSubsystem passes messages to and receives messages from
-	 */
-	public FloorSubsystem(BoundedBuffer buffer) {
-		this.floorSubsystemBuffer = buffer;
-		client = null;
-		InputFileReader inputFileReader = new InputFileReader();
-		requests = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
-		floorList = new ArrayList<>();
-		origin = Origin.FLOOR_SYSTEM;
-	}
 
 	/**
 	 * Constructor for FloorSubsystem.
 	 */
 	public FloorSubsystem() {
-		this.floorSubsystemBuffer = null;
 		client = new Client(Port.CLIENT.getNumber());
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 		floorList = new ArrayList<>();
-		origin = Origin.FLOOR_SYSTEM;
 	}
 
 	/**
@@ -59,20 +39,23 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 */
 	public void run() {
 		Collections.reverse(requests);
-
+		boolean notEmpty = true;
 		while (true) {
-			if (client != null){
-				if (!requests.isEmpty()) {
-					Object object = client.sendAndReceiveReply(requests.remove(requests.size() - 1));
+			if (!requests.isEmpty()) {
+				client.sendAndReceiveReply(requests.remove(requests.size() - 1));
+			} else {
+				if (notEmpty) {
+					client.send(RequestMessage.REQUEST.getMessage());
+				}
+				Object object = client.receive();
 
-					if (object instanceof FloorRequest floorRequest) {
-
-					} else if (object instanceof ApproachEvent approachEvent) {
-						processApproachEvent(approachEvent);
-					} else if (object instanceof String string) {
-						if (!string.equals(RequestMessage.ACKNOWLEDGE)){
-							client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
-						}
+				if (object instanceof ApproachEvent approachEvent) {
+					processApproachEvent(approachEvent);
+				} else if (object instanceof ElevatorRequest elevatorRequest){
+					requests.add(elevatorRequest);
+				} else if (object instanceof String string) {
+					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
+						notEmpty = false;
 					}
 				}
 			}
@@ -107,7 +90,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		sendMessage(approachEvent, floorSubsystemBuffer, origin);
+		requests.add(approachEvent);
 	}
 
 	public static void main(String[] args) {

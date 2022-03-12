@@ -25,7 +25,7 @@ public class FloorSubsystemTest {
     @BeforeEach
     void setUp() {
         BoundedBuffer buffer = new BoundedBuffer();
-        floorSubsystem = new FloorSubsystem(buffer);
+        floorSubsystem = new FloorSubsystem();
 
         int numberOfFloors = 10;
         for (int i = 1; i <= numberOfFloors; i++) {

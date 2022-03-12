@@ -4,12 +4,8 @@ import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import requests.*;
-import systemwide.BoundedBuffer;
 import systemwide.Direction;
-import systemwide.Origin;
 
-import java.net.DatagramPacket;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -22,21 +18,17 @@ import java.util.Queue;
  */
 public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
 
-  	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-	private Client server;
+	private final Client server;
   	private final ArrayList<Elevator> elevatorList;
-	private Queue<SystemEvent> requestQueue;
-	private Origin origin;
+	private final Queue<SystemEvent> requestQueue;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
 	 */
 	public ElevatorSubsystem() {
-		this.elevatorSubsystemBuffer = null;
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
 		requestQueue = new LinkedList<>();
-		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
 	/**
@@ -51,7 +43,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 			if (!requestQueue.isEmpty()) {
 				object = server.sendAndReceiveReply(requestQueue.remove());
 			} else {
-				// TODO remove this as it is causing the infinite loop but this is currently required to show message passing
 				object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
 			}
 
@@ -134,6 +125,11 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		return chosenBestElevator;
 	}
 
+	/**
+	 *
+	 *
+	 * @param args not used
+	 */
 	public static void main(String[] args) {
 		try {
 			Thread.sleep(1000);

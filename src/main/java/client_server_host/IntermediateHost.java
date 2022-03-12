@@ -9,11 +9,11 @@ import java.net.DatagramPacket;
  * IntermediateHost is a service class used by Scheduler. It provides methods
  * that manipulate MessageTransfer to receive and send messages to both Client and Server.
  *
- * @author Liam Tripp
+ * @author Liam Tripp, Ryan Dash
  */
 public class IntermediateHost {
 
-    private MessageTransfer messageTransfer;
+    private final MessageTransfer messageTransfer;
 
     /**
      * Constructor for IntermediateHost.
@@ -56,8 +56,8 @@ public class IntermediateHost {
         } else {
             // packet is data
             // send message to recipient acknowledging that message was received
-            byte[] acknowledgeByteArray = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
-            DatagramPacket acknowledgePacket = messageTransfer.createPacket(acknowledgeByteArray, receivePacket.getAddress(), receivePacket.getPort());
+            byte[] acknowledgeMessage = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
+            DatagramPacket acknowledgePacket = new DatagramPacket(acknowledgeMessage, acknowledgeMessage.length, receivePacket.getAddress(), receivePacket.getPort());
             messageTransfer.sendMessage(acknowledgePacket);
             return true;
         }
@@ -70,10 +70,15 @@ public class IntermediateHost {
      * @return event of packet
      */
     public SystemEvent convertToSystemEvent(DatagramPacket packet) {
-        SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());
-        return event;
+        return (SystemEvent) messageTransfer.decodeObject(packet.getData());
     }
 
+    /**
+     * Adds a packets containing an event to the MessageTransfer queue.
+     *
+     * @param event an event to send to either the Client or Server
+     * @param packet a packet containing the address and port to send the event
+     */
     public void addNewPacketToQueue(SystemEvent event, DatagramPacket packet) {
         // encode the altered event into a new packet
         byte[] newByteArray = messageTransfer.encodeObject(event);
@@ -97,8 +102,8 @@ public class IntermediateHost {
             packetToSend = messageTransfer.getPacketFromQueue();
             // printSendMessage(name, packetToSend);
         } else {
-            byte[] emptyQueueByteArray = "emptyQueue".getBytes();
-            packetToSend = messageTransfer.createPacket(emptyQueueByteArray, packet.getAddress(), packet.getPort());
+            byte[] emptyQueueMessage = RequestMessage.EMPTYQUEUE.getMessage().getBytes();
+            packetToSend = new DatagramPacket(emptyQueueMessage, emptyQueueMessage.length, packet.getAddress(), packet.getPort());
         }
         messageTransfer.sendMessage(packetToSend);
     }

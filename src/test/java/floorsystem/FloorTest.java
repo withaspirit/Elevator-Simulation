@@ -26,7 +26,7 @@ public class FloorTest {
     @BeforeEach
     void setUp() {
         BoundedBuffer buffer = new BoundedBuffer();
-        FloorSubsystem floorSubsystem = new FloorSubsystem(buffer);
+        FloorSubsystem floorSubsystem = new FloorSubsystem();
         floor = new Floor(1, floorSubsystem);
     }
 
