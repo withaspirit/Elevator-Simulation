@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
-import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
 
@@ -14,7 +13,6 @@ import java.time.LocalTime;
 public class ElevatorSelectionTest {
 
     ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), 0, Direction.UP, 2, Origin.FLOOR_SYSTEM);
-    BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
     ElevatorSubsystem elevatorSubsystem;
     Elevator elevator1, elevator2;
 

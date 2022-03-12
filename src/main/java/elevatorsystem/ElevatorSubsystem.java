@@ -16,7 +16,7 @@ import java.util.Queue;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
+public class ElevatorSubsystem implements Runnable, SystemEventListener {
 
 	private final Client server;
   	private final ArrayList<Elevator> elevatorList;
@@ -54,6 +54,14 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 				requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
 			} else if (object instanceof ApproachEvent approachEvent) {
 				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+			} else if (object instanceof String string){
+				if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())){
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	}

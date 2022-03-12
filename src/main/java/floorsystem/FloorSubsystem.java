@@ -15,7 +15,7 @@ import java.util.Collections;
  * 
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
+public class FloorSubsystem implements Runnable, SystemEventListener {
 
 	private final Client client;
 	private final ArrayList<SystemEvent> requests;
@@ -39,23 +39,23 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 */
 	public void run() {
 		Collections.reverse(requests);
-		boolean notEmpty = true;
 		while (true) {
 			if (!requests.isEmpty()) {
 				client.sendAndReceiveReply(requests.remove(requests.size() - 1));
 			} else {
-				if (notEmpty) {
-					client.send(RequestMessage.REQUEST.getMessage());
-				}
-				Object object = client.receive();
+				Object object = client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
 
 				if (object instanceof ApproachEvent approachEvent) {
 					processApproachEvent(approachEvent);
 				} else if (object instanceof ElevatorRequest elevatorRequest){
 					requests.add(elevatorRequest);
 				} else if (object instanceof String string) {
-					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
-						notEmpty = false;
+					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())){
+						try {
+							Thread.sleep(5);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}

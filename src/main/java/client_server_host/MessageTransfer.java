@@ -113,9 +113,15 @@ public class MessageTransfer {
     public void printSendMessage(String name, DatagramPacket packet) {
         // Form a String from the byte array.
         Object object = decodeObject(packet.getData());
-        System.out.println(name + ": Sending packet:");
-        // System.out.println("To host: " + packet.getAddress());
-        System.out.println("Destination host port: " + packet.getPort());
+        System.out.print(name + ": Sending packet ");
+        if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()){
+            System.out.println("to Scheduler");
+        } else if (packet.getPort() == Port.CLIENT.getNumber()){
+            System.out.println("to Client");
+        } else if (packet.getPort() == Port.SERVER.getNumber()){
+            System.out.println("to Server");
+        }
+        System.out.println("To host: " + packet.getAddress().getHostAddress() + "/" + packet.getPort());
         int len = packet.getLength();
         System.out.println("Length: " + len);
         System.out.print("Containing: ");

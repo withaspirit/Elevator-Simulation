@@ -3,7 +3,6 @@ package scheduler;
 import client_server_host.IntermediateHost;
 import client_server_host.Port;
 import requests.*;
-import systemwide.BoundedBuffer;
 import systemwide.Origin;
 
 import java.net.DatagramPacket;
@@ -15,7 +14,7 @@ import java.util.Queue;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class Scheduler implements Runnable, SubsystemMessagePasser {
+public class Scheduler implements Runnable{
 
 	private final Origin origin = Origin.SCHEDULER;
 	private Queue<SystemEvent> requestQueue;
