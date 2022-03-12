@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Subsystems and Scheduler" type="CompoundRunConfigurationType">
+    <toRun name="ElevatorSubsystem" type="Application" />
+    <toRun name="FloorSubsystem" type="Application" />
+    <toRun name="Scheduler" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>

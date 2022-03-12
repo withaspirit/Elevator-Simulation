@@ -1,10 +1,11 @@
 package elevatorsystem;
 
-import requests.*;
-import systemwide.BoundedBuffer;
+import requests.ApproachEvent;
+import requests.ElevatorRequest;
+import requests.ServiceRequest;
+import requests.SubsystemPasser;
 import systemwide.Direction;
 import systemwide.Origin;
-import java.time.LocalTime;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -25,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Elevator implements Runnable, SubsystemPasser {
 
 	// Elevator Subsystem
-	private ElevatorSubsystem elevatorSubsystem;
+	private final ElevatorSubsystem elevatorSubsystem;
 
 	// Elevator Measurements
 	public static final float MAX_SPEED = 2.67f; // meters/second
@@ -39,7 +40,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	// Elevator Properties
 	private final int elevatorNumber;
 	private int currentFloor;
-	private Direction direction = Direction.UP;
+	private Direction direction;
 	private Direction serviceDirection;
 	private float speed;
 	private float displacement;
@@ -278,7 +279,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the current floor the elevator is on
+	 * Gets the current floor the elevator is on.
 	 *
 	 * @return the current floor as an int
 	 */
@@ -287,7 +288,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Sets the currentFloor that the elevator is on
+	 * Sets the currentFloor that the elevator is on.
 	 *
 	 * @param currentFloor the floor to set the elevator on
 	 */
@@ -296,7 +297,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the Direction the elevator is heading
+	 * Gets the Direction the elevator is heading.
 	 *
 	 * @return Direction
 	 */
@@ -305,7 +306,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Sets the direction of the elevator
+	 * Sets the direction of the elevator.
 	 *
 	 * @param direction the elevator will be moving
 	 */
@@ -314,7 +315,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the speed of the elevator
+	 * Gets the speed of the elevator.
 	 *
 	 * @return the speed as a float
 	 */
@@ -323,7 +324,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Sets the speed of the elevator
+	 * Sets the speed of the elevator.
 	 *
 	 * @param speed the speed of the elevator
 	 */
@@ -332,9 +333,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Sets the current service request to process
+	 * Sets the current service request to process.
 	 *
-	 * @param request
+	 * @param request a ServiceRequest for the elevator to do
 	 */
 	public void setRequest(ServiceRequest request){
 		this.request = (ElevatorRequest) request;
@@ -349,7 +350,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Processes a serviceRequest and moves based on the request type
+	 * Processes a serviceRequest and moves based on the request type.
 	 *
 	 *
 	 *
@@ -468,7 +469,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Prints the status of the elevator (current floor, door state, motor state, motor direction)
+	 * Prints the status of the elevator (current floor, door state, motor state, motor direction).
 	 *
 	 */
 	public void printStatus(){
@@ -479,7 +480,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Update Motor properties based on the serviceRequest
+	 * Update Motor properties based on the serviceRequest.
 	 *
 	 * NOTE: Might be changed to simply use the first request in the queue
 	 *

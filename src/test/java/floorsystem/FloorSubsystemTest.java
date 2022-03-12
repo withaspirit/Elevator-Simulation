@@ -3,12 +3,10 @@ package floorsystem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ApproachEvent;
-import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,8 +22,7 @@ public class FloorSubsystemTest {
 
     @BeforeEach
     void setUp() {
-        BoundedBuffer buffer = new BoundedBuffer();
-        floorSubsystem = new FloorSubsystem(buffer);
+        floorSubsystem = new FloorSubsystem();
 
         int numberOfFloors = 10;
         for (int i = 1; i <= numberOfFloors; i++) {
