@@ -269,12 +269,12 @@ class FloorsQueueTest {
 		int elevatorFloor = 5;
 		Direction elevatorDirection = Direction.UP;
 		testQueue.addRequest(elevatorFloor, elevatorDirection, elevatorRequest1);
-		testQueue.addRequest(elevatorFloor, elevatorDirection, elevatorRequest2);
 		// make sure opposite order not empty
 		assertFalse(testQueue.isOppositeQueueEmpty());
+		// elevatorDirection = Direction.changeDirection(elevatorDirection);
 
 		// ensure swap successful
-		testQueue.swapQueues();
+		assertTrue(testQueue.swapQueues());
 		assertTrue(testQueue.isOppositeQueueEmpty());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 
@@ -283,6 +283,21 @@ class FloorsQueueTest {
 		assertTrue(floor1 > testQueue.peekNextRequest());
 		int floor2 = testQueue.removeRequest();
 		assertTrue(floor1 > floor2);
+
+		// ensure keep adding to the reverse order queue
+		// assume serviceDirection has been reversed
+		testQueue.addRequest(elevatorFloor, Direction.DOWN, elevatorRequest2);
+		assertTrue(testQueue.removeRequest() > testQueue.removeRequest());
+	}
+
+	@Test
+	void testCurrentAndMissedCorrectRemovalOrder() {
+
+	}
+
+	@Test
+	void testOppositeAndMissedCorrectRemovalOrder() {
+
 	}
 
 	@Test
