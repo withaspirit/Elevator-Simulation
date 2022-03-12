@@ -84,18 +84,17 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 		// manipulate the packet according to its origin
 		if (eventOrigin == Origin.ELEVATOR_SYSTEM) {
-			// scheduler method here to do ELEVATORSUBSYSTEM stuff
-			tempPort = packet.getPort();
-			System.out.println(tempPort + " for ElevatorSubsystem");
-		} else if (eventOrigin == Origin.FLOOR_SYSTEM) {
 			// scheduler method here to do FLOORSUBSYSTEM stuff
-			packet.setPort(tempPort);
-			tempPort =0;
-			event.setOrigin(Origin.changeOrigin(eventOrigin));
-			intermediateHost.addNewPacketToQueue(event, packet);
+			packet.setPort(Port.CLIENT.getNumber());
+		} else if (eventOrigin == Origin.FLOOR_SYSTEM) {
+			// scheduler method here to do ELEVATORSUBSYSTEM stuff
+			packet.setPort(Port.SERVER.getNumber());
 		} else {
 			throw new IllegalArgumentException("Error: Invalid Origin");
 		}
+		event.setOrigin(Origin.changeOrigin(eventOrigin));
+		// intermediate host
+		intermediateHost.addNewPacketToQueue(event, packet);
 	}
 
 	/**

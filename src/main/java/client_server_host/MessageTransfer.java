@@ -106,8 +106,8 @@ public class MessageTransfer {
         System.out.println("Length: " + len);
         System.out.print("Containing: ");
         // Form a String from the byte array.
-        String sent = new String(packet.getData(), 0, len, StandardCharsets.UTF_8);
-        System.out.println(sent);
+        Object object = decodeObject(packet.getData());
+        System.out.println(object);
         System.out.println();
     }
 
@@ -125,8 +125,8 @@ public class MessageTransfer {
         System.out.println("Length: " + len);
         System.out.print("Containing: ");
         // Form a String from the byte array.
-        String received = new String(packet.getData(), 0, len, StandardCharsets.UTF_8);
-        System.out.println(received);
+        Object object = decodeObject(packet.getData());
+        System.out.println(object);
         System.out.println();
     }
 
