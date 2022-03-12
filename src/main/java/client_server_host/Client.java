@@ -8,7 +8,7 @@ import java.net.DatagramPacket;
 /**
  * Client sends and receives messages from an IntermediateHost.
  *
- * @author Liam Tripp
+ * @author Liam Tripp, Julian
  */
 public class Client {
 
@@ -22,25 +22,26 @@ public class Client {
         this.portNumber = portNumber;
         messageTransfer = new MessageTransfer(portNumber);
     }
-    
+
     /**
      * Builds a Datagram Packet according to its class type
-     * 
+     *
      * @param object to convert into a packet
      * @return packet of the object
      */
     public DatagramPacket buildPacket(Object object) {
-    	byte[] newByteArray;
-    	
-    	//Determine type of message
+        byte[] newByteArray;
+
+        //Determine type of message
         if (object instanceof SystemEvent) {
-        	newByteArray = messageTransfer.encodeObject(object);
+            newByteArray = messageTransfer.encodeObject(object);
         } else if (object instanceof String) {
-        	newByteArray = ((String)object).getBytes();
+            // NOTE: this code might be unnecessary
+            newByteArray = ((String) object).getBytes();
         } else {
-        	throw new IllegalArgumentException("Error: Invalid Object");
+            throw new IllegalArgumentException("Error: Invalid Object");
         }
-        
+
         //Determine origin
         DatagramPacket newPacket;
         if (portNumber == Port.CLIENT.getNumber()) {
@@ -48,32 +49,32 @@ public class Client {
         } else if (portNumber == Port.SERVER.getNumber()) {
         	newPacket = messageTransfer.createPacket(newByteArray, Port.SERVER_TO_CLIENT.getNumber());
         } else {
-        	throw new IllegalArgumentException("Error: Invalid Origin");
+            throw new IllegalArgumentException("Error: Invalid Origin");
         }
-        
+
         return newPacket;
     }
- 
+
     /**
      * Builds a Datagram Packet according to its class type
-     * 
+     *
      * @param object with the message to send, either an Event or an Array
      * @return packet of the object
      */
     public Object sendAndReceiveReply(Object object) {
-    	//Sending object
-    	DatagramPacket sendPacket = buildPacket(object);
-    	messageTransfer.sendMessage(sendPacket);
+    	  //Sending object
+    	  DatagramPacket sendPacket = buildPacket(object);
+    	  messageTransfer.sendMessage(sendPacket);
         messageTransfer.printSendMessage(Thread.currentThread().getName(), sendPacket);
 
-    	//Receiving reply
+    	  //Receiving reply
         DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
         messageTransfer.receiveMessage(receivePacket);
         messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
 
         return convertToSystemEvent(receivePacket);
     }
-    
+
     /**
     * Converts a packet into it's corresponding SystemEvent object
     *

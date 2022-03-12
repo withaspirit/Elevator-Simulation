@@ -16,6 +16,7 @@ public class MessageTransfer {
 
     private DatagramSocket socket;
     private Queue<DatagramPacket> messageQueue;
+    public final static int MAX_BYTE_ARRAY_SIZE = 1400;
 
     /**
      * Constructor for MessageTransfer.
@@ -29,6 +30,15 @@ public class MessageTransfer {
         } catch (SocketException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Returns the port number associated with the MessageTransfer's DatagramSocket.
+     *
+     * @return the port number of a DatagramSocket
+     */
+    public int getPortNumber() {
+        return socket.getLocalPort();
     }
 
     /**
@@ -78,9 +88,11 @@ public class MessageTransfer {
      * Receives a message from a socket and transfers it to the socket associated
      * with the packet's specified port.
      *
-     * @param packet the DatagramPacket containing data received from the DatagramSocket
+     * @return the DatagramPacket containing data received from the DatagramSocket
      */
-    public void receiveMessage(DatagramPacket packet) {
+    public DatagramPacket receiveMessage() {
+        byte[] data = new byte[MAX_BYTE_ARRAY_SIZE];
+        DatagramPacket packet = new DatagramPacket(data, data.length);
         // Block until a DatagramPacket is received from a socket
         try {
             socket.receive(packet);
@@ -90,6 +102,7 @@ public class MessageTransfer {
             e.printStackTrace();
             System.exit(1);
         }
+        return packet;
     }
 
     /**
@@ -134,18 +147,7 @@ public class MessageTransfer {
             System.out.println();
         }
     }
-
-    /**
-     * Creates an DatagramPacket at the local address and port that can hold
-     * up to 256 unallocated bytes.
-     *
-     * @return a DatagramPacket with 256 unallocated bytes
-     */
-    public DatagramPacket createEmptyPacket() {
-        byte[] data = new byte[500];
-        return new DatagramPacket(data, data.length);
-    }
-
+  
     // FIXME: this could be easily be removed
     public DatagramPacket createPacket(byte[] msg, int portNumber) {
         DatagramPacket packet = null;
