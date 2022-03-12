@@ -178,9 +178,10 @@ class FloorsQueueTest {
 		assertFalse(testQueue.isMissedqueueEmpty());
 	}
 
+
 	@Test
 	void testSwapQueueWithCurrentQueue() {
-		// add missed request
+		// add to current queue
 		testAddDownRequestBelowDownElevator();
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
@@ -193,28 +194,23 @@ class FloorsQueueTest {
 		// currentQueue empty, opposite queue has items
 		testAddUpRequestBelowDownElevator();
 
-		assertFalse(testQueue.isOppositeQueueEmpty());
 		assertTrue(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertTrue(testQueue.isOppositeQueueEmpty());
 	}
 
 	@Test
-	void testSwapQueueWithMissedQueueAndOppositeQueueEmpty() {
-		// current queue empty, missed has items
-		// don't swap queues ebcause
+	void testSwapQueueWithMissedQueue() {
 		testAddDownRequestAboveDownElevator();
 
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
-		assertTrue(testQueue.isOppositeQueueEmpty());
 		assertTrue(testQueue.isMissedqueueEmpty());
 	}
 
 	@Test
-	void testSwapQueueWithMissedQueueNotEmptyAndOppositeQueueNotEmpty() {
-		// current queue empty, missed has items
-		// don't swap queues ebcause
+	void testSwapQueueWithMissedQueueAndOppositeQueue() {
+		// current queue empty, opposite missed not empty
 		testAddUpRequestBelowUpElevator();
 		testAddDownRequestAboveUpElevator();
 
