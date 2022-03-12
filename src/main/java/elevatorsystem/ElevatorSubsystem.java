@@ -61,7 +61,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 			if (!requestQueue.isEmpty()) {
 				SystemEvent request = requestQueue.remove();
 				sendMessage(request, elevatorSubsystemBuffer, origin);
-				System.out.println(origin + " Sent Request Successful to Scheduler");
 			}
 		}
 	}

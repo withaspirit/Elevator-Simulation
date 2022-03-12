@@ -13,7 +13,8 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 /**
- * Test class for MessageTransfer methods
+ * MessageTransferTest ensures the encoding/decoding methods provided by the
+ * MessageTransfer class are functional.
  * 
  * @author Julian
  */
