@@ -20,7 +20,7 @@ public class ElevatorSelectionTest {
 
     @BeforeEach
     void setUp() {
-        elevatorSubsystem = new ElevatorSubsystem(elevatorSubsystemBuffer);
+        elevatorSubsystem = new ElevatorSubsystem();
         elevator1 = new Elevator(1, elevatorSubsystem);
         elevator2 = new Elevator(2, elevatorSubsystem);
         elevatorSubsystem.addElevator(elevator1);

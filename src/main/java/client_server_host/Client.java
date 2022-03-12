@@ -14,7 +14,6 @@ public class Client {
 
     private final int portNumber;
     private MessageTransfer messageTransfer;
-    private Origin origin;
 
     /**
      * Constructor for Client.
@@ -81,8 +80,7 @@ public class Client {
     * @param packet to convert to event
     * @return event of packet
     */
-   public SystemEvent convertToSystemEvent(DatagramPacket packet) {
-       SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());
-       return event;
+   public Object convertToSystemEvent(DatagramPacket packet) {
+       return messageTransfer.decodeObject(packet.getData());
    }
 }

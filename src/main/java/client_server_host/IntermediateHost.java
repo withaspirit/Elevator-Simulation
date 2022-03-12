@@ -57,7 +57,7 @@ public class IntermediateHost {
         } else {
             // packet is data
             // send message to recipient acknowledging that message was received
-            byte[] acknowledgeByteArray = "received".getBytes();
+            byte[] acknowledgeByteArray = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
             DatagramPacket acknowledgePacket = messageTransfer.createPacket(acknowledgeByteArray, receivePacket.getAddress(), receivePacket.getPort());
             messageTransfer.sendMessage(acknowledgePacket);
             return true;
@@ -101,8 +101,6 @@ public class IntermediateHost {
             byte[] emptyQueueByteArray = "emptyQueue".getBytes();
             packetToSend = messageTransfer.createPacket(emptyQueueByteArray, packet.getAddress(), packet.getPort());
         }
-        if (packet.getPort() != Port.SERVER.getNumber()) {
-            messageTransfer.sendMessage(packetToSend);
-        }
+        messageTransfer.sendMessage(packetToSend);
     }
 }

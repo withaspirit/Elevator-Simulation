@@ -2,6 +2,7 @@ package floorsystem;
 
 import client_server_host.Client;
 import client_server_host.Port;
+import client_server_host.RequestMessage;
 import misc.*;
 import requests.*;
 import systemwide.BoundedBuffer;
@@ -68,24 +69,10 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 
 					} else if (object instanceof ApproachEvent approachEvent) {
 						processApproachEvent(approachEvent);
-					}
-				}
-			} else {
-				//  add to floorBuffer if possible
-				if (!requests.isEmpty()) {
-					// Sending Data to Scheduler
-					SystemEvent event = requests.remove(requests.size() - 1);
-
-					sendMessage(event, floorSubsystemBuffer, origin);
-				}
-
-				// check if can remove from buffer before trying to remove
-				if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-					SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
-					if (request instanceof FloorRequest floorRequest) {
-
-					} else if (request instanceof ApproachEvent approachEvent) {
-						processApproachEvent(approachEvent);
+					} else if (object instanceof String string) {
+						if (!string.equals(RequestMessage.ACKNOWLEDGE)){
+							client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
+						}
 					}
 				}
 			}

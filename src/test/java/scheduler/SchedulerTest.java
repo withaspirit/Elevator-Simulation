@@ -1,5 +1,6 @@
 package scheduler;
 
+import client_server_host.Port;
 import elevatorsystem.ElevatorSubsystem;
 import floorsystem.FloorSubsystem;
 import systemwide.BoundedBuffer;
@@ -33,14 +34,11 @@ class SchedulerTest {
         // Request
         serviceRequest = new ServiceRequest(LocalTime.NOON, 1, Direction.UP, Origin.FLOOR_SYSTEM);
 
-        // Set up buffers
-        elevatorBuffer = new BoundedBuffer();
-        floorBuffer = new BoundedBuffer();
-
         // Set up systems
-        scheduler = new Scheduler(elevatorBuffer, floorBuffer);
-        elevatorSubsystem = new ElevatorSubsystem(elevatorBuffer);
-        floorSubsystem = new FloorSubsystem(floorBuffer);
+        scheduler = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
+        scheduler = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
+        elevatorSubsystem = new ElevatorSubsystem();
+        floorSubsystem = new FloorSubsystem();
     }
 
     @AfterEach

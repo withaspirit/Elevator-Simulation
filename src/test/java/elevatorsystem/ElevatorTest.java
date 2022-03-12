@@ -21,14 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class ElevatorTest {
 
-    private BoundedBuffer boundedBuffer;
     private ElevatorSubsystem elevatorSubsystem;
     private Elevator elevator;
 
     @BeforeEach
     void setUp() {
-        boundedBuffer = new BoundedBuffer();
-        elevatorSubsystem = new ElevatorSubsystem(boundedBuffer);
+        elevatorSubsystem = new ElevatorSubsystem();
         elevator = new Elevator(1, elevatorSubsystem);
         elevatorSubsystem.addElevator(elevator);
 

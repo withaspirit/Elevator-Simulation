@@ -2,6 +2,7 @@ package elevatorsystem;
 
 import client_server_host.Client;
 import client_server_host.Port;
+import client_server_host.RequestMessage;
 import requests.*;
 import systemwide.BoundedBuffer;
 import systemwide.Direction;
@@ -29,18 +30,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 
 	/**
 	 * Constructor for ElevatorSubsystem.
-	 *
-	 * @param buffer the buffer the ElevatorSubsystem passes messages to and receives messages from
-	 */
-	public ElevatorSubsystem(BoundedBuffer buffer) {
-		this.elevatorSubsystemBuffer = buffer;
-		elevatorList = new ArrayList<>();
-		requestQueue = new LinkedList<>();
-		origin = Origin.ELEVATOR_SYSTEM;
-	}
-
-	/**
-	 * Constructor for ElevatorSubsystem.
 	 */
 	public ElevatorSubsystem() {
 		this.elevatorSubsystemBuffer = null;
@@ -58,45 +47,23 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	public void run() {
 		while (true) {
-			if (server != null) {
-				Object object = null;
-				if (!requestQueue.isEmpty()) {
-					object = server.sendAndReceiveReply(requestQueue.remove());
-				} else {
-					// TODO remove this as it is causing the infinite loop but this is currently required to show message passing
-					object = server.sendAndReceiveReply(new FloorRequest(LocalTime.now(), 0, Direction.NONE, 0, origin));
-					//object = server.sendAndReceiveReply(new StatusUpdate());
-				}
-
-				if (object instanceof ElevatorRequest elevatorRequest) {
-					int chosenElevator = chooseElevator(elevatorRequest);
-					// Choose elevator
-					// Move elevator
-					elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-					requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
-				} else if (object instanceof ApproachEvent approachEvent) {
-					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-				}
+			Object object;
+			if (!requestQueue.isEmpty()) {
+				object = server.sendAndReceiveReply(requestQueue.remove());
 			} else {
-				if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-					SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
-					if (request instanceof ElevatorRequest elevatorRequest) {
-						int chosenElevator = chooseElevator(elevatorRequest);
-						// Choose elevator
-						// Move elevator
-						elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-						requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
-					} else if (request instanceof ApproachEvent approachEvent) {
-						elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-					}
-				}
-				// send message if possible
-				if (!requestQueue.isEmpty()) {
-					SystemEvent request = requestQueue.remove();
-					sendMessage(request, elevatorSubsystemBuffer, origin);
-				}
+				// TODO remove this as it is causing the infinite loop but this is currently required to show message passing
+				object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
 			}
 
+			if (object instanceof ElevatorRequest elevatorRequest) {
+				int chosenElevator = chooseElevator(elevatorRequest);
+				// Choose elevator
+				// Move elevator
+				elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
+				requestQueue.add(new FloorRequest(elevatorRequest, chosenElevator));
+			} else if (object instanceof ApproachEvent approachEvent) {
+				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+			}
 		}
 	}
 
