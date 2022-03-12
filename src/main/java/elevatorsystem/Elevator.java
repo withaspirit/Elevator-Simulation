@@ -94,15 +94,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 			if (!floorsQueue.isUpqueueEmpty() || !floorsQueue.isDownqueueEmpty() || !floorsQueue.isMissedqueueEmpty()) {
 				// Status
 				printStatus();
+				// Swap service direction check
         		swapServiceDirectionIfNecessary();
 				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
 				while(!floorsQueue.isCurrentQueueEmpty()){
-					// Peek the next request in the motors direction
-					int nextRequest = floorsQueue.peekNextFloor(motor.getDirection());
-
 					// Compare the request floor and the next floor
-					compareFloors(nextRequest);
-
+					compareFloors();
 					// Move to next floor
 					simulateMovement();
 				}
@@ -113,18 +110,22 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Compares the destinationFloor to the next floor and updates the Motor accordingly
 	 *
-	 * @param destinationFloor
+	 * @param
 	 */
-	public void compareFloors(int destinationFloor){
+	public void compareFloors(){
+		// Requested destination floor
+		int destinationFloor = floorsQueue.peekNextRequest();
+
+		// Next floor in service direction
+		int nextFloor = floorsQueue.peekNextFloor(motor.getDirection());
+
 		// Motor is IDLE
 		if(motor.isIdle()){
 			// Next floor is the destination floor
-			if(destinationFloor == floorsQueue.peekNextFloor(motor.getDirection())){
+			if(destinationFloor == nextFloor){
 				// Remove request from queue
-				System.out.println("Floor " + floorsQueue.peekNextFloor(motor.getDirection()) + " removed from queue");
+				System.out.println("Floor " + destinationFloor + " removed from queue");
 				floorsQueue.removeRequest();
-
-
 				// Open doors
 				/*
 				if(!elevatorDoors.areOpen()){
@@ -147,11 +148,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// Motor is ACTIVE
 		else{
 			// Next floor is not the destination floor
-			if(destinationFloor != floorsQueue.peekNextFloor(motor.getDirection())){
+			if(destinationFloor != nextFloor){
 				// Don't change motor
 			}
 			// Next floor is the destination floor
-			else if(destinationFloor == floorsQueue.peekNextFloor(motor.getDirection())){
+			else {
 				// Remove the request floor from the queue
 				System.out.println("Floor " + floorsQueue.peekNextFloor(motor.getDirection()) + " removed from queue");
 				floorsQueue.removeRequest();
@@ -162,10 +163,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 					// Update the motor
 					updateMotor(floorsQueue.peekNextRequest());
 				}
-			}
-			// Current floor is the destination floor
-			else{
-				System.out.println("Request missed");
 			}
 		}
 	}
