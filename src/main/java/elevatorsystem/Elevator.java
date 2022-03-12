@@ -100,6 +100,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			 */
 
 
+
 			if (!requests.isEmpty()) {
 				System.out.println();
 				System.out.println("Elevator #" + elevatorNumber + "'s remaining requests: " + requests);
@@ -107,6 +108,82 @@ public class Elevator implements Runnable, SubsystemPasser {
 				printStatus();
 				System.out.println("Requests in list: " + requests);
 				processRequest(getNextRequest());
+			}
+			/*
+			if (!floorsQueue.isUpqueueEmpty() || !floorsQueue.isDownqueueEmpty() || !floorsQueue.isMissedqueueEmpty()) {
+				// Status
+				System.out.println("Loop entered");
+				printStatus();
+				// Swap service direction check
+        		swapServiceDirectionIfNecessary();
+				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
+				while(!floorsQueue.isCurrentQueueEmpty()){
+					// Compare the request floor and the next floor
+					compareFloors();
+					// Move to next floor
+					motor.move(currentFloor, floorsQueue.peekNextRequest(),motor.getDirection());
+				}
+      }
+     */
+		}
+	}
+
+	/**
+	 * Compares the destinationFloor to the next floor and updates the Motor accordingly
+	 *
+	 * @param
+	 */
+	public void compareFloors(){
+		// Requested destination floor
+		int destinationFloor = floorsQueue.peekNextRequest();
+
+		// Next floor in service direction
+		int nextFloor = motor.move(currentFloor, destinationFloor, motor.getDirection());
+
+		// Motor is IDLE
+		if(motor.isIdle()){
+			// Next floor is the destination floor
+			if(destinationFloor == nextFloor){
+				// Remove request from queue
+				System.out.println("Floor " + destinationFloor + " removed from queue");
+				floorsQueue.removeRequest();
+				// Open doors
+				/*
+				if(!elevatorDoors.areOpen()){
+					elevatorDoors.open();
+				}
+				 */
+			}
+			// Motor IDLE and next floor is not the destination floor
+			else{
+				// Close doors
+				/*
+				if(elevatorDoors.areOpen()){
+					elevatorDoors.close();
+				}
+				 */
+				// Update the Motor
+				updateMotor(destinationFloor);
+			}
+		}
+		// Motor is ACTIVE
+		else{
+			// Next floor is not the destination floor
+			if(destinationFloor != nextFloor){
+				// Don't change motor
+			}
+			// Next floor is the destination floor
+			else {
+				// Remove the request floor from the queue
+				System.out.println("Floor " + destinationFloor + " removed from queue");
+				floorsQueue.removeRequest();
+
+				// Current floorsQueue isn't empty and the next request is on a different floor
+				// NOTE: This check may be redundant
+				if(destinationFloor != currentFloor && !floorsQueue.isCurrentQueueEmpty()){
+					// Update the motor
+					updateMotor(destinationFloor);
+				}
 			}
 		}
 	}
@@ -139,8 +216,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		requests.add(serviceRequest);
-		int elevatorFloorToPass = currentFloor;
-		floorsQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
+		// int elevatorFloorToPass = currentFloor;
+		// floorsQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
 	}
 
 	/**
@@ -274,6 +351,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Processes a serviceRequest and moves based on the request type
 	 *
+	 *
+	 *
 	 * @param serviceRequest the request that's sent to elevator
 	 */
 	public void processRequest(ServiceRequest serviceRequest){
@@ -336,7 +415,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			}
 			setCurrentFloor(nextFloor);
 			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor);
-    }
+    	}
 		// Set to idle once floor reached
 		System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
 		motor.stop();
@@ -404,12 +483,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * NOTE: Might be changed to simply use the first request in the queue
 	 *
-	 * @param serviceRequest update the motor
+	 * @param reqFloor the number of the floor that is requested
 	 */
-	public void updateMotor(ServiceRequest serviceRequest){
-		// Destination floor
-		int reqFloor = serviceRequest.getFloorNumber();
-
+	public void updateMotor(int reqFloor){
 		// STOPPED
 		if(motor.isIdle()){
 			// Next floor = destination
