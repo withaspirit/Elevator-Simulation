@@ -45,7 +45,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private float displacement;
 	private double queueTime;
 
-	//private final Doors doors;
+	private final Doors doors;
 	private final ElevatorMotor motor;
 	private Direction currentDirection;
 	private FloorsQueue floorsQueue;
@@ -90,11 +90,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while (true) {
-			// Current queue is not empty
-			if(!floorsQueue.isEmpty()){
-				// Statu
+			// All Queues are not empty
+			if (!floorsQueue.isUpqueueEmpty() || !floorsQueue.isDownqueueEmpty() || !floorsQueue.isMissedqueueEmpty()) {
+				// Status
 				printStatus();
-        swapServiceDirectionIfNecessary();
+        		swapServiceDirectionIfNecessary();
 				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
 				while(!floorsQueue.isCurrentQueueEmpty()){
 					// Peek the next request in the motors direction
@@ -106,7 +106,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 					// Move to next floor
 					simulateMovement();
 				}
-      }
+      		}
 		}
 	}
 
