@@ -45,7 +45,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private float displacement;
 	private double queueTime;
 
-	private final Doors doors;
+	//private final Doors doors;
 	private final ElevatorMotor motor;
 	private Direction currentDirection;
 	private FloorsQueue floorsQueue;
@@ -90,12 +90,178 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while (true) {
-			if (!requests.isEmpty()) {
-				System.out.println("\nCurrent Status: ");
+			// Current queue is not empty
+			if(!floorsQueue.isCurrentQueueEmpty()){
+				// Status
 				printStatus();
-				System.out.println("Requests in list: " + requests);
-				processRequest(getNextRequest());
+
+				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
+				while(!floorsQueue.isCurrentQueueEmpty()){
+					// Peek the next request in the motors direction
+					int nextRequest = floorsQueue.peekNextFloor(motor.getDirection());
+
+					// Compare the request floor and the next floor
+					compareFloors(nextRequest);
+
+					// Move to next floor
+					simulateMovement();
+				}
 			}
+			// Current queue is empty
+			else{
+				// Loop until we get a queue that isn't empty
+				while(floorsQueue.isCurrentQueueEmpty()){
+					swapServiceDirectionIfNecessary();
+				}
+
+				// Floors queue we switched to is still empty
+				if(floorsQueue.isCurrentQueueEmpty()){
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Compares the destinationFloor to the next floor and updates the Motor accordingly
+	 *
+	 * @param destinationFloor
+	 */
+	public void compareFloors(int destinationFloor){
+		// Motor is IDLE
+		if(motor.isIdle()){
+			// Next floor is the destination floor
+			if(destinationFloor == floorsQueue.peekNextFloor(motor.getDirection())){
+				// Remove request from queue
+				System.out.println("Floor " + floorsQueue.peekNextFloor(motor.getDirection()) + " removed from queue");
+				floorsQueue.removeRequest();
+
+
+				// Open doors
+				/*
+				if(!elevatorDoors.areOpen()){
+					elevatorDoors.open();
+				}
+				 */
+			}
+			// Motor IDLE and next floor is not the destination floor
+			else{
+				// Close doors
+				/*
+				if(elevatorDoors.areOpen()){
+					elevatorDoors.close();
+				}
+				 */
+				// Update the Motor
+				updateMotor(floorsQueue.peekNextRequest());
+			}
+		}
+		// Motor is ACTIVE
+		else{
+			// Next floor is not the destination floor
+			if(destinationFloor != floorsQueue.peekNextFloor(motor.getDirection())){
+				// Don't change motor
+			}
+			// Next floor is the destination floor
+			else if(destinationFloor == floorsQueue.peekNextFloor(motor.getDirection())){
+				// Remove the request floor from the queue
+				System.out.println("Floor " + floorsQueue.peekNextFloor(motor.getDirection()) + " removed from queue");
+				floorsQueue.removeRequest();
+
+				// Current floorsQueue isn't empty and the next request is on a different floor
+				// NOTE: This check may be redundant
+				if(floorsQueue.peekNextRequest() != currentFloor && !floorsQueue.isCurrentQueueEmpty()){
+					// Update the motor
+					updateMotor(floorsQueue.peekNextRequest());
+				}
+			}
+			// Current floor is the destination floor
+			else{
+				System.out.println("Request missed");
+			}
+		}
+	}
+
+	/**
+	 * Method used to help visualize the movement of the elevator
+	 *
+	 * NOTE: This method could be used for processing arrival sensors but if not then it'll likely get removed
+	 */
+	public void simulateMovement(){
+		// Get the request floor
+		int reqFloor = floorsQueue.peekNextRequest();
+
+		// Get the next floor in the motor's service direction
+		int nextFloor = motor.move(currentFloor, reqFloor, motor.getDirection());
+
+		// Print movement
+		System.out.println("Elevator " + elevatorNumber + " moved from floors: " + currentFloor + " -> " + nextFloor);
+
+		// Move elevator
+		setCurrentFloor(nextFloor);
+	}
+
+	/**
+	 * Unsuccessful attempt to update the floors queue based on a serviceRequest
+	 *
+	 * NOTE: Should be removed but will be kept for now
+	 *
+	 * @param serviceRequest
+	 */
+	public void updateFloorsQueue(ServiceRequest serviceRequest){
+		// If motor is IDLE then this serviceRequest dictates the new service direction
+		if(motor.isIdle()){
+			// Update the motor
+			updateMotor(floorsQueue.peekNextRequest());
+
+			// Service
+			if(serviceRequest instanceof ElevatorRequest elevatorRequest){
+				// If service request is not from the same floor that the elevator is currently on
+				if(serviceRequest.getFloorNumber() != currentFloor){
+					// Move to the floor that the serviceRequest came from
+					floorsQueue.addFloor(serviceRequest.getFloorNumber(), currentFloor, serviceRequest.getFloorNumber(), motor.getDirection());
+
+					// Now move to the destination floor
+					//floorsQueue.addFloor(elevatorRequest.);
+				}
+				// Service request is from the same floor that elevator is currently on
+				else{
+					// Move to the floor number specified from request
+					floorsQueue.addFloor(serviceRequest.getFloorNumber(), currentFloor, serviceRequest.getFloorNumber(), motor.getDirection());
+				}
+
+				// "Move" to the floor that made the request first
+				floorsQueue.addFloor(serviceRequest.getFloorNumber(), currentFloor, elevatorRequest.getDesiredFloor(), serviceDirection);
+
+				// Now we can "move" to the destination floor
+				addRequestToQueue(elevatorRequest);
+				// Note that at this point there's only two requests sitting in the current floor queue
+			}
+			// Request came from outside the elevator
+			else{
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Processes an elevator request and updates the queue's accordingly
+	 *
+	 * NOTE: Should also be removed since we don't have to process elevatorRequests this way
+	 *
+	 * @param elevatorRequest
+	 */
+	public void addRequestToQueue(ElevatorRequest elevatorRequest){
+		// If the current queue is empty
+		if(floorsQueue.isCurrentQueueEmpty()){
+			// Add the request to the floor Queue
+			floorsQueue.addFloor(elevatorRequest.getFloorNumber(), currentFloor, elevatorRequest.getDesiredFloor(), serviceDirection);
+		}
+		// current queue is not empty
+		else{
+			// Find how many requests there are between destinations
 		}
 	}
 
@@ -105,7 +271,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * TODO: MovementState is IDLE. If so, the elevator uses this method.
 	 */
 	public void swapServiceDirectionIfNecessary() {
-		System.out.println("Elevator attempting to change queues.");
+		// System.out.println("Elevator attempting to change queues.");
+		// If 0: Swap successful
 		if (floorsQueue.swapQueues(serviceDirection) == 0) {
 			serviceDirection = Direction.swapDirection(serviceDirection);
 		}
@@ -126,7 +293,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param serviceRequest a service request for the elevator to perform
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
-		requests.add(serviceRequest);
+
 	}
 
 	/**
@@ -260,14 +427,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Processes a serviceRequest and moves based on the request type
 	 *
+	 *
+	 *
 	 * @param serviceRequest the request that's sent to elevator
 	 */
 	public void processRequest(ServiceRequest serviceRequest){
+		/**
 		// If request is an elevator request (from outside the elevator)
 		System.out.println("Processing " + serviceRequest);
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Move to floor from which elevatorRequest originated
-			moveToFloor(elevatorRequest);
+			//moveToFloor(elevatorRequest);
 			// created a ServiceRequest going to the desired floor for the desired floor
 			ServiceRequest request = new ServiceRequest(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
 					elevatorRequest.getDirection(), elevatorRequest.getOrigin());
@@ -276,6 +446,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		} else {
 			moveToFloor(serviceRequest);
 		}
+		 **/
 	}
 
 	/**
@@ -390,12 +561,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * NOTE: Might be changed to simply use the first request in the queue
 	 *
-	 * @param serviceRequest update the motor
+	 * @param reqFloor the number of the floor that is requested
 	 */
-	public void updateMotor(ServiceRequest serviceRequest){
-		// Destination floor
-		int reqFloor = serviceRequest.getFloorNumber();
-
+	public void updateMotor(int reqFloor){
 		// STOPPED
 		if(motor.isIdle()){
 			// Next floor = destination
@@ -407,16 +575,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// Close doors
 				// elevatorDoor.setClose();
 
+				// start moving
 				// Change motor state
 				motor.setMovementState(MovementState.ACTIVE);
 
 				// Set motor Direction
-				if(currentFloor > reqFloor){
-					motor.setDirection(Direction.DOWN);
-				}
-				else{
-					motor.setDirection(Direction.UP);
-				}
+				motor.changeDirection(currentFloor, reqFloor);
 			}
 		}
 		// ACTIVE
@@ -424,38 +588,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Next floor != destination
 			if(currentFloor != reqFloor){
 				// If motor is moving in the wrong direction
-				if(currentFloor > reqFloor){
-					motor.setDirection(Direction.DOWN);
-				}
-				else{
-					motor.setDirection(Direction.UP);
-				}
+				motor.changeDirection(currentFloor, reqFloor);
 			}
 			// Next floor == destination
 			else{
-				if(serviceRequest instanceof ElevatorRequest elevatorRequest){
-					// Next floor is the floor where the request came from
-					if(currentFloor == elevatorRequest.getFloorNumber()){
-						// Stop at floor
-						motor.setMovementState(MovementState.IDLE);
-						// Set motor in the Direction given in elevatorRequest (load passenger)
-						motor.setDirection(elevatorRequest.getDirection());
-					}
-					// Next floor is the desired floor for the request (unload passenger)
-					else if(currentFloor == elevatorRequest.getDesiredFloor()){
-						// Stop at floor
-						motor.setMovementState(MovementState.IDLE);
-
-						// Open doors
-						// elevatorDoors.setOpen();
-
-						// No requests in the queue for the current Direction
-						if(requests.isEmpty()){
-							// No direction currently
-							motor.setDirection(Direction.NONE);
-						}
-					}
-				}
+				motor.stop();
 			}
 		}
 	}

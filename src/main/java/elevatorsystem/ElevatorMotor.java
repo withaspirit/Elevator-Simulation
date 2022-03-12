@@ -75,6 +75,24 @@ public class ElevatorMotor {
 	}
 
 	/**
+	 * Changes the direction of the Motor depending on the elevator's location
+	 * and the location of its next floor to visit.
+	 *
+	 * @param currentFloor the current floor of the elevator
+	 * @param requestFloor the number of the elevator's next floor to visit
+	 */
+	public void changeDirection(int currentFloor, int requestFloor) {
+		if (currentFloor > requestFloor) {
+			setDirection(Direction.DOWN);
+		} else if (currentFloor < requestFloor) {
+			setDirection(Direction.UP);
+		} else {
+			// do nothing because elevator is on the same floor
+		}
+	}
+
+
+	/**
 	 * Stops the elevator.
 	 */
 	public void stop(){
