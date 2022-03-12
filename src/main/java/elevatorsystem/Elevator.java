@@ -90,6 +90,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while (true) {
+			/*
 			// All Queues are not empty
 			if (!requests.isEmpty()) {
 				System.out.println();
@@ -99,7 +100,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				System.out.println("Requests in list: " + requests);
 				processRequest(getNextRequest());
 			}
-			/*
+			*/
 			if (!floorsQueue.isUpqueueEmpty() || !floorsQueue.isDownqueueEmpty() || !floorsQueue.isMissedqueueEmpty()) {
 				// Status
 				System.out.println("Loop entered");
@@ -114,7 +115,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 					motor.move(currentFloor, floorsQueue.peekNextRequest(),motor.getDirection());
 				}
       		}
-			 */
 		}
 	}
 
@@ -128,7 +128,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		int destinationFloor = floorsQueue.peekNextRequest();
 
 		// Next floor in service direction
-		int nextFloor = floorsQueue.peekNextFloor(motor.getDirection());
+		int nextFloor = motor.move(currentFloor, destinationFloor, motor.getDirection());
 
 		// Motor is IDLE
 		if(motor.isIdle()){
@@ -153,7 +153,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				}
 				 */
 				// Update the Motor
-				updateMotor(floorsQueue.peekNextRequest());
+				updateMotor(destinationFloor);
 			}
 		}
 		// Motor is ACTIVE
@@ -165,36 +165,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Next floor is the destination floor
 			else {
 				// Remove the request floor from the queue
-				System.out.println("Floor " + floorsQueue.peekNextFloor(motor.getDirection()) + " removed from queue");
+				System.out.println("Floor " + destinationFloor + " removed from queue");
 				floorsQueue.removeRequest();
 
 				// Current floorsQueue isn't empty and the next request is on a different floor
 				// NOTE: This check may be redundant
-				if(floorsQueue.peekNextRequest() != currentFloor && !floorsQueue.isCurrentQueueEmpty()){
+				if(destinationFloor != currentFloor && !floorsQueue.isCurrentQueueEmpty()){
 					// Update the motor
-					updateMotor(floorsQueue.peekNextRequest());
+					updateMotor(destinationFloor);
 				}
 			}
 		}
-	}
-
-	/**
-	 * Method used to help visualize the movement of the elevator
-	 *
-	 * NOTE: This method could be used for processing arrival sensors but if not then it'll likely get removed
-	 */
-	public void simulateMovement(){
-		// Get the request floor
-		int reqFloor = floorsQueue.peekNextRequest();
-
-		// Get the next floor in the motor's service direction
-		int nextFloor = motor.move(currentFloor, reqFloor, motor.getDirection());
-
-		// Print movement
-		System.out.println("Elevator " + elevatorNumber + " moved from floors: " + currentFloor + " -> " + nextFloor);
-
-		// Move elevator
-		setCurrentFloor(nextFloor);
 	}
 
 	/**
