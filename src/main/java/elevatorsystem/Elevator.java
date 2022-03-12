@@ -92,6 +92,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 		while (true) {
 			// All Queues are not empty
 			if (!requests.isEmpty()) {
+				System.out.println();
+				System.out.println("Elevator #" + elevatorNumber + "'s remaining requests: " + requests);
+				System.out.println("Current Status: ");
+				printStatus();
+				System.out.println("Requests in list: " + requests);
 				processRequest(getNextRequest());
 			}
 			/*
