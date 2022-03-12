@@ -78,7 +78,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	public void processData(DatagramPacket packet) {
 
 		// identify the Origin of the packet
-		SystemEvent event = intermediateHost.convertToSystemEvent(packet);
+		SystemEvent event = intermediateHost.convertPacketToSystemEvent(packet);
 		Origin eventOrigin = event.getOrigin();
 
 		// manipulate the packet according to its origin
