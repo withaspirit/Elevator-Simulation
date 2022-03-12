@@ -106,7 +106,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 					// Compare the request floor and the next floor
 					compareFloors();
 					// Move to next floor
-					simulateMovement();
+					motor.move(currentFloor, floorsQueue.peekNextRequest(),motor.getDirection());
 				}
       		}
 			 */
