@@ -14,6 +14,7 @@ public class Client {
 
     private final int portNumber;
     private MessageTransfer messageTransfer;
+    private Origin origin;
 
     /**
      * Constructor for Client.
