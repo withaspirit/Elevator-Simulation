@@ -7,6 +7,7 @@ import requests.*;
 import systemwide.BoundedBuffer;
 import systemwide.Origin;
 
+import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -62,6 +63,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 			if (client != null){
 				if (!requests.isEmpty()) {
 					Object object = client.sendAndReceiveReply(requests.remove(requests.size() - 1));
+
 					if (object instanceof FloorRequest floorRequest) {
 
 					} else if (object instanceof ApproachEvent approachEvent) {

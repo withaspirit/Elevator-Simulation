@@ -60,7 +60,7 @@ public class Client {
      * @param object with the message to send, either an Event or an Array
      * @return packet of the object
      */
-    public DatagramPacket sendAndReceiveReply(Object object) {
+    public Object sendAndReceiveReply(Object object) {
     	//Sending object
     	DatagramPacket sendPacket = buildPacket(object);
     	messageTransfer.sendMessage(sendPacket);
@@ -69,7 +69,8 @@ public class Client {
         DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
         messageTransfer.receiveMessage(receivePacket);
         messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
-        return receivePacket;
+
+        return convertToSystemEvent(receivePacket);
     }
     
     /**

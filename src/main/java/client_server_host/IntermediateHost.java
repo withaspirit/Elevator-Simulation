@@ -57,7 +57,7 @@ public class IntermediateHost {
         } else {
             // packet is data
             // send message to recipient acknowledging that message was received
-            byte[] acknowledgeByteArray = "ack".getBytes();
+            byte[] acknowledgeByteArray = "received".getBytes();
             DatagramPacket acknowledgePacket = messageTransfer.createPacket(acknowledgeByteArray, receivePacket.getAddress(), receivePacket.getPort());
             messageTransfer.sendMessage(acknowledgePacket);
             return true;
