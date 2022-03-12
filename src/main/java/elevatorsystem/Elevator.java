@@ -91,7 +91,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void run() {
 		while (true) {
 			/*
-			// All Queues are not empty
+			while (!floorsQueue.isEmpty()) {
+				swapServiceDirectionIfNecessary();
+				while (!floorsQueue.isCurrentQueueEmpty()) {
+					// move elevator and stuff
+				}
+			}
+			 */
+
+
+
 			if (!requests.isEmpty()) {
 				System.out.println();
 				System.out.println("Elevator #" + elevatorNumber + "'s remaining requests: " + requests);
@@ -100,7 +109,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				System.out.println("Requests in list: " + requests);
 				processRequest(getNextRequest());
 			}
-			*/
+			/*
 			if (!floorsQueue.isUpqueueEmpty() || !floorsQueue.isDownqueueEmpty() || !floorsQueue.isMissedqueueEmpty()) {
 				// Status
 				System.out.println("Loop entered");
@@ -114,7 +123,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 					// Move to next floor
 					motor.move(currentFloor, floorsQueue.peekNextRequest(),motor.getDirection());
 				}
-      		}
+      }
+     */
 		}
 	}
 
@@ -206,7 +216,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		requests.add(serviceRequest);
-		// floorsQueue.addFloor(currentFloor, elevatorDirection, serviceRequest);
+		// int elevatorFloorToPass = currentFloor;
+		// floorsQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
 	}
 
 	/**
