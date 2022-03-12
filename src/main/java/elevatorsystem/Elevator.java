@@ -108,7 +108,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void swapServiceDirectionIfNecessary() {
 		System.out.println("Elevator attempting to change queues.");
-		if (floorsQueue.swapQueues(serviceDirection) == 0) {
+		if (floorsQueue.swapQueues()) {
 			serviceDirection = Direction.swapDirection(serviceDirection);
 		}
 	}
