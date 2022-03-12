@@ -203,9 +203,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * TODO: MovementState is IDLE. If so, the elevator uses this method.
 	 */
 	public void swapServiceDirectionIfNecessary() {
-		// System.out.println("Elevator attempting to change queues.");
-		// If 0: Swap successful
-		if (floorsQueue.swapQueues(serviceDirection) == 0) {
+		System.out.println("Elevator attempting to change queues.");
+		if (floorsQueue.swapQueues()) {
 			serviceDirection = Direction.swapDirection(serviceDirection);
 		}
 	}
