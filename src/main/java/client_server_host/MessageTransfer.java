@@ -145,12 +145,22 @@ public class MessageTransfer {
         Object object = decodeObject(packet.getData());
         if (! (object instanceof String)) {
             System.out.println(name + ": Packet received:");
-    //		System.out.println("From host: " + packet.getAddress());
-            System.out.println("Host port: " + packet.getPort());
+            if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
+                System.out.println("from Scheduler");
+            } else if (packet.getPort() == Port.CLIENT.getNumber()) {
+                System.out.println("from Client");
+            } else if (packet.getPort() == Port.SERVER.getNumber()) {
+                System.out.println("from Server");
+            }
+            System.out.println("From host: " + packet.getAddress().getHostAddress() + "/" + packet.getPort());
             int len = packet.getLength();
             System.out.println("Length: " + len);
             System.out.print("Containing: ");
-            System.out.println(object);
+            if (object instanceof String string) {
+                System.out.println(string);
+            } else {
+                System.out.println(object);
+            }
             System.out.println();
         }
     }
@@ -177,7 +187,7 @@ public class MessageTransfer {
     public byte[] encodeObject(Object object) {
         byte[] objectBytes = null;
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            ObjectOutputStream out = null;
+            ObjectOutputStream out;
             out = new ObjectOutputStream(bos);
             out.writeObject(object);
             out.flush();
@@ -185,7 +195,6 @@ public class MessageTransfer {
         } catch (Exception ex) {
             // ignore exception
         }
-        // ignore close exception
         return objectBytes;
     }
 
@@ -204,7 +213,6 @@ public class MessageTransfer {
         } catch (Exception ex) {
             // ignore exception
         }
-        // ignore close exception
         if (object == null){
             object = new String(objectBytes);
         }
