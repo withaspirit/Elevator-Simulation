@@ -66,17 +66,7 @@ public class BoundedBuffer {
         if (itemQueue.isEmpty()) {
             return false;
         }
-        return !identicalOrigin(origin);
-    }
-
-    /**
-     * Determines whether the request's origin is the same as the provided origin.
-     *
-     * @param origin the origin that is attempting to remove a SystemEvent
-     * @return true if successful, false otherwise
-     */
-    public synchronized boolean identicalOrigin(Origin origin) {
-        return origin == itemQueue.peek().getOrigin();
+        return origin != itemQueue.peek().getOrigin();
     }
 
     /**

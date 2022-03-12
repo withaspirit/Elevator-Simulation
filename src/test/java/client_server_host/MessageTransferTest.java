@@ -1,7 +1,9 @@
 package client_server_host;
 
+import java.net.DatagramPacket;
 import java.time.LocalTime;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,9 +15,10 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 /**
- * Test class for MessageTransfer methods
+ * MessageTransferTest ensures the encoding/decoding methods provided by the
+ * MessageTransfer class are functional.
  * 
- * @author Julian
+ * @author Julian, Liam Tripp
  */
 public class MessageTransferTest {
 
@@ -24,12 +27,13 @@ public class MessageTransferTest {
 	FloorRequest floorRequest;
 	ApproachEvent approachEvent;
 	LocalTime timeNow;
-	
+	int portNumber;
+
 	@BeforeEach
 	void setUp() {
-		int portNumber = 0;   //Any port number
-		timeNow = LocalTime.now(); 
-		msgTransfer = new MessageTransfer(portNumber);
+		timeNow = LocalTime.now();
+		msgTransfer = new MessageTransfer(0);
+		portNumber = msgTransfer.getPortNumber();
 		elevatorRequest = new ElevatorRequest(timeNow, 2, Direction.UP, 4, Origin.FLOOR_SYSTEM);
 		floorRequest = new FloorRequest(timeNow, 7, Direction.DOWN, 0, Origin.SCHEDULER);
 		approachEvent = new ApproachEvent(elevatorRequest, 3, 5);
@@ -87,5 +91,37 @@ public class MessageTransferTest {
 		assertEquals(requestOut.getFloorNumber(), approachEvent.getFloorNumber());
 		assertEquals(requestOut.getDirection(), approachEvent.getDirection());
 		assertEquals(requestOut.getElevatorNumber(), approachEvent.getElevatorNumber());
+	}
+
+	@Test
+	void testMaxByteArraySizeOfMessageNotExceeded() {
+		int maxByteArraySize = MessageTransfer.MAX_BYTE_ARRAY_SIZE;
+
+		byte[] byteArray = msgTransfer.encodeObject(approachEvent);
+		assertTrue(byteArray.length < maxByteArraySize);
+
+		byteArray = msgTransfer.encodeObject(elevatorRequest);
+		assertTrue(byteArray.length < maxByteArraySize);
+
+		byteArray = msgTransfer.encodeObject(floorRequest);
+		assertTrue(byteArray.length < maxByteArraySize);
+	}
+
+	@Test
+	void sendAndReceivePacketBetweenTwoSockets() {
+		MessageTransfer messageTransfer2 = new MessageTransfer(0);
+
+		// send message
+		byte[] byteArray = messageTransfer2.encodeObject(elevatorRequest);
+		DatagramPacket packetToSend = messageTransfer2.createPacket(byteArray, portNumber);
+		messageTransfer2.sendMessage(packetToSend);
+
+		// receive message
+		DatagramPacket receivePacket = msgTransfer.receiveMessage();
+		Object object = msgTransfer.decodeObject(receivePacket.getData());
+
+		// assert object has been transferred successfully
+		assertTrue(object instanceof SystemEvent);
+		assertTrue(object instanceof ElevatorRequest);
 	}
 }

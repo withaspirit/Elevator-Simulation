@@ -60,7 +60,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	// Variable to track if a passenger has been picked up
 
-
 	/**
 	 * Constructor for Elevator class
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
@@ -76,6 +75,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		direction = Direction.UP;
 		serviceDirection = Direction.UP;
 		motor = new ElevatorMotor();
+		doors = new Doors();
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
 		request = null;
@@ -91,10 +91,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void run() {
 		while (true) {
 			// Current queue is not empty
-			if(!floorsQueue.isCurrentQueueEmpty()){
-				// Status
+			if(!floorsQueue.isEmpty()){
+				// Statu
 				printStatus();
-
+        swapServiceDirectionIfNecessary();
 				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
 				while(!floorsQueue.isCurrentQueueEmpty()){
 					// Peek the next request in the motors direction
@@ -106,19 +106,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 					// Move to next floor
 					simulateMovement();
 				}
-			}
-			// Current queue is empty
-			else{
-				// Loop until we get a queue that isn't empty
-				while(floorsQueue.isCurrentQueueEmpty()){
-					swapServiceDirectionIfNecessary();
-				}
-
-				// Floors queue we switched to is still empty
-				if(floorsQueue.isCurrentQueueEmpty()){
-					break;
-				}
-			}
+      }
 		}
 	}
 
@@ -434,7 +422,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void processRequest(ServiceRequest serviceRequest){
 		/**
 		// If request is an elevator request (from outside the elevator)
-		System.out.println("Processing " + serviceRequest);
+		System.out.println("Elevator #" + elevatorNumber + " processing: " + serviceRequest);
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Move to floor from which elevatorRequest originated
 			//moveToFloor(elevatorRequest);
@@ -492,8 +480,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 				approachEvent = null;
 			}
 			setCurrentFloor(nextFloor);
-			System.out.println("Elevator moved to floor " + nextFloor);
-    	}
+			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor);
+    }
 		// Set to idle once floor reached
 		System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
 		motor.stop();

@@ -91,22 +91,19 @@ public class ElevatorMotor {
 		}
 	}
 
-
 	/**
 	 * Stops the elevator.
 	 */
-	public void stop(){
+	public void stop() {
 		// Set state and direction
 		setMovementState(MovementState.IDLE);
-//		setDirection(Direction.NONE);
-
-		System.out.println("Status: Stopped");
+		setDirection(Direction.NONE);
 	}
 
 	/**
 	 * Simulates the elevator moving up
 	 */
-	public void moveUp(){
+	public void moveUp() {
 		setMovementState(MovementState.ACTIVE);
 		this.setDirection(Direction.UP);
 		// setCurrentFloor(currentFloor + Math.abs(currentFloor - requestFloor));
@@ -115,7 +112,7 @@ public class ElevatorMotor {
 	/**
 	 * Simulates the elevator moving down
 	 */
-	public void moveDown(){
+	public void moveDown() {
 		// Set state and direction
 		setMovementState(MovementState.ACTIVE);
 		setDirection(Direction.DOWN);
@@ -128,7 +125,7 @@ public class ElevatorMotor {
 	 *
 	 * @return true if elevator is moving, false otherwise
 	 */
-	public boolean isActive(){
+	public boolean isActive() {
 		return getMovementState().equals(MovementState.ACTIVE);
 	}
 
