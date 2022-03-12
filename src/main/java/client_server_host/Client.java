@@ -68,11 +68,7 @@ public class Client {
     	//Receiving reply
         DatagramPacket receivePacket = messageTransfer.createEmptyPacket();
         messageTransfer.receiveMessage(receivePacket);
-        if (portNumber == Port.CLIENT.getNumber()){
-            messageTransfer.printReceiveMessage(Origin.FLOOR_SYSTEM.name(), receivePacket);
-        } else {
-            messageTransfer.printReceiveMessage(Origin.ELEVATOR_SYSTEM.name(), receivePacket);
-        }
+        messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
         return receivePacket;
     }
     

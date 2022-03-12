@@ -120,4 +120,20 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	public void handleApproachEvent(ApproachEvent approachEvent) {
 		sendMessage(approachEvent, floorSubsystemBuffer, origin);
 	}
+
+	public static void main(String[] args) {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		int numberOfFloors = 10;
+		FloorSubsystem floorSubsystem = new FloorSubsystem();
+		for (int i = 1; i <= numberOfFloors; i++) {
+			Floor floor = new Floor(i, floorSubsystem);
+			floorSubsystem.addFloor(floor);
+		}
+		Thread floorSubsystemThead = new Thread (floorSubsystem, floorSubsystem.getClass().getSimpleName());
+		floorSubsystemThead.start();
+	}
 }

@@ -62,7 +62,9 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 				if (!requestQueue.isEmpty()) {
 					object = server.sendAndReceiveReply(requestQueue.remove());
 				} else {
+					// TODO remove this as it is causing the infinite loop but this is currently required to show message passing
 					object = server.sendAndReceiveReply(new FloorRequest(LocalTime.now(), 0, Direction.NONE, 0, origin));
+					//object = server.sendAndReceiveReply(new StatusUpdate());
 				}
 
 				if (object instanceof ElevatorRequest elevatorRequest) {
@@ -162,5 +164,27 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 			chosenBestElevator = chosenWorstElevator;
 		}
 		return chosenBestElevator;
+	}
+
+	public static void main(String[] args) {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		int numberOfElevators = 2;
+		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+		ArrayList<Elevator> elevatorList = new ArrayList<>();
+		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
+			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
+			elevatorSubsystem.addElevator(elevator);
+			elevatorList.add(elevator);
+		}
+		new Thread (elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName()).start();
+
+		// Start elevator Origins
+		for (int i = 0; i < numberOfElevators; i++) {
+			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
+		}
 	}
 }

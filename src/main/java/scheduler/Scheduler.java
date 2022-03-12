@@ -22,6 +22,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	private final Origin origin = Origin.SCHEDULER;
 	private Queue<SystemEvent> requestQueue;
 	private IntermediateHost intermediateHost;
+	private int tempPort;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
 
@@ -83,17 +84,20 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 		// manipulate the packet according to its origin
 		if (eventOrigin == Origin.ELEVATOR_SYSTEM) {
-			// scheduler method here to do FLOORSUBSYSTEM stuff
-			packet.setPort(Port.CLIENT.getNumber());
-		} else if (eventOrigin == Origin.FLOOR_SYSTEM) {
 			// scheduler method here to do ELEVATORSUBSYSTEM stuff
-			packet.setPort(Port.SERVER.getNumber());
+			tempPort = packet.getPort();
+			System.out.println(tempPort + " for ElevatorSubsystem");
+		} else if (eventOrigin == Origin.FLOOR_SYSTEM) {
+			// scheduler method here to do FLOORSUBSYSTEM stuff
+			packet.setPort(tempPort);
+			tempPort =0;
+			intermediateHost.addNewPacketToQueue(event, packet);
 		} else {
 			throw new IllegalArgumentException("Error: Invalid Origin");
 		}
 		event.setOrigin(Origin.changeOrigin(eventOrigin));
 		// intermediate host
-		intermediateHost.addNewPacketToQueue(event, packet);
+
 	}
 
 	/**
@@ -144,5 +148,10 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
  			}
 			}
 		}
+	}
+
+	public static void main(String[] args) {
+		new Thread(new Scheduler(Port.CLIENT_TO_SERVER.getNumber()), "Client To Server").start();
+		new Thread(new Scheduler(Port.SERVER_TO_CLIENT.getNumber()), "Server To Client").start();
 	}
 }
