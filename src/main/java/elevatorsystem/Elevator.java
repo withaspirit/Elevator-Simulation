@@ -83,10 +83,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
 				while(!floorsQueue.isCurrentQueueEmpty()){
 					System.out.println();
+					System.out.println("Elevator #" + elevatorNumber + " queue: ");
+					floorsQueue.printQueue();
+					//int requestFloor = floorsQueue.peekNextRequest();
 					int requestFloor = floorsQueue.removeRequest();
 					// Print status
 					printStatus();
-					//int requestFloor = floorsQueue.peekNextRequest();
 					// Compare the request floor and the next floor
 					compareFloors(requestFloor);
 
