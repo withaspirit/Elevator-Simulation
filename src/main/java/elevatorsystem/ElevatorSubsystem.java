@@ -4,7 +4,7 @@ import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import requests.*;
-import scheduler.ElevatorMonitor;
+import requests.ElevatorMonitor;
 import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
@@ -73,6 +73,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	public void addElevator(Elevator elevator) {
 		elevatorList.add(elevator);
+		elevatorMonitorList.add(new ElevatorMonitor(elevator.getElevatorNumber()));
 	}
 
 	/**
@@ -101,8 +102,11 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 				int chosenElevator = chooseElevator(elevatorRequest);
 				// Choose elevator
 				// Move elevator
-				elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-				requestQueue.add(new FloorRequest(elevatorRequest));
+				System.err.println(chosenElevator + " expected");
+				Elevator elevator = elevatorList.get(chosenElevator - 1);
+				elevator.addRequest(elevatorRequest);
+				elevatorMonitorList.get(chosenElevator - 1).updateMonitor(elevator.makeElevatorMonitor());
+				requestQueue.add(elevator.makeElevatorMonitor());
 			} else if (object instanceof ApproachEvent approachEvent) {
 				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
 			} else if (object instanceof String string) {
@@ -128,8 +132,11 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 					int chosenElevator = chooseElevator(elevatorRequest);
 					// Choose elevator
 					// Move elevator
-					elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-					requestQueue.add(new FloorRequest(elevatorRequest));
+					System.err.println(chosenElevator + " expected");
+					Elevator elevator = elevatorList.get(chosenElevator - 1);
+					elevator.addRequest(elevatorRequest);
+					elevatorMonitorList.get(chosenElevator - 1).updateMonitor(elevator.makeElevatorMonitor());
+					requestQueue.add(elevator.makeElevatorMonitor());
 				} else if (request instanceof ApproachEvent approachEvent) {
 					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
 				}
@@ -212,9 +219,11 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		}
 		return chosenBestElevator;
 	}
+
 	/**
-	 *
-	 *
+	 * Initialize the elevatorSubsystem with elevators
+	 * and start threads for each elevator and the elevatorSubsystem.
+   *
 	 * @param args not used
 	 */
 	public static void main(String[] args) {

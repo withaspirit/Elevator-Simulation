@@ -1,6 +1,7 @@
 package elevatorsystem;
 
 import requests.*;
+import requests.ElevatorMonitor;
 import systemwide.Direction;
 import systemwide.Origin;
 
@@ -217,7 +218,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 		motor.setMovementState(MovementState.ACTIVE);
 		if (serviceRequest instanceof ElevatorRequest elevatorRequest){
 			queueTime = getExpectedTime(elevatorRequest);
-			System.err.println("Elevator #" + elevatorNumber + " " + queueTime + " seconds");
+			if (serviceDirection == Direction.NONE) {
+				serviceDirection = elevatorRequest.getDirection();
+			}
 		}
 		// int elevatorFloorToPass = currentFloor;
 		// floorsQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
@@ -526,7 +529,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @return a StatusUpdate containing new elevator information.
 	 */
-	public StatusUpdate makeStatusUpdate() {
-		return new StatusUpdate(queueTime, motor.getMovementState(), currentFloor, motor.getDirection(), elevatorNumber);
+	public ElevatorMonitor makeElevatorMonitor() {
+		return new ElevatorMonitor(queueTime, motor.getMovementState(), currentFloor, serviceDirection, elevatorNumber);
 	}
 }

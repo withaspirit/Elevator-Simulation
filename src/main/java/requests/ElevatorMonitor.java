@@ -1,8 +1,10 @@
-package scheduler;
+package requests;
 
 import elevatorsystem.MovementState;
-import requests.StatusUpdate;
 import systemwide.Direction;
+import systemwide.Origin;
+
+import java.time.LocalTime;
 
 /**
  * An elevator monitor for the scheduler to quickly decide on an elevator to send new
@@ -11,9 +13,8 @@ import systemwide.Direction;
  * @author Ryan Dash
  * @version 2022/03/10
  */
-public class ElevatorMonitor {
+public class ElevatorMonitor extends SystemEvent {
 
-    private int elevatorNumber;
     private double queueTime;
     private MovementState state;
     private int currentFloor;
@@ -25,32 +26,20 @@ public class ElevatorMonitor {
      * @param elevatorNumber the elevator number of the elevator that is being monitored for status changes
      */
     public ElevatorMonitor(int elevatorNumber) {
-        this.elevatorNumber = elevatorNumber;
+        super(LocalTime.now(), Origin.ELEVATOR_SYSTEM);
+        setElevatorNumber(elevatorNumber);
         queueTime = 0.0;
         state = MovementState.IDLE;
         currentFloor = 0;
         currentDirection = Direction.NONE;
     }
 
-    /**
-     * Updates the elevator information of the elevator monitor.
-     *
-     * @param statusUpdate a StatusUpdate request containing new elevator information
-     */
-    public void updateMonitor(StatusUpdate statusUpdate) {
-        queueTime = statusUpdate.getExpectedTime();
-        state = statusUpdate.getState();
-        currentFloor = statusUpdate.getCurrentFloor();
-        currentDirection = statusUpdate.getDirection();
-    }
-
-    /**
-     * Gets the direction of the elevator.
-     *
-     * @return the latest direction of the elevator
-     */
-    public int getElevatorNumber() {
-        return elevatorNumber;
+    public ElevatorMonitor(double queueTime, MovementState movementState, int currentFloor, Direction serviceDirection, int elevatorNumber) {
+        this(elevatorNumber);
+        this.queueTime = queueTime;
+        this.state = movementState;
+        this.currentFloor = currentFloor;
+        this.currentDirection = serviceDirection;
     }
 
     /**
@@ -89,5 +78,17 @@ public class ElevatorMonitor {
      */
     public Direction getDirection() {
         return currentDirection;
+    }
+
+    /**
+     * Update the ElevatorMonitor with the latest ElevatorMonitor information.
+     *
+     * @param elevatorMonitor an elevator monitor containing new elevator information
+     */
+    public void updateMonitor(ElevatorMonitor elevatorMonitor) {
+        this.queueTime = elevatorMonitor.getQueueTime();
+        this.state = elevatorMonitor.getState();
+        this.currentFloor = elevatorMonitor.getCurrentFloor();
+        this.currentDirection = elevatorMonitor.getDirection();
     }
 }
