@@ -199,6 +199,7 @@ class FloorsQueueTest {
 
 	@Test
 	void testSwapQueueWithMissedQueue() {
+		//missed queue not empty
 		testAddDownRequestAboveDownElevator();
 
 		assertFalse(testQueue.swapQueues());
@@ -208,7 +209,7 @@ class FloorsQueueTest {
 
 	@Test
 	void testSwapQueueWithMissedQueueAndOppositeQueue() {
-		// current queue empty, opposite missed not empty
+		// current queue empty, opposite missed not empty, missed queue not empty
 		testAddUpRequestBelowUpElevator();
 		testAddDownRequestAboveUpElevator();
 
