@@ -1,7 +1,9 @@
 package elevatorsystem;
 
 import requests.*;
+import requests.ElevatorMonitor;
 import systemwide.Direction;
+import systemwide.Origin;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -22,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Elevator implements Runnable, SubsystemPasser {
 
 	// Elevator Subsystem
-	private ElevatorSubsystem elevatorSubsystem;
+	private final ElevatorSubsystem elevatorSubsystem;
 
 	// Elevator Measurements
 	public static final float MAX_SPEED = 2.67f; // meters/second
@@ -36,7 +38,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	// Elevator Properties
 	private final int elevatorNumber;
 	private int currentFloor;
-	private Direction direction = Direction.UP;
+	private Direction direction;
 	private Direction serviceDirection;
 	private float speed;
 	private float displacement;
@@ -230,6 +232,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		requests.add(serviceRequest);
+    	//TODO remove after queueTime updated properly and serviceDirection is updated properly
+		motor.setMovementState(MovementState.ACTIVE);
+		if (serviceRequest instanceof ElevatorRequest elevatorRequest){
+			queueTime = getExpectedTime(elevatorRequest);
+			if (serviceDirection == Direction.NONE) {
+				serviceDirection = elevatorRequest.getDirection();
+			}
+		}
 		int elevatorFloorToPass = currentFloor;
 		floorsQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
 	}
@@ -292,7 +302,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the current floor the elevator is on
+	 * Gets the current floor the elevator is on.
 	 *
 	 * @return the current floor as an int
 	 */
@@ -301,7 +311,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Sets the currentFloor that the elevator is on
+	 * Sets the currentFloor that the elevator is on.
 	 *
 	 * @param currentFloor the floor to set the elevator on
 	 */
@@ -310,16 +320,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the Direction the elevator is heading
+	 * Gets the Direction the elevator is heading.
 	 *
-	 * @return Direction
+	 * @return serviceDirection
 	 */
-	public Direction getDirection(){
-		return direction;
+	public Direction getServiceDirection(){
+		return serviceDirection;
 	}
 
 	/**
-	 * Sets the direction of the elevator
+	 * Sets the direction of the elevator.
 	 *
 	 * @param direction the elevator will be moving
 	 */
@@ -328,7 +338,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the speed of the elevator
+	 * Gets the speed of the elevator.
 	 *
 	 * @return the speed as a float
 	 */
@@ -337,7 +347,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Sets the speed of the elevator
+	 * Sets the speed of the elevator.
 	 *
 	 * @param speed the speed of the elevator
 	 */
@@ -346,9 +356,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Sets the current service request to process
+	 * Sets the current service request to process.
 	 *
-	 * @param request
+	 * @param request a ServiceRequest for the elevator to do
 	 */
 	public void setRequest(ServiceRequest request){
 		this.request = (ElevatorRequest) request;
@@ -363,9 +373,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Processes a serviceRequest and moves based on the request type
-	 *
-	 *
+	 * Processes a serviceRequest and moves based on the request type.
 	 *
 	 * @param serviceRequest the request that's sent to elevator
 	 */
@@ -429,22 +437,22 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * Gets the total expected time that the elevator will need to take to
 	 * perform its current requests along with the new elevatorRequest.
 	 *
-	 * @param serviceRequest a service request to visit a floor
+	 * @param elevatorRequest an elevator request to visit a floor
 	 * @return a double containing the elevator's total expected queue time
 	 */
-	public double getExpectedTime(ServiceRequest serviceRequest) {
-		return queueTime + LOAD_TIME + requestTime(serviceRequest);
+	public double getExpectedTime(ElevatorRequest elevatorRequest) {
+		return queueTime + LOAD_TIME + requestTime(elevatorRequest);
 	}
 
 	/**
 	 * Gets the expected time of a new request for the current elevator
 	 * based on distance.
 	 *
-	 * @param serviceRequest a serviceRequest to visit a floor
+	 * @param elevatorRequest a elevatorRequest to visit a floor
 	 * @return a double containing the time to fulfil the request
 	 */
-	public double requestTime(ServiceRequest serviceRequest) {
-		double distance = Math.abs(serviceRequest.getFloorNumber() - currentFloor) * FLOOR_HEIGHT;
+	public double requestTime(ElevatorRequest elevatorRequest) {
+		double distance = Math.abs(elevatorRequest.getFloorNumber() - currentFloor) * FLOOR_HEIGHT;
 		if (distance > ACCELERATION_DISTANCE * 2) {
 			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
 		} else {
@@ -472,7 +480,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Prints the status of the elevator (current floor, door state, motor state, motor direction)
+	 * Prints the status of the elevator (current floor, door state, motor state, motor direction).
 	 *
 	 */
 	public void printStatus() {
@@ -484,7 +492,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Update Motor properties based on the serviceRequest
+	 * Update Motor properties based on the serviceRequest.
 	 *
 	 * NOTE: Might be changed to simply use the first request in the queue
 	 *
@@ -518,5 +526,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 				motor.stop();
 			}
 		}
+	}
+
+	/**
+	 * Create a status response when a rew elevator request is added
+	 * that will change the status.
+	 *
+	 * @return a StatusUpdate containing new elevator information.
+	 */
+	public ElevatorMonitor makeElevatorMonitor() {
+		return new ElevatorMonitor(queueTime, motor.getMovementState(), currentFloor, serviceDirection, elevatorNumber);
 	}
 }

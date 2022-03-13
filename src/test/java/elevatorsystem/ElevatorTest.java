@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
 import requests.ServiceRequest;
 import requests.SystemEvent;
-import systemwide.BoundedBuffer;
 import systemwide.Origin;
 
 import java.util.ArrayList;
@@ -21,14 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class ElevatorTest {
 
-    private BoundedBuffer boundedBuffer;
     private ElevatorSubsystem elevatorSubsystem;
     private Elevator elevator;
 
     @BeforeEach
     void setUp() {
-        boundedBuffer = new BoundedBuffer();
-        elevatorSubsystem = new ElevatorSubsystem(boundedBuffer);
+        elevatorSubsystem = new ElevatorSubsystem();
         elevator = new Elevator(1, elevatorSubsystem);
         elevatorSubsystem.addElevator(elevator);
 

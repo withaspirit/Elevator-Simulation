@@ -1,6 +1,7 @@
 package client_server_host;
 
 import requests.SystemEvent;
+import systemwide.Origin;
 
 import java.net.DatagramPacket;
 
@@ -8,11 +9,11 @@ import java.net.DatagramPacket;
  * IntermediateHost is a service class used by Scheduler. It provides methods
  * that manipulate MessageTransfer to receive and send messages to both Client and Server.
  *
- * @author Liam Tripp
+ * @author Liam Tripp, Ryan Dash
  */
 public class IntermediateHost {
 
-    private MessageTransfer messageTransfer;
+    private final MessageTransfer messageTransfer;
 
     /**
      * Constructor for IntermediateHost.
@@ -29,7 +30,9 @@ public class IntermediateHost {
      * @return packet received from the IntermediateHost's MessageTransfer
      */
     public DatagramPacket receivePacket() {
-        return messageTransfer.receiveMessage();
+        DatagramPacket receivePacket = messageTransfer.receiveMessage();
+        messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
+        return receivePacket;
     }
 
     /**
@@ -53,24 +56,29 @@ public class IntermediateHost {
         } else {
             // packet is data
             // send message to recipient acknowledging that message was received
-            byte[] acknowledgeByteArray = "ack".getBytes();
-            DatagramPacket acknowledgePacket = messageTransfer.createPacket(acknowledgeByteArray, receivePacket.getAddress(), receivePacket.getPort());
+            byte[] acknowledgeMessage = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
+            DatagramPacket acknowledgePacket = new DatagramPacket(acknowledgeMessage, acknowledgeMessage.length, receivePacket.getAddress(), receivePacket.getPort());
             messageTransfer.sendMessage(acknowledgePacket);
             return true;
         }
     }
 
     /**
-    * Converts a packet into it's corresponding SystemEvent object
-    *
-    * @param packet to convert to event
-    * @return event of packet
-    */
+     * Converts a packet into it's corresponding SystemEvent object
+     *
+     * @param packet to convert to event
+     * @return event of packet
+     */
     public SystemEvent convertToSystemEvent(DatagramPacket packet) {
-        SystemEvent event = (SystemEvent) messageTransfer.decodeObject(packet.getData());
-        return event;
+        return (SystemEvent) messageTransfer.decodeObject(packet.getData());
     }
 
+    /**
+     * Adds a packets containing an event to the MessageTransfer queue.
+     *
+     * @param event an event to send to either the Client or Server
+     * @param packet a packet containing the address and port to send the event
+     */
     public void addNewPacketToQueue(SystemEvent event, DatagramPacket packet) {
         // encode the altered event into a new packet
         byte[] newByteArray = messageTransfer.encodeObject(event);
@@ -94,8 +102,8 @@ public class IntermediateHost {
             packetToSend = messageTransfer.getPacketFromQueue();
             // printSendMessage(name, packetToSend);
         } else {
-            byte[] emptyQueueByteArray = "emptyQueue".getBytes();
-            packetToSend = messageTransfer.createPacket(emptyQueueByteArray, packet.getAddress(), packet.getPort());
+            byte[] emptyQueueMessage = RequestMessage.EMPTYQUEUE.getMessage().getBytes();
+            packetToSend = new DatagramPacket(emptyQueueMessage, emptyQueueMessage.length, packet.getAddress(), packet.getPort());
         }
         messageTransfer.sendMessage(packetToSend);
     }
