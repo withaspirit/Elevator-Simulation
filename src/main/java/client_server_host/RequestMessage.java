@@ -14,7 +14,7 @@ public enum RequestMessage {
     DOOROPENED("Door is open"),
     DOORCLOSED("Door is closed");
 
-    private String msg;
+    private final String msg;
 
     /**
      * Constructor for RequestMessage.

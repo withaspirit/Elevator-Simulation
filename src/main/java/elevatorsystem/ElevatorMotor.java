@@ -3,8 +3,8 @@ package elevatorsystem;
 import systemwide.Direction;
 
 /**
- * ElevatorMotor is the mechanism that moves an Elevator. 
- * 
+ * ElevatorMotor is the mechanism that moves an Elevator.
+ *
  * @author Liam Tripp, Brady Norton
  */
 public class ElevatorMotor {
@@ -43,7 +43,7 @@ public class ElevatorMotor {
 	 *
 	 * @return direction the current direction of the elevator
 	 */
-	public Direction getDirection(){
+	public Direction getDirection() {
 		return direction;
 	}
 
@@ -66,7 +66,7 @@ public class ElevatorMotor {
 		// if floor is above
 		if (floorDifference < 0) {
 			nextFloor += 1;
-		// floor is below
+			// floor is below
 		} else if (floorDifference > 0) {
 			nextFloor -= 1;
 		} else {

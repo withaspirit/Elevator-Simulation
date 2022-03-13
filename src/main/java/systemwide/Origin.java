@@ -21,7 +21,7 @@ public enum Origin {
     public static Origin changeOrigin(Origin origin) {
         if (origin == FLOOR_SYSTEM) {
             return ELEVATOR_SYSTEM;
-        } else if (origin == ELEVATOR_SYSTEM){
+        } else if (origin == ELEVATOR_SYSTEM) {
             return FLOOR_SYSTEM;
         } else {
             throw new IllegalArgumentException("Error: Trying to change origin when origin is Scheduler.");

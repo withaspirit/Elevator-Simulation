@@ -10,13 +10,13 @@ public enum MovementState {
     ACTIVE("ACTIVE"),
     STUCK("STUCK");
 
-    private String name;
+    private final String name;
 
     /**
      * Constructor for MovementState class
      * @param name the name of the MovementState
      */
-    MovementState(String name){
+    MovementState(String name) {
         this.name = name;
     }
 
@@ -25,7 +25,7 @@ public enum MovementState {
      *
      * @return name of MovementState
      */
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -36,9 +36,9 @@ public enum MovementState {
      * @return the MovementState and it's name
      */
     public static MovementState getState(String name) {
-        try{
+        try {
             return valueOf(name.trim().toUpperCase());
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println("State does not exist");
             e.printStackTrace();
             return null;
