@@ -136,14 +136,14 @@ public class RequestQueue {
 	 * @return true if all of the RequestQueue's queues are empty, false otherwise
 	 */
 	public boolean isEmpty() {
-		return isCurrentQueueEmpty() && isOppositeQueueEmpty() && isMissedqueueEmpty();
+		return isCurrentQueueEmpty() && isOppositeQueueEmpty() && isMissedQueueEmpty();
 	}
 
 
 	/**
 	 * Determines whether the RequestQueue's currentQueue is empty.
 	 *
-	 * @return true if the floorsQueue's active queue is empty, false otherwise
+	 * @return true if the RequestQueue's active queue is empty, false otherwise
 	 */
 	public boolean isCurrentQueueEmpty() {
 		return currentDirectionQueue.isEmpty();
@@ -152,7 +152,7 @@ public class RequestQueue {
 	/**
 	 * Determines whether the RequestQueue is empty in the opposite direction.
 	 *
-	 * @return true if the floorsQueue's active queue is empty, false otherwise
+	 * @return true if the requestQueue's active queue is empty, false otherwise
 	 */
 	public boolean isOppositeQueueEmpty() {
 		return oppositeDirectionQueue.isEmpty();
@@ -163,12 +163,12 @@ public class RequestQueue {
 	 * 
 	 * @return status true if empty
 	 */
-	public boolean isMissedqueueEmpty() {
+	public boolean isMissedQueueEmpty() {
 		return missedRequests.isEmpty();
 	}
 
 	/**
-	 * Prints the various queues in floorsqueue.
+	 * Prints the various queues in RequestQueue.
 	 */
 	public void printQueue(){
 		if (!isCurrentQueueEmpty()) {
@@ -177,7 +177,7 @@ public class RequestQueue {
 		if (!isOppositeQueueEmpty()) {
 			System.out.println("OppositeDirectionQueue: " + oppositeDirectionQueue.toString());
 		}
-		if (!isMissedqueueEmpty()) {
+		if (!isMissedQueueEmpty()) {
 			System.out.println("MissedQueue: " + missedRequests.toString());
 		}
 	}
