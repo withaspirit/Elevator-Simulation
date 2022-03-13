@@ -11,18 +11,18 @@ import systemwide.Origin;
 import java.time.LocalTime;
 
 /**
- * FloorsQueueTest ensures that all the FloorsQueue methods are working properly.
+ * RequestQueueTest ensures that all the RequestQueue methods are working properly.
  * The main methods tested are adding Requests and swapping the active queue.
  *
  * @author Julian, Liam Tripp
  */
-class FloorsQueueTest {
+class RequestQueueTest {
 
-	FloorsQueue testQueue;
+	RequestQueue testQueue;
 
 	@BeforeEach
 	void setUp() {
-		testQueue = new FloorsQueue();
+		testQueue = new RequestQueue();
 	}
 
 	@Test
