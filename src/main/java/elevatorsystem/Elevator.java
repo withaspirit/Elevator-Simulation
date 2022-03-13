@@ -116,13 +116,63 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Moves the Elevator to the next floor, stopping if it's the next floor.
+	 *
+	 * @param requestFloor the floor the elevator will move to
+	 */
+	public void moveToNextFloor(int requestFloor) {
+		int nextFloor;
+		nextFloor = motor.move(currentFloor, requestFloor);
+		if (nextFloor == currentFloor) {
+			System.out.println("same floor");
+		}
+//		if (motor.isIdle()) {
+//			nextFloor = currentFloor;;
+//		} else {
+		//}
+		// in future iterations, shouldStopAtNextFloor will be followed by sending an ApproachRequest
+		boolean shouldStopAtNextFloor = nextFloor == requestFloor;
+
+
+		/*
+			if (messageTransferEnabled) {
+				// communicate with Scheduler to see if Elevator should stop at this floor
+				ApproachEvent newApproachEvent = new ApproachEvent(serviceRequest.getTime(), nextFloor,
+						serviceRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
+				passApproachEvent(newApproachEvent);
+				// stall while waiting to receive the approachEvent from ElevatorSubsystem
+				// the ApproachEvent is received in Elevator.receiveApproachEvent
+				while (approachEvent == null) {
+				}
+				approachEvent = null;
+			}
+		*/
+		setCurrentFloor(nextFloor);
+
+		if (nextFloor != currentFloor) {
+			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor);
+		} else {
+			System.out.println("Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor);
+		}
+
+		if (shouldStopAtNextFloor) {
+			System.out.println("Elevator #" + elevatorNumber + " reached destination");
+			// NOTE: this produces an error
+//			int removedFloor = floorsQueue.removeRequest();
+//			if (removedFloor != requestFloor) {
+//				throw new ConcurrentModificationException("Floor was added while floorsqueue was added.");
+//			}
+		}
+	}
+
+	/**
 	 * Compares the destinationFloor to the next floor and updates the Motor accordingly
 	 *
 	 * @param
 	 */
 	public void compareFloors(int destinationFloor){
 		// Next floor in service direction
-		int nextFloor = motor.move(currentFloor, destinationFloor, serviceDirection);
+		int nextFloor = motor.move(currentFloor, destinationFloor);
 
 		// Motor is IDLE
 		if(motor.isIdle()){
