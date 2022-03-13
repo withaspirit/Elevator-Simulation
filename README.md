@@ -187,6 +187,7 @@ Tests:
     - More unit tests for FloorsQueue, Floors and FloorSubsystem, 
     - Finalized Elevator and ElevatorMotor properties update
     <br>
+  
   <details>
     <summary>Show Long Description</summary>
 
@@ -196,7 +197,9 @@ Tests:
 
     * The Client and IntermediateHost class each have a MessageTransfer. ElevatorSubsystem and FloorSubsystem, and Scheduler interact with the two classes each. 
 
-    * For UDP data transfer, there are two Scheduler threads, one for sending messages from FloorSubsystem to ElevatorSubsytem, and another for vice-versa.
+    * For UDP data transfer, there are two Scheduler threads, one for sending messages from FloorSubsystem to ElevatorSubsytem, and another for vice-versa. Both FloorSubsystem and ElevatorSubsystem are still threads. Elevators are also threads.
+    
+    * The Client systems either request data or send data. FloorSubsystem's client requests and receives data from ElevatorToFloorHost. It sends data to FloorToElevatorHost. ElevatorSubystem requests and receives data from FloorToElevatorHost. It sends data to ElevatorToFloorHost.
 
     * To see output in the console, or to see how many times the elevator moves, search "moved"
     
@@ -220,7 +223,15 @@ Tests:
   | Julian Obando Velez | Message Encoding/Decoding, Client for UDP, JUnit testing | | TA contact
   | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integration | Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML CLass Diagram | Code review
 
+  ### Diagrams
+
+  #### Sequence Diagram: UDP DataTransfer of Data from FloorSubsystem to ElevatorSubsystem
+
+  ![Iteration_3_DataTransferFloorToElevator_Sequence](https://user-images.githubusercontent.com/61635007/158044089-0322f422-9c0a-46de-a1d9-f903cd41e765.png)
+
   </details>
+
+
   
 - ## Iteration 4
   <details>
