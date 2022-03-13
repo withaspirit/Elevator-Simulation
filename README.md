@@ -209,7 +209,9 @@ Tests:
 
     * To fix size issues with BoundedBuffer, an unbounded list was implemented - ConcurrentLinkedDeque, essentially an UnboundedBuffer.
   
-    * Added ElevatorMonitor to Scheduler to allow the scheduler to quickly access all elevator data. An ElevatorMonitor is stored for each elevator in the scheduler. Each Elevator monitor is updated by the elevator subsystem after a request that changes the contents of the elevator has completed.
+    * Added ElevatorMonitor to Scheduler to allow the scheduler to quickly access all elevator data. An ElevatorMonitor is stored for each elevator in the scheduler.
+  
+    * Each Elevator monitor is updated by the elevator subsystem after a request that changes the contents of the elevator has completed.
 
     * [ElevatorMonitor]
          
