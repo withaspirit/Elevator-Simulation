@@ -105,7 +105,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 				System.out.println("Current Status: ");
 				printStatus();
 				System.out.println("Requests in list: " + requests);
-				processRequest(getNextRequest());
+				//processRequest(getNextRequest());
+				addRequest(getNextRequest());
 			}
 
 			while (!floorsQueue.isEmpty()) {
@@ -117,12 +118,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 					compareFloors();
 					// Move to next floor
 					setCurrentFloor(motor.move(currentFloor, floorsQueue.peekNextRequest(), motor.getDirection()));
-					// Prepare to stop once floor reached
-					updateMotor(currentFloor);
-					// Open doors
-
-					// Print status
-					//printStatus();
 				}
 			}
 		}
@@ -357,7 +352,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 		System.out.println("Elevator #" + elevatorNumber + " processing: " + serviceRequest);
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Move to floor from which elevatorRequest originated
-			moveToFloor(elevatorRequest);
+
+
 			// created a ServiceRequest going to the desired floor for the desired floor
 			ServiceRequest request = new ServiceRequest(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
 					elevatorRequest.getDirection(), elevatorRequest.getOrigin());
