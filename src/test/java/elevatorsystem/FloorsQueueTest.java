@@ -199,6 +199,7 @@ class FloorsQueueTest {
 
 	@Test
 	void testSwapQueueWithMissedQueue() {
+		//missed queue not empty
 		testAddDownRequestAboveDownElevator();
 
 		assertFalse(testQueue.swapQueues());
@@ -208,7 +209,7 @@ class FloorsQueueTest {
 
 	@Test
 	void testSwapQueueWithMissedQueueAndOppositeQueue() {
-		// current queue empty, opposite missed not empty
+		// current queue empty, opposite missed not empty, missed queue not empty
 		testAddUpRequestBelowUpElevator();
 		testAddDownRequestAboveUpElevator();
 
@@ -217,7 +218,53 @@ class FloorsQueueTest {
 		assertFalse(testQueue.isOppositeQueueEmpty());
 		assertTrue(testQueue.isMissedqueueEmpty());
 	}
+	
+	@Test
+	void testSwapQueueWithAllEmpty() {
+		//All queues are empty
+		assertFalse(testQueue.swapQueues());
+		assertTrue(testQueue.isCurrentQueueEmpty());
+		assertTrue(testQueue.isOppositeQueueEmpty());
+		assertTrue(testQueue.isMissedqueueEmpty());
+	}
 
+	@Test
+	void testSwapQueueWithCurrentQueueAndOppositeQueue() {
+		//current queue not empty, opposite queue not empty
+		testAddDownRequestBelowDownElevator();
+		testAddUpRequestBelowDownElevator();
+		
+		assertFalse(testQueue.swapQueues());
+		assertFalse(testQueue.isCurrentQueueEmpty());
+		assertFalse(testQueue.isOppositeQueueEmpty());
+		assertTrue(testQueue.isMissedqueueEmpty());
+	}
+	
+	@Test
+	void testSwapQueueWithMissedQueueAndCurrentQueue() {
+		//current queue not empty, missed queue not empty
+		testAddDownRequestBelowDownElevator();
+		testAddDownRequestAboveDownElevator();
+		
+		assertFalse(testQueue.swapQueues());
+		assertFalse(testQueue.isCurrentQueueEmpty());
+		assertTrue(testQueue.isOppositeQueueEmpty());
+		assertFalse(testQueue.isMissedqueueEmpty());
+	}
+	
+	@Test
+	void testSwapQueueWithAllNotEmpty() {
+		//current queue not empty, missed queue not empty, opposite not empty
+		testAddDownRequestBelowDownElevator();
+		testAddDownRequestAboveDownElevator();
+		testAddUpRequestBelowDownElevator();
+		
+		assertFalse(testQueue.swapQueues());
+		assertFalse(testQueue.isCurrentQueueEmpty());
+		assertFalse(testQueue.isOppositeQueueEmpty());
+		assertFalse(testQueue.isMissedqueueEmpty());
+	}
+	
 	@Test
 	void testCurrentQueueHasCorrectRemovalOrder() {
 		// requests in current default direction (up)
