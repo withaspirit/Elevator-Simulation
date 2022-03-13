@@ -59,7 +59,7 @@ public class ElevatorMotor {
 	/**
 	 * Simulates elevator movement.
 	 */
-	public int move(int currentFloor, int requestFloor, Direction requestDirection) {
+	public int move(int currentFloor, int requestFloor) {
 		int floorDifference = currentFloor - requestFloor;
 		int nextFloor = currentFloor;
 
