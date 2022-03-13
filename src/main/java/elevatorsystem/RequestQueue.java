@@ -28,7 +28,7 @@ public class RequestQueue {
 	}
 
 	/**
-	 * Adds a ServiceRequest to the floorsQueue.
+	 * Adds the floor numbers of a ServiceRequest to the RequestQueue.
 	 *
 	 * @param elevatorFloorNumber the floorNumber of the elevator (nextFloor if moving, currentFloor is stopped)
 	 * @param serviceDirection the direction that the elevator is currently serving
@@ -36,26 +36,20 @@ public class RequestQueue {
 	 */
 	public void addRequest(int elevatorFloorNumber, Direction serviceDirection, ServiceRequest request) {
 		int floorNumber = request.getFloorNumber();
+		Direction requestDirection = request.getDirection();
 
 		if (floorNumber < 0 || elevatorFloorNumber < 0) {
 			throw new IllegalArgumentException("FloorNumber must be greater than zero.");
 		}
 
-		Direction requestDirection = request.getDirection();
-
+		Queue<Integer> queueToAddTo;
 		// if the elevator's floor number == request floor number
 		if (elevatorFloorNumber == floorNumber) {
 			// if serviceDirection is the same as the request direction,
 			if (serviceDirection == requestDirection) {
-				currentDirectionQueue.add(floorNumber);
-				if (request instanceof ElevatorRequest elevatorRequest) {
-					currentDirectionQueue.add(elevatorRequest.getDesiredFloor());
-				}
+				queueToAddTo = currentDirectionQueue;
 			} else {
-				oppositeDirectionQueue.add(floorNumber);
-				if (request instanceof ElevatorRequest elevatorRequest) {
-					oppositeDirectionQueue.add(elevatorRequest.getDesiredFloor());
-				}
+				queueToAddTo = oppositeDirectionQueue;
 			}
 		} else {
 			// request is in same direction as elevator
@@ -66,24 +60,20 @@ public class RequestQueue {
 				// OR requestFloor is below elevatorFloor and serviceDirection is DOwn
 				if ((floorNumber < elevatorFloorNumber && serviceDirection == Direction.DOWN) ||
 						(floorNumber > elevatorFloorNumber && serviceDirection == Direction.UP)) {
-					currentDirectionQueue.add(floorNumber);
-					if (request instanceof ElevatorRequest elevatorRequest) {
-						currentDirectionQueue.add(elevatorRequest.getDesiredFloor());
-					}
+					queueToAddTo = currentDirectionQueue;
 				} else {
 					// elevator can't serve request this cycle
-					missedRequests.add(floorNumber);
-					if (request instanceof ElevatorRequest elevatorRequest) {
-						missedRequests.add(elevatorRequest.getDesiredFloor());
-					}
+					queueToAddTo = missedRequests;
 				}
 			} else {
 				// serviceDirection is opposite direction to elevatorDirection
-				oppositeDirectionQueue.add(floorNumber);
-				if (request instanceof ElevatorRequest elevatorRequest) {
-					oppositeDirectionQueue.add(elevatorRequest.getDesiredFloor());
-				}
+				queueToAddTo = oppositeDirectionQueue;
 			}
+		}
+		// add to selected queue
+		queueToAddTo.add(floorNumber);
+		if (request instanceof ElevatorRequest elevatorRequest) {
+			queueToAddTo.add(elevatorRequest.getDesiredFloor());
 		}
 	}
 
