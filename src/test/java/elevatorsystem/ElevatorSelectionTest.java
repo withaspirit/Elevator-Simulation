@@ -65,16 +65,10 @@ public class ElevatorSelectionTest {
         elevatorSubsystemThread.start();
     }
 
-    @AfterEach
-    void cleanUp(){
-        messageTransfer = null;
-        schedulerClientThread = null;
-        schedulerServerThread = null;
-        elevatorSubsystemThread = null;
-    }
-
     @Test
-    void testSelectingIdleElevators() {
+    void testSelectingElevators() {
+        //Test sending to idle elevators
+
         //Both elevator's status' are idle
         assertEquals(elevator1.getMotor().getMovementState(), MovementState.IDLE);
         assertEquals(elevator2.getMotor().getMovementState(), MovementState.IDLE);
@@ -98,22 +92,10 @@ public class ElevatorSelectionTest {
         //Both elevators expected time to completion with new requests is now 19.0
         assertEquals(elevator1.getExpectedTime(elevatorRequest), 19.0);
         assertEquals(elevator2.getExpectedTime(elevatorRequest), 19.0);
-    }
 
-    @Test
-    void testSelectActiveElevators(){
-        sendReceiveMonitor();
-        sendReceiveMonitor();
+        //Test sending to active elevators
 
-        //Both elevator status' are now active
-        assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
-        assertEquals(elevator2.getMotor().getMovementState(), MovementState.ACTIVE);
-
-        //Both elevators expected time to completion with new requests are 19.0
-        assertEquals(elevator1.getExpectedTime(elevatorRequest), 19.0);
-        assertEquals(elevator2.getExpectedTime(elevatorRequest), 19.0);
-
-        ElevatorMonitor monitor = sendReceiveMonitor();
+        monitor = sendReceiveMonitor();
         assertEquals(monitor.getElevatorNumber(), 1);
 
         monitor = sendReceiveMonitor();
