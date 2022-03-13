@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * BoundedBuffer maintains a Thread-Safe queue of SystemEvents.
- * 
+ *
  * @author Julian, Ryan Dash, Liam Tripp, Lynn Marshall
  */
 public class BoundedBuffer {
@@ -33,7 +33,7 @@ public class BoundedBuffer {
     /**
      * Adds a SystemEvent to the end of the ring buffer.
      *
-     * @param item a request sent to the buffer
+     * @param item   a request sent to the buffer
      * @param origin the origin from which the request came
      */
     public synchronized void addLast(SystemEvent item, Origin origin) {
@@ -73,9 +73,7 @@ public class BoundedBuffer {
      * Prints the contents of the Buffer.
      */
     public synchronized void printBufferContents() {
-        itemQueue.forEach(systemEvent -> {
-            System.out.println(systemEvent.getClass().toString());
-        });
+        itemQueue.forEach(systemEvent -> System.out.println(systemEvent.getClass().toString()));
     }
 
     /**

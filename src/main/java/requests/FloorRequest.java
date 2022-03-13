@@ -34,11 +34,10 @@ public class FloorRequest extends ServiceRequest {
 	 * Constructor for FloorRequest given an ElevatorRequest and an Elevator's number.
 	 *
 	 * @param elevatorRequest a request for an Elevator made by someone on a Floor
-	 * @param elevatorNumber the number of the elevator
 	 */
-	public FloorRequest(ElevatorRequest elevatorRequest, int elevatorNumber) {
+	public FloorRequest(ElevatorRequest elevatorRequest) {
 		this(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
-				elevatorRequest.getDirection(), elevatorNumber, elevatorRequest.getOrigin());
+				elevatorRequest.getDirection(), elevatorRequest.getElevatorNumber(), elevatorRequest.getOrigin());
 	}
 
 	/**

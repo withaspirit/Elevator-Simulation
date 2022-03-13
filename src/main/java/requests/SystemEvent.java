@@ -15,6 +15,7 @@ public class SystemEvent implements Serializable {
 
     private final LocalTime time;
     private Origin origin;
+    private int elevatorNumber;
 
     /**
      * Constructor for SystemEvent.
@@ -25,6 +26,7 @@ public class SystemEvent implements Serializable {
     public SystemEvent(LocalTime time, Origin origin) {
         this.time = time;
         this.origin = origin;
+        elevatorNumber = 0;
     }
 
     /**
@@ -52,5 +54,23 @@ public class SystemEvent implements Serializable {
      */
     public void setOrigin(Origin origin) {
         this.origin = origin;
+    }
+
+    /**
+     * Returns the number of the elevator servicing the request.
+     *
+     * @return elevatorNumber the number of the elevator corresponding to the request
+     */
+    public int getElevatorNumber() {
+        return elevatorNumber;
+    }
+
+    /**
+     * Sets the number of the elevator for the request.
+     *
+     * @param elevatorNumber the number of the elevator corresponding to the request
+     */
+    public void setElevatorNumber(int elevatorNumber) {
+        this.elevatorNumber =  elevatorNumber;
     }
 }
