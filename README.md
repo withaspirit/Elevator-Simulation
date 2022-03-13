@@ -224,7 +224,10 @@ Tests:
   | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integration | Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML CLass Diagram | Code review
 
   ### Diagrams
-
+   
+  #### UML Class Diagram
+  ![image](https://user-images.githubusercontent.com/61635007/158045772-5fb02a0e-ba15-4c39-bc07-6cc19efa0b91.png)
+ 
   #### Sequence Diagram: UDP DataTransfer of Data from FloorSubsystem to ElevatorSubsystem
 
   ![Iteration_3_DataTransferFloorToElevator_Sequence](https://user-images.githubusercontent.com/61635007/158044089-0322f422-9c0a-46de-a1d9-f903cd41e765.png)
