@@ -38,7 +38,7 @@ public class ElevatorMotorTest {
 
 	@Test
 	void testGetDirection() {
-		// Test initialization to STOP direction
+		// Test initialization to NONE direction
 		assertEquals(motor.getDirection(), Direction.NONE);
 	}
 
