@@ -178,7 +178,6 @@ class FloorsQueueTest {
 		assertFalse(testQueue.isMissedqueueEmpty());
 	}
 
-
 	@Test
 	void testSwapQueueWithCurrentQueue() {
 		// add to current queue
@@ -193,7 +192,6 @@ class FloorsQueueTest {
 	void testSwapQueueWithOppositeQueue() {
 		// currentQueue empty, opposite queue has items
 		testAddUpRequestBelowDownElevator();
-
 		assertTrue(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertTrue(testQueue.isOppositeQueueEmpty());

@@ -2,17 +2,18 @@ package scheduler;
 
 import elevatorsystem.ElevatorSubsystem;
 import floorsystem.FloorSubsystem;
-import systemwide.BoundedBuffer;
-import requests.ServiceRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import requests.ServiceRequest;
+import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * SchedulerTest tests the Scheduler's methods for passing data back and forth between the 3 systems
@@ -44,7 +45,8 @@ class SchedulerTest {
     }
 
     @AfterEach
-    void tearDown() {}
+    void tearDown() {
+    }
 
     @Test
     void sendElevatorRequest() {

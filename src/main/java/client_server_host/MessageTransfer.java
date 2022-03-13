@@ -2,7 +2,7 @@ package client_server_host;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -112,16 +112,26 @@ public class MessageTransfer {
      * @param packet the DatagramPacket containing data
      */
     public void printSendMessage(String name, DatagramPacket packet) {
-        System.out.println(name + ": Sending packet:");
-//		System.out.println("To host: " + packet.getAddress());
-        System.out.println("Destination host port: " + packet.getPort());
-        int len = packet.getLength();
-        System.out.println("Length: " + len);
-        System.out.print("Containing: ");
         // Form a String from the byte array.
-        String sent = new String(packet.getData(), 0, len, StandardCharsets.UTF_8);
-        System.out.println(sent);
-        System.out.println();
+        Object object = decodeObject(packet.getData());
+        String messageToPrint = name + " sending packet ";
+        if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()){
+            messageToPrint += "to Scheduler:";
+        } else if (packet.getPort() == Port.CLIENT.getNumber()){
+            messageToPrint += "to Client:";
+        } else if (packet.getPort() == Port.SERVER.getNumber()){
+            messageToPrint += "to Server:";
+        }
+        messageToPrint += " at " + LocalTime.now().toString() + "\n";
+        if (object instanceof String string) {
+            messageToPrint += string;
+        } else {
+            messageToPrint += object.getClass().getSimpleName() + ": " + object;
+        }
+        messageToPrint += "\nHost port: " + packet.getPort() + ", ";
+        int length = packet.getLength();
+        messageToPrint += "Length: " + length + "\n";
+        System.out.println(messageToPrint);
     }
 
     /**
@@ -131,18 +141,26 @@ public class MessageTransfer {
      * @param packet the DatagramPacket containing data
      */
     public void printReceiveMessage(String name, DatagramPacket packet) {
-        System.out.println(name + ": Packet received:");
-//		System.out.println("From host: " + packet.getAddress());
-        System.out.println("Host port: " + packet.getPort());
-        int len = packet.getLength();
-        System.out.println("Length: " + len);
-        System.out.print("Containing: ");
         // Form a String from the byte array.
-        String received = new String(packet.getData(), 0, len, StandardCharsets.UTF_8);
-        System.out.println(received);
-        System.out.println();
+        Object object = decodeObject(packet.getData());
+        if (!(object instanceof String)) {
+            String messageToPrint = name + " packet received ";
+            if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()){
+                messageToPrint += "from Scheduler:";
+            } else if (packet.getPort() == Port.CLIENT.getNumber()){
+                messageToPrint += "from Client:";
+            } else if (packet.getPort() == Port.SERVER.getNumber()){
+                messageToPrint += "from Server:";
+            }
+            messageToPrint += " at " + LocalTime.now().toString() + "\n";
+            messageToPrint += object.getClass().getSimpleName() + ": " + object;
+            messageToPrint += "\nHost port: " + packet.getPort() + ", ";
+            int length = packet.getLength();
+            messageToPrint += "Length: " + length + "\n";
+            System.out.println(messageToPrint);
+        }
     }
-
+  
     // FIXME: this could be easily be removed
     public DatagramPacket createPacket(byte[] msg, int portNumber) {
         DatagramPacket packet = null;
@@ -155,11 +173,6 @@ public class MessageTransfer {
         return packet;
     }
 
-    public DatagramPacket createPacket(byte[] msg, InetAddress inetAddress, int portNumber) {
-        DatagramPacket newPacket = new DatagramPacket(msg, msg.length, inetAddress, portNumber);
-        return newPacket;
-    }
-
     /**
      * Encodes the object into a Byte Array, which can be used to prepare
      * requests to be sent through UDP packets. 
@@ -169,21 +182,14 @@ public class MessageTransfer {
      */
     public byte[] encodeObject(Object object) {
         byte[] objectBytes = null;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = null;
-        try {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            ObjectOutputStream out;
             out = new ObjectOutputStream(bos);
             out.writeObject(object);
             out.flush();
             objectBytes = bos.toByteArray();
         } catch (Exception ex) {
             // ignore exception
-        } finally {
-            try {
-                bos.close();
-            } catch (IOException ex) {
-                // ignore close exception
-            }
         }
         return objectBytes;
     }
@@ -198,20 +204,13 @@ public class MessageTransfer {
     public Object decodeObject(byte[] objectBytes) {
         Object object = null;
         ByteArrayInputStream bis = new ByteArrayInputStream(objectBytes);
-        ObjectInput in = null;
-        try {
-            in = new ObjectInputStream(bis);
+        try (ObjectInput in = new ObjectInputStream(bis)) {
             object = in.readObject();
         } catch (Exception ex) {
             // ignore exception
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                // ignore close exception
-            }
+        }
+        if (object == null){
+            object = new String(objectBytes);
         }
         return object;
     }
