@@ -332,4 +332,9 @@ public class FloorsQueue {
 	public boolean isMissedqueueEmpty() {
 		return missedRequests.isEmpty();
 	}
+
+	public void printQueue(){
+		System.out.println("Upwards Queue: " + upwardRequests.toString());
+		System.out.println("Downwards Queue: " + downwardRequests.toString());
+	}
 }
