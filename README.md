@@ -182,8 +182,9 @@ Tests:
     - Cardinality of Elevator, ElevatorSubsystem, Scheduler, FloorSubsystem, and Floor
     - Changes to Scheduler (in terms of message transfer)
     - Changes to ElevatorSubsystem, Message Transfer (in terms of message transfer)
-    - MessageTransfer
-    - IntermdiateHost, Client, Server,
+    - MessageTransfer is the class that wraps the methods to handle packets for UDP communication, like sending, receiving, queueing, decoding/encoding and printing.  
+    
+    - IntermediateHost, Client, Server,
     - Changes to Elevator Movement Algorithm
     - Elevator Selection Algorithm
          
