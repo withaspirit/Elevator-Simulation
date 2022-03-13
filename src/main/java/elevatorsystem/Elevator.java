@@ -90,35 +90,23 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while (true) {
-			/*
-			while (!floorsQueue.isEmpty()) {
-				swapServiceDirectionIfNecessary();
-				while (!floorsQueue.isCurrentQueueEmpty()) {
-					// move elevator and stuff
-				}
-			}
-			*/
-
-			if (!requests.isEmpty()) {
-				System.out.println();
-				System.out.println("Elevator #" + elevatorNumber + "'s remaining requests: " + requests);
-				System.out.println("Current Status: ");
-				printStatus();
-				System.out.println("Requests in list: " + requests);
-				//processRequest(getNextRequest());
-				addRequest(getNextRequest());
-			}
-
 			while (!floorsQueue.isEmpty()) {
 				// Swap service direction check
         		swapServiceDirectionIfNecessary();
+
+				// Print status
+				printStatus();
+
 				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
 				while(!floorsQueue.isCurrentQueueEmpty()){
+					int requestFloor = floorsQueue.peekNextRequest();
 					// Compare the request floor and the next floor
-					compareFloors();
+					compareFloors(requestFloor);
 					// Move to next floor
-					setCurrentFloor(motor.move(currentFloor, floorsQueue.peekNextRequest(), motor.getDirection()));
+					setCurrentFloor(motor.move(currentFloor, requestFloor, motor.getDirection()));
+					System.out.println("Current Floor: " + currentFloor);
 				}
+				motor.stop();
 			}
 		}
 	}
@@ -128,12 +116,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @param
 	 */
-	public void compareFloors(){
-		// Requested destination floor
-		int destinationFloor = floorsQueue.peekNextRequest();
-
+	public void compareFloors(int destinationFloor){
 		// Next floor in service direction
-		int nextFloor = motor.move(currentFloor, destinationFloor, motor.getDirection());
+		int nextFloor = motor.move(currentFloor, destinationFloor, serviceDirection);
 
 		// Motor is IDLE
 		if(motor.isIdle()){
