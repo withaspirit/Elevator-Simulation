@@ -97,13 +97,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// Print status
 				printStatus();
 
+				System.out.println("Process Request for floor: " + floorsQueue.peekNextRequest());
+
 				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
 				while(!floorsQueue.isCurrentQueueEmpty()){
 					int requestFloor = floorsQueue.peekNextRequest();
+					int nextFloor = motor.move(currentFloor, requestFloor, motor.getDirection());
 					// Compare the request floor and the next floor
 					compareFloors(requestFloor);
 					// Move to next floor
-					setCurrentFloor(motor.move(currentFloor, requestFloor, motor.getDirection()));
+					setCurrentFloor(nextFloor);
+
 					System.out.println("Current Floor: " + currentFloor);
 				}
 				motor.stop();
