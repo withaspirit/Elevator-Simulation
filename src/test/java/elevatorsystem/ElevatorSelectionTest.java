@@ -1,11 +1,8 @@
 package elevatorsystem;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import client_server_host.MessageTransfer;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;
@@ -18,6 +15,8 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class ElevatorSelectionTest {
