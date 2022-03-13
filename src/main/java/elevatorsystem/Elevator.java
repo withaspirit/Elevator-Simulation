@@ -3,21 +3,12 @@ package elevatorsystem;
 import requests.*;
 import requests.ElevatorMonitor;
 import systemwide.Direction;
-import systemwide.Origin;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Elevator is a model for simulating an elevator.
  *
- * Requirements:
- * 1. Can move between floors
- * 2. Only services one elevator shaft of a structure
- * 3. Has speed
- * 4. Can stop at floors
- * 5. Knows its own location
- * 6. Takes time for elevator to move
- * 7. travels at SPEED to traverse FLOOR HEIGHT per second
  *
  * @author Liam Tripp, Brady Norton
  */
@@ -34,21 +25,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public static final double ACCELERATION_DISTANCE = Math.pow(MAX_SPEED, 2)/ (2 * ACCELERATION); // Vf^2 = Vi^2 + 2as therefore s = vf^2/2a
 	public static final double ACCELERATION_TIME = Math.sqrt((FLOOR_HEIGHT * 2) / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
 
-
 	// Elevator Properties
 	private final int elevatorNumber;
 	private int currentFloor;
-	private Direction direction;
 	private Direction serviceDirection;
 	private float speed;
-	private float displacement;
 	private double queueTime;
 
 	private final Doors doors;
 	private final ElevatorMotor motor;
-	private Direction currentDirection;
 	private FloorsQueue floorsQueue;
-	private ElevatorRequest request;
 
 	// list must be volatile so that origin checks if it's been updated
 	// functionally, this is a stack (FIFO)
@@ -70,14 +56,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.elevatorNumber = elevatorNumber;
 		this.elevatorSubsystem = elevatorSubsystem;
 		speed = 0;
-		displacement = 0;
-		direction = Direction.UP;
+		approachEvent = null;
 		serviceDirection = Direction.UP;
 		motor = new ElevatorMotor();
 		doors = new Doors();
 		queueTime = 0.0;
 		floorsQueue = new FloorsQueue();
-		request = null;
 		requests = new CopyOnWriteArrayList<>();
 		messageTransferEnabled = true;
 	}
@@ -329,12 +313,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Sets the direction of the elevator.
+	 * Sets the service direction of the elevator.
 	 *
 	 * @param direction the elevator will be moving
 	 */
-	public void setDirection(Direction direction) {
-		this.direction = direction;
+	public void setServiceDirection(Direction direction) {
+		this.serviceDirection = direction;
 	}
 
 	/**
@@ -353,15 +337,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void setSpeed(float speed) {
 		this.speed = speed;
-	}
-
-	/**
-	 * Sets the current service request to process.
-	 *
-	 * @param request a ServiceRequest for the elevator to do
-	 */
-	public void setRequest(ServiceRequest request){
-		this.request = (ElevatorRequest) request;
 	}
 
 	/**
