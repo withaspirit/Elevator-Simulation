@@ -36,7 +36,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	private final Doors doors;
 	private final ElevatorMotor motor;
-	private FloorsQueue floorsQueue;
+	private RequestQueue requestQueue;
 
 	// list must be volatile so that origin checks if it's been updated
 	// functionally, this is a stack (FIFO)
@@ -63,7 +63,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		motor = new ElevatorMotor();
 		doors = new Doors();
 		queueTime = 0.0;
-		floorsQueue = new FloorsQueue();
+		requestQueue = new RequestQueue();
 		requests = new CopyOnWriteArrayList<>();
 		messageTransferEnabled = true;
 	}
@@ -75,15 +75,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while (true) {
-			while (!floorsQueue.isEmpty()) {
+			while (!requestQueue.isEmpty()) {
 				// Swap service direction check
         		swapServiceDirectionIfNecessary();
 				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
-				while(!floorsQueue.isCurrentQueueEmpty()){
+				while(!requestQueue.isCurrentQueueEmpty()){
 					System.out.println();
 
-					//int requestFloor = floorsQueue.peekNextRequest();
-					int requestFloor = floorsQueue.removeRequest();
+					//int requestFloor = requestQueue.peekNextRequest();
+					int requestFloor = requestQueue.removeRequest();
 
 					// Print status
 					printStatus(requestFloor);
@@ -132,7 +132,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (shouldStopAtNextFloor) {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
 			// FIXME: this produces an error
-//			int removedFloor = floorsQueue.removeRequest();
+//			int removedFloor = requestQueue.removeRequest();
 //			if (removedFloor != requestFloor) {
 //				throw new ConcurrentModificationException("Floor was added while floorsqueue was added.");
 //			}
@@ -153,7 +153,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// Next floor is the destination floor
 			if (destinationFloor == nextFloor) {
 				// Remove request from queue
-				// floorsQueue.removeRequest();
+				// requestQueue.removeRequest();
 				// Open doors
 				/*
 				if(!elevatorDoors.areOpen()){
@@ -177,10 +177,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 			} else {
 				// Next floor is the destination floor
 				// Remove the request floor from the queue
-				// floorsQueue.removeRequest();
+				// requestQueue.removeRequest();
 
-				// Current floorsQueue isn't empty and the next request is on a different floor
-				if (destinationFloor != currentFloor && !floorsQueue.isCurrentQueueEmpty()) {
+				// Current requestQueue isn't empty and the next request is on a different floor
+				if (destinationFloor != currentFloor && !requestQueue.isCurrentQueueEmpty()) {
 					// Update the motor
 					updateMotor(destinationFloor);
 				}
@@ -189,13 +189,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Swaps the floorQueue and changes the service direction before elevator moves to next floor.
+	 * Swaps the requestQueue and changes the service direction before elevator moves to next floor.
 	 * TODO: In the future, there should be a check when the ElevatorMotor
 	 * TODO: MovementState is IDLE. If so, the elevator uses this method.
 	 */
 	public void swapServiceDirectionIfNecessary() {
 		System.out.println("Elevator " + elevatorNumber + " attempting to change queues.");
-		if (floorsQueue.swapQueues()) {
+		if (requestQueue.swapQueues()) {
 			serviceDirection = Direction.swapDirection(serviceDirection);
 			System.out.println("Elevator " + elevatorNumber + " Changed direction to " + serviceDirection);
 		}
@@ -226,7 +226,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			}
 		}
 		int elevatorFloorToPass = currentFloor;
-		floorsQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
+		requestQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
 	}
 
 	/**
@@ -464,7 +464,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void printStatus(int requestFloor) {
 		System.out.println("Elevator #" + elevatorNumber + " servicing floor " + requestFloor + " at " + LocalTime.now().toString());;
 		System.out.print("Elevator #" + elevatorNumber + " queue: ");
-		floorsQueue.printQueue();
+		requestQueue.printQueue();
 		System.out.print("Elevator #" + elevatorNumber + " Status: [Floor, serviceDirxn, movement, motorDirxn]: [");
 		System.out.print(currentFloor + " " + serviceDirection + " ");
 		//System.out.println("Elevator " + elevatorNumber + " doors are: " + );

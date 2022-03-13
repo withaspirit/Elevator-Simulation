@@ -7,15 +7,13 @@ import requests.ServiceRequest;
 import systemwide.Direction;
 
 /**
- * FloorsQueue maintains queues of floors to visit for an elevator.
- * It also provides methods to manage and modify the lists.
+ * RequestQueue maintains queues of floor numbers for an elevator to visit.
+ * It also provides methods to manage and modify the queues.
  * 
  * @author Julian, Liam Tripp
  */
-public class FloorsQueue {
+public class RequestQueue {
 
-	private PriorityQueue<Integer> upwardRequests;
-	private PriorityQueue<Integer> downwardRequests;
 	private Queue<Integer> missedRequests;
 	private volatile PriorityQueue<Integer> currentDirectionQueue;
 	private volatile PriorityQueue<Integer> oppositeDirectionQueue;
@@ -23,7 +21,7 @@ public class FloorsQueue {
 	/**
 	 * Constructor for the class
 	 */
-	public FloorsQueue() {
+	public RequestQueue() {
 		currentDirectionQueue = new PriorityQueue<>();
 		oppositeDirectionQueue = new PriorityQueue<>(Collections.reverseOrder());
 		missedRequests = new LinkedList<>();
@@ -34,7 +32,7 @@ public class FloorsQueue {
 	 *
 	 * @param elevatorFloorNumber the floorNumber of the elevator (nextFloor if moving, currentFloor is stopped)
 	 * @param serviceDirection the direction that the elevator is currently serving
-	 * @param request the ServiceRequest to be added to the FloorsQueue.
+	 * @param request the ServiceRequest to be added to the RequestQueue.
 	 */
 	public void addRequest(int elevatorFloorNumber, Direction serviceDirection, ServiceRequest request) {
 		int floorNumber = request.getFloorNumber();
@@ -111,7 +109,7 @@ public class FloorsQueue {
 		if (!currentDirectionQueue.isEmpty()) {
 			return currentDirectionQueue.peek();
 		} else {
-			System.err.println("FloorQueue.peekNextFloor should not be accessed " +
+			System.err.println("RequestQueue.peekNextFloor should not be accessed " +
 					"while the active queue is empty. Swapping should be done beforehand.");
 			return -1;
 		}
@@ -143,9 +141,9 @@ public class FloorsQueue {
 	}
 
 	/**
-	 * Determines whether the FloorsQueue is empty.
+	 * Determines whether the RequestQueue is empty.
 	 *
-	 * @return true if all of the FloorsQueue's queues are empty, false otherwise
+	 * @return true if all of the RequestQueue's queues are empty, false otherwise
 	 */
 	public boolean isEmpty() {
 		return isCurrentQueueEmpty() && isOppositeQueueEmpty() && isMissedqueueEmpty();
@@ -153,7 +151,7 @@ public class FloorsQueue {
 
 
 	/**
-	 * Determines whether the FloorsQueue's currentQueue is empty.
+	 * Determines whether the RequestQueue's currentQueue is empty.
 	 *
 	 * @return true if the floorsQueue's active queue is empty, false otherwise
 	 */
@@ -162,7 +160,7 @@ public class FloorsQueue {
 	}
 
 	/**
-	 * Determines whether the FloorsQueue is empty in the opposite direction.
+	 * Determines whether the RequestQueue is empty in the opposite direction.
 	 *
 	 * @return true if the floorsQueue's active queue is empty, false otherwise
 	 */
