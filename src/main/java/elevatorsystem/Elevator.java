@@ -3,7 +3,9 @@ package elevatorsystem;
 import requests.*;
 import requests.ElevatorMonitor;
 import systemwide.Direction;
+import systemwide.Origin;
 
+import java.time.LocalTime;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -105,21 +107,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 		nextFloor = motor.move(currentFloor, requestFloor);
 
 		// in future iterations, shouldStopAtNextFloor will be followed by sending an ApproachRequest
-		/*
-			if (messageTransferEnabled) {
-				// communicate with Scheduler to see if Elevator should stop at this floor
-				ApproachEvent newApproachEvent = new ApproachEvent(serviceRequest.getTime(), nextFloor,
-						serviceRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
-				passApproachEvent(newApproachEvent);
-				// stall while waiting to receive the approachEvent from ElevatorSubsystem
-				// the ApproachEvent is received in Elevator.receiveApproachEvent
-				while (approachEvent == null) {
-				}
-				approachEvent = null;
+		if (messageTransferEnabled) {
+			// communicate with Scheduler to see if Elevator should stop at this floor
+			ApproachEvent newApproachEvent = new ApproachEvent(LocalTime.now(), nextFloor,
+					serviceDirection, elevatorNumber, Origin.ELEVATOR_SYSTEM);
+			passApproachEvent(newApproachEvent);
+			// stall while waiting to receive the approachEvent from ElevatorSubsystem
+			// the ApproachEvent is received in Elevator.receiveApproachEvent
+			while (approachEvent == null) {
 			}
-		*/
-		boolean shouldStopAtNextFloor = nextFloor == requestFloor;
-		setCurrentFloor(nextFloor);
+			approachEvent = null;
+		}
 
 		// stop output message
 		if (nextFloor != currentFloor) {
@@ -127,6 +125,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 		} else {
 			System.out.println("Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor);
 		}
+		boolean shouldStopAtNextFloor = nextFloor == requestFloor;
+		setCurrentFloor(nextFloor);
+
+
 
 		if (shouldStopAtNextFloor) {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
