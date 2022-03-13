@@ -2,6 +2,7 @@ package client_server_host;
 
 import java.io.*;
 import java.net.*;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -113,25 +114,24 @@ public class MessageTransfer {
     public void printSendMessage(String name, DatagramPacket packet) {
         // Form a String from the byte array.
         Object object = decodeObject(packet.getData());
-        System.out.print(name + ": Sending packet ");
+        String messageToPrint = name + " sending packet ";
         if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()){
-            System.out.println("to Scheduler");
+            messageToPrint += "to Scheduler:";
         } else if (packet.getPort() == Port.CLIENT.getNumber()){
-            System.out.println("to Client");
+            messageToPrint += "to Client:";
         } else if (packet.getPort() == Port.SERVER.getNumber()){
-            System.out.println("to Server");
+            messageToPrint += "to Server:";
         }
-        System.out.println("To host: " + packet.getAddress().getHostAddress() + "/" + packet.getPort());
-        int len = packet.getLength();
-        System.out.println("Length: " + len);
-        System.out.print("Containing: ");
+        messageToPrint += " at " + LocalTime.now().toString() + "\n";
         if (object instanceof String string) {
-            System.out.println(string);
+            messageToPrint += string;
         } else {
-            System.out.println(object);
+            messageToPrint += object.getClass().getSimpleName() + ": " + object;
         }
-        System.out.println();
-
+        messageToPrint += "\nHost port: " + packet.getPort() + ", ";
+        int length = packet.getLength();
+        messageToPrint += "Length: " + length + "\n";
+        System.out.println(messageToPrint);
     }
 
     /**
@@ -143,25 +143,21 @@ public class MessageTransfer {
     public void printReceiveMessage(String name, DatagramPacket packet) {
         // Form a String from the byte array.
         Object object = decodeObject(packet.getData());
-        if (! (object instanceof String)) {
-            System.out.println(name + ": Packet received:");
-            if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
-                System.out.println("from Scheduler");
-            } else if (packet.getPort() == Port.CLIENT.getNumber()) {
-                System.out.println("from Client");
-            } else if (packet.getPort() == Port.SERVER.getNumber()) {
-                System.out.println("from Server");
+        if (!(object instanceof String)) {
+            String messageToPrint = name + " packet received ";
+            if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()){
+                messageToPrint += "from Scheduler:";
+            } else if (packet.getPort() == Port.CLIENT.getNumber()){
+                messageToPrint += "from Client:";
+            } else if (packet.getPort() == Port.SERVER.getNumber()){
+                messageToPrint += "from Server:";
             }
-            System.out.println("From host: " + packet.getAddress().getHostAddress() + "/" + packet.getPort());
-            int len = packet.getLength();
-            System.out.println("Length: " + len);
-            System.out.print("Containing: ");
-            if (object instanceof String string) {
-                System.out.println(string);
-            } else {
-                System.out.println(object);
-            }
-            System.out.println();
+            messageToPrint += " at " + LocalTime.now().toString() + "\n";
+            messageToPrint += object.getClass().getSimpleName() + ": " + object;
+            messageToPrint += "\nHost port: " + packet.getPort() + ", ";
+            int length = packet.getLength();
+            messageToPrint += "Length: " + length + "\n";
+            System.out.println(messageToPrint);
         }
     }
   

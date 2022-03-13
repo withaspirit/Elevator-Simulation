@@ -333,8 +333,18 @@ public class FloorsQueue {
 		return missedRequests.isEmpty();
 	}
 
+	/**
+	 * Prints the various queues in floorsqueue.
+	 */
 	public void printQueue(){
-		System.out.println("Upwards Queue: " + upwardRequests.toString());
-		System.out.println("Downwards Queue: " + downwardRequests.toString());
+		if (!isCurrentQueueEmpty()) {
+			System.out.println("CurrentDirectionQueue: " + currentDirectionQueue.toString());
+		}
+		if (!isOppositeQueueEmpty()) {
+			System.out.println("OppositeDirectionQueue: " + oppositeDirectionQueue.toString());
+		}
+		if (!isMissedqueueEmpty()) {
+			System.out.println("MissedQueue: " + missedRequests.toString());
+		}
 	}
 }
