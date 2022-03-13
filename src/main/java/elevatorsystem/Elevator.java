@@ -79,22 +79,20 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// Swap service direction check
         		swapServiceDirectionIfNecessary();
 
-
 				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
 				while(!floorsQueue.isCurrentQueueEmpty()){
 					System.out.println();
-					System.out.println("Elevator #" + elevatorNumber + " queue: ");
-					floorsQueue.printQueue();
+
 					//int requestFloor = floorsQueue.peekNextRequest();
 					int requestFloor = floorsQueue.removeRequest();
+
 					// Print status
-					printStatus();
+					printStatus(requestFloor);
 					// Compare the request floor and the next floor
 					compareFloors(requestFloor);
 
 					moveToNextFloor(requestFloor);
 				}
-				//motor.stop();
 			}
 		}
 	}
@@ -461,8 +459,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Prints the status of the elevator (current floor, door state, motor state, motor direction).
 	 *
+	 * @param requestFloor the floor the elevator is to service
 	 */
-	public void printStatus() {
+	public void printStatus(int requestFloor) {
+		System.out.println("Elevator #" + elevatorNumber + " servicing floor " + requestFloor + " at " + LocalTime.now().toString());;
+		System.out.print("Elevator #" + elevatorNumber + " queue: ");
+		floorsQueue.printQueue();
 		System.out.print("Elevator #" + elevatorNumber + " Status: [Floor, serviceDirxn, movement, motorDirxn]: [");
 		System.out.print(currentFloor + " " + serviceDirection + " ");
 		//System.out.println("Elevator " + elevatorNumber + " doors are: " + );
