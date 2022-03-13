@@ -125,7 +125,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 						sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
 					}
 				} else if (request.getOrigin() == Origin.ELEVATOR_SYSTEM) {
-					if (request instanceof StatusResponse) {
+					if (request instanceof ElevatorMonitor) {
 
 					} else if (request instanceof FloorRequest floorRequest) {
 						sendMessage(floorRequest, floorSubsystemBuffer, origin);
