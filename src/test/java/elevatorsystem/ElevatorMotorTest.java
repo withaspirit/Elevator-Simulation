@@ -1,14 +1,14 @@
 package elevatorsystem;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import systemwide.Direction;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class for ElevatorMotor methods
- * 
+ *
  * @author Julian
  */
 public class ElevatorMotorTest {
