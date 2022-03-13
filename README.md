@@ -196,7 +196,7 @@ Tests:
   | Ryan Dash | | Design | Code review
   | Ramit Mahajan | | |
   | Brady Norton | Elevator Movement Algorithm, Elevator Movement Properties Modification, Integrating Floors Queue into Movement, Movement Tests | Movement Design | Code review
-  | Julian Obando Velez | | | TA contact
+  | Julian Obando Velez | Message Encoding/Decoding, Client for UDP, JUnit testing | | TA contact
   | Liam Tripp | Elevator Movement + FloorsQueue updates, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Server-Host outline, Scheduler-Host Integration | Design, Work Breakdown Structure, Dependency Diagram | Code review
 
   </details>
