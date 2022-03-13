@@ -174,7 +174,7 @@ Tests:
 
   ### Description
 
-  In this iteration, UDP data transfer between the systems was implemented. The system can now run multiple elevators.
+  In this iteration, UDP data transfer between the systems is implemented. The simulation can now run multiple elevators.
 
     #### Major Changes
     - Simulation works for multiple elevators
@@ -217,10 +217,10 @@ Tests:
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | | Design | Code review
+  | Ryan Dash | Elevator Seletion Algorithm. Client, FloorSubsystem, ElevatorSubsystem Implementation. ElevatorSelectionTest | Diagram Review | Code review
   | Ramit Mahajan | Integrating Doors class | UML Diagram, README | Code review
   | Brady Norton | Elevator Movement Algorithm, Elevator Movement Properties Modification, Integrating Floors Queue into Movement, Movement Tests | Movement Design | Code review
-  | Julian Obando Velez | Message Encoding/Decoding, Client for UDP, JUnit testing | | TA contact
+  | Julian Obando Velez | Message Encoding/Decoding, Client for UDP, JUnit testing | Diagram Review | TA contact, Code review
   | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integration | Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML CLass Diagram | Code review
 
   ### Diagrams
@@ -231,8 +231,6 @@ Tests:
 
   </details>
 
-
-  
 - ## Iteration 4
   <details>
     <summary>Display</summary>
