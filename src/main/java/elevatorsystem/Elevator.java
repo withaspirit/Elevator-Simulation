@@ -78,7 +78,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 			while (!floorsQueue.isEmpty()) {
 				// Swap service direction check
         		swapServiceDirectionIfNecessary();
-
 				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
 				while(!floorsQueue.isCurrentQueueEmpty()){
 					System.out.println();
@@ -359,7 +358,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 		System.out.println("Elevator #" + elevatorNumber + " processing: " + serviceRequest);
 		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
 			// Move to floor from which elevatorRequest originated
-			moveToFloor(elevatorRequest);
+
+
 			// created a ServiceRequest going to the desired floor for the desired floor
 			ServiceRequest request = new ServiceRequest(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
 					elevatorRequest.getDirection(), elevatorRequest.getOrigin());
