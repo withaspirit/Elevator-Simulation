@@ -194,7 +194,7 @@ Tests:
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
   | Ryan Dash | | Design | Code review
-  | Ramit Mahajan | | |
+  | Ramit Mahajan | Integrating Doors class | UML Diagram | Code review
   | Brady Norton | Elevator Movement Algorithm, Elevator Movement Properties Modification, Integrating Floors Queue into Movement, Movement Tests | Movement Design | Code review
   | Julian Obando Velez | Message Encoding/Decoding, Client for UDP, JUnit testing | | TA contact
   | Liam Tripp | Elevator Movement + FloorsQueue updates, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Server-Host outline, Scheduler-Host Integration | Design, Work Breakdown Structure, Dependency Diagram | Code review
