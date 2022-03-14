@@ -1,7 +1,6 @@
 package client_server_host;
 
 import requests.SystemEvent;
-import systemwide.Origin;
 
 import java.net.DatagramPacket;
 
@@ -35,42 +34,8 @@ public class IntermediateHost {
         return receivePacket;
     }
 
-    /**
-     * Processes a DatagramPacket and reacts depending on whether it is data or a data request.
-     *
-     * @param receivePacket a DatagramPacket that has been received by the IntermediateHost
-     * @return true if the receivePacket is data, false if it is a data request
-     */
-    public boolean processPacketObject(DatagramPacket receivePacket) {
-        // receive message
-        // convert bytes to object
-        byte[] byteArray = receivePacket.getData();
-        Object object = messageTransfer.decodeObject(byteArray);
-        /*
-            take action depending on object type
-            if packet is a data request (i.e. a String), return false
-            otherwise, send a packet acknowledging that data was received
-         */
-        if (object instanceof String) {
-            return false;
-        } else {
-            // packet is data
-            // send message to recipient acknowledging that message was received
-            byte[] acknowledgeMessage = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
-            DatagramPacket acknowledgePacket = new DatagramPacket(acknowledgeMessage, acknowledgeMessage.length, receivePacket.getAddress(), receivePacket.getPort());
-            messageTransfer.sendMessage(acknowledgePacket);
-            return true;
-        }
-    }
-
-    /**
-     * Converts a packet into it's corresponding SystemEvent object
-     *
-     * @param packet to convert to event
-     * @return event of packet
-     */
-    public SystemEvent convertToSystemEvent(DatagramPacket packet) {
-        return (SystemEvent) messageTransfer.decodeObject(packet.getData());
+    public Object decodePacket(DatagramPacket receivePacket) {
+        return messageTransfer.decodeObject(receivePacket.getData());
     }
 
     /**
@@ -89,7 +54,7 @@ public class IntermediateHost {
     /**
      * Responds to a data request depending on whether the queue of messages is empty.
      *
-     * @param packet a packet received from a system
+     * @param packet a packet received from a scheduler
      */
     public void respondToDataRequest(DatagramPacket packet) {
         DatagramPacket packetToSend;
@@ -106,5 +71,16 @@ public class IntermediateHost {
             packetToSend = new DatagramPacket(emptyQueueMessage, emptyQueueMessage.length, packet.getAddress(), packet.getPort());
         }
         messageTransfer.sendMessage(packetToSend);
+    }
+
+    /**
+     * Responds to a System Event object being received.
+     *
+     * @param packet a packet received from a scheduler
+     */
+    public void respondToSystemEvent(DatagramPacket packet){
+        byte[] acknowledgeMessage = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
+        DatagramPacket acknowledgePacket = new DatagramPacket(acknowledgeMessage, acknowledgeMessage.length, packet.getAddress(), packet.getPort());
+        messageTransfer.sendMessage(acknowledgePacket);
     }
 }
