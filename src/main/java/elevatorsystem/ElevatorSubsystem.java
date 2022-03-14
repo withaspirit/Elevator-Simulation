@@ -4,7 +4,6 @@ import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import requests.*;
-import requests.ElevatorMonitor;
 import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
@@ -23,7 +22,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
 	private final ArrayList<Elevator> elevatorList;
-    private final ArrayList<ElevatorMonitor> elevatorMonitorList;
+	private final ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private Client server;
 	private final Queue<SystemEvent> requestQueue;
 	private Origin origin;
@@ -37,7 +36,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		this.elevatorSubsystemBuffer = buffer;
 		elevatorList = new ArrayList<>();
 		requestQueue = new LinkedList<>();
-        elevatorMonitorList = new ArrayList<>();
+		elevatorMonitorList = new ArrayList<>();
 		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
@@ -49,7 +48,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
 		requestQueue = new LinkedList<>();
-        elevatorMonitorList = new ArrayList<>();
+		elevatorMonitorList = new ArrayList<>();
 	}
 
 	/**
@@ -149,7 +148,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		}
 	}
 
-		/**
+	/**
 	 * Returns an elevator number corresponding to an elevator that is
 	 * best suited to perform the given ElevatorRequest based on
 	 * expected time to fulfill the request and direction of elevator.
@@ -196,7 +195,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 						elevatorBestExpectedTime = tempExpectedTime;
 						chosenBestElevator = elevatorNumber;
 
-					} else if (elevatorOkExpectedTime == 0 || elevatorOkExpectedTime > tempExpectedTime){
+					} else if (elevatorOkExpectedTime == 0 || elevatorOkExpectedTime > tempExpectedTime) {
 						//if request is in the correct direction but not in path of elevator
 						elevatorWorstExpectedTime = tempExpectedTime;
 						chosenWorstElevator = elevatorNumber;
@@ -211,7 +210,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 			}
 		}
 		if (chosenBestElevator == 0) {
-			if (chosenOkElevator == 0){
+			if (chosenOkElevator == 0) {
 				chosenBestElevator = chosenWorstElevator;
 			} else {
 				chosenBestElevator = chosenOkElevator;
@@ -223,7 +222,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	/**
 	 * Initialize the elevatorSubsystem with elevators
 	 * and start threads for each elevator and the elevatorSubsystem.
-   *
+	 *
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
@@ -240,7 +239,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 			elevatorSubsystem.addElevator(elevator);
 			elevatorList.add(elevator);
 		}
-		new Thread (elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName()).start();
+		new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName()).start();
 
 		// Start elevator Origins
 		for (int i = 0; i < numberOfElevators; i++) {

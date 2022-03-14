@@ -1,25 +1,25 @@
 package systemwide;
 
-import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 import requests.ServiceRequest;
+
+import java.time.LocalTime;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class for BoundedBuffer methods
- * 
+ *
  * @author Julian, Ryan Dash
  */
 public class BoundedBufferTest {
 
 	BoundedBuffer buffer;
 	ServiceRequest request1, request2;
-	
+
 	/**
-	 *Initializes the objects for testing
-	 * 
+	 * Initializes the objects for testing
 	 */
 	@BeforeEach
 	void setUp() {

@@ -5,14 +5,14 @@ import requests.SubsystemPasser;
 
 /**
  * Floor simulates a level of a structure that an elevator can visit.
- * 
+ *
  * @author Liam Tripp
  */
 public class Floor implements SubsystemPasser {
-	
-	private int floorNumber;
-	private FloorSubsystem floorSubsystem;
-	private ArrivalSensor arrivalSensor;
+
+	private final int floorNumber;
+	private final FloorSubsystem floorSubsystem;
+	private final ArrivalSensor arrivalSensor;
 
 	public Floor(int floorNumber, FloorSubsystem floorSubsystem) {
 		this.floorNumber = floorNumber;

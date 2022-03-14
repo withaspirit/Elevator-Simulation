@@ -3,10 +3,7 @@ package client_server_host;
 import requests.SystemEvent;
 import systemwide.Origin;
 
-import javax.xml.crypto.Data;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * Client sends and receives messages from an IntermediateHost.
@@ -80,7 +77,7 @@ public class Client {
      *
      * @param object a string or event object to send in the DatagramPacket
      */
-    public void send(Object object){
+    public void send(Object object) {
         DatagramPacket sendPacket = buildPacket(object);
         messageTransfer.sendMessage(sendPacket);
         if (!(object instanceof String)) {
@@ -94,7 +91,7 @@ public class Client {
      *
      * @return an object containing a string or event object.
      */
-    public Object receive(){
+    public Object receive() {
         //Receiving reply
         DatagramPacket receivePacket = messageTransfer.receiveMessage();
         Object object = convertToSystemEvent(receivePacket);
@@ -105,7 +102,7 @@ public class Client {
         return object;
     }
 
-    /**
+   /**
     * Converts a packet into it's corresponding SystemEvent object
     *
     * @param packet to convert to event

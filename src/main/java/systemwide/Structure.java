@@ -11,11 +11,11 @@ import java.util.ArrayList;
 
 /**
  * Structure instantiates the overall system.
- * 
+ *
  * @author Liam Tripp, Julian, Ryan Dash
  */
 public class Structure {
-	
+
 	private int numberOfFloors;
 	private int numberOfElevators;
 
