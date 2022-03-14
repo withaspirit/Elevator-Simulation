@@ -1,7 +1,5 @@
 package elevatorsystem;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
@@ -9,6 +7,9 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * RequestQueueTest ensures that all the RequestQueue methods are working properly.
@@ -125,7 +126,7 @@ class RequestQueueTest {
 		int elevatorFloor = 1;
 		int floorNumber = 2;
 
-		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber , requestDirection, 1, Origin.ELEVATOR_SYSTEM);
+		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 1, Origin.ELEVATOR_SYSTEM);
 		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
 		assertFalse(testQueue.isOppositeQueueEmpty());
 	}
@@ -139,7 +140,7 @@ class RequestQueueTest {
 		Direction requestDirection = Direction.UP;
 		Direction serviceDirection = Direction.DOWN;
 		int elevatorFloor = 4;
-		int floorNumber  = 1;
+		int floorNumber = 1;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
 		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
@@ -155,7 +156,7 @@ class RequestQueueTest {
 		Direction requestDirection = Direction.DOWN;
 		Direction serviceDirection = Direction.DOWN;
 		int elevatorFloor = 1;
-		int floorNumber  = 3;
+		int floorNumber = 3;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 1, Origin.ELEVATOR_SYSTEM);
 		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
@@ -171,7 +172,7 @@ class RequestQueueTest {
 		Direction requestDirection = Direction.UP;
 		Direction serviceDirection = Direction.UP;
 		int elevatorFloor = 2;
-		int floorNumber  = 1;
+		int floorNumber = 1;
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
 		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
@@ -218,7 +219,7 @@ class RequestQueueTest {
 		assertFalse(testQueue.isOppositeQueueEmpty());
 		assertTrue(testQueue.isMissedQueueEmpty());
 	}
-	
+
 	@Test
 	void testSwapQueueWithAllEmpty() {
 		//All queues are empty
@@ -233,38 +234,38 @@ class RequestQueueTest {
 		//current queue not empty, opposite queue not empty
 		testAddDownRequestBelowDownElevator();
 		testAddUpRequestBelowDownElevator();
-		
+
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertFalse(testQueue.isOppositeQueueEmpty());
 		assertTrue(testQueue.isMissedQueueEmpty());
 	}
-	
+
 	@Test
 	void testSwapQueueWithMissedQueueAndCurrentQueue() {
 		//current queue not empty, missed queue not empty
 		testAddDownRequestBelowDownElevator();
 		testAddDownRequestAboveDownElevator();
-		
+
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertTrue(testQueue.isOppositeQueueEmpty());
 		assertFalse(testQueue.isMissedQueueEmpty());
 	}
-	
+
 	@Test
 	void testSwapQueueWithAllNotEmpty() {
 		//current queue not empty, missed queue not empty, opposite not empty
 		testAddDownRequestBelowDownElevator();
 		testAddDownRequestAboveDownElevator();
 		testAddUpRequestBelowDownElevator();
-		
+
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertFalse(testQueue.isOppositeQueueEmpty());
 		assertFalse(testQueue.isMissedQueueEmpty());
 	}
-	
+
 	@Test
 	void testCurrentQueueHasCorrectRemovalOrder() {
 		// requests in current default direction (up)

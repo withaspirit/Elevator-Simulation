@@ -20,8 +20,8 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
 	private final Origin origin = Origin.SCHEDULER;
-	private Queue<SystemEvent> requestQueue;
-	private IntermediateHost intermediateHost;
+	private final Queue<SystemEvent> requestQueue;
+	private final IntermediateHost intermediateHost;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
 
@@ -29,7 +29,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * Constructor for Scheduler
 	 *
 	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
-	 * @param floorSubsystemBuffer    a BoundedBuffer for Requests between the Scheduler and floorSubsystem
+	 * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
 	 */
 	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer) {
 		// create floors and elevators here? or in a SchedulerModel

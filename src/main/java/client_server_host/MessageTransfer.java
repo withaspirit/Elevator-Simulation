@@ -115,11 +115,11 @@ public class MessageTransfer {
         // Form a String from the byte array.
         Object object = decodeObject(packet.getData());
         String messageToPrint = name + " sending packet ";
-        if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()){
+        if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
             messageToPrint += "to Scheduler:";
-        } else if (packet.getPort() == Port.CLIENT.getNumber()){
+        } else if (packet.getPort() == Port.CLIENT.getNumber()) {
             messageToPrint += "to Client:";
-        } else if (packet.getPort() == Port.SERVER.getNumber()){
+        } else if (packet.getPort() == Port.SERVER.getNumber()) {
             messageToPrint += "to Server:";
         }
         messageToPrint += " at " + LocalTime.now().toString() + "\n";
@@ -137,7 +137,7 @@ public class MessageTransfer {
     /**
      * Prints the contents of a packet and what class is receiving the packet.
      *
-     * @param name   the name of the class receiving the packet
+     * @param name the name of the class receiving the packet
      * @param packet the DatagramPacket containing data
      */
     public void printReceiveMessage(String name, DatagramPacket packet) {
@@ -145,11 +145,11 @@ public class MessageTransfer {
         Object object = decodeObject(packet.getData());
         if (!(object instanceof String)) {
             String messageToPrint = name + " packet received ";
-            if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()){
+            if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
                 messageToPrint += "from Scheduler:";
-            } else if (packet.getPort() == Port.CLIENT.getNumber()){
+            } else if (packet.getPort() == Port.CLIENT.getNumber()) {
                 messageToPrint += "from Client:";
-            } else if (packet.getPort() == Port.SERVER.getNumber()){
+            } else if (packet.getPort() == Port.SERVER.getNumber()) {
                 messageToPrint += "from Server:";
             }
             messageToPrint += " at " + LocalTime.now().toString() + "\n";
@@ -160,7 +160,7 @@ public class MessageTransfer {
             System.out.println(messageToPrint);
         }
     }
-  
+
     // FIXME: this could be easily be removed
     public DatagramPacket createPacket(byte[] msg, int portNumber) {
         DatagramPacket packet = null;
@@ -175,7 +175,7 @@ public class MessageTransfer {
 
     /**
      * Encodes the object into a Byte Array, which can be used to prepare
-     * requests to be sent through UDP packets. 
+     * requests to be sent through UDP packets.
      *
      * @param object the object to encode
      * @return objectBytes the object coded into a byte array.
@@ -196,7 +196,7 @@ public class MessageTransfer {
 
     /**
      * Decodes the Byte Array to its object instance, which can be used to read
-     * requests received from UDP packets. 
+     * requests received from UDP packets.
      *
      * @param objectBytes the byte array of the object
      * @return object the object instance decoded.

@@ -163,7 +163,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 			Floor floor = new Floor(i, floorSubsystem);
 			floorSubsystem.addFloor(floor);
 		}
-		Thread floorSubsystemThead = new Thread (floorSubsystem, floorSubsystem.getClass().getSimpleName());
+		Thread floorSubsystemThead = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
 		floorSubsystemThead.start();
 	}
 }

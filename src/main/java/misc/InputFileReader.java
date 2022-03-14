@@ -1,11 +1,5 @@
 package misc;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalTime;
-import java.util.ArrayList;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,6 +7,12 @@ import requests.ElevatorRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
+import java.util.ArrayList;
 
 /**
  * InputFileReader takes a given file name and returns the file as a usable object.

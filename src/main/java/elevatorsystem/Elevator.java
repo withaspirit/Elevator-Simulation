@@ -1,7 +1,6 @@
 package elevatorsystem;
 
 import requests.*;
-import requests.ElevatorMonitor;
 import systemwide.Direction;
 import systemwide.Origin;
 
@@ -10,7 +9,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Elevator is a model for simulating an elevator.
- *
  *
  * @author Liam Tripp, Brady Norton
  */
@@ -24,7 +22,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public static final float ACCELERATION = 0.304f; // meters/second^2
 	public static final float LOAD_TIME = 9.5f; // seconds
 	public static final float FLOOR_HEIGHT = 3.91f; // meters (22 steps/floor @ 0.1778 meters/step)
-	public static final double ACCELERATION_DISTANCE = Math.pow(MAX_SPEED, 2)/ (2 * ACCELERATION); // Vf^2 = Vi^2 + 2as therefore s = vf^2/2a
+	public static final double ACCELERATION_DISTANCE = Math.pow(MAX_SPEED, 2) / (2 * ACCELERATION); // Vf^2 = Vi^2 + 2as therefore s = vf^2/2a
 	public static final double ACCELERATION_TIME = Math.sqrt((FLOOR_HEIGHT * 2) / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
 
 	// Elevator Properties
@@ -36,16 +34,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	private final Doors doors;
 	private final ElevatorMotor motor;
-	private RequestQueue requestQueue;
+	private final RequestQueue requestQueue;
 
 	// list must be volatile so that origin checks if it's been updated
 	// functionally, this is a stack (FIFO)
-	private volatile CopyOnWriteArrayList<ServiceRequest> requests;
+	private final CopyOnWriteArrayList<ServiceRequest> requests;
 	private volatile ApproachEvent approachEvent;
 	// variable for allowing / disallowing Elevator's message transfer
 	private boolean messageTransferEnabled;
-
-	// Variable to track if a passenger has been picked up
 
 	/**
 	 * Constructor for Elevator class
@@ -77,9 +73,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 		while (true) {
 			while (!requestQueue.isEmpty()) {
 				// Swap service direction check
-        		swapServiceDirectionIfNecessary();
+				swapServiceDirectionIfNecessary();
 				// Loop until the current queue is empty (all requests in the request queue have been completed)
-				while(!requestQueue.isCurrentQueueEmpty()){
+				while (!requestQueue.isCurrentQueueEmpty()) {
 					System.out.println();
 
 					//int requestFloor = requestQueue.peekNextRequest();
@@ -126,7 +122,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 		boolean shouldStopAtNextFloor = nextFloor == requestFloor;
 		setCurrentFloor(nextFloor);
-
 
 
 		if (shouldStopAtNextFloor) {
@@ -217,9 +212,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		requests.add(serviceRequest);
-    	//TODO remove after queueTime updated properly and serviceDirection is updated properly
+		//TODO remove after queueTime updated properly and serviceDirection is updated properly
 		motor.setMovementState(MovementState.ACTIVE);
-		if (serviceRequest instanceof ElevatorRequest elevatorRequest){
+		if (serviceRequest instanceof ElevatorRequest elevatorRequest) {
 			queueTime = getExpectedTime(elevatorRequest);
 			if (serviceDirection == Direction.NONE) {
 				serviceDirection = elevatorRequest.getDirection();
@@ -263,15 +258,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @return distance until next floor
 	 */
-	public float getDistanceUntilNextFloor(){
+	public float getDistanceUntilNextFloor() {
 		float distance = 0;
 		float stopTime = stopTime();
 
 		// Using Kinematics equation: d = vt + (1/2)at^2
-		float part1 = speed*stopTime;
+		float part1 = speed * stopTime;
 		// System.out.println("Part 1: " + part1);
 
-		float part2 = (float) ((0.5)*(ACCELERATION)*(Math.pow(stopTime,2)));
+		float part2 = (float) ((0.5) * (ACCELERATION) * (Math.pow(stopTime, 2)));
 		// System.out.println("Part 2: " + part2);
 
 		return part1 - part2;
@@ -309,7 +304,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @return serviceDirection
 	 */
-	public Direction getServiceDirection(){
+	public Direction getServiceDirection() {
 		return serviceDirection;
 	}
 
@@ -327,7 +322,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @return the speed as a float
 	 */
-	public float getSpeed(){
+	public float getSpeed() {
 		return speed;
 	}
 
@@ -353,10 +348,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @param serviceRequest the request that's sent to elevator
 	 */
-	public void processRequest(ServiceRequest serviceRequest){
+	public void processRequest(ServiceRequest serviceRequest) {
 		// If request is an elevator request (from outside the elevator)
 		System.out.println("Elevator #" + elevatorNumber + " processing: " + serviceRequest);
-		if(serviceRequest instanceof ElevatorRequest elevatorRequest){
+		if (serviceRequest instanceof ElevatorRequest elevatorRequest) {
 			// Move to floor from which elevatorRequest originated
 
 
@@ -364,7 +359,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			ServiceRequest request = new ServiceRequest(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
 					elevatorRequest.getDirection(), elevatorRequest.getOrigin());
 			addRequest(request);
-		// Request from within the elevator
+			// Request from within the elevator
 		} else {
 			moveToFloor(serviceRequest);
 		}
@@ -404,7 +399,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			 */
 			setCurrentFloor(nextFloor);
 			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor);
-    	}
+		}
 		// Set to idle once floor reached
 		System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
 		motor.stop();
@@ -462,13 +457,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param requestFloor the floor the elevator is to service
 	 */
 	public void printStatus(int requestFloor) {
-		System.out.println("Elevator #" + elevatorNumber + " servicing floor " + requestFloor + " at " + LocalTime.now().toString());;
+		System.out.println("Elevator #" + elevatorNumber + " servicing floor " + requestFloor + " at " + LocalTime.now().toString());
 		System.out.print("Elevator #" + elevatorNumber + " queue: ");
 		requestQueue.printQueue();
 		System.out.print("Elevator #" + elevatorNumber + " Status: [Floor, serviceDirxn, movement, motorDirxn]: [");
 		System.out.print(currentFloor + " " + serviceDirection + " ");
 		//System.out.println("Elevator " + elevatorNumber + " doors are: " + );
-		System.out.print( motor.getMovementState().getName() + " ");
+		System.out.print(motor.getMovementState().getName() + " ");
 		System.out.println(motor.getDirection() + "]");
 	}
 
@@ -479,11 +474,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @param reqFloor the number of the floor that is requested
 	 */
-	public void updateMotor(int reqFloor){
+	public void updateMotor(int reqFloor) {
 		// STOPPED
-		if(motor.isIdle()){
+		if (motor.isIdle()) {
 			// Next floor = destination
-			if(currentFloor == reqFloor){
+			if (currentFloor == reqFloor) {
 				// Do nothing
 			} else {
 				// Next floor != destination

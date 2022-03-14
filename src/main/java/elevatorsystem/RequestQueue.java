@@ -1,20 +1,23 @@
 package elevatorsystem;
 
-import java.util.*;
-
 import requests.ElevatorRequest;
 import requests.ServiceRequest;
 import systemwide.Direction;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 /**
  * RequestQueue maintains queues of floor numbers for an elevator to visit.
  * It also provides methods to manage and modify the queues.
- * 
+ *
  * @author Julian, Liam Tripp
  */
 public class RequestQueue {
 
-	private Queue<Integer> missedRequests;
+	private final Queue<Integer> missedRequests;
 	private volatile PriorityQueue<Integer> currentDirectionQueue;
 	private volatile PriorityQueue<Integer> oppositeDirectionQueue;
 
@@ -139,7 +142,6 @@ public class RequestQueue {
 		return isCurrentQueueEmpty() && isOppositeQueueEmpty() && isMissedQueueEmpty();
 	}
 
-
 	/**
 	 * Determines whether the RequestQueue's currentQueue is empty.
 	 *
@@ -160,7 +162,7 @@ public class RequestQueue {
 
 	/**
 	 * Returns the occupancy status of the missed requests queue
-	 * 
+	 *
 	 * @return status true if empty
 	 */
 	public boolean isMissedQueueEmpty() {
@@ -170,7 +172,7 @@ public class RequestQueue {
 	/**
 	 * Prints the various queues in RequestQueue.
 	 */
-	public void printQueue(){
+	public void printQueue() {
 		if (!isCurrentQueueEmpty()) {
 			System.out.println("CurrentDirectionQueue: " + currentDirectionQueue.toString());
 		}
