@@ -34,8 +34,14 @@ public class IntermediateHost {
         return receivePacket;
     }
 
-    public Object decodePacket(DatagramPacket receivePacket) {
-        return messageTransfer.decodeObject(receivePacket.getData());
+    /**
+     * Converts a packet into it's corresponding SystemEvent object
+     *
+     * @param packet to convert to event
+     * @return object stored in the packet
+     */
+    public Object convertToObject(DatagramPacket packet) {
+        return messageTransfer.decodeObject(packet.getData());
     }
 
     /**

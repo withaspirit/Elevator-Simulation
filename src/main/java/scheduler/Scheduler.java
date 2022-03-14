@@ -76,7 +76,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		while (true) {
 			DatagramPacket receivePacket = intermediateHost.receivePacket();
 
-			Object object = intermediateHost.decodePacket(receivePacket);
+			Object object = intermediateHost.convertToObject(receivePacket);
 
 			if (object instanceof String) {
 				intermediateHost.respondToDataRequest(receivePacket);
@@ -140,19 +140,15 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 				if (request.getOrigin() == Origin.FLOOR_SYSTEM) {
 					if (request instanceof ElevatorRequest elevatorRequest) {
-						sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
-					} else if (request instanceof ApproachEvent approachEvent) {
-						// FIXME: this code might be redundant as it's identical to the one above
-						sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
+						elevatorRequest.setElevatorNumber(chooseElevator(elevatorRequest));
+						request = elevatorRequest;
 					}
+					sendMessage(request, elevatorSubsystemBuffer, origin);
 				} else if (request.getOrigin() == Origin.ELEVATOR_SYSTEM) {
-					if (request instanceof ElevatorMonitor) {
-
-					} else if (request instanceof FloorRequest floorRequest) {
-						sendMessage(floorRequest, floorSubsystemBuffer, origin);
-					} else if (request instanceof ApproachEvent approachEvent) {
-						sendMessage(approachEvent, floorSubsystemBuffer, origin);
+					if (request instanceof ElevatorMonitor elevatorMonitor) {
+						elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
 					}
+					sendMessage(request, floorSubsystemBuffer, origin);
 				} else {
 					System.err.println("Scheduler should not contain items whose origin is Scheduler: " + request);
 				}
