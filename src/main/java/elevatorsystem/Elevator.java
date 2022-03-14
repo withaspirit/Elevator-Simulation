@@ -74,7 +74,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			while (!requestQueue.isEmpty()) {
 				// Swap service direction check
 				swapServiceDirectionIfNecessary();
-				// Loop until the current queue is empty (all requests in the current floors queue have been completed)
+				// Loop until the current queue is empty (all requests in the request queue have been completed)
 				while (!requestQueue.isCurrentQueueEmpty()) {
 					System.out.println();
 
@@ -129,7 +129,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// FIXME: this produces an error
 //			int removedFloor = requestQueue.removeRequest();
 //			if (removedFloor != requestFloor) {
-//				throw new ConcurrentModificationException("Floor was added while floorsqueue was added.");
+//				throw new ConcurrentModificationException("Floor was added while requestQueue was added.");
 //			}
 		}
 	}

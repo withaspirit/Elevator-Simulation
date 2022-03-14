@@ -160,7 +160,7 @@ class RequestQueueTest {
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 1, Origin.ELEVATOR_SYSTEM);
 		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
-		assertFalse(testQueue.isMissedqueueEmpty());
+		assertFalse(testQueue.isMissedQueueEmpty());
 	}
 
 	// Request: Up
@@ -176,7 +176,7 @@ class RequestQueueTest {
 
 		ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), floorNumber, requestDirection, 3, Origin.ELEVATOR_SYSTEM);
 		testQueue.addRequest(elevatorFloor, serviceDirection, elevatorRequest);
-		assertFalse(testQueue.isMissedqueueEmpty());
+		assertFalse(testQueue.isMissedQueueEmpty());
 	}
 
 	@Test
@@ -186,7 +186,7 @@ class RequestQueueTest {
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertTrue(testQueue.isOppositeQueueEmpty());
-		assertTrue(testQueue.isMissedqueueEmpty());
+		assertTrue(testQueue.isMissedQueueEmpty());
 	}
 
 	@Test
@@ -205,7 +205,7 @@ class RequestQueueTest {
 
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
-		assertTrue(testQueue.isMissedqueueEmpty());
+		assertTrue(testQueue.isMissedQueueEmpty());
 	}
 
 	@Test
@@ -217,7 +217,7 @@ class RequestQueueTest {
 		assertTrue(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertFalse(testQueue.isOppositeQueueEmpty());
-		assertTrue(testQueue.isMissedqueueEmpty());
+		assertTrue(testQueue.isMissedQueueEmpty());
 	}
 
 	@Test
@@ -226,7 +226,7 @@ class RequestQueueTest {
 		assertFalse(testQueue.swapQueues());
 		assertTrue(testQueue.isCurrentQueueEmpty());
 		assertTrue(testQueue.isOppositeQueueEmpty());
-		assertTrue(testQueue.isMissedqueueEmpty());
+		assertTrue(testQueue.isMissedQueueEmpty());
 	}
 
 	@Test
@@ -238,7 +238,7 @@ class RequestQueueTest {
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertFalse(testQueue.isOppositeQueueEmpty());
-		assertTrue(testQueue.isMissedqueueEmpty());
+		assertTrue(testQueue.isMissedQueueEmpty());
 	}
 
 	@Test
@@ -250,7 +250,7 @@ class RequestQueueTest {
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertTrue(testQueue.isOppositeQueueEmpty());
-		assertFalse(testQueue.isMissedqueueEmpty());
+		assertFalse(testQueue.isMissedQueueEmpty());
 	}
 
 	@Test
@@ -263,7 +263,7 @@ class RequestQueueTest {
 		assertFalse(testQueue.swapQueues());
 		assertFalse(testQueue.isCurrentQueueEmpty());
 		assertFalse(testQueue.isOppositeQueueEmpty());
-		assertFalse(testQueue.isMissedqueueEmpty());
+		assertFalse(testQueue.isMissedQueueEmpty());
 	}
 
 	@Test
