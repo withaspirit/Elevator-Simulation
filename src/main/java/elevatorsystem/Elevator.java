@@ -137,7 +137,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// FIXME: this produces an error
 			int removedFloor = requestQueue.removeRequest();
 			if (removedFloor != requestFloor) {
-				throw new ConcurrentModificationException("Floor was added while requestQueue being processed added.");
+				throw new ConcurrentModificationException("A request was added while the current request was being processed.");
 			}
 		}
 	}
