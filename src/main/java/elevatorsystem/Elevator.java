@@ -5,6 +5,7 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+import java.util.ConcurrentModificationException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -78,8 +79,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 				while (!requestQueue.isCurrentQueueEmpty()) {
 					System.out.println();
 
-					//int requestFloor = requestQueue.peekNextRequest();
-					int requestFloor = requestQueue.removeRequest();
+					int requestFloor = requestQueue.peekNextRequest();
+					//int requestFloor = requestQueue.removeRequest();
 
 					// Print status
 					printStatus(requestFloor);
@@ -127,10 +128,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (shouldStopAtNextFloor) {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
 			// FIXME: this produces an error
-//			int removedFloor = requestQueue.removeRequest();
-//			if (removedFloor != requestFloor) {
-//				throw new ConcurrentModificationException("Floor was added while requestQueue was added.");
-//			}
+			int removedFloor = requestQueue.removeRequest();
+			if (removedFloor != requestFloor) {
+				throw new ConcurrentModificationException("Floor was added while requestQueue being processed added.");
+			}
 		}
 	}
 
@@ -216,9 +217,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		motor.setMovementState(MovementState.ACTIVE);
 		if (serviceRequest instanceof ElevatorRequest elevatorRequest) {
 			queueTime = getExpectedTime(elevatorRequest);
-			if (serviceDirection == Direction.NONE) {
-				serviceDirection = elevatorRequest.getDirection();
-			}
 		}
 		int elevatorFloorToPass = currentFloor;
 		requestQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
@@ -235,12 +233,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Returns the number of requests the elevator has left to fulfill.
+	 * Returns whether the request queue is empty.
 	 *
-	 * @return numberOfRequests the number of requests the elevator has remaining
+	 * @return true if the request queue is empty, false otherwise
 	 */
-	public int getNumberOfRequests() {
-		return requests.size();
+	public boolean hasNoRequests() {
+		return requestQueue.isEmpty();
 	}
 
 	/**
