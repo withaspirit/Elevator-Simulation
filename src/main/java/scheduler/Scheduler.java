@@ -246,7 +246,12 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	}
 
 	public static void main(String[] args) {
-		new Thread(new Scheduler(Port.CLIENT_TO_SERVER.getNumber()), "Client To Server").start();
-		new Thread(new Scheduler(Port.SERVER_TO_CLIENT.getNumber()), "Server To Client").start();
+		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
+		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
+		schedulerClient.addElevatorMonitor(1);
+		schedulerClient.addElevatorMonitor(2);
+		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
+		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
+
 	}
 }
