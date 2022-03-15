@@ -55,6 +55,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.elevatorNumber = elevatorNumber;
 		this.elevatorSubsystem = elevatorSubsystem;
 		speed = 0;
+		currentFloor = 1;
 		approachEvent = null;
 		serviceDirection = Direction.UP;
 		motor = new ElevatorMotor();
@@ -124,9 +125,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// stop output message
 		if (nextFloor != currentFloor) {
-			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor);
+			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor + " at " + LocalTime.now());
 		} else {
-			System.out.println("Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor);
+			System.out.println("Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor + " at " + LocalTime.now());
 		}
 		boolean shouldStopAtNextFloor = nextFloor == requestFloor;
 		setCurrentFloor(nextFloor);
@@ -136,7 +137,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
 			// FIXME: this produces an error
 			int removedFloor = requestQueue.removeRequest();
-			if (removedFloor != requestFloor) {
+			boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
+			System.out.println("same floor removed as peeked: " + sameFloorRemovedAsPeeked);
+			if (removedFloor == -1) {
+				System.err.println("A value of -1 was received from the requestQueue.");
+			} else if (!sameFloorRemovedAsPeeked) {
 				throw new ConcurrentModificationException("A request was added while the current request was being processed.");
 			}
 		}
