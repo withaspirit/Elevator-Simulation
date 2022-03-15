@@ -9,7 +9,6 @@ import requests.SystemEvent;
 import systemwide.Origin;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +42,7 @@ class ElevatorTest {
     @AfterEach
     void tearDown() {
         // this prevents multiple elevators from being added
-        elevatorList.clear();
+        // elevatorList.clear();
         threads.clear();
     }
 
@@ -84,7 +83,7 @@ class ElevatorTest {
     private void initElevatorThreads() {
         for (Elevator elevator : elevatorList) {
             // initiate elevator threads on the elevator's moveWhilePossible() method
-            Runnable testElevatorMovementRunnable = new Runnable () {
+            Runnable testElevatorMovementRunnable = new Runnable() {
                 @Override
                 public void run() {
                     elevator.moveElevatorWhilePossible();
@@ -126,7 +125,7 @@ class ElevatorTest {
             initNumberOfElevators(i);
             addRequestsToElevators();
 
-            for (Elevator elevator: elevatorList) {
+            for (Elevator elevator : elevatorList) {
                 System.out.println("Testing Elevator " + elevator.getElevatorNumber());
                 assertFalse(elevator.hasNoRequests());
             }
@@ -160,7 +159,7 @@ class ElevatorTest {
         initElevatorThreads();
 
         assertEquals(numberOfElevators, elevatorList.size());
-        for (Elevator elevator: elevatorList) {
+        for (Elevator elevator : elevatorList) {
             assertTrue(elevator.hasNoRequests());
         }
     }
@@ -181,7 +180,7 @@ class ElevatorTest {
         initElevatorThreads();
 
         assertEquals(numberOfElevators, elevatorList.size());
-        for (Elevator elevator: elevatorList) {
+        for (Elevator elevator : elevatorList) {
             assertTrue(elevator.hasNoRequests());
         }
     }
