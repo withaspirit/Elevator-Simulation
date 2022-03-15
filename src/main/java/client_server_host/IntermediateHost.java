@@ -3,6 +3,7 @@ package client_server_host;
 import requests.SystemEvent;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 
 /**
  * IntermediateHost is a service class used by Scheduler. It provides methods
@@ -48,12 +49,13 @@ public class IntermediateHost {
      * Adds a packets containing an event to the MessageTransfer queue.
      *
      * @param event an event to send to either the Client or Server
-     * @param packet a packet containing the address and port to send the event
+     * @param address an address to send the packet
+     * @param port a port to send the packet
      */
-    public void addNewPacketToQueue(SystemEvent event, DatagramPacket packet) {
+    public void addNewPacketToQueue(SystemEvent event, InetAddress address, int port) {
         // encode the altered event into a new packet
         byte[] newByteArray = messageTransfer.encodeObject(event);
-        DatagramPacket newPacket = new DatagramPacket(newByteArray, newByteArray.length, packet.getAddress(), packet.getPort());
+        DatagramPacket newPacket = new DatagramPacket(newByteArray, newByteArray.length, address, port);
         messageTransfer.addPacketToQueue(newPacket);
     }
 

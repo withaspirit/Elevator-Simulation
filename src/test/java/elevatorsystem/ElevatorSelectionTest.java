@@ -56,6 +56,8 @@ public class ElevatorSelectionTest {
         // Setup and start Scheduler Threads to send to ElevatorSubsystem
         schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
         schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
+        schedulerClient.addElevatorMonitor(elevator1.getElevatorNumber());
+        schedulerClient.addElevatorMonitor(elevator2.getElevatorNumber());
         schedulerClientThread = new Thread (schedulerClient, schedulerClient.getClass().getSimpleName());
         schedulerServerThread = new Thread (schedulerServer, schedulerServer.getClass().getSimpleName());
         elevatorSubsystemThread = new Thread (elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());

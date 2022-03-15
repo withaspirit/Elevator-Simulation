@@ -9,6 +9,7 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -82,7 +83,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 				intermediateHost.respondToDataRequest(receivePacket);
 			} else if (object instanceof SystemEvent systemEvent) {
 				intermediateHost.respondToSystemEvent(receivePacket);
-				processData(receivePacket, systemEvent);
+				processData(receivePacket.getAddress(), systemEvent);
 			}
 		}
 	}
@@ -91,32 +92,32 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * Process data that Scheduler's DatagramSocket has received.
 	 * Create a new packet and manipulate it according to the packet's Origin.
 	 *
-	 * @param packet a DatagramPacket containing a SystemEvent
+	 * @param address an address to send systemEvents
 	 * @param event a systemEvent to be processed
 	 */
-	public void processData(DatagramPacket packet, SystemEvent event) {
+	public void processData(InetAddress address, SystemEvent event) {
 		Origin eventOrigin = event.getOrigin();
-
+		int port;
 		// manipulate the packet according to its origin
 		if (eventOrigin == Origin.ELEVATOR_SYSTEM) {
 			// scheduler method here to do FLOORSUBSYSTEM stuff
 			if (event instanceof ElevatorMonitor elevatorMonitor){
 				elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
 			}
-			packet.setPort(Port.CLIENT.getNumber());
+			port = Port.CLIENT.getNumber();
 		} else if (eventOrigin == Origin.FLOOR_SYSTEM) {
 			if (event instanceof ElevatorRequest elevatorRequest) {
 				elevatorRequest.setElevatorNumber(chooseElevator(elevatorRequest));
 				event = elevatorRequest;
 			}
 			// scheduler method here to do ELEVATORSUBSYSTEM stuff
-			packet.setPort(Port.SERVER.getNumber());
+			port = Port.SERVER.getNumber();
 		} else {
 			throw new IllegalArgumentException("Error: Invalid Origin");
 		}
 		event.setOrigin(Origin.changeOrigin(eventOrigin));
 		// intermediate host
-		intermediateHost.addNewPacketToQueue(event, packet);
+		intermediateHost.addNewPacketToQueue(event, address, port);
 	}
 
 	/**
