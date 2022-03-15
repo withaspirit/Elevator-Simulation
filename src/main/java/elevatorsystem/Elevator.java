@@ -72,23 +72,30 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while (true) {
-			while (!requestQueue.isEmpty()) {
-				// Swap service direction check
-				swapServiceDirectionIfNecessary();
-				// Loop until the current queue is empty (all requests in the request queue have been completed)
-				while (!requestQueue.isCurrentQueueEmpty()) {
-					System.out.println();
+			moveElevatorWhilePossible();
+		}
+	}
 
-					int requestFloor = requestQueue.peekNextRequest();
-					//int requestFloor = requestQueue.removeRequest();
+	/**
+	 * Moves the elevator while it has requests in its queue.
+	 */
+	public void moveElevatorWhilePossible() {
+		while (!requestQueue.isEmpty()) {
+			// Swap service direction check
+			swapServiceDirectionIfNecessary();
+			// Loop until the current queue is empty (all requests in the request queue have been completed)
+			while (!requestQueue.isCurrentQueueEmpty()) {
+				System.out.println();
 
-					// Print status
-					printStatus(requestFloor);
-					// Compare the request floor and the next floor
-					compareFloors(requestFloor);
+				int requestFloor = requestQueue.peekNextRequest();
+				//int requestFloor = requestQueue.removeRequest();
 
-					moveToNextFloor(requestFloor);
-				}
+				// Print status
+				printStatus(requestFloor);
+				// Compare the request floor and the next floor
+				compareFloors(requestFloor);
+
+				moveToNextFloor(requestFloor);
 			}
 		}
 	}
