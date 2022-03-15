@@ -80,6 +80,38 @@ class ElevatorTest {
         }
     }
 
+    // FIXME: this fails, unequal distribution of requests
+    @Test
+    void testTwoElevatorSelection() {
+        int numberOfElevators = 2;
+        initNumberOfElevators(numberOfElevators);
+        addRequestsToElevators();
+
+        for (Elevator elevator : elevatorList) {
+            assertFalse(elevator.hasNoRequests());
+        }
+    }
+
+    // test up to 7 elevators
+    // FIXME: this fails
+    @Test
+    void testElevatorSelectionAtLeastOneRequestPerElevator() {
+        // ensure each elevator has at least one request
+        // this tests for even distribution of elevators
+        // does for up to 7 elevators
+        for (int i = 1; i <= eventList.size(); i++) {
+            initNumberOfElevators(i);
+            addRequestsToElevators();
+
+            for (Elevator elevator: elevatorList) {
+                System.out.println("Testing Elevator " + elevator.getElevatorNumber());
+                assertFalse(elevator.hasNoRequests());
+            }
+            // empty list of elevators
+            elevatorList = new ArrayList<>();
+        }
+    }
+
     @Test
     void testOneElevator() {
         int numberOfElevators = 1;
@@ -136,38 +168,6 @@ class ElevatorTest {
                 assertTrue(elevator.hasNoRequests());
             }
             // terminateThreads();
-            elevatorList = new ArrayList<>();
-        }
-    }
-
-    // FIXME: this fails, unequal distribution of requests
-    @Test
-    void testTwoElevatorSelection() {
-        int numberOfElevators = 2;
-        initNumberOfElevators(numberOfElevators);
-        addRequestsToElevators();
-
-        for (Elevator elevator : elevatorList) {
-            assertFalse(elevator.hasNoRequests());
-        }
-    }
-
-    // test up to 7 elevators
-    // FIXME: this fails
-    @Test
-    void testElevatorSelectionAtLeastOneRequestPerElevator() {
-        // ensure each elevator has at least one request
-        // this tests for even distribution of elevators
-        // does for up to 7 elevators
-        for (int i = 1; i <= eventList.size(); i++) {
-            initNumberOfElevators(i);
-            addRequestsToElevators();
-
-            for (Elevator elevator: elevatorList) {
-                System.out.println("Testing Elevator " + elevator.getElevatorNumber());
-                assertFalse(elevator.hasNoRequests());
-            }
-            // empty list of elevators
             elevatorList = new ArrayList<>();
         }
     }
