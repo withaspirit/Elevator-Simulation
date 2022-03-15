@@ -34,6 +34,7 @@ class ElevatorTest {
     @BeforeEach
     void setUp() {
         elevatorSubsystem = new ElevatorSubsystem();
+        threads = new ArrayList<>();
         elevatorList = new ArrayList<>();
         InputFileReader inputFileReader = new InputFileReader();
         eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
@@ -43,6 +44,7 @@ class ElevatorTest {
     void tearDown() {
         // this prevents multiple elevators from being added
         elevatorList.clear();
+        threads.clear();
     }
 
     /**
@@ -80,10 +82,24 @@ class ElevatorTest {
      * Starts the elevator threads.
      */
     private void initElevatorThreads() {
-        threads = new ArrayList<>();
         for (Elevator elevator : elevatorList) {
-            Thread thread = new Thread(elevator);
+            // initiate elevator threads on the elevator's moveWhilePossible() method
+            Runnable testElevatorMovementRunnable = new Runnable () {
+                @Override
+                public void run() {
+                    elevator.moveElevatorWhilePossible();
+                }
+            };
+
+            Thread thread = new Thread(testElevatorMovementRunnable);
+            threads.add(thread);
             thread.start();
+            // wait until thread dies before executing the next thread
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -128,9 +144,8 @@ class ElevatorTest {
     }
 
     @Test
-    // NOTE: sometimes this doesn't work
     void testOneElevatorFulfillsRequestsMultipleTimes() {
-        for (int i = 0; i < numberOfTimesToTest; i++) {
+        for (int i = 0; i < numberOfTimesToTest * 5; i++) {
             testOneElevatorFulfillsRequests();
         }
     }
@@ -138,54 +153,39 @@ class ElevatorTest {
     @Test
     void testOneThreadedElevatorFulfillsRequests() {
         int numberOfElevators = 1;
+        // this statement clears elevators in case more than necessary are currently being tested
+        elevatorList.clear();
         initNumberOfElevators(numberOfElevators);
         addRequestsToElevators();
         initElevatorThreads();
 
-        // NOTE: test doesn't work if this is commented out
-        try {
-            TimeUnit.MILLISECONDS.sleep(numberOfMilliseconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        assertEquals(numberOfElevators, elevatorList.size());
+        for (Elevator elevator: elevatorList) {
+            assertTrue(elevator.hasNoRequests());
         }
-        // wait while elevator has requests
-        while (!elevatorList.get(0).hasNoRequests()) {
-
-        }
-        assertEquals(1, elevatorList.size());
-        assertTrue(elevatorList.get(0).hasNoRequests());
     }
 
     @Test
-    // NOTE: this doesn't always work.
     void testOneThreadedElevatorFulfillsRequestsMultipleTimes() {
-        for (int i = 0; i < numberOfTimesToTest; i++) {
+        for (int i = 0; i < numberOfTimesToTest * 10; i++) {
             testOneThreadedElevatorFulfillsRequests();
         }
     }
 
-    // FIXME: this fails
     @Test
     void testTwoThreadedElevatorsFulfillRequests() {
         int numberOfElevators = 2;
+        elevatorList.clear();
         initNumberOfElevators(numberOfElevators);
         addRequestsToElevators();
         initElevatorThreads();
 
-        try {
-            TimeUnit.MILLISECONDS.sleep(numberOfMilliseconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        assertEquals(numberOfElevators, elevatorList.size());
         for (Elevator elevator: elevatorList) {
             assertTrue(elevator.hasNoRequests());
         }
-
-        elevatorList = new ArrayList<>();
     }
 
-    // FIXME: this always fails due to elevator selection not working
     @Test
     void testTwoElevatorsMultipleTimes() {
         for (int i = 0; i < numberOfTimesToTest; i++) {
