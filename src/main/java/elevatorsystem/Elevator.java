@@ -135,10 +135,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		if (shouldStopAtNextFloor) {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
-			// FIXME: this produces an error
+			// FIXME: this sometimes produces a Concurrency error due to a request being added to the
+			//  elevator at the same time as the elevator is moving
 			int removedFloor = requestQueue.removeRequest();
 			boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
-			System.out.println("same floor removed as peeked: " + sameFloorRemovedAsPeeked);
+
 			if (removedFloor == -1) {
 				System.err.println("A value of -1 was received from the requestQueue.");
 			} else if (!sameFloorRemovedAsPeeked) {
