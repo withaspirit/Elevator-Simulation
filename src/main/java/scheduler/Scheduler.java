@@ -107,7 +107,9 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 			port = Port.CLIENT.getNumber();
 		} else if (eventOrigin == Origin.FLOOR_SYSTEM) {
 			if (event instanceof ElevatorRequest elevatorRequest) {
-				elevatorRequest.setElevatorNumber(chooseElevator(elevatorRequest));
+				int chosenElevator = chooseElevator(elevatorRequest);
+				System.err.println("Elevator#" + chosenElevator + " is being sent a request");
+				elevatorRequest.setElevatorNumber(chosenElevator);
 				event = elevatorRequest;
 			}
 			// scheduler method here to do ELEVATORSUBSYSTEM stuff
@@ -186,11 +188,11 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 			int elevatorNumber = monitor.getElevatorNumber();
 
 			if (state == MovementState.IDLE) {
-				System.err.println(elevatorNumber + " is idle");
+				System.out.println("Elevator#" + elevatorNumber + " is idle");
 				return elevatorNumber;
 
 			} else if (state == MovementState.STUCK) {
-				System.err.println("Elevator is stuck");
+				System.err.println("Elevator#" + elevatorNumber + " is stuck");
 
 			} else if (monitor.getDirection() == requestDirection) {
 				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
