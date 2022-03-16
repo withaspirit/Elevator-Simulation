@@ -135,16 +135,25 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		if (shouldStopAtNextFloor) {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
+			attemptToRemoveFloor(requestFloor);
 			// FIXME: this sometimes produces a Concurrency error due to a request being added to the
 			//  elevator at the same time as the elevator is moving
-			int removedFloor = requestQueue.removeRequest();
-			boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
+		}
+	}
 
-			if (removedFloor == -1) {
-				System.err.println("A value of -1 was received from the requestQueue.");
-			} else if (!sameFloorRemovedAsPeeked) {
-				throw new ConcurrentModificationException("A request was added while the current request was being processed.");
-			}
+	/**
+	 * Attempts to remove a floor from the requestQueue, throwing exceptions if unsuccessful.
+	 *
+	 * @param requestFloor the floor to be removed from the requestQueue
+	 */
+	public void attemptToRemoveFloor(int requestFloor) {
+		int removedFloor = requestQueue.removeRequest();
+		boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
+
+		if (removedFloor == -1) {
+			throw new IllegalArgumentException("A value of -1 was received from the requestQueue.");
+		} else if (!sameFloorRemovedAsPeeked) {
+			throw new ConcurrentModificationException("A request was added while the current request was being processed.");
 		}
 	}
 
