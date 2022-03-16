@@ -110,8 +110,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param requestFloor the floor the elevator will move to
 	 */
 	public void moveToNextFloor(int requestFloor) {
-		int nextFloor;
-		nextFloor = motor.move(currentFloor, requestFloor);
+		int nextFloor = motor.move(currentFloor, requestFloor);
 
 		// in future iterations, shouldStopAtNextFloor will be followed by sending an ApproachRequest
 		if (messageTransferEnabled) {
