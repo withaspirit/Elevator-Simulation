@@ -132,12 +132,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 		boolean shouldStopAtNextFloor = nextFloor == requestFloor;
 		setCurrentFloor(nextFloor);
 
-
 		if (shouldStopAtNextFloor) {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
 			attemptToRemoveFloor(requestFloor);
-			// FIXME: this sometimes produces a Concurrency error due to a request being added to the
-			//  elevator at the same time as the elevator is moving
 		}
 	}
 
@@ -158,50 +155,56 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Compares the destinationFloor to the next floor and updates the Motor accordingly
+	 * Compares the requestFloor to the next floor and updates the Motor accordingly
 	 *
-	 * @param destinationFloor the floor the elevator is going to visit
+	 * @param requestFloor the floor the elevator is going to visit
 	 */
-	public void compareFloors(int destinationFloor) {
+	public void compareFloors(int requestFloor) {
 		// Next floor in service direction
-		int nextFloor = motor.move(currentFloor, destinationFloor);
+		int floorToVisit = motor.move(currentFloor, requestFloor);
 
-		// Motor is IDLE
 		if (motor.isIdle()) {
-			// Next floor is the destination floor
-			if (destinationFloor == nextFloor) {
-				// Remove request from queue
+			// elevator is stopped
+			if (currentFloor == requestFloor) {
+				// stop moving
 				// requestQueue.removeRequest();
-				// Open doors
+				// motor.stop()
 				/*
-				if(!elevatorDoors.areOpen()){
-					elevatorDoors.open();
+				while (doors.areClosed()) {
+					// attempt to open doors (non-interruptable?)
 				}
 				 */
+			} else if (floorToVisit == requestFloor) {
+				/*
+				while (doors.areOpen()) {
+					// attempt to close (interruptable?)
+				}
+				motor.startMoving();
+				motor.changeDirection(currentFloor, floorToVisit);
+				 */
+				// send approachRequest?
+				updateMotor(requestFloor);
 			} else {
-				// Motor IDLE and next floor is not the destination floor
-				// Close doors
+				// requestFloor != floorToVisit
 				/*
-				if(elevatorDoors.areOpen()){
-					elevatorDoors.close();
+				while (doors.areOpen()) {
+					// attempt to close (interruptable?)
 				}
+				motor.startMoving();
+				motor.changeDirection(currentFloor, floorToVisit);
 				 */
-				updateMotor(destinationFloor);
+				updateMotor(requestFloor);
 			}
 		} else {
-			// Next floor is not the destination floor
-			if (destinationFloor != nextFloor) {
-				// Don't change motor
-			} else {
-				// Next floor is the destination floor
-				// Remove the request floor from the queue
-				// requestQueue.removeRequest();
-
-				// Current requestQueue isn't empty and the next request is on a different floor
-				if (destinationFloor != currentFloor && !requestQueue.isCurrentQueueEmpty()) {
-					// Update the motor
-					updateMotor(destinationFloor);
-				}
+			// elevator is moving
+			if (currentFloor == requestFloor) {
+				// stop elevator? (???) (should occurs after elevator has moved
+				throw new RuntimeException("When Elevator #" + elevatorNumber + " is moving, it should not receive requests");
+			} else if (floorToVisit == requestFloor) {
+				// do nothing (???)
+				// attemptToRemoveFloor(requestFloor);
+			} else if (floorToVisit != requestFloor) {
+				// keep moving
 			}
 		}
 	}
