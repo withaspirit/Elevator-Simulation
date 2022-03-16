@@ -95,8 +95,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 				printStatus(requestFloor);
 				// Compare the request floor and the next floor
 				compareFloors(requestFloor);
-
 				moveToNextFloor(requestFloor);
+				// stop elevator if necessary
+				if (!motor.isIdle()) {
+					compareFloors(requestFloor);
+				}
 			}
 		}
 	}
@@ -129,13 +132,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		} else {
 			System.out.println("Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor + " at " + LocalTime.now());
 		}
-		boolean shouldStopAtNextFloor = nextFloor == requestFloor;
 		setCurrentFloor(nextFloor);
-
-		if (shouldStopAtNextFloor) {
-			System.out.println("Elevator #" + elevatorNumber + " reached destination");
-			attemptToRemoveFloor(requestFloor);
-		}
 	}
 
 	/**
@@ -166,47 +163,59 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (motor.isIdle()) {
 			// elevator is stopped
 			if (currentFloor == requestFloor) {
-				// stop moving
-				// requestQueue.removeRequest();
-				// motor.stop()
-				/*
-				while (doors.areClosed()) {
-					// attempt to open doors (non-interruptable?)
-				}
-				 */
+				stopAtFloor(requestFloor);
 			} else if (floorToVisit == requestFloor) {
-				/*
-				while (doors.areOpen()) {
-					// attempt to close (interruptable?)
-				}
-				motor.startMoving();
-				motor.changeDirection(currentFloor, floorToVisit);
-				 */
-				// send approachRequest?
-				updateMotor(requestFloor);
+				startMovingToFloor(floorToVisit);
 			} else {
 				// requestFloor != floorToVisit
-				/*
-				while (doors.areOpen()) {
-					// attempt to close (interruptable?)
-				}
-				motor.startMoving();
-				motor.changeDirection(currentFloor, floorToVisit);
-				 */
-				updateMotor(requestFloor);
+				startMovingToFloor(floorToVisit);
 			}
 		} else {
 			// elevator is moving
 			if (currentFloor == requestFloor) {
-				// stop elevator? (???) (should occurs after elevator has moved
-				throw new RuntimeException("When Elevator #" + elevatorNumber + " is moving, it should not receive requests");
+				// elevator has reached destination after moving one floor
+				stopAtFloor(requestFloor);
 			} else if (floorToVisit == requestFloor) {
-				// do nothing (???)
-				// attemptToRemoveFloor(requestFloor);
-			} else if (floorToVisit != requestFloor) {
+				// (???) do nothing
+			} else {
+				// floorToVisit != requestFloor
 				// keep moving
 			}
 		}
+	}
+
+	/**
+	 * Closes the doors and updates elevator properties to be moving towards a floor.
+	 *
+	 * @param floorToVisit the next floor the elevator will visit
+	 */
+	public void startMovingToFloor(int floorToVisit) {
+		/*
+		while (doors.areOpen()) {
+			// attempt to close (interruptable?)
+		}
+		*/
+		motor.startMoving();
+		motor.changeDirection(currentFloor, floorToVisit);
+	}
+
+	/**
+	 * Stops the elevator at the specified floor and closes the doors.
+	 *
+	 * @param requestFloor the floor at the top of the requestQueue
+	 */
+	public void stopAtFloor(int requestFloor) {
+		attemptToRemoveFloor(requestFloor);
+		System.out.println("Elevator #" + elevatorNumber + " reached destination");
+
+		if (motor.isActive()) {
+			motor.stop();
+		}
+		/*
+		while (doors.areClosed()) {
+			// attempt to open doors (non-interruptable?)
+		}
+		*/
 	}
 
 	/**
@@ -426,43 +435,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		//System.out.println("Elevator " + elevatorNumber + " doors are: " + );
 		System.out.print(motor.getMovementState().getName() + " ");
 		System.out.println(motor.getDirection() + "]");
-	}
-
-	/**
-	 * Update Motor properties based on the serviceRequest.
-	 *
-	 * NOTE: Might be changed to simply use the first request in the queue
-	 *
-	 * @param reqFloor the number of the floor that is requested
-	 */
-	public void updateMotor(int reqFloor) {
-		// STOPPED
-		if (motor.isIdle()) {
-			// Next floor = destination
-			if (currentFloor == reqFloor) {
-				// Do nothing
-			} else {
-				// Next floor != destination
-				// Close doors
-				// elevatorDoor.setClose();
-
-				// start moving
-				// Change motor state
-				motor.setMovementState(MovementState.ACTIVE);
-
-				// Set motor Direction
-				motor.changeDirection(currentFloor, reqFloor);
-			}
-		} else if (motor.isActive()) {
-			// ACTIVE
-			// Next floor != destination
-			if (currentFloor != reqFloor) {
-				// If motor is moving in the wrong direction
-				motor.changeDirection(currentFloor, reqFloor);
-			} else {
-				motor.stop();
-			}
-		}
 	}
 
 	/**
