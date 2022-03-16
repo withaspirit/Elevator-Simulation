@@ -60,14 +60,11 @@ public class ElevatorMotor {
 	 * Simulates elevator movement.
 	 */
 	public int move(int currentFloor, int requestFloor) {
-		int floorDifference = currentFloor - requestFloor;
 		int nextFloor = currentFloor;
 
-		// if floor is above
-		if (floorDifference < 0) {
+		if (currentFloor < requestFloor) {
 			nextFloor += 1;
-			// floor is below
-		} else if (floorDifference > 0) {
+		} else if (currentFloor > requestFloor) {
 			nextFloor -= 1;
 		} else {
 		}
