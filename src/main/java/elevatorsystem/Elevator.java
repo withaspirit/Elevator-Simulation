@@ -84,7 +84,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		while (!requestQueue.isEmpty()) {
 			// Swap service direction check
 			swapServiceDirectionIfNecessary();
-			// Loop until the current queue is empty (all requests in the request queue have been completed)
+			// Loop until the active queue is empty (all requests in the request queue have been completed)
 			while (!requestQueue.isCurrentQueueEmpty()) {
 				respondToRequest();
 			}
