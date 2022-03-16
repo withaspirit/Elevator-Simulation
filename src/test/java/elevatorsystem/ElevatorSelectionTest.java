@@ -110,9 +110,12 @@ public class ElevatorSelectionTest {
         assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
         assertEquals(elevator2.getMotor().getMovementState(), MovementState.ACTIVE);
 
-        //Elevators expected completion times have increased to 28.5
-        assertEquals(elevator1.getExpectedTime(elevatorRequest), elevator1QueueTime + 9.5);
-        assertEquals(elevator2.getExpectedTime(elevatorRequest), elevator2QueueTime + 9.5);
+        sendReceiveMonitor();
+        sendReceiveMonitor();
+
+        //Elevators expected completion times have increased by 19 seconds
+        assertEquals(elevator1.getExpectedTime(elevatorRequest), elevator1QueueTime + 19);
+        assertEquals(elevator2.getExpectedTime(elevatorRequest), elevator2QueueTime + 19);
     }
 
     /**
