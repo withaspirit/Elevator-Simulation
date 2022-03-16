@@ -86,28 +86,35 @@ public class Elevator implements Runnable, SubsystemPasser {
 			swapServiceDirectionIfNecessary();
 			// Loop until the current queue is empty (all requests in the request queue have been completed)
 			while (!requestQueue.isCurrentQueueEmpty()) {
-				System.out.println();
-
-				int requestFloor = requestQueue.peekNextRequest();
-				//int requestFloor = requestQueue.removeRequest();
-
-				// Print status
-				printStatus(requestFloor);
-				// Compare the request floor and the next floor
-				compareFloors(requestFloor);
-				moveToNextFloor(requestFloor);
-				// stop elevator if necessary
-				if (!motor.isIdle()) {
-					compareFloors(requestFloor);
-				}
+				respondToRequest();
 			}
 		}
 	}
 
 	/**
-	 * Moves the Elevator to the next floor, stopping if it's the next floor.
+	 * Elevator responds to the floor at the top of the RequestQueue.
+	 */
+	public void respondToRequest() {
+		System.out.println();
+
+		int requestFloor = requestQueue.peekNextRequest();
+		//int requestFloor = requestQueue.removeRequest();
+
+		// Print status
+		printStatus(requestFloor);
+		// Compare the request floor and the next floor
+		compareFloors(requestFloor);
+		moveToNextFloor(requestFloor);
+		// stop elevator if necessary
+		if (!motor.isIdle()) {
+			compareFloors(requestFloor);
+		}
+	}
+
+	/**
+	 * Moves the Elevator to the next floor.
 	 *
-	 * @param requestFloor the floor the elevator will move to
+	 * @param requestFloor the floor at the top of the queue of requests
 	 */
 	public void moveToNextFloor(int requestFloor) {
 		int nextFloor = motor.move(currentFloor, requestFloor);
