@@ -98,6 +98,13 @@ public class ElevatorMotor {
 	}
 
 	/**
+	 * Sets the Motor properties such that it is moving in the specified direction.
+	 */
+	public void startMoving() {
+		setMovementState(MovementState.ACTIVE);
+	}
+
+	/**
 	 * Simulates the elevator moving up
 	 */
 	public void moveUp() {
