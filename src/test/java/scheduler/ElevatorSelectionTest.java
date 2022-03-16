@@ -1,12 +1,14 @@
-package elevatorsystem;
+package scheduler;
 
 import client_server_host.MessageTransfer;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
+import elevatorsystem.Elevator;
+import elevatorsystem.ElevatorSubsystem;
+import elevatorsystem.MovementState;
 import org.junit.jupiter.api.*;
 import requests.ElevatorMonitor;
 import requests.ElevatorRequest;
-import scheduler.Scheduler;
 import systemwide.Direction;
 import systemwide.Origin;
 
@@ -72,7 +74,7 @@ public class ElevatorSelectionTest {
     @Test
     void testSelectingIdleElevators() {
         //Both elevator's status' are idle
-        assertEquals(elevator1.getMotor().getMovementState(), MovementState.IDLE);
+        Assertions.assertEquals(elevator1.getMotor().getMovementState(), MovementState.IDLE);
         assertEquals(elevator2.getMotor().getMovementState(), MovementState.IDLE);
 
         //Both elevators expected time to completion with new requests are 9.5
