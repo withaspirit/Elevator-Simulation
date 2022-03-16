@@ -355,68 +355,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Processes a serviceRequest and moves based on the request type.
-	 *
-	 * @param serviceRequest the request that's sent to elevator
-	 */
-	public void processRequest(ServiceRequest serviceRequest) {
-		// If request is an elevator request (from outside the elevator)
-		System.out.println("Elevator #" + elevatorNumber + " processing: " + serviceRequest);
-		if (serviceRequest instanceof ElevatorRequest elevatorRequest) {
-			// Move to floor from which elevatorRequest originated
-
-
-			// created a ServiceRequest going to the desired floor for the desired floor
-			ServiceRequest request = new ServiceRequest(elevatorRequest.getTime(), elevatorRequest.getDesiredFloor(),
-					elevatorRequest.getDirection(), elevatorRequest.getOrigin());
-			addRequest(request);
-			// Request from within the elevator
-		} else {
-			moveToFloor(serviceRequest);
-		}
-	}
-
-	/**
-	 * Moves elevator to a floor, sending ApproachEvents just before a floor
-	 * is reached if allowed.
-	 *
-	 * @param serviceRequest the request for which the elevator will move to
-	 */
-	public void moveToFloor(ServiceRequest serviceRequest) {
-		// Set time of request
-		// Request Properties
-//		queueTime = getExpectedTime(serviceRequest);
-
-		// Set floor of request
-		int requestFloor = serviceRequest.getFloorNumber();
-
-		// loop until Elevator has reached the requested floor
-		while (currentFloor != requestFloor) {
-
-			int nextFloor = motor.move(currentFloor, requestFloor);
-			/*
-			if (messageTransferEnabled) {
-				// communicate with Scheduler to see if Elevator should stop at this floor
-				ApproachEvent newApproachEvent = new ApproachEvent(serviceRequest.getTime(), nextFloor,
-						serviceRequest.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
-				passApproachEvent(newApproachEvent);
-				// stall while waiting to receive the approachEvent from ElevatorSubsystem
-				// the ApproachEvent is received in Elevator.receiveApproachEvent
-				while (approachEvent == null) {
-				}
-				approachEvent = null;
-			}
-
-			 */
-			setCurrentFloor(nextFloor);
-			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor);
-		}
-		// Set to idle once floor reached
-		System.out.println("Elevator " + elevatorNumber + " reached floor " + getCurrentFloor());
-		motor.stop();
-	}
-
-	/**
 	 * Gets the total expected time that the elevator will need to take to
 	 * perform its current requests along with the new elevatorRequest.
 	 *
