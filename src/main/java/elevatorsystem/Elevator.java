@@ -105,7 +105,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// Compare the request floor and the next floor
 		compareFloors(requestFloor);
 		moveToNextFloor(requestFloor);
-		// stop elevator if necessary
+		// stop elevator if moving and new floor is request floor
 		if (!motor.isIdle()) {
 			compareFloors(requestFloor);
 		}
