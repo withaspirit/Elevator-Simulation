@@ -107,6 +107,7 @@ public class ElevatorMotor {
 	/**
 	 * Simulates the elevator moving up
 	 */
+	// TODO: remove
 	public void moveUp() {
 		setMovementState(MovementState.ACTIVE);
 		this.setDirection(Direction.UP);
@@ -116,6 +117,7 @@ public class ElevatorMotor {
 	/**
 	 * Simulates the elevator moving down
 	 */
+	// TODO: remove
 	public void moveDown() {
 		// Set state and direction
 		setMovementState(MovementState.ACTIVE);

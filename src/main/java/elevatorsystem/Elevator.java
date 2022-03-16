@@ -6,7 +6,6 @@ import systemwide.Origin;
 
 import java.time.LocalTime;
 import java.util.ConcurrentModificationException;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Elevator is a model for simulating an elevator.
@@ -17,6 +16,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	// Elevator Subsystem
 	private final ElevatorSubsystem elevatorSubsystem;
+	private final RequestQueue requestQueue;
+	private final ElevatorMotor motor;
+	private final Doors doors;
 
 	// Elevator Measurements
 	public static final float MAX_SPEED = 2.67f; // meters/second
@@ -33,19 +35,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private float speed;
 	private double queueTime;
 
-	private final Doors doors;
-	private final ElevatorMotor motor;
-	private final RequestQueue requestQueue;
-
-	// list must be volatile so that origin checks if it's been updated
-	// functionally, this is a stack (FIFO)
-	private final CopyOnWriteArrayList<ServiceRequest> requests;
 	private volatile ApproachEvent approachEvent;
 	// variable for allowing / disallowing Elevator's message transfer
 	private boolean messageTransferEnabled;
 
 	/**
-	 * Constructor for Elevator class
+	 * Constructor for Elevator.
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
 	 *
 	 * @param elevatorNumber the number of the elevator
@@ -54,15 +49,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
 		this.elevatorNumber = elevatorNumber;
 		this.elevatorSubsystem = elevatorSubsystem;
-		speed = 0;
-		currentFloor = 1;
-		approachEvent = null;
-		serviceDirection = Direction.UP;
+		requestQueue = new RequestQueue();
 		motor = new ElevatorMotor();
 		doors = new Doors();
+		currentFloor = 1;
+		serviceDirection = Direction.UP;
+		approachEvent = null;
+		speed = 0;
 		queueTime = 0.0;
-		requestQueue = new RequestQueue();
-		requests = new CopyOnWriteArrayList<>();
 		messageTransferEnabled = true;
 	}
 
@@ -219,7 +213,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 		/*
 		while (doors.areClosed()) {
-			// attempt to open doors (non-interruptable?)
+			// attempt to open doors (non-interruptable)
 		}
 		*/
 	}
@@ -232,7 +226,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void swapServiceDirectionIfNecessary() {
 		System.out.println("Elevator " + elevatorNumber + " attempting to change queues.");
 		if (requestQueue.swapQueues()) {
-			serviceDirection = Direction.swapDirection(serviceDirection);
+			setServiceDirection(Direction.swapDirection(serviceDirection));
 			System.out.println("Elevator " + elevatorNumber + " Changed direction to " + serviceDirection);
 		}
 	}
@@ -252,7 +246,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param serviceRequest a service request for the elevator to perform
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
-		requests.add(serviceRequest);
 		//TODO remove after queueTime updated properly and serviceDirection is updated properly
 		motor.setMovementState(MovementState.ACTIVE);
 		if (serviceRequest instanceof ElevatorRequest elevatorRequest) {
@@ -260,16 +253,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 		int elevatorFloorToPass = currentFloor;
 		requestQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
-	}
-
-	/**
-	 * Returns the request at the front of the request list
-	 * and removes it from the list.
-	 *
-	 * @return serviceRequest a service request containing a request for the elevator to perform
-	 */
-	public ServiceRequest getNextRequest() {
-		return requests.remove(requests.size() - 1);
 	}
 
 	/**
