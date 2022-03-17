@@ -2,11 +2,15 @@ package scheduler;
 
 import client_server_host.IntermediateHost;
 import client_server_host.Port;
+import elevatorsystem.MovementState;
 import requests.*;
 import systemwide.BoundedBuffer;
+import systemwide.Direction;
 import systemwide.Origin;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -19,6 +23,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
 	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
+	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private final Origin origin = Origin.SCHEDULER;
 	private final Queue<SystemEvent> requestQueue;
 	private final IntermediateHost intermediateHost;
@@ -36,6 +41,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		// add subsystems to elevators, pass # floors
 		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
 		this.floorSubsystemBuffer = floorSubsystemBuffer;
+		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = null;
 		requestQueue = new LinkedList<>();
 	}
@@ -48,8 +54,18 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	public Scheduler(int portNumber) {
 		elevatorSubsystemBuffer = null;
 		floorSubsystemBuffer = null;
+		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = new IntermediateHost(portNumber);
 		requestQueue = new LinkedList<>();
+	}
+
+	/**
+	 * Add ElevatorMonitor to elevatorMonitorList.
+	 *
+	 * @param elevatorNumber an elevator number corresponding to an elevator
+	 */
+	public void addElevatorMonitor(int elevatorNumber) {
+		elevatorMonitorList.add(new ElevatorMonitor(elevatorNumber));
 	}
 
 	/**
@@ -61,12 +77,13 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 		while (true) {
 			DatagramPacket receivePacket = intermediateHost.receivePacket();
 
-			// if request is data, process it as data.
-			// otherwise it is a data request
-			if (intermediateHost.processPacketObject(receivePacket)) {
-				processData(receivePacket);
-			} else {
+			Object object = intermediateHost.convertToObject(receivePacket);
+
+			if (object instanceof String) {
 				intermediateHost.respondToDataRequest(receivePacket);
+			} else if (object instanceof SystemEvent systemEvent) {
+				intermediateHost.respondToSystemEvent(receivePacket);
+				processData(receivePacket.getAddress(), systemEvent);
 			}
 		}
 	}
@@ -75,27 +92,34 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * Process data that Scheduler's DatagramSocket has received.
 	 * Create a new packet and manipulate it according to the packet's Origin.
 	 *
-	 * @param packet a DatagramPacket containing a SystemEvent
+	 * @param address an address to send systemEvents
+	 * @param event a systemEvent to be processed
 	 */
-	public void processData(DatagramPacket packet) {
-
-		// identify the Origin of the packet
-		SystemEvent event = intermediateHost.convertToSystemEvent(packet);
+	public void processData(InetAddress address, SystemEvent event) {
 		Origin eventOrigin = event.getOrigin();
-
+		int port;
 		// manipulate the packet according to its origin
 		if (eventOrigin == Origin.ELEVATOR_SYSTEM) {
 			// scheduler method here to do FLOORSUBSYSTEM stuff
-			packet.setPort(Port.CLIENT.getNumber());
+			if (event instanceof ElevatorMonitor elevatorMonitor){
+				elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
+			}
+			port = Port.CLIENT.getNumber();
 		} else if (eventOrigin == Origin.FLOOR_SYSTEM) {
+			if (event instanceof ElevatorRequest elevatorRequest) {
+				int chosenElevator = chooseElevator(elevatorRequest);
+				System.err.println("Elevator#" + chosenElevator + " is being sent a request");
+				elevatorRequest.setElevatorNumber(chosenElevator);
+				event = elevatorRequest;
+			}
 			// scheduler method here to do ELEVATORSUBSYSTEM stuff
-			packet.setPort(Port.SERVER.getNumber());
+			port = Port.SERVER.getNumber();
 		} else {
 			throw new IllegalArgumentException("Error: Invalid Origin");
 		}
 		event.setOrigin(Origin.changeOrigin(eventOrigin));
 		// intermediate host
-		intermediateHost.addNewPacketToQueue(event, packet);
+		intermediateHost.addNewPacketToQueue(event, address, port);
 	}
 
 	/**
@@ -119,24 +143,91 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 
 				if (request.getOrigin() == Origin.FLOOR_SYSTEM) {
 					if (request instanceof ElevatorRequest elevatorRequest) {
-						sendMessage(elevatorRequest, elevatorSubsystemBuffer, origin);
-					} else if (request instanceof ApproachEvent approachEvent) {
-						// FIXME: this code might be redundant as it's identical to the one above
-						sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
+						elevatorRequest.setElevatorNumber(chooseElevator(elevatorRequest));
+						request = elevatorRequest;
 					}
+					sendMessage(request, elevatorSubsystemBuffer, origin);
 				} else if (request.getOrigin() == Origin.ELEVATOR_SYSTEM) {
-					if (request instanceof ElevatorMonitor) {
-
-					} else if (request instanceof FloorRequest floorRequest) {
-						sendMessage(floorRequest, floorSubsystemBuffer, origin);
-					} else if (request instanceof ApproachEvent approachEvent) {
-						sendMessage(approachEvent, floorSubsystemBuffer, origin);
+					if (request instanceof ElevatorMonitor elevatorMonitor) {
+						elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
 					}
+					sendMessage(request, floorSubsystemBuffer, origin);
 				} else {
 					System.err.println("Scheduler should not contain items whose origin is Scheduler: " + request);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Returns an elevator number corresponding to an elevator that is
+	 * best suited to perform the given ElevatorRequest based on
+	 * expected time to fulfill the request and direction of elevator.
+	 *
+	 * @param elevatorRequest an ElevatorRequest
+	 * @return a number corresponding to an elevator
+	 */
+	public int chooseElevator(ElevatorRequest elevatorRequest) {
+
+		double elevatorBestExpectedTime = 0.0;
+		// Best elevator is an elevator traveling in path that collides with request floor
+		double elevatorOkExpectedTime = 0.0;
+		// Ok elevator is an elevator that is traveling in the other direction
+		double elevatorWorstExpectedTime = 0.0;
+		// Worst elevator is an elevator that is traveling in the same direction but missed the request
+		int chosenBestElevator = 0;
+		int chosenOkElevator = 0;
+		int chosenWorstElevator = 0;
+		for (ElevatorMonitor monitor : elevatorMonitorList) {
+
+			MovementState state = monitor.getState();
+			Direction requestDirection = elevatorRequest.getDirection();
+			double tempExpectedTime = monitor.getQueueTime();
+			int currentFloor = monitor.getCurrentFloor();
+			int desiredFloor = elevatorRequest.getDesiredFloor();
+			int elevatorNumber = monitor.getElevatorNumber();
+
+			if (state == MovementState.IDLE) {
+				System.out.println("Elevator#" + elevatorNumber + " is idle");
+				return elevatorNumber;
+
+			} else if (state == MovementState.STUCK) {
+				System.err.println("Elevator#" + elevatorNumber + " is stuck");
+
+			} else if (monitor.getDirection() == requestDirection) {
+				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
+					if (requestDirection == Direction.DOWN && currentFloor > desiredFloor) {
+						//check if request is in path current floor > directed floor going down
+						elevatorBestExpectedTime = tempExpectedTime;
+						chosenBestElevator = elevatorNumber;
+
+					} else if (requestDirection == Direction.UP && currentFloor < desiredFloor) {
+						//check if request is in path current floor < directed floor going up
+						elevatorBestExpectedTime = tempExpectedTime;
+						chosenBestElevator = elevatorNumber;
+
+					} else if (elevatorOkExpectedTime == 0 || elevatorOkExpectedTime > tempExpectedTime){
+						//if request is in the correct direction but not in path of elevator
+						elevatorWorstExpectedTime = tempExpectedTime;
+						chosenWorstElevator = elevatorNumber;
+					}
+				}
+			} else {
+				if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime) {
+					//if the elevator traveling in the wrong direction
+					elevatorOkExpectedTime = tempExpectedTime;
+					chosenOkElevator = elevatorNumber;
+				}
+			}
+		}
+		if (chosenBestElevator == 0) {
+			if (chosenOkElevator == 0){
+				chosenBestElevator = chosenWorstElevator;
+			} else {
+				chosenBestElevator = chosenOkElevator;
+			}
+		}
+		return chosenBestElevator;
 	}
 
 	/**
@@ -155,7 +246,12 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	}
 
 	public static void main(String[] args) {
-		new Thread(new Scheduler(Port.CLIENT_TO_SERVER.getNumber()), "Client To Server").start();
-		new Thread(new Scheduler(Port.SERVER_TO_CLIENT.getNumber()), "Server To Client").start();
+		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
+		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
+		schedulerClient.addElevatorMonitor(1);
+		schedulerClient.addElevatorMonitor(2);
+		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
+		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
+
 	}
 }

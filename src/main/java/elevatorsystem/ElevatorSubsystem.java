@@ -22,7 +22,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 
 	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
 	private final ArrayList<Elevator> elevatorList;
-	private final ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private Client server;
 	private final Queue<SystemEvent> requestQueue;
 	private Origin origin;
@@ -36,7 +35,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		this.elevatorSubsystemBuffer = buffer;
 		elevatorList = new ArrayList<>();
 		requestQueue = new LinkedList<>();
-		elevatorMonitorList = new ArrayList<>();
 		origin = Origin.ELEVATOR_SYSTEM;
 	}
 
@@ -48,7 +46,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
 		requestQueue = new LinkedList<>();
-		elevatorMonitorList = new ArrayList<>();
 	}
 
 	/**
@@ -72,7 +69,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	public void addElevator(Elevator elevator) {
 		elevatorList.add(elevator);
-		elevatorMonitorList.add(new ElevatorMonitor(elevator.getElevatorNumber()));
 	}
 
 	/**
@@ -98,13 +94,8 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 			}
 
 			if (object instanceof ElevatorRequest elevatorRequest) {
-				int chosenElevator = chooseElevator(elevatorRequest);
-				// Choose elevator
-				// Move elevator
-				System.err.println(chosenElevator + " expected");
-				Elevator elevator = elevatorList.get(chosenElevator - 1);
+				Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
 				elevator.addRequest(elevatorRequest);
-				elevatorMonitorList.get(chosenElevator - 1).updateMonitor(elevator.makeElevatorMonitor());
 				requestQueue.add(elevator.makeElevatorMonitor());
 			} else if (object instanceof ApproachEvent approachEvent) {
 				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
@@ -128,13 +119,8 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 			if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
 				SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
 				if (request instanceof ElevatorRequest elevatorRequest) {
-					int chosenElevator = chooseElevator(elevatorRequest);
-					// Choose elevator
-					// Move elevator
-					System.err.println(chosenElevator + " expected");
-					Elevator elevator = elevatorList.get(chosenElevator - 1);
+					Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
 					elevator.addRequest(elevatorRequest);
-					elevatorMonitorList.get(chosenElevator - 1).updateMonitor(elevator.makeElevatorMonitor());
 					requestQueue.add(elevator.makeElevatorMonitor());
 				} else if (request instanceof ApproachEvent approachEvent) {
 					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
@@ -146,77 +132,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 				sendMessage(request, elevatorSubsystemBuffer, origin);
 			}
 		}
-	}
-
-	/**
-	 * Returns an elevator number corresponding to an elevator that is
-	 * best suited to perform the given ElevatorRequest based on
-	 * expected time to fulfill the request and direction of elevator.
-	 *
-	 * @param elevatorRequest an ElevatorRequest
-	 * @return a number corresponding to an elevator
-	 */
-	public int chooseElevator(ElevatorRequest elevatorRequest) {
-
-		double elevatorBestExpectedTime = 0.0;
-		// Best elevator is an elevator traveling in path that collides with request floor
-		double elevatorOkExpectedTime = 0.0;
-		// Ok elevator is an elevator that is traveling in the other direction
-		double elevatorWorstExpectedTime = 0.0;
-		// Worst elevator is an elevator that is traveling in the same direction but missed the request
-		int chosenBestElevator = 0;
-		int chosenOkElevator = 0;
-		int chosenWorstElevator = 0;
-		for (ElevatorMonitor monitor : elevatorMonitorList) {
-
-			MovementState state = monitor.getState();
-			Direction requestDirection = elevatorRequest.getDirection();
-			double tempExpectedTime = monitor.getQueueTime();
-			int currentFloor = monitor.getCurrentFloor();
-			int desiredFloor = elevatorRequest.getDesiredFloor();
-			int elevatorNumber = monitor.getElevatorNumber();
-
-			if (state == MovementState.IDLE) {
-				System.err.println(elevatorNumber + " is idle");
-				return elevatorNumber;
-
-			} else if (state == MovementState.STUCK) {
-				System.err.println("Elevator is stuck");
-
-			} else if (monitor.getDirection() == requestDirection) {
-				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
-					if (requestDirection == Direction.DOWN && currentFloor > desiredFloor) {
-						//check if request is in path current floor > directed floor going down
-						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevatorNumber;
-
-					} else if (requestDirection == Direction.UP && currentFloor < desiredFloor) {
-						//check if request is in path current floor < directed floor going up
-						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevatorNumber;
-
-					} else if (elevatorOkExpectedTime == 0 || elevatorOkExpectedTime > tempExpectedTime) {
-						//if request is in the correct direction but not in path of elevator
-						elevatorWorstExpectedTime = tempExpectedTime;
-						chosenWorstElevator = elevatorNumber;
-					}
-				}
-			} else {
-				if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime) {
-					//if the elevator traveling in the wrong direction
-					elevatorOkExpectedTime = tempExpectedTime;
-					chosenOkElevator = elevatorNumber;
-				}
-			}
-		}
-		if (chosenBestElevator == 0) {
-			if (chosenOkElevator == 0) {
-				chosenBestElevator = chosenWorstElevator;
-			} else {
-				chosenBestElevator = chosenOkElevator;
-			}
-		}
-		return chosenBestElevator;
 	}
 
 	/**
