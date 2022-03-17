@@ -20,9 +20,9 @@ public class RequestQueue {
 	private volatile PriorityQueue<Integer> currentDirectionQueue;
 	private volatile PriorityQueue<Integer> oppositeDirectionQueue;
 	/**
-	 * For requests in the elevators' serviceDirection that are below
-	 * (if serviceDirection is UP) or above (serviceDirection is DOWN)
-	 * the elevator's floor.
+	 * MissedRequests is for requests in the elevators' serviceDirection whose
+	 * floorNumbers are below (if serviceDirection is UP) or above
+	 * (if serviceDirection is DOWN) the elevator's floor.
 	 */
 	private final Queue<Integer> missedRequests;
 
