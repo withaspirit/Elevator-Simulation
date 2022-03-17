@@ -73,11 +73,15 @@ public class Structure {
 		//BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
 		//BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
+		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
+		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
+
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 		ArrayList<Elevator> elevatorList = new ArrayList<>();
 		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
 			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
 			elevatorSubsystem.addElevator(elevator);
+			schedulerClient.addElevatorMonitor(elevatorNumber);
 			elevatorList.add(elevator);
 		}
 		FloorSubsystem floorSubsystem = new FloorSubsystem();
@@ -85,9 +89,6 @@ public class Structure {
 			Floor floor = new Floor(i, floorSubsystem);
 			floorSubsystem.addFloor(floor);
 		}
-
-		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
-		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
 
 		Thread schedulerClientOrigin, schedulerServerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
 
