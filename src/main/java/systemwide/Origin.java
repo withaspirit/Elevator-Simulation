@@ -16,7 +16,7 @@ public enum Origin {
      * FLOOR_SUBSYSTEM.
      *
      * @param origin the Origin provided
-     * @return return Origin
+     * @return return Origin opposite to the one provided
      */
     public static Origin changeOrigin(Origin origin) {
         if (origin == FLOOR_SYSTEM) {
