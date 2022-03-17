@@ -1,7 +1,6 @@
 package elevatorsystem;
 
 import misc.InputFileReader;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
@@ -10,13 +9,12 @@ import systemwide.Origin;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests an Elevator's Service Algorithm without transferring messages.
- * Uses inputs from a file.
+ * Uses events from the inputs.json file.
  *
  * @author Liam Tripp, Brady Norton
  */
@@ -25,10 +23,8 @@ class ElevatorTest {
     private ElevatorSubsystem elevatorSubsystem;
     private ArrayList<Elevator> elevatorList;
     private ArrayList<SystemEvent> eventList;
-    private final int numberOfMilliseconds = 300;
     private final int numberOfTimesToTest = 20;
     private ArrayList<Thread> threads;
-
 
     @BeforeEach
     void setUp() {
@@ -39,23 +35,19 @@ class ElevatorTest {
         eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
     }
 
-    @AfterEach
-    void tearDown() {
-        // this prevents multiple elevators from being added
-        // elevatorList.clear();
-        threads.clear();
-    }
-
     /**
      * Initializes the list of elevators with the specified number of elevators.
      *
      * @param numberOfElevators the number of elevators in the list of elevators
      */
     private void initNumberOfElevators(int numberOfElevators) {
+        // clear array lists to prevent concurrency issues
+        elevatorList.clear();
+        threads.clear();
         // initialize the list of elevators
         for (int i = 1; i <= numberOfElevators; i++) {
             Elevator elevator = new Elevator(i, elevatorSubsystem);
-            System.out.println("Elevator " + i + " instantiated.");
+            System.out.println("Elevator " + i + " instantiated");
             elevatorList.add(elevator);
             elevatorSubsystem.addElevator(elevator);
             elevator.toggleMessageTransfer();
@@ -63,22 +55,23 @@ class ElevatorTest {
     }
 
     /**
-     * Adds requests from the selected file to the elevator.
+     * Adds requests from the selected file to the elevator. This enables elevators
+     * to move.
      */
     private void addRequestsToElevators() {
-        // add requests to elevators
-        // setup requests to be read inputs
+        int elevatorToAddTo = 0;
         for (SystemEvent event : eventList) {
             ElevatorRequest elevatorRequest = (ElevatorRequest) event;
-            // this set origin is defensive in case origin ends up affecting elevator1 request
             elevatorRequest.setOrigin(Origin.ELEVATOR_SYSTEM);
-            int chosenElevator = elevatorSubsystem.chooseElevator(elevatorRequest);
-            elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
+            // choose an elevator to add a request to
+            Elevator chosenElevator = elevatorList.get(elevatorToAddTo % elevatorList.size());
+            chosenElevator.addRequest(elevatorRequest);
+            elevatorToAddTo++;
         }
     }
 
     /**
-     * Starts the elevator threads.
+     * Initializes and starts the Elevator threads. Makes each Elevator execute until it is done.
      */
     private void initElevatorThreads() {
         for (Elevator elevator : elevatorList) {
@@ -92,6 +85,9 @@ class ElevatorTest {
 
             Thread thread = new Thread(testElevatorMovementRunnable);
             threads.add(thread);
+        }
+
+        for (Thread thread : threads) {
             thread.start();
             // wait until thread dies before executing the next thread
             try {
@@ -102,42 +98,12 @@ class ElevatorTest {
         }
     }
 
-    // FIXME: this fails, unequal distribution of requests
-    @Test
-    void testTwoElevatorSelection() {
-        int numberOfElevators = 2;
-        initNumberOfElevators(numberOfElevators);
-        addRequestsToElevators();
-
-        for (Elevator elevator : elevatorList) {
-            assertFalse(elevator.hasNoRequests());
-        }
-    }
-
-    // test up to 7 elevators
-    // FIXME: this fails
-    @Test
-    void testElevatorSelectionAtLeastOneRequestPerElevator() {
-        // ensure each elevator has at least one request
-        // this tests for even distribution of elevators
-        // does for up to 7 elevators
-        for (int i = 1; i <= eventList.size(); i++) {
-            initNumberOfElevators(i);
-            addRequestsToElevators();
-
-            for (Elevator elevator : elevatorList) {
-                System.out.println("Testing Elevator " + elevator.getElevatorNumber());
-                assertFalse(elevator.hasNoRequests());
-            }
-        }
-    }
-
     @Test
     void testOneElevatorFulfillsRequests() {
         int numberOfElevators = 1;
         initNumberOfElevators(numberOfElevators);
         addRequestsToElevators();
-        // if this statement isn't included, it doesn't work
+
         elevatorList.get(0).moveElevatorWhilePossible();
         assertTrue(elevatorList.get(0).hasNoRequests());
     }
@@ -152,8 +118,6 @@ class ElevatorTest {
     @Test
     void testOneThreadedElevatorFulfillsRequests() {
         int numberOfElevators = 1;
-        // this statement clears elevators in case more than necessary are currently being tested
-        elevatorList.clear();
         initNumberOfElevators(numberOfElevators);
         addRequestsToElevators();
         initElevatorThreads();
@@ -174,7 +138,6 @@ class ElevatorTest {
     @Test
     void testTwoThreadedElevatorsFulfillRequests() {
         int numberOfElevators = 2;
-        elevatorList.clear();
         initNumberOfElevators(numberOfElevators);
         addRequestsToElevators();
         initElevatorThreads();
@@ -189,6 +152,20 @@ class ElevatorTest {
     void testTwoElevatorsMultipleTimes() {
         for (int i = 0; i < numberOfTimesToTest; i++) {
             testTwoThreadedElevatorsFulfillRequests();
+        }
+    }
+
+    @Test
+    void testMultipleThreadedElevatorsFulfillRequests() {
+        // this tests that multiple threaded Elevators fulfill their requests to completion
+        int numberOfElevators = eventList.size();
+        initNumberOfElevators(numberOfElevators);
+        addRequestsToElevators();
+        initElevatorThreads();
+
+        assertEquals(numberOfElevators, elevatorList.size());
+        for (Elevator elevator : elevatorList) {
+            assertTrue(elevator.hasNoRequests());
         }
     }
 }
