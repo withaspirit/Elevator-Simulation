@@ -209,9 +209,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		attemptToRemoveFloor(requestFloor);
 		System.out.println("Elevator #" + elevatorNumber + " reached destination");
 
-		if (motor.isActive()) {
-			motor.stop();
-		}
+		motor.stop();
 		/*
 		while (doors.areClosed()) {
 			// attempt to open doors (non-interruptable)
