@@ -86,7 +86,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 			swapServiceDirectionIfNecessary();
 			// Loop until the current queue is empty (all requests in the request queue have been completed)
 			while (!requestQueue.isCurrentQueueEmpty()) {
-				System.out.println();
 
 				int requestFloor = requestQueue.peekNextRequest();
 				//int requestFloor = requestQueue.removeRequest();
@@ -97,6 +96,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				compareFloors(requestFloor);
 
 				moveToNextFloor(requestFloor);
+				System.out.println();
 			}
 		}
 	}
@@ -207,7 +207,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void swapServiceDirectionIfNecessary() {
 		if (requestQueue.swapQueues()) {
 			serviceDirection = Direction.swapDirection(serviceDirection);
-			System.out.println("Elevator #" + elevatorNumber + " changed serviceDirection to " + serviceDirection);
+			System.out.println("Elevator #" + elevatorNumber + " swapped queues, changed serviceDirection to " + serviceDirection + "\n");
 		}
 	}
 
