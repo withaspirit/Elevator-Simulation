@@ -258,7 +258,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @return true if the request queue is empty, false otherwise
 	 */
-
 	public boolean hasNoRequests() {
 		return requestQueue.isEmpty();
 	}
