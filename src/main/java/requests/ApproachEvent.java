@@ -69,7 +69,7 @@ public class ApproachEvent extends ServiceRequest {
     public String toString() {
         DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
         String formattedDate = getTime().format(dateTimeFormat);
-        String formattedString = formattedDate + " " + getFloorNumber() + " " + getDirection().getName() + " " + getElevatorNumber() + " " + elevatorMayStop;
+        String formattedString = formattedDate + " Elevator " + getElevatorNumber() + " " + getFloorNumber() + " " + getDirection().getName() + " " + elevatorMayStop;
         return formattedString;
     }
 }
