@@ -7,8 +7,9 @@ import systemwide.Origin;
 import java.time.LocalTime;
 
 /**
- * An elevator monitor for the scheduler to quickly decide on an elevator to send new
- * service requests with regularly updated elevator information.
+ * ElevatorMonitor retains Elevator information to allow the Scheduler to quickly decide
+ * which Elevator to send new ServiceRequests to. Scheduler's list of ElevatorMonitors is
+ * updated by Elevator sending ElevatorMonitors to Scheduler.
  *
  * @author Ryan Dash
  * @version 2022/03/10
@@ -30,7 +31,7 @@ public class ElevatorMonitor extends SystemEvent {
         setElevatorNumber(elevatorNumber);
         queueTime = 0.0;
         state = MovementState.IDLE;
-        currentFloor = 0;
+        currentFloor = 1;
         currentDirection = Direction.NONE;
     }
 
@@ -51,7 +52,6 @@ public class ElevatorMonitor extends SystemEvent {
         return queueTime;
     }
 
-
     /**
      * Gets the MovementState of the elevator.
      *
@@ -60,7 +60,6 @@ public class ElevatorMonitor extends SystemEvent {
     public MovementState getState() {
         return state;
     }
-
 
     /**
      * Gets the current floor of the elevator.
@@ -81,7 +80,7 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
-     * Update the ElevatorMonitor with the latest ElevatorMonitor information.
+     * Updates the ElevatorMonitor with the latest ElevatorMonitor information.
      *
      * @param elevatorMonitor an elevator monitor containing new elevator information
      */
