@@ -115,7 +115,7 @@ public class MessageTransfer {
         // Form a String from the byte array.
         Object object = decodeObject(packet.getData());
         String messageToPrint = LocalTime.now().toString() + "\n";
-        messageToPrint += name + " sending packet ";
+        messageToPrint += name + " sending ";
         if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
             messageToPrint += "to Scheduler:";
         } else if (packet.getPort() == Port.CLIENT.getNumber()) {
@@ -156,8 +156,8 @@ public class MessageTransfer {
             }
             messageToPrint += "\n";
             messageToPrint += object.getClass().getSimpleName() + " Packet: " + object;
-            messageToPrint += ", Host port: " + packet.getPort() + ", ";
-            messageToPrint += "Length: " + packet.getLength() + "\n";
+            messageToPrint += ", Host port: " + packet.getPort();
+            messageToPrint += ", Length: " + packet.getLength() + "\n";
             System.out.println(messageToPrint);
         }
     }
