@@ -35,6 +35,15 @@ public class ElevatorMonitor extends SystemEvent {
         currentDirection = Direction.NONE;
     }
 
+    /**
+     * Constructor for all of ElevatorMonitor's properties.
+     *
+     * @param queueTime the estimated time for elevator to fulfill all of its requests
+     * @param movementState the MovementState of the Elevator's motor
+     * @param currentFloor the currentFloor of the Elevator
+     * @param serviceDirection the direction that the elevator is serving
+     * @param elevatorNumber the number of the elevator
+     */
     public ElevatorMonitor(double queueTime, MovementState movementState, int currentFloor, Direction serviceDirection, int elevatorNumber) {
         this(elevatorNumber);
         this.queueTime = queueTime;
