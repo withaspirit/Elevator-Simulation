@@ -189,13 +189,12 @@ class ElevatorTest {
         Elevator elevator = elevatorList.get(0);
         elevator.addRequest(serviceRequest1);
 
-        // elevator should remove Floor 1 from RequestQueue because it is on the same floor as the first request
-        int floorToVisit = requestFloor1;
-
-
-        elevator.compareFloors(floorToVisit);
+        // elevator should remove Floor 1 from RequestQueue
+        // because it is on the same floor as the first request
+        elevator.compareFloors(requestFloor1);
         assertTrue(elevator.getMotor().isIdle());
         assertTrue(elevator.hasNoRequests());
+        assertEquals(requestFloor1, elevator.getCurrentFloor());
 
         // add different request
         elevator.addRequest(serviceRequest2);
@@ -204,5 +203,6 @@ class ElevatorTest {
         if (!elevator.getMotor().isIdle()) {
             elevator.compareFloors(requestFloor1);
         }
+        // assertEquals(requestFloor1, elevator.getCurrentFloor());
     }
 }
