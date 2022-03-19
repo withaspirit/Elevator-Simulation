@@ -5,6 +5,7 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+import java.util.ConcurrentModificationException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -53,6 +54,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		this.elevatorNumber = elevatorNumber;
 		this.elevatorSubsystem = elevatorSubsystem;
 		speed = 0;
+		currentFloor = 1;
 		approachEvent = null;
 		serviceDirection = Direction.UP;
 		motor = new ElevatorMotor();
@@ -69,23 +71,30 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void run() {
 		while (true) {
-			while (!requestQueue.isEmpty()) {
-				// Swap service direction check
-				swapServiceDirectionIfNecessary();
-				// Loop until the current queue is empty (all requests in the request queue have been completed)
-				while (!requestQueue.isCurrentQueueEmpty()) {
-					System.out.println();
+			moveElevatorWhilePossible();
+		}
+	}
 
-					//int requestFloor = requestQueue.peekNextRequest();
-					int requestFloor = requestQueue.removeRequest();
+	/**
+	 * Moves the elevator while it has requests in its queue.
+	 */
+	public void moveElevatorWhilePossible() {
+		while (!requestQueue.isEmpty()) {
+			// Swap service direction check
+			swapServiceDirectionIfNecessary();
+			// Loop until the current queue is empty (all requests in the request queue have been completed)
+			while (!requestQueue.isCurrentQueueEmpty()) {
+				System.out.println();
 
-					// Print status
-					printStatus(requestFloor);
-					// Compare the request floor and the next floor
-					compareFloors(requestFloor);
+				int requestFloor = requestQueue.peekNextRequest();
+				//int requestFloor = requestQueue.removeRequest();
 
-					moveToNextFloor(requestFloor);
-				}
+				// Print status
+				printStatus(requestFloor);
+				// Compare the request floor and the next floor
+				compareFloors(requestFloor);
+
+				moveToNextFloor(requestFloor);
 			}
 		}
 	}
@@ -114,9 +123,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// stop output message
 		if (nextFloor != currentFloor) {
-			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor);
+			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor + " at " + LocalTime.now());
 		} else {
-			System.out.println("Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor);
+			System.out.println("Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor + " at " + LocalTime.now());
 		}
 		boolean shouldStopAtNextFloor = nextFloor == requestFloor;
 		setCurrentFloor(nextFloor);
@@ -124,11 +133,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		if (shouldStopAtNextFloor) {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
-			// FIXME: this produces an error
-//			int removedFloor = requestQueue.removeRequest();
-//			if (removedFloor != requestFloor) {
-//				throw new ConcurrentModificationException("Floor was added while requestQueue was added.");
-//			}
+			// FIXME: this sometimes produces a Concurrency error due to a request being added to the
+			//  elevator at the same time as the elevator is moving
+			int removedFloor = requestQueue.removeRequest();
+			boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
+
+			if (removedFloor == -1) {
+				System.err.println("A value of -1 was received from the requestQueue.");
+			} else if (!sameFloorRemovedAsPeeked) {
+				throw new ConcurrentModificationException("A request was added while the current request was being processed.");
+			}
 		}
 	}
 
@@ -212,11 +226,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		requests.add(serviceRequest);
 		//TODO remove after queueTime updated properly and serviceDirection is updated properly
 		motor.setMovementState(MovementState.ACTIVE);
-		if (serviceRequest instanceof ElevatorRequest elevatorRequest) {
-			if (serviceDirection == Direction.NONE) {
-				serviceDirection = elevatorRequest.getDirection();
-			}
-		}
 		int elevatorFloorToPass = currentFloor;
 		requestQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
 	}
@@ -232,12 +241,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Returns the number of requests the elevator has left to fulfill.
+	 * Returns whether the request queue is empty.
 	 *
-	 * @return numberOfRequests the number of requests the elevator has remaining
+	 * @return true if the request queue is empty, false otherwise
 	 */
-	public int getNumberOfRequests() {
-		return requests.size();
+	public boolean hasNoRequests() {
+		return requestQueue.isEmpty();
 	}
 
 	/**
