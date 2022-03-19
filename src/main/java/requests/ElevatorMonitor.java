@@ -91,4 +91,10 @@ public class ElevatorMonitor extends SystemEvent {
         this.currentFloor = elevatorMonitor.getCurrentFloor();
         this.currentDirection = elevatorMonitor.getDirection();
     }
+
+    @Override
+    public String toString() {
+        String formattedString = String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection();
+        return formattedString;
+    }
 }
