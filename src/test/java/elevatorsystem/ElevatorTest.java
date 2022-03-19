@@ -1,6 +1,7 @@
 package elevatorsystem;
 
 import misc.InputFileReader;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
@@ -9,6 +10,7 @@ import systemwide.Origin;
 
 import java.util.ArrayList;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
