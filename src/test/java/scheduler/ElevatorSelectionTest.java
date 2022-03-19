@@ -97,39 +97,31 @@ public class ElevatorSelectionTest {
         ElevatorMonitor monitor = sendReceiveMonitor();
         assertEquals(monitor.getElevatorNumber(), 1);
         assertEquals(monitor.getState(), MovementState.ACTIVE);
+        assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
+        assertEquals(14.57185228514697, monitor.getQueueTime());
 
         monitor = sendReceiveMonitor();
         assertEquals(monitor.getElevatorNumber(), 2);
         assertEquals(monitor.getState(), MovementState.ACTIVE);
-
-        //Both elevator status' are now active
-        assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
         assertEquals(elevator2.getMotor().getMovementState(), MovementState.ACTIVE);
-
-        //Both elevators expected time to completion with new requests is now 16.67268228800782
-        assertEquals(14.57185228514697, elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()));
-        assertEquals(14.57185228514697, elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor()));
+        assertEquals(14.57185228514697, monitor.getQueueTime());
     }
 
     @Test
     void testSelectingActiveElevators(){
         ElevatorMonitor monitor = sendReceiveMonitor();
         assertEquals(monitor.getElevatorNumber(), 1);
+        assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
 
         monitor = sendReceiveMonitor();
-        System.err.println(monitor.getQueueTime());
-
-        //Both elevator status' are now active
-        assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
+        assertEquals(monitor.getElevatorNumber(), 2);
         assertEquals(elevator2.getMotor().getMovementState(), MovementState.ACTIVE);
 
-        sendReceiveMonitor();
-        sendReceiveMonitor();
+        monitor = sendReceiveMonitor();
+        assertEquals(43.71555685544091, monitor.getQueueTime());
 
-        //Elevators expected completion times have increased by 19 seconds
-        //Both elevators expected time to completion with new requests is now 19.0
-        assertEquals(43.71555685544091, elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()));
-        assertEquals(43.71555685544091, elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor()));
+        monitor = sendReceiveMonitor();
+        assertEquals(43.71555685544091, monitor.getQueueTime());
     }
 
     /**
