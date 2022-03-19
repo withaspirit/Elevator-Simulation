@@ -4,7 +4,8 @@ import requests.ElevatorRequest;
 import requests.ServiceRequest;
 import systemwide.Direction;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.TreeSet;
 
 /**
  * RequestQueue maintains queues of floor numbers for an elevator to visit.
