@@ -474,10 +474,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 		messageToPrint += "[currentFloor, requestFloor]: [" + currentFloor + ", " + requestFloor + "]\n";
 		messageToPrint += "[ServiceDirxn, MoveStatus, MotorDirxn, Doors]: ";
 		messageToPrint += "[" + serviceDirection + " " + motor.getMovementState().getName() + " " + motor.getDirection() + " " + doors.getState() + "]\n";
-		messageToPrint += "RequestQueue: ";
+		messageToPrint += "RequestQueue: " + requestQueue;
 		System.out.println(messageToPrint);
-		requestQueue.printQueue();
-		System.out.println();
 	}
 
 	/**
