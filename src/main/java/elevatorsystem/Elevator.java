@@ -30,7 +30,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private int currentFloor;
 	private Direction serviceDirection;
 	private float speed;
-	private double queueTime;
 
 	private final Doors doors;
 	private final ElevatorMotor motor;
@@ -58,7 +57,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		serviceDirection = Direction.UP;
 		motor = new ElevatorMotor();
 		doors = new Doors();
-		queueTime = 0.0;
 		requestQueue = new RequestQueue();
 		requests = new CopyOnWriteArrayList<>();
 		messageTransferEnabled = true;
@@ -215,7 +213,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		//TODO remove after queueTime updated properly and serviceDirection is updated properly
 		motor.setMovementState(MovementState.ACTIVE);
 		if (serviceRequest instanceof ElevatorRequest elevatorRequest) {
-			queueTime = getExpectedTime(elevatorRequest);
 			if (serviceDirection == Direction.NONE) {
 				serviceDirection = elevatorRequest.getDirection();
 			}
@@ -406,17 +403,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the total expected time that the elevator will need to take to
-	 * perform its current requests along with the new elevatorRequest.
-	 *
-	 * @param elevatorRequest an elevator request to visit a floor
-	 * @return a double containing the elevator's total expected queue time
-	 */
-	public double getExpectedTime(ElevatorRequest elevatorRequest) {
-		return queueTime + LOAD_TIME + requestTime(elevatorRequest);
-	}
-
-	/**
 	 * Gets the expected time of a new request for the current elevator
 	 * based on distance.
 	 *
@@ -505,12 +491,21 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Gets the request queue of the elevator
+	 *
+	 * @return the request queue of the elevator
+	 */
+	public RequestQueue getRequestQueue() {
+		return requestQueue;
+	}
+
+	/**
 	 * Create a status response when a rew elevator request is added
 	 * that will change the status.
 	 *
 	 * @return a StatusUpdate containing new elevator information.
 	 */
 	public ElevatorMonitor makeElevatorMonitor() {
-		return new ElevatorMonitor(queueTime, motor.getMovementState(), currentFloor, serviceDirection, elevatorNumber);
+		return new ElevatorMonitor(requestQueue.getExpectedTime(currentFloor), motor.getMovementState(), currentFloor, serviceDirection, elevatorNumber);
 	}
 }
