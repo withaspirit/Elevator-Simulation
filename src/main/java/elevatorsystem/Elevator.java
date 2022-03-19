@@ -412,22 +412,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the expected time of a new request for the current elevator
-	 * based on distance.
-	 *
-	 * @param elevatorRequest a elevatorRequest to visit a floor
-	 * @return a double containing the time to fulfil the request
-	 */
-	public double requestTime(ElevatorRequest elevatorRequest) {
-		double distance = Math.abs(elevatorRequest.getFloorNumber() - currentFloor) * FLOOR_HEIGHT;
-		if (distance > ACCELERATION_DISTANCE * 2) {
-			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
-		} else {
-			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
-		}
-	}
-
-	/**
 	 * Passes an ApproachEvent to the ElevatorSubsystem.
 	 *
 	 * @param approachEvent the ApproachEvent to be passed to the subsystem

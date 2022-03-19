@@ -107,8 +107,8 @@ public class ElevatorSelectionTest {
         assertEquals(elevator2.getMotor().getMovementState(), MovementState.ACTIVE);
 
         //Both elevators expected time to completion with new requests is now 16.67268228800782
-        assertEquals(29.14370457029394, elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()));
-        assertEquals(29.14370457029394, elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor()));
+        assertEquals(14.57185228514697, elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()));
+        assertEquals(14.57185228514697, elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor()));
     }
 
     @Test
@@ -128,8 +128,8 @@ public class ElevatorSelectionTest {
 
         //Elevators expected completion times have increased by 19 seconds
         //Both elevators expected time to completion with new requests is now 19.0
-        assertEquals(58.28740914058788, elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()));
-        assertEquals(58.28740914058788, elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor()));
+        assertEquals(43.71555685544091, elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()));
+        assertEquals(43.71555685544091, elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor()));
     }
 
     /**
