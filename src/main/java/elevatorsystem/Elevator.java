@@ -51,7 +51,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		requestQueue = new RequestQueue();
 		motor = new ElevatorMotor();
 		doors = new Doors();
-    currentFloor = 1;
+		currentFloor = 1;
 		serviceDirection = Direction.UP;
 		approachEvent = null;
 		messageTransferEnabled = true;
