@@ -61,7 +61,7 @@ public class Scheduler implements Runnable {
 	 * If it's data (i.e. contains a SystemEvent), it is processed by Scheduler.
 	 * Otherwise, it's a request for data and is processed by IntermediateHost.
 	 */
-	public void receiveAndProcessPacket() {
+	private void receiveAndProcessPacket() {
 		while (true) {
 			DatagramPacket receivePacket = intermediateHost.receivePacket();
 

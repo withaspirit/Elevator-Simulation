@@ -76,6 +76,23 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		requests.add(approachEvent);
 	}
 
+	/**
+	 * Gets the size of the requests list.
+	 *
+	 * @return the size of the requests list
+	 */
+	public int getRequestSize() {
+		return requests.size();
+	}
+
+	/**
+	 * Add a request to the requests list.
+	 *
+	 * @param systemEvent a new system event
+	 */
+	public void addRequest(SystemEvent systemEvent){
+		requests.add(systemEvent);
+	}
 
 	/**
 	 * Sends and receives messages for the system using UDP packets.
