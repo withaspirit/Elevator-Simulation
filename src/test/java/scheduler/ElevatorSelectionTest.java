@@ -23,18 +23,13 @@ public class ElevatorSelectionTest {
 
     static MessageTransfer messageTransfer;
     static ElevatorRequest elevatorRequest = new ElevatorRequest(LocalTime.now(), 1, Direction.UP, 2, Origin.FLOOR_SYSTEM);
-    static byte[] messageElevator;
-    static byte[] messageString;
-    static DatagramPacket elevatorPacket;
-    static DatagramPacket messagePacket;
+    static ElevatorRequest elevatorRequest2 = new ElevatorRequest(LocalTime.now(), 2, Direction.UP, 4, Origin.FLOOR_SYSTEM);
+    static byte[] messageElevator, messageElevator2, messageString;
+    static DatagramPacket elevatorPacket, elevatorPacket2,  messagePacket;
     static ElevatorSubsystem elevatorSubsystem;
-    static Elevator elevator1;
-    static Elevator elevator2;
-    static Scheduler schedulerClient;
-    static Scheduler schedulerServer;
-    static Thread schedulerClientThread;
-    static Thread schedulerServerThread;
-    static Thread elevatorSubsystemThread;
+    static Elevator elevator1, elevator2;
+    static Scheduler schedulerClient, schedulerServer;
+    static Thread schedulerClientThread, schedulerServerThread, elevatorSubsystemThread;
 
     @BeforeAll
     static void oneSetUp() {
@@ -43,9 +38,11 @@ public class ElevatorSelectionTest {
 
         // Create a Request to send
         messageElevator = messageTransfer.encodeObject(elevatorRequest);
+        messageElevator2 = messageTransfer.encodeObject(elevatorRequest2);
         messageString = messageTransfer.encodeObject(RequestMessage.REQUEST.getMessage());
         try {
             elevatorPacket = new DatagramPacket(messageElevator, messageElevator.length, InetAddress.getLocalHost(), Port.CLIENT_TO_SERVER.getNumber());
+            elevatorPacket2 = new DatagramPacket(messageElevator2, messageElevator2.length, InetAddress.getLocalHost(), Port.CLIENT_TO_SERVER.getNumber());
             messagePacket = new DatagramPacket(messageString, messageString.length, InetAddress.getLocalHost(), Port.SERVER_TO_CLIENT.getNumber());
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -72,7 +69,7 @@ public class ElevatorSelectionTest {
     }
 
     @AfterEach
-    void cleanUP(){
+    void cleanUP(){;
         while (!elevator1.getRequestQueue().isEmpty()){
             elevator1.getRequestQueue().removeRequest();
         }
@@ -81,26 +78,30 @@ public class ElevatorSelectionTest {
             elevator2.getRequestQueue().removeRequest();
         }
         elevator1.getMotor().setMovementState(MovementState.IDLE);
-        elevator1.getMotor().setMovementState(MovementState.IDLE);
+        elevator2.getMotor().setMovementState(MovementState.IDLE);
+
+        for (ElevatorMonitor elevatorMonitor: Scheduler.getElevatorMonitorList()){
+            elevatorMonitor.updateMonitor(new ElevatorMonitor(0.0, MovementState.IDLE, 1, Direction.UP, elevatorMonitor.getElevatorNumber()));
+        }
     }
 
     @Test
     void testSelectingIdleElevators() {
         //Both elevator's status' are idle
-        Assertions.assertEquals(elevator1.getMotor().getMovementState(), MovementState.IDLE);
+        assertEquals(elevator1.getMotor().getMovementState(), MovementState.IDLE);
         assertEquals(elevator2.getMotor().getMovementState(), MovementState.IDLE);
 
         //Both elevators expected time to completion with new requests are 0.0
         assertEquals(elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()), 0.0);
         assertEquals(elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor()), 0.0);
 
-        ElevatorMonitor monitor = sendReceiveMonitor();
+        ElevatorMonitor monitor = sendReceiveMonitor(elevatorPacket);
         assertEquals(monitor.getElevatorNumber(), 1);
         assertEquals(monitor.getState(), MovementState.ACTIVE);
         assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
         assertEquals(14.57185228514697, monitor.getQueueTime());
 
-        monitor = sendReceiveMonitor();
+        monitor = sendReceiveMonitor(elevatorPacket);
         assertEquals(monitor.getElevatorNumber(), 2);
         assertEquals(monitor.getState(), MovementState.ACTIVE);
         assertEquals(elevator2.getMotor().getMovementState(), MovementState.ACTIVE);
@@ -109,19 +110,19 @@ public class ElevatorSelectionTest {
 
     @Test
     void testSelectingActiveElevators(){
-        ElevatorMonitor monitor = sendReceiveMonitor();
+        ElevatorMonitor monitor = sendReceiveMonitor(elevatorPacket);
         assertEquals(monitor.getElevatorNumber(), 1);
         assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
 
-        monitor = sendReceiveMonitor();
+        monitor = sendReceiveMonitor(elevatorPacket);
         assertEquals(monitor.getElevatorNumber(), 2);
         assertEquals(elevator2.getMotor().getMovementState(), MovementState.ACTIVE);
 
-        monitor = sendReceiveMonitor();
-        assertEquals(43.71555685544091, monitor.getQueueTime());
+        monitor = sendReceiveMonitor(elevatorPacket2);
+        assertEquals(31.24453457315479, monitor.getQueueTime());
 
-        monitor = sendReceiveMonitor();
-        assertEquals(43.71555685544091, monitor.getQueueTime());
+        monitor = sendReceiveMonitor(elevatorPacket2);
+        assertEquals(31.24453457315479, monitor.getQueueTime());
     }
 
     /**
@@ -130,8 +131,8 @@ public class ElevatorSelectionTest {
      *
      * @return an ElevatorMonitor with updates elevator information
      */
-    private ElevatorMonitor sendReceiveMonitor(){
-        messageTransfer.sendMessage(elevatorPacket);
+    private ElevatorMonitor sendReceiveMonitor(DatagramPacket packet){
+        messageTransfer.sendMessage(packet);
         messageTransfer.receiveMessage();
         // Wait for Threads to finish transferring and processing requests
         try {

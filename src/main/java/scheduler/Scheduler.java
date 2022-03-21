@@ -69,6 +69,15 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	}
 
 	/**
+	 * Get the current static instance of elevatorMonitorList containing a list of elevator monitors.
+	 *
+	 * @return a list of elevator monitors
+	 */
+	public static ArrayList<ElevatorMonitor> getElevatorMonitorList() {
+		return elevatorMonitorList;
+	}
+
+	/**
 	 * Takes a DatagramPacket from the IntermediateHost and processes it.
 	 * If it's data (i.e. contains a SystemEvent), it is processed by Scheduler.
 	 * Otherwise, it's a request for data and is processed by IntermediateHost.
