@@ -5,7 +5,6 @@ import client_server_host.Port;
 import client_server_host.RequestMessage;
 import misc.InputFileReader;
 import requests.*;
-import systemwide.BoundedBuffer;
 import systemwide.Origin;
 
 import java.util.ArrayList;
@@ -16,32 +15,16 @@ import java.util.Collections;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
+public class FloorSubsystem implements Runnable, SystemEventListener {
 
-	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
 	private Client client;
 	private final ArrayList<SystemEvent> requests;
 	private final ArrayList<Floor> floorList;
-	private Origin origin;
-
-	/**
-	 * Constructor for FloorSubsystem.
-	 *
-	 * @param buffer the buffer the FloorSubsystem passes messages to and receives messages from
-	 */
-	public FloorSubsystem(BoundedBuffer buffer) {
-		this.floorSubsystemBuffer = buffer;
-		InputFileReader inputFileReader = new InputFileReader();
-		requests = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
-		floorList = new ArrayList<>();
-		origin = Origin.FLOOR_SYSTEM;
-	}
 
 	/**
 	 * Constructor for FloorSubsystem.
 	 */
 	public FloorSubsystem() {
-		floorSubsystemBuffer = null;
 		client = new Client(Port.CLIENT.getNumber());
 		InputFileReader inputFileReader = new InputFileReader();
 		requests = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
@@ -58,11 +41,7 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 		Collections.reverse(requests);
 
 		while (true) {
-			if (client != null) {
-				subsystemUDPMethod();
-			} else {
-				subsystemBufferMethod();
-			}
+			subsystemUDPMethod();
 		}
 	}
 
@@ -95,7 +74,6 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
 		requests.add(approachEvent);
-		sendMessage(approachEvent, floorSubsystemBuffer, origin);
 	}
 
 
@@ -121,31 +99,6 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 							e.printStackTrace();
 						}
 					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Sends and receives messages for the system using BoundedBuffer.
-	 */
-	private void subsystemBufferMethod() {
-		while (true) {
-			//  add to floorBuffer if possible
-			if (!requests.isEmpty()) {
-				// Sending Data to Scheduler
-				SystemEvent event = requests.remove(requests.size() - 1);
-
-				sendMessage(event, floorSubsystemBuffer, origin);
-			}
-
-			// check if can remove from buffer before trying to remove
-			if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-				SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
-				if (request instanceof FloorRequest floorRequest) {
-
-				} else if (request instanceof ApproachEvent approachEvent) {
-					processApproachEvent(approachEvent);
 				}
 			}
 		}
