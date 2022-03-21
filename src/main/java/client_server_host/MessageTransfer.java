@@ -127,7 +127,7 @@ public class MessageTransfer {
         if (object instanceof String string) {
             messageToPrint += string;
         } else {
-            messageToPrint += object.getClass().getSimpleName() + " Packet:\n";
+            messageToPrint += object.getClass().getSimpleName() + " Packet:";
             messageToPrint +=  object;
         }
         messageToPrint += ", Host port: " + packet.getPort();
