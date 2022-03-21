@@ -95,7 +95,7 @@ class SchedulerTest {
         // Send req from scheduler to FloorBuffer
         try {
             schedulerServer.processData(InetAddress.getLocalHost(), elevatorMonitor);
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
