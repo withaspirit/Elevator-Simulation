@@ -243,13 +243,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		//TODO remove after queueTime updated properly and serviceDirection is updated properly
-<<<<<<< Fix_concurrency_Error
-		if (serviceRequest instanceof ElevatorRequest elevatorRequest) {
-			queueTime = getExpectedTime(elevatorRequest);
-		}
-=======
-		motor.setMovementState(MovementState.ACTIVE);
->>>>>>> master
 		int elevatorFloorToPass = currentFloor;
 		requestQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
 	}
