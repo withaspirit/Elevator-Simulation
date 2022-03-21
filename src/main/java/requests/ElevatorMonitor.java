@@ -7,8 +7,9 @@ import systemwide.Origin;
 import java.time.LocalTime;
 
 /**
- * An elevator monitor for the scheduler to quickly decide on an elevator to send new
- * service requests with regularly updated elevator information.
+ * ElevatorMonitor retains Elevator information to allow the Scheduler to quickly decide
+ * which Elevator to send new ServiceRequests to. Scheduler's list of ElevatorMonitors is
+ * updated by Elevator sending ElevatorMonitors to Scheduler.
  *
  * @author Ryan Dash
  * @version 2022/03/10
@@ -30,10 +31,19 @@ public class ElevatorMonitor extends SystemEvent {
         setElevatorNumber(elevatorNumber);
         queueTime = 0.0;
         state = MovementState.IDLE;
-        currentFloor = 0;
+        currentFloor = 1;
         currentDirection = Direction.NONE;
     }
 
+    /**
+     * Constructor for all of ElevatorMonitor's properties.
+     *
+     * @param queueTime the estimated time for elevator to fulfill all of its requests
+     * @param movementState the MovementState of the Elevator's motor
+     * @param currentFloor the currentFloor of the Elevator
+     * @param serviceDirection the direction that the elevator is serving
+     * @param elevatorNumber the number of the elevator
+     */
     public ElevatorMonitor(double queueTime, MovementState movementState, int currentFloor, Direction serviceDirection, int elevatorNumber) {
         this(elevatorNumber);
         this.queueTime = queueTime;
@@ -51,7 +61,6 @@ public class ElevatorMonitor extends SystemEvent {
         return queueTime;
     }
 
-
     /**
      * Gets the MovementState of the elevator.
      *
@@ -60,7 +69,6 @@ public class ElevatorMonitor extends SystemEvent {
     public MovementState getState() {
         return state;
     }
-
 
     /**
      * Gets the current floor of the elevator.
@@ -81,7 +89,7 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
-     * Update the ElevatorMonitor with the latest ElevatorMonitor information.
+     * Updates the ElevatorMonitor with the latest ElevatorMonitor information.
      *
      * @param elevatorMonitor an elevator monitor containing new elevator information
      */
@@ -90,5 +98,12 @@ public class ElevatorMonitor extends SystemEvent {
         this.state = elevatorMonitor.getState();
         this.currentFloor = elevatorMonitor.getCurrentFloor();
         this.currentDirection = elevatorMonitor.getDirection();
+    }
+
+    @Override
+    public String toString() {
+        String formattedString = "\n[queueTime, State, CurrFloor, CurrDirxn] : ";
+        formattedString += String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection() + "\n";
+        return formattedString;
     }
 }
