@@ -193,30 +193,30 @@ public class RequestQueue {
 	 * Gets the total expected time that the elevator will need to take to
 	 * perform its current requests along with the new elevatorRequest.
 	 *
-	 * @param initialFloor the floor the elevator starts at
+	 * @param elevatorFloor the floor the elevator starts at
 	 * @return a double containing the elevator's total expected queue time
 	 */
-	public double getExpectedTime(int initialFloor) {
+	public double getExpectedTime(int elevatorFloor) {
 		double queueTime = 0;
 
 		for (int floor: currentDirectionQueue) {
-			if (initialFloor != floor) {
-				queueTime += LOAD_TIME + requestTime(initialFloor, floor);
-				initialFloor = floor;
+			if (elevatorFloor != floor) {
+				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
+				elevatorFloor = floor;
 			}
 		}
 
 		for (int floor: oppositeDirectionQueue) {
-			if (initialFloor != floor) {
-				queueTime += LOAD_TIME + requestTime(initialFloor, floor);
-				initialFloor = floor;
+			if (elevatorFloor != floor) {
+				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
+				elevatorFloor = floor;
 			}
 		}
 
 		for (int floor: missedRequests) {
-			if (initialFloor != floor) {
-				queueTime += LOAD_TIME + requestTime(initialFloor, floor);
-				initialFloor = floor;
+			if (elevatorFloor != floor) {
+				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
+				elevatorFloor = floor;
 			}
 		}
 

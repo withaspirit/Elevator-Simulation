@@ -69,7 +69,7 @@ public class ElevatorSelectionTest {
     }
 
     @AfterEach
-    void cleanUP(){;
+    void cleanUP(){
         while (!elevator1.getRequestQueue().isEmpty()){
             elevator1.getRequestQueue().removeRequest();
         }
@@ -110,18 +110,18 @@ public class ElevatorSelectionTest {
 
     @Test
     void testSelectingActiveElevators(){
-        ElevatorMonitor monitor = sendReceiveMonitor(elevatorPacket);
+        ElevatorMonitor monitor = sendReceiveMonitor(elevatorPacket2);
         assertEquals(monitor.getElevatorNumber(), 1);
         assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
 
-        monitor = sendReceiveMonitor(elevatorPacket);
+        monitor = sendReceiveMonitor(elevatorPacket2);
         assertEquals(monitor.getElevatorNumber(), 2);
         assertEquals(elevator2.getMotor().getMovementState(), MovementState.ACTIVE);
 
-        monitor = sendReceiveMonitor(elevatorPacket2);
+        monitor = sendReceiveMonitor(elevatorPacket);
         assertEquals(31.24453457315479, monitor.getQueueTime());
 
-        monitor = sendReceiveMonitor(elevatorPacket2);
+        monitor = sendReceiveMonitor(elevatorPacket);
         assertEquals(31.24453457315479, monitor.getQueueTime());
     }
 
