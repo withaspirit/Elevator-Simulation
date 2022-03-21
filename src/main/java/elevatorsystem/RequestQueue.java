@@ -7,8 +7,6 @@ import systemwide.Direction;
 import java.util.Collections;
 import java.util.TreeSet;
 
-import static elevatorsystem.Elevator.*;
-
 /**
  * RequestQueue maintains queues of floor numbers for an elevator to visit.
  * It also provides methods to manage and modify the queues.
@@ -186,57 +184,6 @@ public class RequestQueue {
 		}
 		if (!isMissedQueueEmpty()) {
 			System.out.println("MissedQueue: " + missedRequests.toString());
-		}
-	}
-
-	/**
-	 * Gets the total expected time that the elevator will need to take to
-	 * perform its current requests along with the new elevatorRequest.
-	 *
-	 * @param initialFloor the floor the elevator starts at
-	 * @return a double containing the elevator's total expected queue time
-	 */
-	public double getExpectedTime(int initialFloor) {
-		double queueTime = 0;
-
-		for (int floor: currentDirectionQueue) {
-			if (initialFloor != floor) {
-				queueTime += LOAD_TIME + requestTime(initialFloor, floor);
-				initialFloor = floor;
-			}
-		}
-
-		for (int floor: oppositeDirectionQueue) {
-			if (initialFloor != floor) {
-				queueTime += LOAD_TIME + requestTime(initialFloor, floor);
-				initialFloor = floor;
-			}
-		}
-
-		for (int floor: missedRequests) {
-			if (initialFloor != floor) {
-				queueTime += LOAD_TIME + requestTime(initialFloor, floor);
-				initialFloor = floor;
-			}
-		}
-
-		return queueTime;
-	}
-
-	/**
-	 * Gets the expected time of a new request for the current elevator
-	 * based on distance.
-	 *
-	 * @param initialFloor the floor the elevator starts at
-	 * @param finalFloor the destination floor for the elevator to stop at
-	 * @return a double containing the time to fulfil the request
-	 */
-	public double requestTime(int initialFloor, int finalFloor) {
-		double distance = Math.abs(finalFloor - initialFloor) * FLOOR_HEIGHT;
-		if (distance > ACCELERATION_DISTANCE * 2) {
-			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
-		} else {
-			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
 		}
 	}
 }
