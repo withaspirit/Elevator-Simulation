@@ -5,9 +5,7 @@ import requests.ServiceRequest;
 import systemwide.Direction;
 
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.TreeSet;
 
 /**
  * RequestQueue maintains queues of floor numbers for an elevator to visit.
@@ -17,22 +15,22 @@ import java.util.Queue;
  */
 public class RequestQueue {
 
-	private volatile PriorityQueue<Integer> currentDirectionQueue;
-	private volatile PriorityQueue<Integer> oppositeDirectionQueue;
+	private volatile TreeSet<Integer> currentDirectionQueue;
+	private volatile TreeSet<Integer> oppositeDirectionQueue;
 	/**
 	 * MissedRequests is for requests in the elevators' serviceDirection whose
 	 * floorNumbers are below (if serviceDirection is UP) or above
 	 * (if serviceDirection is DOWN) the elevator's floor.
 	 */
-	private final Queue<Integer> missedRequests;
+	private final TreeSet<Integer> missedRequests;
 
 	/**
 	 * Constructor for the class
 	 */
 	public RequestQueue() {
-		currentDirectionQueue = new PriorityQueue<>();
-		oppositeDirectionQueue = new PriorityQueue<>(Collections.reverseOrder());
-		missedRequests = new LinkedList<>();
+		currentDirectionQueue = new TreeSet<>();
+		oppositeDirectionQueue = new TreeSet<>(Collections.reverseOrder());
+		missedRequests = new TreeSet<>();
 	}
 
 	/**
@@ -50,7 +48,7 @@ public class RequestQueue {
 			throw new IllegalArgumentException("FloorNumber must be greater than zero.");
 		}
 
-		Queue<Integer> queueToAddTo;
+		TreeSet<Integer> queueToAddTo;
 		// if the elevator's floor number == request floor number
 		if (elevatorFloorNumber == floorNumber) {
 			// if serviceDirection is the same as the request direction,
@@ -92,7 +90,7 @@ public class RequestQueue {
 	 */
 	public int removeRequest() {
 		if (!currentDirectionQueue.isEmpty()) {
-			return currentDirectionQueue.remove();
+			return currentDirectionQueue.pollFirst();
 		} else {
 			return -1;
 		}
@@ -105,7 +103,7 @@ public class RequestQueue {
 	 */
 	public int peekNextRequest() {
 		if (!currentDirectionQueue.isEmpty()) {
-			return currentDirectionQueue.peek();
+			return currentDirectionQueue.first();
 		} else {
 			System.err.println("RequestQueue.peekNextFloor should not be accessed " +
 					"while the active queue is empty. Swapping should be done beforehand.");
@@ -124,12 +122,12 @@ public class RequestQueue {
 		if (currentDirectionQueue.isEmpty()) {
 			// add any missed requests to current queue
 			while (!missedRequests.isEmpty()) {
-				currentDirectionQueue.add(missedRequests.remove());
+				currentDirectionQueue.add(missedRequests.pollFirst());
 			}
 
 			// switch to opposite direction queue if possible
 			if (!oppositeDirectionQueue.isEmpty()) {
-				PriorityQueue<Integer> tempQueue = currentDirectionQueue;
+				TreeSet<Integer> tempQueue = currentDirectionQueue;
 				currentDirectionQueue = oppositeDirectionQueue;
 				oppositeDirectionQueue = tempQueue;
 				status = true;
