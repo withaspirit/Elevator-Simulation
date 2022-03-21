@@ -60,14 +60,11 @@ public class ElevatorMotor {
 	 * Simulates elevator movement.
 	 */
 	public int move(int currentFloor, int requestFloor) {
-		int floorDifference = currentFloor - requestFloor;
 		int nextFloor = currentFloor;
 
-		// if floor is above
-		if (floorDifference < 0) {
+		if (currentFloor < requestFloor) {
 			nextFloor += 1;
-			// floor is below
-		} else if (floorDifference > 0) {
+		} else if (currentFloor > requestFloor) {
 			nextFloor -= 1;
 		} else {
 		}
@@ -101,8 +98,16 @@ public class ElevatorMotor {
 	}
 
 	/**
+	 * Sets the Motor properties such that it is moving in the specified direction.
+	 */
+	public void startMoving() {
+		setMovementState(MovementState.ACTIVE);
+	}
+
+	/**
 	 * Simulates the elevator moving up
 	 */
+	// TODO: remove
 	public void moveUp() {
 		setMovementState(MovementState.ACTIVE);
 		this.setDirection(Direction.UP);
@@ -112,6 +117,7 @@ public class ElevatorMotor {
 	/**
 	 * Simulates the elevator moving down
 	 */
+	// TODO: remove
 	public void moveDown() {
 		// Set state and direction
 		setMovementState(MovementState.ACTIVE);

@@ -17,9 +17,14 @@ import java.util.Queue;
  */
 public class RequestQueue {
 
-	private final Queue<Integer> missedRequests;
 	private volatile PriorityQueue<Integer> currentDirectionQueue;
 	private volatile PriorityQueue<Integer> oppositeDirectionQueue;
+	/**
+	 * MissedRequests is for requests in the elevators' serviceDirection whose
+	 * floorNumbers are below (if serviceDirection is UP) or above
+	 * (if serviceDirection is DOWN) the elevator's floor.
+	 */
+	private final Queue<Integer> missedRequests;
 
 	/**
 	 * Constructor for the class
