@@ -128,10 +128,10 @@ public class MessageTransfer {
             messageToPrint += string;
         } else {
             messageToPrint += object.getClass().getSimpleName() + " Packet:";
-            messageToPrint +=  object;
         }
-        messageToPrint += ", Host port: " + packet.getPort();
+        messageToPrint += "Host port: " + packet.getPort();
         messageToPrint += ", Length: " + packet.getLength() + "\n";
+        messageToPrint += object + "\n";
         System.out.println(messageToPrint);
     }
 
@@ -155,9 +155,10 @@ public class MessageTransfer {
                 messageToPrint += "from Server:";
             }
             messageToPrint += "\n";
-            messageToPrint += object.getClass().getSimpleName() + " Packet: " + object;
-            messageToPrint += ", Host port: " + packet.getPort();
+            messageToPrint += object.getClass().getSimpleName() + " Packet: ";
+            messageToPrint += "Host port: " + packet.getPort();
             messageToPrint += ", Length: " + packet.getLength() + "\n";
+            messageToPrint += object + "\n";
             System.out.println(messageToPrint);
         }
     }
