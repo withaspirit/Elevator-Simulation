@@ -33,7 +33,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private int currentFloor;
 	private Direction serviceDirection;
 	private float speed;
-	private double queueTime;
 
 	private volatile ApproachEvent approachEvent;
 	// variable for allowing / disallowing Elevator's message transfer
@@ -55,8 +54,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		currentFloor = 1;
 		serviceDirection = Direction.UP;
 		approachEvent = null;
-		speed = 0;
-		queueTime = 0.0;
 		messageTransferEnabled = true;
 	}
 
@@ -246,9 +243,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		//TODO remove after queueTime updated properly and serviceDirection is updated properly
+<<<<<<< Fix_concurrency_Error
 		if (serviceRequest instanceof ElevatorRequest elevatorRequest) {
 			queueTime = getExpectedTime(elevatorRequest);
 		}
+=======
+		motor.setMovementState(MovementState.ACTIVE);
+>>>>>>> master
 		int elevatorFloorToPass = currentFloor;
 		requestQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
 	}
@@ -363,33 +364,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the total expected time that the elevator will need to take to
-	 * perform its current requests along with the new elevatorRequest.
-	 *
-	 * @param elevatorRequest an elevator request to visit a floor
-	 * @return a double containing the elevator's total expected queue time
-	 */
-	public double getExpectedTime(ElevatorRequest elevatorRequest) {
-		return queueTime + LOAD_TIME + requestTime(elevatorRequest);
-	}
-
-	/**
-	 * Gets the expected time of a new request for the current elevator
-	 * based on distance.
-	 *
-	 * @param elevatorRequest a elevatorRequest to visit a floor
-	 * @return a double containing the time to fulfil the request
-	 */
-	public double requestTime(ElevatorRequest elevatorRequest) {
-		double distance = Math.abs(elevatorRequest.getFloorNumber() - currentFloor) * FLOOR_HEIGHT;
-		if (distance > ACCELERATION_DISTANCE * 2) {
-			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
-		} else {
-			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
-		}
-	}
-
-	/**
 	 * Passes an ApproachEvent to the ElevatorSubsystem.
 	 *
 	 * @param approachEvent the ApproachEvent to be passed to the subsystem
@@ -425,12 +399,21 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Gets the request queue of the elevator
+	 *
+	 * @return the request queue of the elevator
+	 */
+	public RequestQueue getRequestQueue() {
+		return requestQueue;
+	}
+
+	/**
 	 * Create a status response when a rew elevator request is added
 	 * that will change the status.
 	 *
 	 * @return a StatusUpdate containing new elevator information.
 	 */
 	public ElevatorMonitor makeElevatorMonitor() {
-		return new ElevatorMonitor(queueTime, motor.getMovementState(), currentFloor, serviceDirection, elevatorNumber);
+		return new ElevatorMonitor(requestQueue.getExpectedTime(currentFloor), motor.getMovementState(), currentFloor, serviceDirection, elevatorNumber);
 	}
 }

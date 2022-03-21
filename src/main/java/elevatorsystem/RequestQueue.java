@@ -5,9 +5,9 @@ import requests.ServiceRequest;
 import systemwide.Direction;
 
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.TreeSet;
+
+import static elevatorsystem.Elevator.*;
 
 /**
  * RequestQueue maintains queues of floor numbers for an elevator to visit.
@@ -17,22 +17,22 @@ import java.util.Queue;
  */
 public class RequestQueue {
 
-	private volatile PriorityQueue<Integer> currentDirectionQueue;
-	private volatile PriorityQueue<Integer> oppositeDirectionQueue;
+	private volatile TreeSet<Integer> currentDirectionQueue;
+	private volatile TreeSet<Integer> oppositeDirectionQueue;
 	/**
 	 * MissedRequests is for requests in the elevators' serviceDirection whose
 	 * floorNumbers are below (if serviceDirection is UP) or above
 	 * (if serviceDirection is DOWN) the elevator's floor.
 	 */
-	private final Queue<Integer> missedRequests;
+	private final TreeSet<Integer> missedRequests;
 
 	/**
 	 * Constructor for the class
 	 */
 	public RequestQueue() {
-		currentDirectionQueue = new PriorityQueue<>();
-		oppositeDirectionQueue = new PriorityQueue<>(Collections.reverseOrder());
-		missedRequests = new LinkedList<>();
+		currentDirectionQueue = new TreeSet<>();
+		oppositeDirectionQueue = new TreeSet<>(Collections.reverseOrder());
+		missedRequests = new TreeSet<>();
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class RequestQueue {
 			throw new IllegalArgumentException("FloorNumber must be greater than zero.");
 		}
 
-		Queue<Integer> queueToAddTo;
+		TreeSet<Integer> queueToAddTo;
 		// if the elevator's floor number == request floor number
 		if (elevatorFloorNumber == floorNumber) {
 			// if serviceDirection is the same as the request direction,
@@ -92,7 +92,7 @@ public class RequestQueue {
 	 */
 	public int removeRequest() {
 		if (!currentDirectionQueue.isEmpty()) {
-			return currentDirectionQueue.remove();
+			return currentDirectionQueue.pollFirst();
 		} else {
 			return -1;
 		}
@@ -105,7 +105,7 @@ public class RequestQueue {
 	 */
 	public int peekNextRequest() {
 		if (!currentDirectionQueue.isEmpty()) {
-			return currentDirectionQueue.peek();
+			return currentDirectionQueue.first();
 		} else {
 			System.err.println("RequestQueue.peekNextFloor should not be accessed " +
 					"while the active queue is empty. Swapping should be done beforehand.");
@@ -124,12 +124,12 @@ public class RequestQueue {
 		if (currentDirectionQueue.isEmpty()) {
 			// add any missed requests to current queue
 			while (!missedRequests.isEmpty()) {
-				currentDirectionQueue.add(missedRequests.remove());
+				currentDirectionQueue.add(missedRequests.pollFirst());
 			}
 
 			// switch to opposite direction queue if possible
 			if (!oppositeDirectionQueue.isEmpty()) {
-				PriorityQueue<Integer> tempQueue = currentDirectionQueue;
+				TreeSet<Integer> tempQueue = currentDirectionQueue;
 				currentDirectionQueue = oppositeDirectionQueue;
 				oppositeDirectionQueue = tempQueue;
 				status = true;
@@ -186,6 +186,57 @@ public class RequestQueue {
 		}
 		if (!isMissedQueueEmpty()) {
 			System.out.println("MissedQueue: " + missedRequests.toString());
+		}
+	}
+
+	/**
+	 * Gets the total expected time that the elevator will need to take to
+	 * perform its current requests along with the new elevatorRequest.
+	 *
+	 * @param elevatorFloor the floor the elevator starts at
+	 * @return a double containing the elevator's total expected queue time
+	 */
+	public double getExpectedTime(int elevatorFloor) {
+		double queueTime = 0;
+
+		for (int floor: currentDirectionQueue) {
+			if (elevatorFloor != floor) {
+				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
+				elevatorFloor = floor;
+			}
+		}
+
+		for (int floor: oppositeDirectionQueue) {
+			if (elevatorFloor != floor) {
+				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
+				elevatorFloor = floor;
+			}
+		}
+
+		for (int floor: missedRequests) {
+			if (elevatorFloor != floor) {
+				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
+				elevatorFloor = floor;
+			}
+		}
+
+		return queueTime;
+	}
+
+	/**
+	 * Gets the expected time of a new request for the current elevator
+	 * based on distance.
+	 *
+	 * @param initialFloor the floor the elevator starts at
+	 * @param finalFloor the destination floor for the elevator to stop at
+	 * @return a double containing the time to fulfil the request
+	 */
+	public double requestTime(int initialFloor, int finalFloor) {
+		double distance = Math.abs(finalFloor - initialFloor) * FLOOR_HEIGHT;
+		if (distance > ACCELERATION_DISTANCE * 2) {
+			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
+		} else {
+			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
 		}
 	}
 }
