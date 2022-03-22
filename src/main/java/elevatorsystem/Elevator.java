@@ -10,7 +10,7 @@ import java.util.ConcurrentModificationException;
 /**
  * Elevator is a model for simulating an elevator.
  *
- * @author Liam Tripp, Brady Norton
+ * @author Liam Tripp, Brady Norton, Ramit Mahajan
  */
 public class Elevator implements Runnable, SubsystemPasser {
 
@@ -130,7 +130,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		} else {
 			messageToPrint += "Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor;
 		}
-    
+
 		System.out.println(messageToPrint);
 		setCurrentFloor(nextFloor);
 	}
@@ -190,17 +190,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param floorToVisit the next floor the elevator will visit
 	 */
 	public void startMovingToFloor(int floorToVisit) {
-		/*
+
 		while (doors.areOpen()) {
-			// attempt to close (interruptable?)
+			doors.close();
 		}
-		*/
+
 		motor.startMoving();
 		motor.changeDirection(currentFloor, floorToVisit);
 	}
 
 	/**
-	 * Stops the elevator at the specified floor and closes the doors.
+	 * Stops the elevator at the specified floor and opens the doors.
 	 *
 	 * @param requestFloor the floor at the top of the requestQueue
 	 */
@@ -211,11 +211,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (motor.isActive()) {
 			motor.stop();
 		}
-		/*
+
 		while (doors.areClosed()) {
-			// attempt to open doors (non-interruptable)
+			doors.open();
 		}
-		*/
+
 	}
 
 	/**
