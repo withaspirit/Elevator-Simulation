@@ -7,7 +7,6 @@ import elevatorsystem.MovementState;
 import floorsystem.FloorSubsystem;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;
 import requests.ElevatorRequest;
@@ -16,12 +15,9 @@ import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SchedulerTest tests the Scheduler's methods for passing data back and forth between the 3 systems
@@ -33,16 +29,13 @@ class SchedulerTest {
     private static Scheduler schedulerClient;
     private static Scheduler schedulerServer;
     private static FloorSubsystem floorSubsystem;
-    private static ElevatorSubsystem elevatorSubsystem;
     private static Elevator elevator1;
-    private static SystemEvent serviceRequest;
     private static SystemEvent elevatorRequest;
     private static SystemEvent elevatorMonitor;
 
     @BeforeAll
     static void setUpOnce() {
         // Request
-        serviceRequest = new ServiceRequest(LocalTime.NOON, 1, Direction.UP, Origin.FLOOR_SYSTEM);
         elevatorRequest = new ElevatorRequest(LocalTime.now(), 1, Direction.UP, 2, Origin.FLOOR_SYSTEM);
         elevatorMonitor = new ElevatorMonitor(0.0, MovementState.ACTIVE, 1, Direction.UP, 1);
         elevatorMonitor.setOrigin(Origin.ELEVATOR_SYSTEM);
@@ -51,7 +44,7 @@ class SchedulerTest {
         schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
         schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
         floorSubsystem = new FloorSubsystem();
-        elevatorSubsystem = new ElevatorSubsystem();
+        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
         elevator1 = new Elevator(1, elevatorSubsystem);
         elevatorSubsystem.addElevator(elevator1);
         schedulerClient.addElevatorMonitor(elevator1.getElevatorNumber());
@@ -80,7 +73,7 @@ class SchedulerTest {
 
 
         // Elevator receives request from buffer
-        assertTrue(!elevator1.getRequestQueue().isCurrentQueueEmpty());
+        assertFalse(elevator1.getRequestQueue().isCurrentQueueEmpty());
 
         // Verify values
         assertEquals(1, elevator1.getRequestQueue().removeRequest());

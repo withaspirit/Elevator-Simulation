@@ -7,17 +7,16 @@ import elevatorsystem.Elevator;
 import elevatorsystem.ElevatorSubsystem;
 import elevatorsystem.MovementState;
 import misc.InputFileReader;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;
-import requests.ElevatorRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
-import systemwide.Origin;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,14 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ElevatorSelectionTest {
 
     static MessageTransfer messageTransfer;
-    static byte[] messageElevator, messageElevator2, messageString;
-    static DatagramPacket elevatorPacket, elevatorPacket2,  messagePacket;
+    static byte[] messageElevator, messageString;
+    static DatagramPacket elevatorPacket, messagePacket;
     static ElevatorSubsystem elevatorSubsystem;
     static Elevator elevator1, elevator2;
     static Scheduler schedulerClient, schedulerServer;
     static Thread schedulerClientThread, schedulerServerThread, elevatorSubsystemThread;
-    private InputFileReader inputFileReader = new InputFileReader();
-    private ArrayList<SystemEvent> eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
+    private final InputFileReader inputFileReader = new InputFileReader();
+    private final ArrayList<SystemEvent> eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 
     @BeforeAll
     static void oneSetUp() {

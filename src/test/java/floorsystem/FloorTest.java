@@ -8,8 +8,8 @@ import systemwide.Origin;
 
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * FloorTest verifies the methods of the Floor class. Namely, the

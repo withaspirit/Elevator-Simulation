@@ -1,16 +1,18 @@
 package elevatorsystem;
 
 import misc.InputFileReader;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
+import requests.FloorRequest;
+import requests.ServiceRequest;
 import requests.SystemEvent;
+import systemwide.Direction;
 import systemwide.Origin;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -78,12 +80,7 @@ class ElevatorTest {
     private void initElevatorThreads() {
         for (Elevator elevator : elevatorList) {
             // initiate elevator threads on the elevator's moveWhilePossible() method
-            Runnable testElevatorMovementRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    elevator.moveElevatorWhilePossible();
-                }
-            };
+            Runnable testElevatorMovementRunnable = elevator::moveElevatorWhilePossible;
 
             Thread thread = new Thread(testElevatorMovementRunnable);
             threads.add(thread);
@@ -112,7 +109,7 @@ class ElevatorTest {
 
     @Test
     void testOneElevatorFulfillsRequestsMultipleTimes() {
-        for (int i = 0; i < numberOfTimesToTest * 5; i++) {
+        for (int i = 0; i < numberOfTimesToTest * 10; i++) {
             testOneElevatorFulfillsRequests();
         }
     }
@@ -169,5 +166,36 @@ class ElevatorTest {
         for (Elevator elevator : elevatorList) {
             assertTrue(elevator.hasNoRequests());
         }
+    }
+
+    @Test
+    void testRespondToRequestConcurrencyOneElevator() {
+        // there shouldn't be any concurrency errors
+        // this is for adding a request while the elevator is moving
+        int numberOfElevators = 1;
+        initNumberOfElevators(numberOfElevators);
+        int requestFloor1 = 1;
+        int requestFloor2 = 2;
+        ServiceRequest serviceRequest1 = new ServiceRequest(LocalTime.now(), requestFloor1, Direction.UP, Origin.ELEVATOR_SYSTEM);
+        ServiceRequest serviceRequest2 = new ServiceRequest(LocalTime.now(), requestFloor2, Direction.UP, Origin.ELEVATOR_SYSTEM);
+
+        Elevator elevator = elevatorList.get(0);
+        elevator.addRequest(serviceRequest1);
+
+        // elevator should remove Floor 1 from RequestQueue
+        // because it is on the same floor as the first request
+        elevator.compareFloors(requestFloor1);
+        assertTrue(elevator.getMotor().isIdle());
+        assertTrue(elevator.hasNoRequests());
+        assertEquals(requestFloor1, elevator.getCurrentFloor());
+
+        // add different request
+        elevator.addRequest(serviceRequest2);
+        elevator.moveToNextFloor(requestFloor1);
+
+        if (!elevator.getMotor().isIdle()) {
+            elevator.compareFloors(requestFloor1);
+        }
+        // assertEquals(requestFloor1, elevator.getCurrentFloor());
     }
 }

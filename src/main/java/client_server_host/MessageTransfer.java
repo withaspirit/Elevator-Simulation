@@ -102,11 +102,11 @@ public class MessageTransfer {
         if (object instanceof String string) {
             messageToPrint += string;
         } else {
-            messageToPrint += object.getClass().getSimpleName() + " Packet:";
-            messageToPrint +=  object;
+            messageToPrint += object.getClass().getSimpleName() + " Packet: ";
         }
-        messageToPrint += ", Host port: " + packet.getPort();
+        messageToPrint += "Host port: " + packet.getPort();
         messageToPrint += ", Length: " + packet.getLength() + "\n";
+        messageToPrint += object + "\n";
         System.out.println(messageToPrint);
     }
 
@@ -133,6 +133,7 @@ public class MessageTransfer {
             messageToPrint += object.getClass().getSimpleName() + " Packet: " + object;
             messageToPrint += ", Host port: " + packet.getPort();
             messageToPrint += ", Length: " + packet.getLength() + "\n";
+            messageToPrint += object + "\n";
             System.out.println(messageToPrint);
         }
     }
