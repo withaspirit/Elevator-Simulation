@@ -16,7 +16,7 @@ import java.util.Queue;
 public class IntermediateHost {
 
     private final MessageTransfer messageTransfer;
-    private Queue<SystemEvent> messageQueue;
+    private final Queue<SystemEvent> messageQueue;
 
     /**
      * Constructor for IntermediateHost.
@@ -62,9 +62,9 @@ public class IntermediateHost {
     /**
      * Responds to a data request depending on whether the queue of messages is empty.
      *
-     * @param object the object to send to the Server or Client
+     * @param object  the object to send to the Server or Client
      * @param address the address to send the packet to
-     * @param port the port to send the packet to
+     * @param port    the port to send the packet to
      */
     public void respondToDataRequest(Object object, InetAddress address, int port) {
         byte[] message = messageTransfer.encodeObject(object);
@@ -76,7 +76,7 @@ public class IntermediateHost {
      *
      * @param packet a packet received from a scheduler
      */
-    public void respondToSystemEvent(DatagramPacket packet){
+    public void respondToSystemEvent(DatagramPacket packet) {
         byte[] acknowledgeMessage = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
         DatagramPacket acknowledgePacket = new DatagramPacket(acknowledgeMessage, acknowledgeMessage.length, packet.getAddress(), packet.getPort());
         messageTransfer.sendMessage(acknowledgePacket);

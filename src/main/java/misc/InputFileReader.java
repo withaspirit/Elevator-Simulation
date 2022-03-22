@@ -36,11 +36,11 @@ public class InputFileReader {
      * @param name the name of the file for reading inputs
      * @return an ArrayList containing ElevatorRequests for the FloorSubsystem
      */
-    public ArrayList<SystemEvent> readInputFile(String name){
+    public ArrayList<SystemEvent> readInputFile(String name) {
         ArrayList<SystemEvent> queue = new ArrayList<>();
         JSONArray jsonArray = createJSONArray(name);
 
-        for (Object obj: jsonArray) {
+        for (Object obj : jsonArray) {
             JSONObject inputObject = (JSONObject) obj;
             ElevatorRequest elevatorRequest = createElevatorRequest(inputObject);
             queue.add(elevatorRequest);
@@ -69,7 +69,7 @@ public class InputFileReader {
             JSONParser parser = new JSONParser();
             Object obj = parser.parse(inputStreamReader);
             return (JSONObject) obj;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -115,7 +115,7 @@ public class InputFileReader {
             assert inputStream != null;
             // Specify CharSet as UTF-8
             return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.err.println(name + " was not found.");
             e.printStackTrace();
             return null;

@@ -3,8 +3,6 @@ package client_server_host;
 import java.io.*;
 import java.net.*;
 import java.time.LocalTime;
-import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * MessageTransfer provides methods for other classes to send, receive, and
@@ -99,7 +97,7 @@ public class MessageTransfer {
             messageToPrint += string;
         } else {
             messageToPrint += object.getClass().getSimpleName() + " Packet:";
-            messageToPrint +=  object;
+            messageToPrint += object;
         }
         messageToPrint += ", Host port: " + packet.getPort();
         messageToPrint += ", Length: " + packet.getLength() + "\n";
@@ -109,7 +107,7 @@ public class MessageTransfer {
     /**
      * Prints the contents of a packet and what class is receiving the packet.
      *
-     * @param name the name of the class receiving the packet
+     * @param name   the name of the class receiving the packet
      * @param packet the DatagramPacket containing data
      */
     public void printReceiveMessage(String name, DatagramPacket packet) {
@@ -181,7 +179,7 @@ public class MessageTransfer {
         } catch (Exception ex) {
             // ignore exception
         }
-        if (object == null){
+        if (object == null) {
             object = new String(objectBytes);
         }
         return object;

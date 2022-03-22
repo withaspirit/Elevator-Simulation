@@ -14,6 +14,7 @@ public enum MovementState {
 
     /**
      * Constructor for MovementState class
+     *
      * @param name the name of the MovementState
      */
     MovementState(String name) {
