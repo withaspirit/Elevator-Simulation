@@ -20,6 +20,7 @@ public class ElevatorMonitor extends SystemEvent {
     private MovementState state;
     private int currentFloor;
     private Direction currentDirection;
+    private boolean hasNoRequests;
 
     /**
      * Main Constructor for ElevatorMonitor
@@ -33,6 +34,7 @@ public class ElevatorMonitor extends SystemEvent {
         state = MovementState.IDLE;
         currentFloor = 1;
         currentDirection = Direction.NONE;
+        hasNoRequests = true;
     }
 
     /**
@@ -44,12 +46,13 @@ public class ElevatorMonitor extends SystemEvent {
      * @param serviceDirection the direction that the elevator is serving
      * @param elevatorNumber the number of the elevator
      */
-    public ElevatorMonitor(double queueTime, MovementState movementState, int currentFloor, Direction serviceDirection, int elevatorNumber) {
+    public ElevatorMonitor(double queueTime, MovementState movementState, int currentFloor, Direction serviceDirection, int elevatorNumber, boolean empty) {
         this(elevatorNumber);
         this.queueTime = queueTime;
         this.state = movementState;
         this.currentFloor = currentFloor;
         this.currentDirection = serviceDirection;
+        this.hasNoRequests = empty;
     }
 
     /**
@@ -88,6 +91,16 @@ public class ElevatorMonitor extends SystemEvent {
         return currentDirection;
     }
 
+
+    /**
+     * Gets whether of not the elevator has requests.
+     *
+     * @return true if the elevator has no requests, false otherwise
+     */
+    public boolean getHasNoRequests() {
+        return hasNoRequests;
+    }
+
     /**
      * Updates the ElevatorMonitor with the latest ElevatorMonitor information.
      *
@@ -98,8 +111,14 @@ public class ElevatorMonitor extends SystemEvent {
         this.state = elevatorMonitor.getState();
         this.currentFloor = elevatorMonitor.getCurrentFloor();
         this.currentDirection = elevatorMonitor.getDirection();
+        this.hasNoRequests = elevatorMonitor.getHasNoRequests();
     }
 
+    /**
+     * Returns a string representation of the elevator monitor's information.
+     *
+     * @return a string containing elevator monitor's information
+     */
     @Override
     public String toString() {
         String formattedString = "[ElevatorNumber, queueTime, MovementState, CurrFloor, CurrDirxn]:\n";

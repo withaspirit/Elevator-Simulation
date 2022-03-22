@@ -19,7 +19,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ElevatorSelectionTest {
 
@@ -84,15 +84,15 @@ public class ElevatorSelectionTest {
 
 
         for (ElevatorMonitor elevatorMonitor: Scheduler.getElevatorMonitorList()){
-            elevatorMonitor.updateMonitor(new ElevatorMonitor(0.0, MovementState.IDLE, 1, Direction.UP, elevatorMonitor.getElevatorNumber()));
+            elevatorMonitor.updateMonitor(new ElevatorMonitor(0.0, MovementState.IDLE, 1, Direction.UP, elevatorMonitor.getElevatorNumber(), true));
         }
     }
 
     @Test
     void testSelectingIdleElevators() {
         //Both elevator's status' are idle
-        assertEquals(elevator1.getMotor().getMovementState(), MovementState.IDLE);
-        assertEquals(elevator2.getMotor().getMovementState(), MovementState.IDLE);
+        assertTrue(elevator1.getRequestQueue().isEmpty());
+        assertTrue(elevator2.getRequestQueue().isEmpty());
 
         //Both elevators expected time to completion with new requests are 0.0
         assertEquals(elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()), 0.0);
@@ -100,15 +100,15 @@ public class ElevatorSelectionTest {
 
         ElevatorMonitor monitor = sendReceiveMonitor(eventList.get(0));
         assertEquals(monitor.getElevatorNumber(), 1);
-        assertEquals(monitor.getState(), MovementState.ACTIVE);
-        assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
+        assertFalse(monitor.getHasNoRequests());
+        assertFalse(elevator1.getRequestQueue().isEmpty());
         assertEquals(14.57185228514697, monitor.getQueueTime());
         // Elevator move from floor 1 to 2 elevator was idle
 
         monitor = sendReceiveMonitor(eventList.get(1));
         assertEquals(monitor.getElevatorNumber(), 2);
-        assertEquals(monitor.getState(), MovementState.ACTIVE);
-        assertEquals(elevator2.getMotor().getMovementState(), MovementState.ACTIVE);
+        assertFalse(monitor.getHasNoRequests());
+        assertFalse(elevator2.getRequestQueue().isEmpty());
         assertEquals(31.24453457315479, monitor.getQueueTime());
         // Elevator move from floor 2 to 4 elevator was idle
     }
@@ -117,14 +117,16 @@ public class ElevatorSelectionTest {
     void testSelectingActiveElevators(){
         ElevatorMonitor monitor = sendReceiveMonitor(eventList.get(0));
         assertEquals(monitor.getElevatorNumber(), 1);
-        assertEquals(monitor.getState(), MovementState.ACTIVE);
-        assertEquals(elevator1.getMotor().getMovementState(), MovementState.ACTIVE);
+        assertFalse(monitor.getHasNoRequests());
+        assertFalse(elevator1.getRequestQueue().isEmpty());
+        assertEquals(14.57185228514697, monitor.getQueueTime());
         // Elevator 1 move from floor 1 to 2 elevator was idle
 
         monitor = sendReceiveMonitor(eventList.get(1));
         assertEquals(monitor.getElevatorNumber(), 2);
-        assertEquals(monitor.getState(), MovementState.ACTIVE);
-        assertEquals(elevator2.getMotor().getMovementState(), MovementState.ACTIVE);
+        assertFalse(monitor.getHasNoRequests());
+        assertFalse(elevator1.getRequestQueue().isEmpty());
+        assertEquals(31.24453457315479, monitor.getQueueTime());
         // Elevator 2 move from floor 2 to 4 elevator was idle
 
         monitor = sendReceiveMonitor(eventList.get(2));
@@ -150,7 +152,10 @@ public class ElevatorSelectionTest {
         monitor = sendReceiveMonitor(eventList.get(6));
         assertEquals(monitor.getElevatorNumber(), 2);
         assertEquals(99.05848101758119, monitor.getQueueTime());
-        // Elevator 2 traveling in same direction has higher priority
+        // Elevator 2 traveling in same direction has higher priority and Elevator 2 has 3 and 1 in queue
+
+        //Elevator 1 floor requests up [1, 2, 3, 5, 6]
+        //Elevator 2 floor requests up [2, 4], down [7, 4, 3, 1]
     }
 
     /**

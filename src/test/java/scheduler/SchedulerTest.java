@@ -37,7 +37,7 @@ class SchedulerTest {
     static void setUpOnce() {
         // Request
         elevatorRequest = new ElevatorRequest(LocalTime.now(), 1, Direction.UP, 2, Origin.FLOOR_SYSTEM);
-        elevatorMonitor = new ElevatorMonitor(0.0, MovementState.ACTIVE, 1, Direction.UP, 1);
+        elevatorMonitor = new ElevatorMonitor(0.0, MovementState.ACTIVE, 1, Direction.UP, 1, false);
         elevatorMonitor.setOrigin(Origin.ELEVATOR_SYSTEM);
 
         // Set up systems
