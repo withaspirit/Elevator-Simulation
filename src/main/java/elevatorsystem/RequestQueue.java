@@ -177,16 +177,19 @@ public class RequestQueue {
 	/**
 	 * Prints the various queues in RequestQueue.
 	 */
-	public void printQueue() {
+	@Override
+	public String toString() {
+		String messageToPrint = "";
 		if (!isCurrentQueueEmpty()) {
-			System.out.println("CurrentDirectionQueue: " + currentDirectionQueue.toString());
+			messageToPrint += "CurrentDirectionQueue: " + currentDirectionQueue.toString() + "\n";
 		}
 		if (!isOppositeQueueEmpty()) {
-			System.out.println("OppositeDirectionQueue: " + oppositeDirectionQueue.toString());
+			messageToPrint += "OppositeDirectionQueue: " + oppositeDirectionQueue.toString() + "\n";
 		}
 		if (!isMissedQueueEmpty()) {
-			System.out.println("MissedQueue: " + missedRequests.toString());
+			messageToPrint += "MissedQueue: " + missedRequests.toString() + "\n";
 		}
+		return messageToPrint;
 	}
 
 	/**

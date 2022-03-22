@@ -2,9 +2,9 @@ package scheduler;
 
 import client_server_host.IntermediateHost;
 import client_server_host.Port;
+import client_server_host.RequestMessage;
 import elevatorsystem.MovementState;
 import requests.*;
-import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
 
@@ -19,10 +19,8 @@ import java.util.Queue;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class Scheduler implements Runnable, SubsystemMessagePasser {
+public class Scheduler implements Runnable {
 
-	private final BoundedBuffer elevatorSubsystemBuffer; // ElevatorSubsystem - Scheduler link
-	private final BoundedBuffer floorSubsystemBuffer; // FloorSubsystem- Scheduler link
 	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private final Origin origin = Origin.SCHEDULER;
 	private final Queue<SystemEvent> requestQueue;
@@ -31,29 +29,11 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	// private ArrayList<Floor> floors;
 
 	/**
-	 * Constructor for Scheduler
-	 *
-	 * @param elevatorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and elevatorSubsystem
-	 * @param floorSubsystemBuffer a BoundedBuffer for Requests between the Scheduler and floorSubsystem
-	 */
-	public Scheduler(BoundedBuffer elevatorSubsystemBuffer, BoundedBuffer floorSubsystemBuffer) {
-		// create floors and elevators here? or in a SchedulerModel
-		// add subsystems to elevators, pass # floors
-		this.elevatorSubsystemBuffer = elevatorSubsystemBuffer;
-		this.floorSubsystemBuffer = floorSubsystemBuffer;
-		elevatorMonitorList = new ArrayList<>();
-		intermediateHost = null;
-		requestQueue = new LinkedList<>();
-	}
-
-	/**
 	 * Constructor for Scheduler.
 	 *
 	 * @param portNumber the port number associated with the class's DatagramSocket
 	 */
 	public Scheduler(int portNumber) {
-		elevatorSubsystemBuffer = null;
-		floorSubsystemBuffer = null;
 		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = new IntermediateHost(portNumber);
 		requestQueue = new LinkedList<>();
@@ -82,17 +62,31 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * If it's data (i.e. contains a SystemEvent), it is processed by Scheduler.
 	 * Otherwise, it's a request for data and is processed by IntermediateHost.
 	 */
-	public void receiveAndProcessPacket() {
+	private void receiveAndProcessPacket() {
 		while (true) {
 			DatagramPacket receivePacket = intermediateHost.receivePacket();
 
 			Object object = intermediateHost.convertToObject(receivePacket);
 
 			if (object instanceof String) {
-				intermediateHost.respondToDataRequest(receivePacket);
+				Object event;
+				if (!intermediateHost.queueIsEmpty()){
+					event = intermediateHost.getPacketFromQueue();
+					if (event instanceof ElevatorRequest elevatorRequest) {
+						int chosenElevator = chooseElevator(elevatorRequest);
+						System.err.println("Elevator#" + chosenElevator + " is being sent a request");
+						elevatorRequest.setElevatorNumber(chosenElevator);
+					}
+
+					System.err.println(event);
+				} else {
+					event = RequestMessage.EMPTYQUEUE.getMessage();
+				}
+				intermediateHost.respondToDataRequest(event, receivePacket.getAddress(), receivePacket.getPort());
+
 			} else if (object instanceof SystemEvent systemEvent) {
 				intermediateHost.respondToSystemEvent(receivePacket);
-				processData(receivePacket.getAddress(), systemEvent);
+				processData(systemEvent);
 			}
 		}
 	}
@@ -101,71 +95,15 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 * Process data that Scheduler's DatagramSocket has received.
 	 * Create a new packet and manipulate it according to the packet's Origin.
 	 *
-	 * @param address an address to send systemEvents
 	 * @param event a systemEvent to be processed
 	 */
-	public void processData(InetAddress address, SystemEvent event) {
-		Origin eventOrigin = event.getOrigin();
-		int port;
-		// manipulate the packet according to its origin
-		if (eventOrigin == Origin.ELEVATOR_SYSTEM) {
-			// scheduler method here to do FLOORSUBSYSTEM stuff
-			if (event instanceof ElevatorMonitor elevatorMonitor){
-				elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
-			}
-			port = Port.CLIENT.getNumber();
-		} else if (eventOrigin == Origin.FLOOR_SYSTEM) {
-			if (event instanceof ElevatorRequest elevatorRequest) {
-				int chosenElevator = chooseElevator(elevatorRequest);
-				System.err.println("Elevator#" + chosenElevator + " is being sent a request");
-				elevatorRequest.setElevatorNumber(chosenElevator);
-				event = elevatorRequest;
-			}
-			// scheduler method here to do ELEVATORSUBSYSTEM stuff
-			port = Port.SERVER.getNumber();
-		} else {
-			throw new IllegalArgumentException("Error: Invalid Origin");
+	public void processData(SystemEvent event) {
+
+		if (event instanceof ElevatorMonitor elevatorMonitor){
+			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
 		}
-		event.setOrigin(Origin.changeOrigin(eventOrigin));
-		// intermediate host
-		intermediateHost.addNewPacketToQueue(event, address, port);
-	}
-
-	/**
-	 * Sends and receives messages for the system using BoundedBuffers.
-	 */
-	private void subsystemBufferRunMethod() {
-		while (true) {
-			SystemEvent request;
-			// remove from either floorBuffer or ElevatorBuffer
-			if (floorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-				request = receiveMessage(floorSubsystemBuffer, origin);
-				requestQueue.add(request);
-			} else if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-				request = receiveMessage(elevatorSubsystemBuffer, origin);
-				requestQueue.add(request);
-			}
-
-			// send a request if possible
-			if (!requestQueue.isEmpty()) {
-				request = requestQueue.remove();
-
-				if (request.getOrigin() == Origin.FLOOR_SYSTEM) {
-					if (request instanceof ElevatorRequest elevatorRequest) {
-						elevatorRequest.setElevatorNumber(chooseElevator(elevatorRequest));
-						request = elevatorRequest;
-					}
-					sendMessage(request, elevatorSubsystemBuffer, origin);
-				} else if (request.getOrigin() == Origin.ELEVATOR_SYSTEM) {
-					if (request instanceof ElevatorMonitor elevatorMonitor) {
-						elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
-					}
-					sendMessage(request, floorSubsystemBuffer, origin);
-				} else {
-					System.err.println("Scheduler should not contain items whose origin is Scheduler: " + request);
-				}
-			}
-		}
+		event.setOrigin(Origin.changeOrigin(event.getOrigin()));
+		intermediateHost.addEventToQueue(event);
 	}
 
 	/**
@@ -195,6 +133,13 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 			int currentFloor = monitor.getCurrentFloor();
 			int desiredFloor = elevatorRequest.getDesiredFloor();
 			int elevatorNumber = monitor.getElevatorNumber();
+			Direction currentDirection = monitor.getDirection();
+
+			if (currentDirection == Direction.UP){
+				currentFloor += 1;
+			} else if (currentDirection == Direction.DOWN){
+				currentFloor -=1;
+			}
 
 			if (state == MovementState.IDLE) {
 				System.out.println("Elevator#" + elevatorNumber + " is idle");
@@ -247,11 +192,7 @@ public class Scheduler implements Runnable, SubsystemMessagePasser {
 	 */
 	public void run() {
 		// take action depending on if using buffers or IntermediateHost
-		if (intermediateHost != null) {
-			receiveAndProcessPacket();
-		} else {
-			subsystemBufferRunMethod();
-		}
+		receiveAndProcessPacket();
 	}
 
 	public static void main(String[] args) {

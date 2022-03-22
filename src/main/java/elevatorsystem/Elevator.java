@@ -10,7 +10,7 @@ import java.util.ConcurrentModificationException;
 /**
  * Elevator is a model for simulating an elevator.
  *
- * @author Liam Tripp, Brady Norton
+ * @author Liam Tripp, Brady Norton, Ramit Mahajan
  */
 public class Elevator implements Runnable, SubsystemPasser {
 
@@ -123,12 +123,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 			approachEvent = null;
 		}
 
-		// stop output message
+		// Move output message
+		String messageToPrint = LocalTime.now().toString() + "\n";
 		if (nextFloor != currentFloor) {
-			System.out.println("Elevator #" + elevatorNumber + " moved to floor " + nextFloor + " at " + LocalTime.now());
+			messageToPrint += "Elevator #" + elevatorNumber + " moved to floor " + nextFloor;
 		} else {
-			System.out.println("Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor + " at " + LocalTime.now());
+			messageToPrint += "Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor;
 		}
+
+		System.out.println(messageToPrint);
 		setCurrentFloor(nextFloor);
 	}
 
@@ -188,17 +191,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param floorToVisit the next floor the elevator will visit
 	 */
 	public void startMovingToFloor(int floorToVisit) {
-		/*
+
 		while (doors.areOpen()) {
-			// attempt to close (interruptable?)
+			doors.close();
 		}
-		*/
+
 		motor.startMoving();
 		motor.changeDirection(currentFloor, floorToVisit);
 	}
 
 	/**
-	 * Stops the elevator at the specified floor and closes the doors.
+	 * Stops the elevator at the specified floor and opens the doors.
 	 *
 	 * @param requestFloor the floor at the top of the requestQueue
 	 */
@@ -206,12 +209,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 		attemptToRemoveFloor(requestFloor);
 		System.out.println("Elevator #" + elevatorNumber + " reached destination");
 
-		motor.stop();
-		/*
-		while (doors.areClosed()) {
-			// attempt to open doors (non-interruptable)
+		if (motor.isActive()) {
+			motor.stop();
 		}
-		*/
+
+		while (doors.areClosed()) {
+			doors.open();
+		}
 	}
 
 	/**
@@ -220,10 +224,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * TODO: MovementState is IDLE. If so, the elevator uses this method.
 	 */
 	public void swapServiceDirectionIfNecessary() {
-		System.out.println("Elevator " + elevatorNumber + " attempting to change queues.");
 		if (requestQueue.swapQueues()) {
 			setServiceDirection(Direction.swapDirection(serviceDirection));
-			System.out.println("Elevator " + elevatorNumber + " Changed direction to " + serviceDirection);
+			System.out.println("Elevator #" + elevatorNumber + " swapped queues, changed serviceDirection to " + serviceDirection + "\n");
 		}
 	}
 
@@ -376,19 +379,18 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Prints the status of the elevator (current floor, door state, motor state, motor direction).
+	 * Prints the status of the elevator (current floor, requestFloor, door state, motor state, motor direction).
 	 *
 	 * @param requestFloor the floor the elevator is to service
 	 */
 	public void printStatus(int requestFloor) {
-		System.out.println("Elevator #" + elevatorNumber + " servicing floor " + requestFloor + " at " + LocalTime.now().toString());
-		System.out.print("Elevator #" + elevatorNumber + " queue: ");
-		requestQueue.printQueue();
-		System.out.print("Elevator #" + elevatorNumber + " Status: [Floor, serviceDirxn, movement, motorDirxn]: [");
-		System.out.print(currentFloor + " " + serviceDirection + " ");
-		//System.out.println("Elevator " + elevatorNumber + " doors are: " + );
-		System.out.print(motor.getMovementState().getName() + " ");
-		System.out.println(motor.getDirection() + "]");
+		String messageToPrint = LocalTime.now().toString() + "\n";
+		messageToPrint += "Elevator #" + elevatorNumber + " Status:\n";
+		messageToPrint += "[currentFloor, requestFloor]: [" + currentFloor + ", " + requestFloor + "]\n";
+		messageToPrint += "[ServiceDirxn, MoveStatus, MotorDirxn, Doors]: ";
+		messageToPrint += "[" + serviceDirection + " " + motor.getMovementState().getName() + " " + motor.getDirection() + " " + doors.getState() + "]\n";
+		messageToPrint += "RequestQueue: " + requestQueue;
+		System.out.println(messageToPrint);
 	}
 
 	/**
