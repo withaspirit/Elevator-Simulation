@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ElevatorSubsystem" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="elevatorsystem.ElevatorSubsystem" />
+    <module name="ElevatorSystem" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="elevatorsystem.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

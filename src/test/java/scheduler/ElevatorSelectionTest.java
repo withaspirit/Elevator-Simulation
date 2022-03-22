@@ -25,14 +25,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ElevatorSelectionTest {
 
     static MessageTransfer messageTransfer;
-    static byte[] messageElevator, messageElevator2, messageString;
-    static DatagramPacket elevatorPacket, elevatorPacket2,  messagePacket;
+    static byte[] messageElevator, messageString;
+    static DatagramPacket elevatorPacket, messagePacket;
     static ElevatorSubsystem elevatorSubsystem;
     static Elevator elevator1, elevator2;
     static Scheduler schedulerClient, schedulerServer;
     static Thread schedulerClientThread, schedulerServerThread, elevatorSubsystemThread;
-    private InputFileReader inputFileReader = new InputFileReader();
-    private ArrayList<SystemEvent> eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
+    private final InputFileReader inputFileReader = new InputFileReader();
+    private final ArrayList<SystemEvent> eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 
     @BeforeAll
     static void oneSetUp() {
