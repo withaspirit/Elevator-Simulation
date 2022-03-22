@@ -14,19 +14,11 @@ public enum MovementState {
 
     /**
      * Constructor for MovementState class
+     *
      * @param name the name of the MovementState
      */
     MovementState(String name) {
         this.name = name;
-    }
-
-    /**
-     * Gets the name of the MovementState as a String
-     *
-     * @return name of MovementState
-     */
-    public String getName() {
-        return name;
     }
 
     /**
@@ -43,5 +35,14 @@ public enum MovementState {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Gets the name of the MovementState as a String
+     *
+     * @return name of MovementState
+     */
+    public String getName() {
+        return name;
     }
 }

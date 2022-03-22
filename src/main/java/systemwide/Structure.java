@@ -16,100 +16,100 @@ import java.util.ArrayList;
  */
 public class Structure {
 
-	private int numberOfFloors;
-	private int numberOfElevators;
+    private int numberOfFloors;
+    private int numberOfElevators;
 
-	/**
-	 * Constructor for Structure.
-	 *
-	 * @param numberOfFloors the number of floors in the structure
-	 * @param numberOfElevators the number of elevators in the structure
-	 */
-	public Structure(int numberOfFloors, int numberOfElevators) {
-		this.numberOfFloors = numberOfFloors;
-		this.numberOfElevators = numberOfElevators;
-	}
+    /**
+     * Constructor for Structure.
+     *
+     * @param numberOfFloors    the number of floors in the structure
+     * @param numberOfElevators the number of elevators in the structure
+     */
+    public Structure(int numberOfFloors, int numberOfElevators) {
+        this.numberOfFloors = numberOfFloors;
+        this.numberOfElevators = numberOfElevators;
+    }
 
-	/**
-	 * Returns the number of floors in the structure.
-	 *
-	 * @return the number of floors
-	 */
-	public int getNumberOfFloors() {
-		return numberOfFloors;
-	}
+    public static void main(String[] args) {
+        Structure structure = new Structure(10, 2);
+        structure.initializeStructure();
+    }
 
-	/**
-	 * Sets the number of floors in the structure.
-	 *
-	 * @param numberOfFloors number of floors
-	 */
-	public void setNumberOfFloors(int numberOfFloors) {
-		this.numberOfFloors = numberOfFloors;
-	}
+    /**
+     * Returns the number of floors in the structure.
+     *
+     * @return the number of floors
+     */
+    public int getNumberOfFloors() {
+        return numberOfFloors;
+    }
 
-	/**
-	 * Returns the number of elevators in the structure.
-	 *
-	 * @return the number of elevators
-	 */
-	public int getNumberOfElevators() {
-		return numberOfElevators;
-	}
+    /**
+     * Sets the number of floors in the structure.
+     *
+     * @param numberOfFloors number of floors
+     */
+    public void setNumberOfFloors(int numberOfFloors) {
+        this.numberOfFloors = numberOfFloors;
+    }
 
-	/**
-	 * Returns the number of elevators in the structure.
-	 *
-	 * @param numberOfElevators number of elevators
-	 */
-	public void setNumberOfElevators(int numberOfElevators) {
-		this.numberOfElevators = numberOfElevators;
-	}
+    /**
+     * Returns the number of elevators in the structure.
+     *
+     * @return the number of elevators
+     */
+    public int getNumberOfElevators() {
+        return numberOfElevators;
+    }
 
-	/**
-	 * Initializes the Structure's properties.
-	 */
-	public void initializeStructure() {
-		//BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
-		//BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
+    /**
+     * Returns the number of elevators in the structure.
+     *
+     * @param numberOfElevators number of elevators
+     */
+    public void setNumberOfElevators(int numberOfElevators) {
+        this.numberOfElevators = numberOfElevators;
+    }
 
-		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
-		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
+    /**
+     * Initializes the Structure's properties.
+     */
+    public void initializeStructure() {
+        //BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
+        //BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
-		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-		ArrayList<Elevator> elevatorList = new ArrayList<>();
-		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
-			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
-			elevatorSubsystem.addElevator(elevator);
-			schedulerClient.addElevatorMonitor(elevatorNumber);
-			elevatorList.add(elevator);
-		}
-		FloorSubsystem floorSubsystem = new FloorSubsystem();
-		for (int i = 1; i <= numberOfFloors; i++) {
-			Floor floor = new Floor(i, floorSubsystem);
-			floorSubsystem.addFloor(floor);
-		}
+        Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
+        Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
 
-		Thread schedulerClientOrigin, schedulerServerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
+        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+        ArrayList<Elevator> elevatorList = new ArrayList<>();
+        for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
+            Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
+            elevatorSubsystem.addElevator(elevator);
+            schedulerClient.addElevatorMonitor(elevatorNumber);
+            elevatorList.add(elevator);
+        }
+        FloorSubsystem floorSubsystem = new FloorSubsystem();
+        for (int i = 1; i <= numberOfFloors; i++) {
+            Floor floor = new Floor(i, floorSubsystem);
+            floorSubsystem.addFloor(floor);
+        }
 
-		schedulerClientOrigin = new Thread(schedulerClient, schedulerClient.getClass().getSimpleName());
-		schedulerServerOrigin = new Thread(schedulerServer, schedulerServer.getClass().getSimpleName());
-		elevatorSubsystemOrigin = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
-		floorSubsystemOrigin = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
+        Thread schedulerClientOrigin, schedulerServerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
 
-		schedulerClientOrigin.start();
-		schedulerServerOrigin.start();
-		elevatorSubsystemOrigin.start();
-		floorSubsystemOrigin.start();
+        schedulerClientOrigin = new Thread(schedulerClient, schedulerClient.getClass().getSimpleName());
+        schedulerServerOrigin = new Thread(schedulerServer, schedulerServer.getClass().getSimpleName());
+        elevatorSubsystemOrigin = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
+        floorSubsystemOrigin = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
 
-		// Start elevator Origins
-		for (int i = 0; i < numberOfElevators; i++) {
-			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
-		}
-	}
+        schedulerClientOrigin.start();
+        schedulerServerOrigin.start();
+        elevatorSubsystemOrigin.start();
+        floorSubsystemOrigin.start();
 
-	public static void main(String[] args) {
-		Structure structure = new Structure(10, 2);
-		structure.initializeStructure();
-	}
+        // Start elevator Origins
+        for (int i = 0; i < numberOfElevators; i++) {
+            (new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
+        }
+    }
 }

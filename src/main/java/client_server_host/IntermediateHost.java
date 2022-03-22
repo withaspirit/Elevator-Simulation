@@ -48,9 +48,9 @@ public class IntermediateHost {
     /**
      * Adds a packets containing an event to the MessageTransfer queue.
      *
-     * @param event an event to send to either the Client or Server
+     * @param event   an event to send to either the Client or Server
      * @param address an address to send the packet
-     * @param port a port to send the packet
+     * @param port    a port to send the packet
      */
     public void addNewPacketToQueue(SystemEvent event, InetAddress address, int port) {
         // encode the altered event into a new packet
@@ -86,7 +86,7 @@ public class IntermediateHost {
      *
      * @param packet a packet received from a scheduler
      */
-    public void respondToSystemEvent(DatagramPacket packet){
+    public void respondToSystemEvent(DatagramPacket packet) {
         byte[] acknowledgeMessage = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
         DatagramPacket acknowledgePacket = new DatagramPacket(acknowledgeMessage, acknowledgeMessage.length, packet.getAddress(), packet.getPort());
         messageTransfer.sendMessage(acknowledgePacket);

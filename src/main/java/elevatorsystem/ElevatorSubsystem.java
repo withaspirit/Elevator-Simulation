@@ -3,8 +3,10 @@ package elevatorsystem;
 import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
-import requests.*;
-import systemwide.Origin;
+import requests.ApproachEvent;
+import requests.ElevatorRequest;
+import requests.SystemEvent;
+import requests.SystemEventListener;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -18,103 +20,103 @@ import java.util.Queue;
  */
 public class ElevatorSubsystem implements Runnable, SystemEventListener {
 
-	private final ArrayList<Elevator> elevatorList;
-	private Client server;
-	private final Queue<SystemEvent> requestQueue;
+    private final ArrayList<Elevator> elevatorList;
+    private final Queue<SystemEvent> requestQueue;
+    private final Client server;
 
-	/**
-	 * Constructor for ElevatorSubsystem.
-	 */
-	public ElevatorSubsystem() {
-		server = new Client(Port.SERVER.getNumber());
-		elevatorList = new ArrayList<>();
-		requestQueue = new LinkedList<>();
-	}
+    /**
+     * Constructor for ElevatorSubsystem.
+     */
+    public ElevatorSubsystem() {
+        server = new Client(Port.SERVER.getNumber());
+        elevatorList = new ArrayList<>();
+        requestQueue = new LinkedList<>();
+    }
 
-	/**
-	 * Simple message requesting and sending between subsystems.
-	 * ElevatorSubsystem
-	 * Sends: ApproachEvent
-	 * Receives: ApproachEvent, ElevatorRequest
-	 */
-	public void run() {
-		subsystemUDPMethod();
-	}
+    /**
+     * Initialize the elevatorSubsystem with elevators
+     * and start threads for each elevator and the elevatorSubsystem.
+     *
+     * @param args not used
+     */
+    public static void main(String[] args) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        int numberOfElevators = 2;
+        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+        ArrayList<Elevator> elevatorList = new ArrayList<>();
+        for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
+            Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
+            elevatorSubsystem.addElevator(elevator);
+            elevatorList.add(elevator);
+        }
+        new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName()).start();
 
-	/**
-	 * Adds an elevator to the subsystem's list of elevators.
-	 *
-	 * @param elevator an elevator
-	 */
-	public void addElevator(Elevator elevator) {
-		elevatorList.add(elevator);
-	}
+        // Start elevator Origins
+        for (int i = 0; i < numberOfElevators; i++) {
+            (new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
+        }
+    }
 
-	/**
-	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
-	 *
-	 * @param approachEvent the approach event for the system
-	 */
-	@Override
-	public void handleApproachEvent(ApproachEvent approachEvent) {
-		requestQueue.add(approachEvent);
-	}
+    /**
+     * Simple message requesting and sending between subsystems.
+     * ElevatorSubsystem
+     * Sends: ApproachEvent
+     * Receives: ApproachEvent, ElevatorRequest
+     */
+    public void run() {
+        subsystemUDPMethod();
+    }
 
-	/**
-	 * Sends and receives messages for system using UDP packets.
-	 */
-	private void subsystemUDPMethod() {
-		while (true) {
-			Object object;
-			if (!requestQueue.isEmpty()) {
-				object = server.sendAndReceiveReply(requestQueue.remove());
-			} else {
-				object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
-			}
+    /**
+     * Adds an elevator to the subsystem's list of elevators.
+     *
+     * @param elevator an elevator
+     */
+    public void addElevator(Elevator elevator) {
+        elevatorList.add(elevator);
+    }
 
-			if (object instanceof ElevatorRequest elevatorRequest) {
-				Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
-				elevator.addRequest(elevatorRequest);
-				requestQueue.add(elevator.makeElevatorMonitor());
-			} else if (object instanceof ApproachEvent approachEvent) {
-				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-			} else if (object instanceof String string) {
-				if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
-					try {
-						Thread.sleep(5);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-	}
+    /**
+     * Passes an ApproachEvent between a Subsystem component and the Subsystem.
+     *
+     * @param approachEvent the approach event for the system
+     */
+    @Override
+    public void handleApproachEvent(ApproachEvent approachEvent) {
+        requestQueue.add(approachEvent);
+    }
 
-	/**
-	 * Initialize the elevatorSubsystem with elevators
-	 * and start threads for each elevator and the elevatorSubsystem.
-	 *
-	 * @param args not used
-	 */
-	public static void main(String[] args) {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		int numberOfElevators = 2;
-		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-		ArrayList<Elevator> elevatorList = new ArrayList<>();
-		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
-			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
-			elevatorSubsystem.addElevator(elevator);
-			elevatorList.add(elevator);
-		}
-		new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName()).start();
+    /**
+     * Sends and receives messages for system using UDP packets.
+     */
+    private void subsystemUDPMethod() {
+        while (true) {
+            Object object;
+            if (!requestQueue.isEmpty()) {
+                object = server.sendAndReceiveReply(requestQueue.remove());
+            } else {
+                object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
+            }
 
-		// Start elevator Origins
-		for (int i = 0; i < numberOfElevators; i++) {
-			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
-		}
-	}
+            if (object instanceof ElevatorRequest elevatorRequest) {
+                Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
+                elevator.addRequest(elevatorRequest);
+                requestQueue.add(elevator.makeElevatorMonitor());
+            } else if (object instanceof ApproachEvent approachEvent) {
+                elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+            } else if (object instanceof String string) {
+                if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 }
