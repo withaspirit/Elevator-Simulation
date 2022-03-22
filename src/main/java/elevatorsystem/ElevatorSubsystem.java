@@ -4,8 +4,6 @@ import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import requests.*;
-import systemwide.BoundedBuffer;
-import systemwide.Direction;
 import systemwide.Origin;
 
 import java.util.ArrayList;
@@ -18,31 +16,16 @@ import java.util.Queue;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
+public class ElevatorSubsystem implements Runnable, SystemEventListener {
 
-	private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
 	private final ArrayList<Elevator> elevatorList;
 	private Client server;
 	private final Queue<SystemEvent> requestQueue;
-	private Origin origin;
-
-	/**
-	 * Constructor for ElevatorSubsystem.
-	 *
-	 * @param buffer the buffer the ElevatorSubsystem passes messages to and receives messages from
-	 */
-	public ElevatorSubsystem(BoundedBuffer buffer) {
-		this.elevatorSubsystemBuffer = buffer;
-		elevatorList = new ArrayList<>();
-		requestQueue = new LinkedList<>();
-		origin = Origin.ELEVATOR_SYSTEM;
-	}
 
 	/**
 	 * Constructor for ElevatorSubsystem.
 	 */
 	public ElevatorSubsystem() {
-		elevatorSubsystemBuffer = null;
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
 		requestQueue = new LinkedList<>();
@@ -55,11 +38,7 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
-		if (server != null) {
-			subsystemUDPMethod();
-		} else {
-			subsystemBufferMethod();
-		}
+		subsystemUDPMethod();
 	}
 
 	/**
@@ -107,29 +86,6 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 						e.printStackTrace();
 					}
 				}
-			}
-		}
-	}
-
-	/**
-	 * Sends and receives messages for the system using the BoundedBuffer.
-	 */
-	private void subsystemBufferMethod() {
-		while (true) {
-			if (elevatorSubsystemBuffer.canRemoveFromBuffer(origin)) {
-				SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
-				if (request instanceof ElevatorRequest elevatorRequest) {
-					Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
-					elevator.addRequest(elevatorRequest);
-					requestQueue.add(elevator.makeElevatorMonitor());
-				} else if (request instanceof ApproachEvent approachEvent) {
-					elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-				}
-			}
-			// send message if possible
-			if (!requestQueue.isEmpty()) {
-				SystemEvent request = requestQueue.remove();
-				sendMessage(request, elevatorSubsystemBuffer, origin);
 			}
 		}
 	}
