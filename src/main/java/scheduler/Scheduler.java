@@ -9,7 +9,7 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.net.DatagramPacket;
-import java.net.InetAddress;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -60,35 +60,40 @@ public class Scheduler implements Runnable {
 	/**
 	 * Takes a DatagramPacket from the IntermediateHost and processes it.
 	 * If it's data (i.e. contains a SystemEvent), it is processed by Scheduler.
-	 * Otherwise, it's a request for data and is processed by IntermediateHost.
+	 * Otherwise, it's a request for data.
 	 */
 	private void receiveAndProcessPacket() {
-		while (true) {
 			DatagramPacket receivePacket = intermediateHost.receivePacket();
-
 			Object object = intermediateHost.convertToObject(receivePacket);
 
+			// respond to Data Request
 			if (object instanceof String) {
-				Object event;
-				if (!intermediateHost.queueIsEmpty()){
-					event = intermediateHost.getPacketFromQueue();
-					if (event instanceof ElevatorRequest elevatorRequest) {
-						int chosenElevator = chooseElevator(elevatorRequest);
-						System.err.println("Elevator#" + chosenElevator + " is being sent a request");
-						elevatorRequest.setElevatorNumber(chosenElevator);
-					}
+				Object dataObject;
 
-					System.err.println(event);
+				// queue is not empty, return data
+				// otherwise, send dummy message notifying empty status
+				if (!intermediateHost.queueIsEmpty()) {
+					dataObject = intermediateHost.getPacketFromQueue();
+
+					if (dataObject instanceof ElevatorRequest elevatorRequest) {
+						int chosenElevator = chooseElevator(elevatorRequest);
+						elevatorRequest.setElevatorNumber(chosenElevator);
+
+						String messageToPrint = LocalTime.now() + "\n";
+						messageToPrint += "Scheduler assigned to Elevator #" + chosenElevator + " the " +
+								elevatorRequest.getClass().getSimpleName() + ": "  + elevatorRequest + ".\n";
+						System.out.println(messageToPrint);
+					}
 				} else {
-					event = RequestMessage.EMPTYQUEUE.getMessage();
+					dataObject = RequestMessage.EMPTYQUEUE.getMessage();
 				}
-				intermediateHost.respondToDataRequest(event, receivePacket.getAddress(), receivePacket.getPort());
+				// send the object right away
+				intermediateHost.sendObject(dataObject, receivePacket.getAddress(), receivePacket.getPort());
 
 			} else if (object instanceof SystemEvent systemEvent) {
-				intermediateHost.respondToSystemEvent(receivePacket);
+				intermediateHost.acknowledgeDataReception(receivePacket);
 				processData(systemEvent);
 			}
-		}
 	}
 
 	/**
@@ -101,9 +106,10 @@ public class Scheduler implements Runnable {
 
 		if (event instanceof ElevatorMonitor elevatorMonitor){
 			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
+		} else {
+			event.setOrigin(Origin.changeOrigin(event.getOrigin()));
+			intermediateHost.addEventToQueue(event);
 		}
-		event.setOrigin(Origin.changeOrigin(event.getOrigin()));
-		intermediateHost.addEventToQueue(event);
 	}
 
 	/**
@@ -142,7 +148,6 @@ public class Scheduler implements Runnable {
 			}
 
 			if (state == MovementState.IDLE) {
-				System.out.println("Elevator#" + elevatorNumber + " is idle");
 				return elevatorNumber;
 
 			} else if (state == MovementState.STUCK) {
@@ -188,11 +193,12 @@ public class Scheduler implements Runnable {
 	 * Simple message requesting and sending between subsystems.
 	 * Scheduler
 	 * Sends: ApproachEvent, FloorRequest, ElevatorRequest
-	 * Receives: ApproachEvent, ElevatorRequest
+	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
-		// take action depending on if using buffers or IntermediateHost
-		receiveAndProcessPacket();
+		while (true) {
+			receiveAndProcessPacket();
+		}
 	}
 
 	public static void main(String[] args) {
