@@ -242,11 +242,24 @@ Tests:
 
   ### Description
 
-  Lorem ipsum
+  In this iteration, fault detecting and handling is implemented. The simulation now shows faults for elevators.
+
+  #### Major Changes
+  - added configuration files to automate running multiple main methods with a single button in Intellij
+  
+  #### Multirun Installation in Intellij
+  - To install Multirun click the setting icon in the top right corner of IntelliJ. Click plugins. 
+  - Search multirun in the plugins list. If it does not show up there should be an option to search aftermarket plugins which you can click. 
+  - Click install 
+  - Multirun should now be installed and ready to use.
+  - A new run option should now be available to use in Intellij.
+    <br>
 
   <details>
     <summary>Show Long Description</summary>
-    
+  
+    * Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This will allow for fast testing in Intellij. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
+    * 
   </details>
 
   ### Contributions
