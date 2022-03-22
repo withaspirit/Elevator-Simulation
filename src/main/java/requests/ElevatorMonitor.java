@@ -102,8 +102,8 @@ public class ElevatorMonitor extends SystemEvent {
 
     @Override
     public String toString() {
-        String formattedString = "\n[queueTime, State, CurrFloor, CurrDirxn] : ";
-        formattedString += String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection() + "\n";
+        String formattedString = "[ElevatorNumber, queueTime, MovementState, CurrFloor, CurrDirxn]:\n";
+        formattedString += getElevatorNumber() + " " + String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection();
         return formattedString;
     }
 }
