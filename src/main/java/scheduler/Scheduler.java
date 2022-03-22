@@ -10,6 +10,7 @@ import systemwide.Origin;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -70,15 +71,17 @@ public class Scheduler implements Runnable {
 
 			if (object instanceof String) {
 				Object event;
-				if (!intermediateHost.queueIsEmpty()){
+				if (!intermediateHost.queueIsEmpty()) {
 					event = intermediateHost.getPacketFromQueue();
 					if (event instanceof ElevatorRequest elevatorRequest) {
 						int chosenElevator = chooseElevator(elevatorRequest);
-						System.err.println("Elevator#" + chosenElevator + " is being sent a request");
 						elevatorRequest.setElevatorNumber(chosenElevator);
-					}
 
-					System.err.println(event);
+						String messageToPrint = LocalTime.now() + "\n";
+						messageToPrint += "Scheduler assigned to Elevator #" + chosenElevator + " the " +
+								elevatorRequest.getClass().getSimpleName() + ": "  + elevatorRequest + ".\n";
+						System.out.println(messageToPrint);
+					}
 				} else {
 					event = RequestMessage.EMPTYQUEUE.getMessage();
 				}
