@@ -7,17 +7,16 @@ import elevatorsystem.Elevator;
 import elevatorsystem.ElevatorSubsystem;
 import elevatorsystem.MovementState;
 import misc.InputFileReader;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;
-import requests.ElevatorRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
-import systemwide.Origin;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

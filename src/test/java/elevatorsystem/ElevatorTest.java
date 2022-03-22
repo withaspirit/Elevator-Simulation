@@ -1,7 +1,6 @@
 package elevatorsystem;
 
 import misc.InputFileReader;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
@@ -10,7 +9,6 @@ import systemwide.Origin;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -78,12 +76,7 @@ class ElevatorTest {
     private void initElevatorThreads() {
         for (Elevator elevator : elevatorList) {
             // initiate elevator threads on the elevator's moveWhilePossible() method
-            Runnable testElevatorMovementRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    elevator.moveElevatorWhilePossible();
-                }
-            };
+            Runnable testElevatorMovementRunnable = elevator::moveElevatorWhilePossible;
 
             Thread thread = new Thread(testElevatorMovementRunnable);
             threads.add(thread);
