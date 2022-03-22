@@ -70,6 +70,8 @@ public class Scheduler implements Runnable {
 			if (object instanceof String) {
 				Object event;
 
+				// queue is not empty, return data
+				// otherwise, send dummy message notifying empty status
 				if (!intermediateHost.queueIsEmpty()) {
 					event = intermediateHost.getPacketFromQueue();
 
@@ -85,6 +87,7 @@ public class Scheduler implements Runnable {
 				} else {
 					event = RequestMessage.EMPTYQUEUE.getMessage();
 				}
+				// send the object right away
 				intermediateHost.sendObject(event, receivePacket.getAddress(), receivePacket.getPort());
 
 			} else if (object instanceof SystemEvent systemEvent) {
@@ -103,9 +106,11 @@ public class Scheduler implements Runnable {
 
 		if (event instanceof ElevatorMonitor elevatorMonitor){
 			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
+		} else {
+			event.setOrigin(Origin.changeOrigin(event.getOrigin()));
+			intermediateHost.addEventToQueue(event);
 		}
-		event.setOrigin(Origin.changeOrigin(event.getOrigin()));
-		intermediateHost.addEventToQueue(event);
+
 	}
 
 	/**
