@@ -1,5 +1,9 @@
 package client_server_host;
 
+import elevatorsystem.ElevatorSubsystem;
+import floorsystem.FloorSubsystem;
+import scheduler.Scheduler;
+
 import java.io.*;
 import java.net.*;
 import java.time.LocalTime;
@@ -86,15 +90,15 @@ public class MessageTransfer {
         // Form a String from the byte array.
         Object object = decodeObject(packet.getData());
         String messageToPrint = LocalTime.now().toString() + "\n";
-        messageToPrint += name + " sending ";
+        messageToPrint += name + " sending to ";
         if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
-            messageToPrint += "to Scheduler:";
+            messageToPrint += Scheduler.class.getSimpleName();
         } else if (packet.getPort() == Port.CLIENT.getNumber()) {
-            messageToPrint += "to Client:";
+            messageToPrint += FloorSubsystem.class.getSimpleName();
         } else if (packet.getPort() == Port.SERVER.getNumber()) {
-            messageToPrint += "to Server:";
+            messageToPrint += ElevatorSubsystem.class.getSimpleName();
         }
-        messageToPrint += "\n";
+        messageToPrint += ": \n";
         if (object instanceof String string) {
             messageToPrint += string;
         } else {
@@ -117,15 +121,15 @@ public class MessageTransfer {
         Object object = decodeObject(packet.getData());
         if (!(object instanceof String)) {
             String messageToPrint = LocalTime.now().toString() + "\n";
-            messageToPrint += name + " received ";
+            messageToPrint += name + " received from ";
             if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
-                messageToPrint += "from Scheduler:";
+                messageToPrint += Scheduler.class.getSimpleName();
             } else if (packet.getPort() == Port.CLIENT.getNumber()) {
-                messageToPrint += "from Client:";
+                messageToPrint += FloorSubsystem.class.getSimpleName();
             } else if (packet.getPort() == Port.SERVER.getNumber()) {
-                messageToPrint += "from Server:";
+                messageToPrint += ElevatorSubsystem.class.getSimpleName();
             }
-            messageToPrint += "\n";
+            messageToPrint += ": \n";
             messageToPrint += object.getClass().getSimpleName() + " Packet: " + object;
             messageToPrint += ", Host port: " + packet.getPort();
             messageToPrint += ", Length: " + packet.getLength() + "\n";
