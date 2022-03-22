@@ -66,24 +66,24 @@ public class IntermediateHost {
      * @param address the address to send the packet to
      * @param port the port to send the packet to
      */
-    public void respondToDataRequest(Object object, InetAddress address, int port) {
+    public void sendObject(Object object, InetAddress address, int port) {
         byte[] message = messageTransfer.encodeObject(object);
         messageTransfer.sendMessage(new DatagramPacket(message, message.length, address, port));
     }
 
     /**
-     * Responds to a System Event object being received.
+     * Responds to a SystemEvent object being received.
      *
      * @param packet a packet received from a scheduler
      */
-    public void respondToSystemEvent(DatagramPacket packet){
+    public void acknowledgeDataReception(DatagramPacket packet){
         byte[] acknowledgeMessage = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
         DatagramPacket acknowledgePacket = new DatagramPacket(acknowledgeMessage, acknowledgeMessage.length, packet.getAddress(), packet.getPort());
         messageTransfer.sendMessage(acknowledgePacket);
     }
 
     /**
-     * Removes and returns a DatagramPacket from the queue of packets to be processed.
+     * Removes and returns a SystemEvent from the queue of packets to be processed.
      *
      * @return a packet from the queue
      */
@@ -92,7 +92,7 @@ public class IntermediateHost {
     }
 
     /**
-     * Determines whether the queue of DatagramPackets is empty.
+     * Determines whether the queue of SystemEvent is empty.
      *
      * @return true if the queue is empty, false otherwise
      */
