@@ -68,14 +68,14 @@ public class Scheduler implements Runnable {
 
 			// respond to Data Request
 			if (object instanceof String) {
-				Object event;
+				Object dataObject;
 
 				// queue is not empty, return data
 				// otherwise, send dummy message notifying empty status
 				if (!intermediateHost.queueIsEmpty()) {
-					event = intermediateHost.getPacketFromQueue();
+					dataObject = intermediateHost.getPacketFromQueue();
 
-					if (event instanceof ElevatorRequest elevatorRequest) {
+					if (dataObject instanceof ElevatorRequest elevatorRequest) {
 						int chosenElevator = chooseElevator(elevatorRequest);
 						elevatorRequest.setElevatorNumber(chosenElevator);
 
@@ -85,10 +85,10 @@ public class Scheduler implements Runnable {
 						System.out.println(messageToPrint);
 					}
 				} else {
-					event = RequestMessage.EMPTYQUEUE.getMessage();
+					dataObject = RequestMessage.EMPTYQUEUE.getMessage();
 				}
 				// send the object right away
-				intermediateHost.sendObject(event, receivePacket.getAddress(), receivePacket.getPort());
+				intermediateHost.sendObject(dataObject, receivePacket.getAddress(), receivePacket.getPort());
 
 			} else if (object instanceof SystemEvent systemEvent) {
 				intermediateHost.acknowledgeDataReception(receivePacket);
