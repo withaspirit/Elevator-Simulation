@@ -133,6 +133,13 @@ public class Scheduler implements Runnable {
 			int currentFloor = monitor.getCurrentFloor();
 			int desiredFloor = elevatorRequest.getDesiredFloor();
 			int elevatorNumber = monitor.getElevatorNumber();
+			Direction currentDirection = monitor.getDirection();
+
+			if (currentDirection == Direction.UP){
+				currentFloor += 1;
+			} else if (currentDirection == Direction.DOWN){
+				currentFloor -=1;
+			}
 
 			if (state == MovementState.IDLE) {
 				System.out.println("Elevator#" + elevatorNumber + " is idle");
