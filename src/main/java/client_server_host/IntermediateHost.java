@@ -66,7 +66,7 @@ public class IntermediateHost {
      * @param address the address to send the packet to
      * @param port the port to send the packet to
      */
-    public void respondToDataRequest(Object object, InetAddress address, int port) {
+    public void acknowledgeDataRequest(Object object, InetAddress address, int port) {
         byte[] message = messageTransfer.encodeObject(object);
         messageTransfer.sendMessage(new DatagramPacket(message, message.length, address, port));
     }

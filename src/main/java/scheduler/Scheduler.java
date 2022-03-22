@@ -85,7 +85,7 @@ public class Scheduler implements Runnable {
 				} else {
 					event = RequestMessage.EMPTYQUEUE.getMessage();
 				}
-				intermediateHost.respondToDataRequest(event, receivePacket.getAddress(), receivePacket.getPort());
+				intermediateHost.acknowledgeDataRequest(event, receivePacket.getAddress(), receivePacket.getPort());
 
 			} else if (object instanceof SystemEvent systemEvent) {
 				intermediateHost.respondToSystemEvent(receivePacket);
