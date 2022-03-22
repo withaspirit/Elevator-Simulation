@@ -72,10 +72,8 @@ class SchedulerTest {
         assertTrue(elevator1.getRequestQueue().isEmpty());
 
         try {
-            schedulerClient.processData(InetAddress.getLocalHost(), elevatorRequest);
+            schedulerClient.processData(elevatorRequest);
             Thread.sleep(1000);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -94,10 +92,8 @@ class SchedulerTest {
     void sendElevatorMonitor() {
         // Send req from scheduler to FloorBuffer
         try {
-            schedulerServer.processData(InetAddress.getLocalHost(), elevatorMonitor);
+            schedulerServer.processData(elevatorMonitor);
             Thread.sleep(1000);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

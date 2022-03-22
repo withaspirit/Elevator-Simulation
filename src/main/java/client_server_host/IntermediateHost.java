@@ -4,6 +4,8 @@ import requests.SystemEvent;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * IntermediateHost is a service class used by Scheduler. It provides methods
@@ -14,6 +16,7 @@ import java.net.InetAddress;
 public class IntermediateHost {
 
     private final MessageTransfer messageTransfer;
+    private Queue<SystemEvent> messageQueue;
 
     /**
      * Constructor for IntermediateHost.
@@ -22,6 +25,7 @@ public class IntermediateHost {
      */
     public IntermediateHost(int portNumber) {
         messageTransfer = new MessageTransfer(portNumber);
+        messageQueue = new LinkedList<SystemEvent>();
     }
 
     /**
@@ -49,36 +53,22 @@ public class IntermediateHost {
      * Adds a packets containing an event to the MessageTransfer queue.
      *
      * @param event an event to send to either the Client or Server
-     * @param address an address to send the packet
-     * @param port a port to send the packet
      */
-    public void addNewPacketToQueue(SystemEvent event, InetAddress address, int port) {
+    public void addEventToQueue(SystemEvent event) {
         // encode the altered event into a new packet
-        byte[] newByteArray = messageTransfer.encodeObject(event);
-        DatagramPacket newPacket = new DatagramPacket(newByteArray, newByteArray.length, address, port);
-        messageTransfer.addPacketToQueue(newPacket);
+        messageQueue.add(event);
     }
 
     /**
      * Responds to a data request depending on whether the queue of messages is empty.
      *
-     * @param packet a packet received from a scheduler
+     * @param object the object to send to the Server or Client
+     * @param address the address to send the packet to
+     * @param port the port to send the packet to
      */
-    public void respondToDataRequest(DatagramPacket packet) {
-        DatagramPacket packetToSend;
-
-        // if queue is not empty, send a packet from the list of queues
-        // otherwise, send a placeholder message
-        if (!messageTransfer.queueIsEmpty()) {
-
-            // printReceiveMessage(name, packet);
-            packetToSend = messageTransfer.getPacketFromQueue();
-            // printSendMessage(name, packetToSend);
-        } else {
-            byte[] emptyQueueMessage = RequestMessage.EMPTYQUEUE.getMessage().getBytes();
-            packetToSend = new DatagramPacket(emptyQueueMessage, emptyQueueMessage.length, packet.getAddress(), packet.getPort());
-        }
-        messageTransfer.sendMessage(packetToSend);
+    public void respondToDataRequest(Object object, InetAddress address, int port) {
+        byte[] message = messageTransfer.encodeObject(object);
+        messageTransfer.sendMessage(new DatagramPacket(message, message.length, address, port));
     }
 
     /**
@@ -90,5 +80,23 @@ public class IntermediateHost {
         byte[] acknowledgeMessage = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
         DatagramPacket acknowledgePacket = new DatagramPacket(acknowledgeMessage, acknowledgeMessage.length, packet.getAddress(), packet.getPort());
         messageTransfer.sendMessage(acknowledgePacket);
+    }
+
+    /**
+     * Removes and returns a DatagramPacket from the queue of packets to be processed.
+     *
+     * @return a packet from the queue
+     */
+    public SystemEvent getPacketFromQueue() {
+        return messageQueue.remove();
+    }
+
+    /**
+     * Determines whether the queue of DatagramPackets is empty.
+     *
+     * @return true if the queue is empty, false otherwise
+     */
+    public boolean queueIsEmpty() {
+        return messageQueue.isEmpty();
     }
 }
