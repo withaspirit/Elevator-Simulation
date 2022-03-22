@@ -22,8 +22,6 @@ import java.util.Queue;
 public class Scheduler implements Runnable {
 
 	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
-	private final Origin origin = Origin.SCHEDULER;
-	private final Queue<SystemEvent> requestQueue;
 	private final IntermediateHost intermediateHost;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
@@ -36,7 +34,6 @@ public class Scheduler implements Runnable {
 	public Scheduler(int portNumber) {
 		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = new IntermediateHost(portNumber);
-		requestQueue = new LinkedList<>();
 	}
 
 	/**
@@ -141,7 +138,7 @@ public class Scheduler implements Runnable {
 				currentFloor -=1;
 			}
 
-			if (state == MovementState.IDLE) {
+			if (monitor.getHasNoRequests()) {
 				System.out.println("Elevator#" + elevatorNumber + " is idle");
 				return elevatorNumber;
 
