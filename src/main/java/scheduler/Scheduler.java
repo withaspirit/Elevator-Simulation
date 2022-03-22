@@ -60,7 +60,7 @@ public class Scheduler implements Runnable {
 	/**
 	 * Takes a DatagramPacket from the IntermediateHost and processes it.
 	 * If it's data (i.e. contains a SystemEvent), it is processed by Scheduler.
-	 * Otherwise, it's a request for data and is processed by IntermediateHost.
+	 * Otherwise, it's a request for data.
 	 */
 	private void receiveAndProcessPacket() {
 			DatagramPacket receivePacket = intermediateHost.receivePacket();
@@ -85,10 +85,10 @@ public class Scheduler implements Runnable {
 				} else {
 					event = RequestMessage.EMPTYQUEUE.getMessage();
 				}
-				intermediateHost.acknowledgeDataRequest(event, receivePacket.getAddress(), receivePacket.getPort());
+				intermediateHost.sendObject(event, receivePacket.getAddress(), receivePacket.getPort());
 
 			} else if (object instanceof SystemEvent systemEvent) {
-				intermediateHost.respondToSystemEvent(receivePacket);
+				intermediateHost.acknowledgeDataReception(receivePacket);
 				processData(systemEvent);
 			}
 	}
