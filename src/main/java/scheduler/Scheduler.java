@@ -9,7 +9,6 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -66,13 +65,15 @@ public class Scheduler implements Runnable {
 	private void receiveAndProcessPacket() {
 		while (true) {
 			DatagramPacket receivePacket = intermediateHost.receivePacket();
-
 			Object object = intermediateHost.convertToObject(receivePacket);
 
+			// respond to Data Request
 			if (object instanceof String) {
 				Object event;
+
 				if (!intermediateHost.queueIsEmpty()) {
 					event = intermediateHost.getPacketFromQueue();
+
 					if (event instanceof ElevatorRequest elevatorRequest) {
 						int chosenElevator = chooseElevator(elevatorRequest);
 						elevatorRequest.setElevatorNumber(chosenElevator);
