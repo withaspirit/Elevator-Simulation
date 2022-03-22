@@ -34,7 +34,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	/**
 	 * Simple message requesting and sending between subsystems.
 	 * ElevatorSubsystem
-	 * Sends: ApproachEvent
+	 * Sends: ApproachEvent, ElevatorMonitor
 	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {

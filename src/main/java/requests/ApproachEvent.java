@@ -67,8 +67,10 @@ public class ApproachEvent extends ServiceRequest {
      */
     @Override
     public String toString() {
-        String formattedDescription = "[Elevator #, FloorApproached, ElevatorDirxn, ElevatorShouldStop] : ";
-        String formattedString = "\n" + formattedDescription + " Elevator #" + getElevatorNumber() + " " + getFloorNumber() + " " + getDirection().getName() + " " + elevatorMayStop + "\n";
+        String formattedString = "[Time, Elevator #, FloorNumber, ElevatorDirxn, ElevatorMayStop]:\n";
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+        String formattedDate = getTime().format(dateTimeFormat);
+        formattedString += formattedDate + " " + getElevatorNumber() + " " + getFloorNumber() + " " + getDirection().getName() + " " + elevatorMayStop;
         return formattedString;
     }
 }
