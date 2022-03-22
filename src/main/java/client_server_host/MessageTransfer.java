@@ -15,7 +15,6 @@ import java.util.Queue;
 public class MessageTransfer {
 
     private DatagramSocket socket;
-    private Queue<DatagramPacket> messageQueue;
     public final static int MAX_BYTE_ARRAY_SIZE = 1400;
 
     /**
@@ -26,7 +25,6 @@ public class MessageTransfer {
     public MessageTransfer(int portNumber) {
         try {
             socket = new DatagramSocket(portNumber);
-            messageQueue = new LinkedList<>();
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -39,33 +37,6 @@ public class MessageTransfer {
      */
     public int getPortNumber() {
         return socket.getLocalPort();
-    }
-
-    /**
-     * Adds a DatagramPacket to the queue of packets to be processed.
-     *
-     * @param packet the packet to be added to the queue
-     */
-    public void addPacketToQueue(DatagramPacket packet) {
-        messageQueue.add(packet);
-    }
-
-    /**
-     * Removes and returns a DatagramPacket from the queue of packets to be processed.
-     *
-     * @return a packet from the queue
-     */
-    public DatagramPacket getPacketFromQueue() {
-        return messageQueue.remove();
-    }
-
-    /**
-     * Determines whether the queue of DatagramPackets is empty.
-     *
-     * @return true if the queue is empty, false otherwise
-     */
-    public boolean queueIsEmpty() {
-        return messageQueue.isEmpty();
     }
 
     /**
