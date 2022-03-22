@@ -147,7 +147,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (removedFloor == -1) {
 			throw new IllegalArgumentException("A value of -1 was received from the requestQueue.");
 		} else if (!sameFloorRemovedAsPeeked) {
-			throw new ConcurrentModificationException("A request was added while the current request was being processed.");
+			System.out.println("Floor peeked " + requestFloor + ", Floor Removed: " + removedFloor);
+			throw new ConcurrentModificationException("A request was added to Elevator " + elevatorNumber + " while the current request was being processed.");
 		}
 	}
 
@@ -215,7 +216,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		while (doors.areClosed()) {
 			doors.open();
 		}
-
 	}
 
 	/**
@@ -246,7 +246,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		//TODO remove after queueTime updated properly and serviceDirection is updated properly
-		motor.setMovementState(MovementState.ACTIVE);
 		int elevatorFloorToPass = currentFloor;
 		requestQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
 	}
@@ -256,7 +255,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @return true if the request queue is empty, false otherwise
 	 */
-
 	public boolean hasNoRequests() {
 		return requestQueue.isEmpty();
 	}
