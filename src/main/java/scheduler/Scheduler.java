@@ -63,7 +63,6 @@ public class Scheduler implements Runnable {
 	 * Otherwise, it's a request for data and is processed by IntermediateHost.
 	 */
 	private void receiveAndProcessPacket() {
-		while (true) {
 			DatagramPacket receivePacket = intermediateHost.receivePacket();
 			Object object = intermediateHost.convertToObject(receivePacket);
 
@@ -92,7 +91,6 @@ public class Scheduler implements Runnable {
 				intermediateHost.respondToSystemEvent(receivePacket);
 				processData(systemEvent);
 			}
-		}
 	}
 
 	/**
@@ -184,11 +182,12 @@ public class Scheduler implements Runnable {
 	 * Simple message requesting and sending between subsystems.
 	 * Scheduler
 	 * Sends: ApproachEvent, FloorRequest, ElevatorRequest
-	 * Receives: ApproachEvent, ElevatorRequest
+	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
-		// take action depending on if using buffers or IntermediateHost
-		receiveAndProcessPacket();
+		while (true) {
+			receiveAndProcessPacket();
+		}
 	}
 
 	public static void main(String[] args) {
