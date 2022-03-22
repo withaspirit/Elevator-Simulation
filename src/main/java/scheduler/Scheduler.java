@@ -138,7 +138,6 @@ public class Scheduler implements Runnable {
 			int elevatorNumber = monitor.getElevatorNumber();
 
 			if (state == MovementState.IDLE) {
-				System.out.println("Elevator#" + elevatorNumber + " is idle");
 				return elevatorNumber;
 
 			} else if (state == MovementState.STUCK) {
