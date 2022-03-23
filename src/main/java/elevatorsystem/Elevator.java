@@ -6,6 +6,7 @@ import systemwide.Origin;
 
 import java.time.LocalTime;
 import java.util.ConcurrentModificationException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Elevator is a model for simulating an elevator.
@@ -109,6 +110,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @param requestFloor the floor at the top of the queue of requests
 	 */
+	// FIXME: this is deeply nested and could be broken into 2 or more methods:
+	//  attemptToMove (boolean ???) and printElevatorAction (maybe)
 	public void moveToNextFloor(int requestFloor) {
 		int nextFloor = motor.move(currentFloor, requestFloor);
 
@@ -119,8 +122,30 @@ public class Elevator implements Runnable, SubsystemPasser {
 					serviceDirection, elevatorNumber, Origin.ELEVATOR_SYSTEM);
 			passApproachEvent(newApproachEvent);
 			// stall while waiting to receive the approachEvent from ElevatorSubsystem
-			// the ApproachEvent is received in Elevator.receiveApproachEvent
-			while (approachEvent == null) {
+
+			// if travelTime enabled, wait a set amount of time.
+			// otherwise, wait forever
+			if (travelTimeEnabled) {
+				try {
+					// wait to simulate movement
+					wait(300);
+
+					if (approachEvent == null) {
+						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before [travelTime] expired.";
+						throw new TimeoutException(errorMessage);
+					}
+
+				} catch (InterruptedException ie) {
+					// handle ApproachEvent wait interrupt
+					// TODO: Not sure if should have if-else for (approachEvent == null)
+					ie.printStackTrace();
+				} catch (TimeoutException te) {
+					// handle ArrivalSensor Fault
+					te.printStackTrace();
+				}
+			} else {
+				while (approachEvent == null) {
+				}
 			}
 			approachEvent = null;
 		}
@@ -367,6 +392,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void toggleTravelTime() {
 		travelTimeEnabled = !travelTimeEnabled;
+	}
+
+	/**
+	 * Interrupt elevator thread;
+	 */
+	public void setToStuck() {
+		Thread.currentThread().interrupt();
 	}
 
 	/**
