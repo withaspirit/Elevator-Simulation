@@ -8,29 +8,29 @@ import floorsystem.ArrivalSensor;
  * @author Liam Tripp
  */
 public enum Fault {
-	ARRIVAL_SENSOR_FAIL(ArrivalSensor.class.getSimpleName() + " Failed"),
-	DOORS_STUCK("Doors Stuck"),
-	DOORS_INTERRUPTED("Doors Interrupted"),
-	ELEVATOR_STUCK("Elevator Stuck"), // Emergency stop
-	NONE("None");
+    ARRIVAL_SENSOR_FAIL(ArrivalSensor.class.getSimpleName() + " Failed"),
+    DOORS_STUCK("Doors Stuck"),
+    DOORS_INTERRUPTED("Doors Interrupted"),
+    ELEVATOR_STUCK("Elevator Stuck"), // Emergency stop
+    NONE("None");
 
-	private String name;
+    private final String name;
 
-	/**
-	 * Constructor for Fault.
-	 *
-	 * @param name name of the fault as displayed by the console and GUI
-	 */
-	Fault(String name) {
-		this.name = name;
-	}
+    /**
+     * Constructor for Fault.
+     *
+     * @param name name of the fault as displayed by the console and GUI
+     */
+    Fault(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * Gets the name of the Fault as a String.
-	 *
-	 * @return name of the Fault.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Gets the name of the Fault as a String.
+     *
+     * @return name of the Fault.
+     */
+    public String getName() {
+        return name;
+    }
 }
