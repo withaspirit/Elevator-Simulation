@@ -37,6 +37,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private volatile ApproachEvent approachEvent;
 	// variable for allowing / disallowing Elevator's message transfer
 	private boolean messageTransferEnabled;
+	private boolean travelTimeEnabled;
 
 	/**
 	 * Constructor for Elevator.
@@ -55,6 +56,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		serviceDirection = Direction.UP;
 		approachEvent = null;
 		messageTransferEnabled = true;
+		travelTimeEnabled = false;
 	}
 
 	/**
@@ -357,6 +359,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void toggleMessageTransfer() {
 		messageTransferEnabled = !messageTransferEnabled;
+	}
+
+	/**
+	 * Toggles the Elevator thread waiting while moving to simulate movement.
+	 * If TravelTime is enabled, the Elevator may experience interrupts.
+	 */
+	public void toggleTravelTime() {
+		travelTimeEnabled = !travelTimeEnabled;
 	}
 
 	/**
