@@ -104,8 +104,8 @@ public class MessageTransfer {
         } else {
             messageToPrint += object.getClass().getSimpleName() + " Packet: ";
         }
-        messageToPrint += "Host port: " + packet.getPort();
-        messageToPrint += ", Length: " + packet.getLength() + "\n";
+        messageToPrint += "Host port: " + packet.getPort() + ", ";
+        messageToPrint += "Length: " + packet.getLength() + "\n";
         messageToPrint += object + "\n";
         System.out.println(messageToPrint);
     }
@@ -130,9 +130,9 @@ public class MessageTransfer {
                 messageToPrint += ElevatorSubsystem.class.getSimpleName();
             }
             messageToPrint += ": \n";
-            messageToPrint += object.getClass().getSimpleName() + " Packet: " + object;
-            messageToPrint += ", Host port: " + packet.getPort();
-            messageToPrint += ", Length: " + packet.getLength() + "\n";
+            messageToPrint += object.getClass().getSimpleName() + " Packet: ";
+            messageToPrint += "Host port: " + packet.getPort() + ", ";
+            messageToPrint += "Length: " + packet.getLength() + "\n";
             messageToPrint += object + "\n";
             System.out.println(messageToPrint);
         }
