@@ -414,4 +414,22 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public ElevatorMonitor makeElevatorMonitor() {
 		return new ElevatorMonitor(requestQueue.getExpectedTime(currentFloor), motor.getMovementState(), currentFloor, serviceDirection, elevatorNumber, requestQueue.isEmpty());
 	}
+
+	/**
+	 * Returns the Elevator's current Fault.
+	 *
+	 * @return the current Fault of the elevator
+	 */
+	public Fault getFault() {
+		return fault;
+	}
+
+	/**
+	 * Modifies the current Fault of the Elevator.
+	 *
+	 * @param fault the new Fault for the Elevator
+	 */
+	public void setFault(Fault fault) {
+		this.fault = fault;
+	}
 }

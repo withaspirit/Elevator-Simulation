@@ -14,7 +14,7 @@ public enum Fault {
 	ELEVATOR_STUCK("Elevator Stuck"),
 	NONE("None");
 
-	private String name = new String("ASDF");
+	private String name;
 
 	/**
 	 * Constructor for Fault.
@@ -23,5 +23,14 @@ public enum Fault {
 	 */
 	Fault(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Gets the name of the Fault as a String.
+	 *
+	 * @return name of the Fault.
+	 */
+	public String getName() {
+		return name;
 	}
 }
