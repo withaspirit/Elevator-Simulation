@@ -33,6 +33,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private int currentFloor;
 	private Direction serviceDirection;
 	private float speed;
+	// FIXME: should we allow for there to be one or more faults?
+	private Fault fault;
 
 	private volatile ApproachEvent approachEvent;
 	// variable for allowing / disallowing Elevator's message transfer
@@ -51,6 +53,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		requestQueue = new RequestQueue();
 		motor = new ElevatorMotor();
 		doors = new Doors();
+		fault = Fault.NONE;
 		currentFloor = 1;
 		serviceDirection = Direction.UP;
 		approachEvent = null;
