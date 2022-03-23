@@ -395,9 +395,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Interrupt elevator thread;
+	 * Interrupts Elevator's executing Thread.
 	 */
-	public void setToStuck() {
+	public void interrupt() {
 		Thread.currentThread().interrupt();
 	}
 
