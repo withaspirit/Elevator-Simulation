@@ -1,10 +1,8 @@
 package elevatorsystem;
 
-import misc.InputFileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ServiceRequest;
-import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
 
@@ -81,8 +79,6 @@ public class ElevatorFaultTest {
         Elevator elevator1 = elevatorList.get(0);
         elevator1.addRequest(serviceRequest);
 
-        // interrupt flag set BEFORE entering wait consistently works
-        // interrupt flag set DURING wait is inconsistent, only works sometimes
         initElevatorThreads();
 
         try {
@@ -93,7 +89,6 @@ public class ElevatorFaultTest {
             e.printStackTrace();
         }
         // elevator1.interrupt() -> doesn't trigger interrupt for some reason
-        // Thread.interrupted is inconsistent for some reason
         threads.get(0).interrupt();
 
         // give elevator time to respond (set Fault)
