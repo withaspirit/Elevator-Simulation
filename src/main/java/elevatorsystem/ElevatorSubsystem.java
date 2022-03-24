@@ -117,4 +117,13 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
 		}
 	}
+
+	/**
+	 * Sends new updated elevator status information to the scheduler.
+	 *
+	 * @param elevatorMonitor an elevator monitor containing updated elevator information.
+	 */
+	public void handleUpdateElevatorMonitor(ElevatorMonitor elevatorMonitor) {
+		requestQueue.add(elevatorMonitor);
+	}
 }
