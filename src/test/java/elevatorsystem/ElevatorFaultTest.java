@@ -81,6 +81,7 @@ public class ElevatorFaultTest {
 
         initElevatorThreads();
 
+        // give elevator time to enter wait statement -> doesn't work without this
         try {
             System.out.println("Attempting sleep");
             TimeUnit.MILLISECONDS.sleep(100);
@@ -91,7 +92,7 @@ public class ElevatorFaultTest {
         // elevator1.interrupt() -> doesn't trigger interrupt for some reason
         threads.get(0).interrupt();
 
-        // give elevator time to respond (set Fault)
+        // give elevator time to respond (set Fault) -> doesn't work without this
         try {
             TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException e) {
