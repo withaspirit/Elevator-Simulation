@@ -111,7 +111,6 @@ public class ElevatorFaultTest {
     }
 
     @Test
-
     void testArrivalSensorFail() {
         int numberOfElevators = 1;
         int floorNumber = 2;
@@ -125,7 +124,7 @@ public class ElevatorFaultTest {
 
         initElevatorThreads();
 
-        // wait the same amount of time as the elevator wait time
+        // wait the same amount of time as the elevator's travel time
         try {
             TimeUnit.MILLISECONDS.sleep(2000);
         } catch (InterruptedException e) {
