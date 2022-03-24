@@ -60,6 +60,16 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		requestQueue.add(approachEvent);
 	}
 
+
+	/**
+	 * Sends new updated elevator status information to the scheduler.
+	 *
+	 * @param elevatorMonitor an elevator monitor containing updated elevator information.
+	 */
+	public void handleElevatorMonitorUpdate(ElevatorMonitor elevatorMonitor) {
+		requestQueue.add(elevatorMonitor);
+	}
+
 	/**
 	 * Sends and receives messages for system using UDP packets.
 	 */
@@ -116,14 +126,5 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		for (int i = 0; i < numberOfElevators; i++) {
 			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
 		}
-	}
-
-	/**
-	 * Sends new updated elevator status information to the scheduler.
-	 *
-	 * @param elevatorMonitor an elevator monitor containing updated elevator information.
-	 */
-	public void handleElevatorMonitorUpdate(ElevatorMonitor elevatorMonitor) {
-		requestQueue.add(elevatorMonitor);
 	}
 }
