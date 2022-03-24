@@ -128,30 +128,36 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 			// if travelTime enabled, wait a set amount of time.
 			// otherwise, wait forever
-			if (travelTimeEnabled) {
+		}
+		// FIXME: this is too deeply nested. extract into methods
+		if (!travelTimeEnabled && messageTransferEnabled) {
+			while (approachEvent == null) {
+			}
+		} else if (travelTimeEnabled) {
+
+			synchronized (this) {
 				try {
 					// wait to simulate movement
 					wait(300);
 
-					if (approachEvent == null) {
+					if (messageTransferEnabled && approachEvent == null) {
 						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before [travelTime] expired.";
 						throw new TimeoutException(errorMessage);
 					}
-
 				} catch (InterruptedException ie) {
+					setFault(Fault.ELEVATOR_STUCK);
+					System.out.println("Elevator #" + elevatorNumber + " Fault: " + fault.toString() + ".");
 					// handle ApproachEvent wait interrupt
 					// TODO: Not sure if should have if-else for (approachEvent == null)
 					ie.printStackTrace();
 				} catch (TimeoutException te) {
+					setFault(Fault.ARRIVAL_SENSOR_FAIL);
 					// handle ArrivalSensor Fault
 					te.printStackTrace();
 				}
-			} else {
-				while (approachEvent == null) {
-				}
 			}
-			approachEvent = null;
 		}
+		approachEvent = null;
 
 		// Move output message
 		String messageToPrint = LocalTime.now().toString() + "\n";
