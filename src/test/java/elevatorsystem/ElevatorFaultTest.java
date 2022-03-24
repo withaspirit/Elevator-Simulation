@@ -97,8 +97,8 @@ public class ElevatorFaultTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after interrupt: " + elevator1.getFault().toString());
 
+        System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after interrupt: " + elevator1.getFault().toString());
         assertEquals(Fault.ELEVATOR_STUCK, elevator1.getFault());
     }
 
