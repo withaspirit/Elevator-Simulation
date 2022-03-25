@@ -1,9 +1,11 @@
 package misc;
 
+import elevatorsystem.Fault;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import requests.ElevatorRequest;
+import requests.FaultRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
@@ -22,11 +24,13 @@ import java.util.ArrayList;
 public class InputFileReader {
 
     public static final String INPUTS_FILENAME = "inputs";
+    private final Origin origin;
 
     /**
      * Constructor for InputFileReader (No-args for now).
      */
     public InputFileReader() {
+        origin = Origin.FLOOR_SYSTEM;
     }
 
     /**
@@ -93,8 +97,7 @@ public class InputFileReader {
         int floorNumber = Integer.parseInt(data[0]);
         Direction direction = Direction.getDirection(data[1]);
         int floorToVisit = Integer.parseInt(data[2]);
-        // FIXME: this is true only for origin
-        return new ElevatorRequest(time, floorNumber, direction, floorToVisit, Origin.FLOOR_SYSTEM);
+        return new ElevatorRequest(time, floorNumber, direction, floorToVisit, origin);
     }
 
     /**
@@ -105,7 +108,11 @@ public class InputFileReader {
      * @return a faultRequest for from the data and time
      */
     public SystemEvent createFaultRequest(String[] data, LocalTime time) {
-        return new SystemEvent(time, Origin.FLOOR_SYSTEM);
+        Fault fault = Fault.getFault(data[0] + "_" + data[1]);
+        if (!fault.getName().equals(Fault.NONE.getName())) {
+            return new FaultRequest(time, origin, fault, Integer.parseInt(data[2]));
+        }
+        return new FaultRequest(time, origin, Fault.NONE, 0);
     }
 
     /**

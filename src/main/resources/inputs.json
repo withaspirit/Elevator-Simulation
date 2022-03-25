@@ -10,10 +10,13 @@
       "event": "4 Down 1"
     },
     {
-      "fault": ""
+      "fault": "Doors Stuck 1"
     },
     {
-      "fault": ""
+      "fault": "Doors Interrupted 1"
+    },
+    {
+      "fault": "Elevator Stuck 1"
     },
     {
       "event": "2 Up 6"

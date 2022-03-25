@@ -5,7 +5,7 @@ import floorsystem.ArrivalSensor;
 /**
  * Fault represents the different error states of the Elevator.
  *
- * @author Liam Tripp
+ * @author Liam Tripp, Ryan Dash
  */
 public enum Fault {
     ARRIVAL_SENSOR_FAIL(ArrivalSensor.class.getSimpleName() + " Failed"),
@@ -23,6 +23,22 @@ public enum Fault {
      */
     Fault(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns the Fault with the specified name.
+     *
+     * @param name the name of the fault
+     * @return the Fault with the specified name
+     */
+    public static Fault getFault(String name) {
+        try {
+            return valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException iae) {
+            System.out.println("Fault is incorrect: " + name.toUpperCase());
+            iae.printStackTrace();
+            return Fault.NONE;
+        }
     }
 
     /**
