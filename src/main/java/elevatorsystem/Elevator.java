@@ -6,6 +6,7 @@ import systemwide.Origin;
 
 import java.time.LocalTime;
 import java.util.ConcurrentModificationException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Elevator is a model for simulating an elevator.
@@ -39,6 +40,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private volatile ApproachEvent approachEvent;
 	// variable for allowing / disallowing Elevator's message transfer
 	private boolean messageTransferEnabled;
+	private boolean travelTimeEnabled;
 
 	/**
 	 * Constructor for Elevator.
@@ -58,6 +60,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		serviceDirection = Direction.UP;
 		approachEvent = null;
 		messageTransferEnabled = true;
+		travelTimeEnabled = false;
 	}
 
 	/**
@@ -110,6 +113,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @param requestFloor the floor at the top of the queue of requests
 	 */
+	// FIXME: this is deeply nested and could be broken into 2 or more methods:
+	//  attemptToMove (boolean ???) and printElevatorAction (maybe)
 	public void moveToNextFloor(int requestFloor) {
 		int nextFloor = motor.move(currentFloor, requestFloor);
 
@@ -120,11 +125,39 @@ public class Elevator implements Runnable, SubsystemPasser {
 					serviceDirection, elevatorNumber, Origin.ELEVATOR_SYSTEM);
 			passApproachEvent(newApproachEvent);
 			// stall while waiting to receive the approachEvent from ElevatorSubsystem
-			// the ApproachEvent is received in Elevator.receiveApproachEvent
+
+			// if travelTime enabled, wait a set amount of time.
+			// otherwise, wait forever
+		}
+		// FIXME: this is too deeply nested. extract into methods
+		if (!travelTimeEnabled && messageTransferEnabled) {
 			while (approachEvent == null) {
 			}
-			approachEvent = null;
+		} else if (travelTimeEnabled) {
+
+			synchronized (this) {
+				try {
+					// wait to simulate movement
+					wait(300);
+
+					if (messageTransferEnabled && approachEvent == null) {
+						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before [travelTime] expired.";
+						throw new TimeoutException(errorMessage);
+					}
+				} catch (InterruptedException ie) {
+					setFault(Fault.ELEVATOR_STUCK);
+					System.out.println("Elevator #" + elevatorNumber + " Fault: " + fault.toString() + ".");
+					// handle ApproachEvent wait interrupt
+					// TODO: Not sure if should have if-else for (approachEvent == null)
+					ie.printStackTrace();
+				} catch (TimeoutException te) {
+					setFault(Fault.ARRIVAL_SENSOR_FAIL);
+					// handle ArrivalSensor Fault
+					te.printStackTrace();
+				}
+			}
 		}
+		approachEvent = null;
 
 		// Move output message
 		String messageToPrint = LocalTime.now().toString() + "\n";
@@ -360,6 +393,21 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void toggleMessageTransfer() {
 		messageTransferEnabled = !messageTransferEnabled;
+	}
+
+	/**
+	 * Toggles the Elevator thread waiting while moving to simulate movement.
+	 * If TravelTime is enabled, the Elevator may experience interrupts.
+	 */
+	public void toggleTravelTime() {
+		travelTimeEnabled = !travelTimeEnabled;
+	}
+
+	/**
+	 * Interrupts Elevator's executing Thread.
+	 */
+	public void interrupt() {
+		Thread.currentThread().interrupt();
 	}
 
 	/**
