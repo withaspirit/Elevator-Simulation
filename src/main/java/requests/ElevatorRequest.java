@@ -46,6 +46,8 @@ public class ElevatorRequest extends ServiceRequest {
 	 * 		"hh:mm:ss.mmm floorNumber direction desiredFloorNumber"
 	 * 	otherwise:
 	 * 		"hh:mm:ss.mmm floorNumber direction"
+	 *
+	 * @return a string representation of an elevator request
 	 */
 	@Override
 	public String toString() {
