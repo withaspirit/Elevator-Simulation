@@ -168,6 +168,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 			messageToPrint += "Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor;
 		}
 
+		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+
 		System.out.println(messageToPrint);
 		setCurrentFloor(nextFloor);
 	}
@@ -522,5 +524,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void setFault(Fault fault) {
 		this.fault = fault;
 		System.out.println("Elevator #" + elevatorNumber + " Fault: " + this.fault.toString() + ".");
+		if (fault == Fault.ELEVATOR_STUCK) {
+			motor.setMovementState(MovementState.STUCK);
+			elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+		}
 	}
 }
