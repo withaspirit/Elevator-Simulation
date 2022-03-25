@@ -1,7 +1,6 @@
 package requests;
 
 import elevatorsystem.Doors;
-import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
