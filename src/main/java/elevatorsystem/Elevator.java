@@ -297,6 +297,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Gets the Elevator's Doors.
+	 *
+	 * @return the doors of the Elevator
+	 */
+	public Doors getDoors() {
+		return doors;
+	}
+
+	/**
 	 * Adds a request to the queue of requests for Elevator to service.
 	 *
 	 * @param serviceRequest a service request for the elevator to perform
