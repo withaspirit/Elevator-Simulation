@@ -6,17 +6,16 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * ElevatorRequest is a data structure for when a user presses an up/down
- * button on a Floor.
+ * ElevatorLampRequest is a request to change the floor lamp state.
  *
- * @author Liam Tripp, Ramit Mahajan, Ryan Dash
+ * @author Ryan Dash
  */
 public class ElevatorLampRequest extends SystemEvent {
 
 	private final ElevatorLampState lampState;
 
 	/**
-	 * Constructor for ElevatorDoorRequest read from an input file.
+	 * Constructor for ElevatorDoorRequest.
 	 *
 	 * @param time the time the Request was made
 	 * @param origin the system from which the message originated
@@ -34,7 +33,7 @@ public class ElevatorLampRequest extends SystemEvent {
 	 *
 	 * @return the state of the door.
 	 */
-	public ElevatorLampState getlampState() {
+	public ElevatorLampState getLampState() {
 		return lampState;
 	}
 
