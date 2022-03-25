@@ -225,7 +225,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void attemptToOpenDoors() {
 		synchronized (this) {
 			try {
-				wait(300);
+				if (doorTimeEnabled) {
+					wait(300);
+				}
 				doors.open();
 			} catch (InterruptedException e) {
 				setFault(Fault.DOORS_INTERRUPTED);
@@ -237,7 +239,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void attemptToCloseDoors() {
 		synchronized (this) {
 			try {
-				wait(300);
+				if (doorTimeEnabled) {
+					wait(300);
+				}
 				doors.close();
 			} catch (InterruptedException e) {
 				setFault(Fault.DOORS_INTERRUPTED);
