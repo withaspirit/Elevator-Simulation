@@ -21,9 +21,10 @@ public class ElevatorLampRequest extends SystemEvent {
 	 * @param time the time the Request was made
 	 * @param origin the system from which the message originated
 	 */
-	public ElevatorLampRequest(LocalTime time, Origin origin, ElevatorLampState lampState) {
+	public ElevatorLampRequest(LocalTime time, Origin origin, ElevatorLampState lampState, int elevatorNumber) {
 		super(time, origin);
 		this.lampState = lampState;
+		setElevatorNumber(elevatorNumber);
 	}
 
 	/**

@@ -22,9 +22,10 @@ public class ElevatorDoorRequest extends SystemEvent {
 	 * @param time the time the Request was made
 	 * @param origin the system from which the message originated
 	 */
-	public ElevatorDoorRequest(LocalTime time, Origin origin, Doors.State state) {
+	public ElevatorDoorRequest(LocalTime time, Origin origin, Doors.State state, int elevatorNumber) {
 		super(time, origin);
 		this.state = state;
+		setElevatorNumber(elevatorNumber);
 	}
 
 	/**
