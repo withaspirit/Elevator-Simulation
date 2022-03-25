@@ -138,7 +138,7 @@ public class ElevatorFaultTest {
     }
 
     @Test
-    void testClosingDoorsInterrupt() {
+    void testClosingDoorsInterrupted() {
         int numberOfElevators = 1;
         initNumberOfElevators(numberOfElevators);
         Elevator elevator1 = elevatorList.get(0);
@@ -168,9 +168,9 @@ public class ElevatorFaultTest {
     }
 
     @Test
-    void testDoorsClosingInterruptMultipleTimes() {
+    void testDoorsClosingInterruptedMultipleTimes() {
         for (int i = 0; i < numberOfTimesToTest; i++) {
-            testClosingDoorsInterrupt();
+            testClosingDoorsInterrupted();
         }
     }
 }
