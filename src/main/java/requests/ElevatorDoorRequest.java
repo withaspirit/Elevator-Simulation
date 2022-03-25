@@ -21,6 +21,8 @@ public class ElevatorDoorRequest extends SystemEvent {
 	 *
 	 * @param time the time the Request was made
 	 * @param origin the system from which the message originated
+	 * @param state the state of an elevator's door
+	 * @param elevatorNumber an elevator number
 	 */
 	public ElevatorDoorRequest(LocalTime time, Origin origin, Doors.State state, int elevatorNumber) {
 		super(time, origin);
