@@ -164,6 +164,7 @@ public class ElevatorFaultTest {
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
                 Fault.DOORS_INTERRUPTED.getName() + ": " + elevator1.getFault().toString());
         assertEquals(Fault.DOORS_INTERRUPTED, elevator1.getFault());
+        assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
     }
 
     @Test
