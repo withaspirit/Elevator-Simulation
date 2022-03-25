@@ -41,6 +41,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	// variable for allowing / disallowing Elevator's message transfer
 	private boolean messageTransferEnabled;
 	private boolean travelTimeEnabled;
+	private boolean doorTimeEnabled;
 
 	/**
 	 * Constructor for Elevator.
@@ -61,6 +62,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		approachEvent = null;
 		messageTransferEnabled = true;
 		travelTimeEnabled = false;
+		doorTimeEnabled = false;
 	}
 
 	/**
@@ -401,6 +403,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void toggleTravelTime() {
 		travelTimeEnabled = !travelTimeEnabled;
+	}
+
+	/**
+	 * Toggles whether an Elevator Thread waits time when the Doors are opening and closing.
+	 */
+	public void toggleDoorTime() {
+		doorTimeEnabled = !doorTimeEnabled;
 	}
 
 	/**
