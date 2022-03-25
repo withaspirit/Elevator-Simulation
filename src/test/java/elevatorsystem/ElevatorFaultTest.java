@@ -46,7 +46,6 @@ public class ElevatorFaultTest {
             System.out.println("Elevator " + i + " instantiated");
             elevatorList.add(elevator);
             elevatorSubsystem.addElevator(elevator);
-            elevator.toggleMessageTransfer();
             elevator.toggleTravelTime();
         }
     }
@@ -78,9 +77,11 @@ public class ElevatorFaultTest {
         initNumberOfElevators(numberOfElevators);
         Elevator elevator1 = elevatorList.get(0);
         elevator1.addRequest(serviceRequest);
+        elevator1.toggleMessageTransfer();
 
         initElevatorThreads();
 
+        // give elevator time to enter wait statement -> doesn't work without this
         try {
             System.out.println("Attempting sleep");
             TimeUnit.MILLISECONDS.sleep(100);
@@ -91,7 +92,7 @@ public class ElevatorFaultTest {
         // elevator1.interrupt() -> doesn't trigger interrupt for some reason
         threads.get(0).interrupt();
 
-        // give elevator time to respond (set Fault)
+        // give elevator time to respond (set Fault) -> doesn't work without this
         try {
             TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException e) {
@@ -107,5 +108,32 @@ public class ElevatorFaultTest {
         for (int i = 0; i < numberOfTimesToTest; i++) {
             testElevatorStuckFromInterrupt();
         }
+    }
+
+
+    @Test
+    void testArrivalSensorFail() {
+        int numberOfElevators = 1;
+        int floorNumber = 2;
+        Direction requestDirection = Direction.UP;
+        ServiceRequest serviceRequest = new ServiceRequest(LocalTime.now(), floorNumber, requestDirection, Origin.ELEVATOR_SYSTEM);
+
+        initNumberOfElevators(numberOfElevators);
+        Elevator elevator1 = elevatorList.get(0);
+        elevator1.addRequest(serviceRequest);
+        // include message transfer
+
+        initElevatorThreads();
+
+        // wait the same amount of time as the elevator's travel time
+        try {
+            TimeUnit.MILLISECONDS.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
+                Fault.ARRIVAL_SENSOR_FAIL.getName() + ": " + elevator1.getFault().toString());
+        assertEquals(Fault.ARRIVAL_SENSOR_FAIL, elevator1.getFault());
     }
 }
