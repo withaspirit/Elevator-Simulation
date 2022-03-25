@@ -46,7 +46,6 @@ public class ElevatorFaultTest {
             System.out.println("Elevator " + i + " instantiated");
             elevatorList.add(elevator);
             elevatorSubsystem.addElevator(elevator);
-            elevator.toggleTravelTime();
         }
     }
 
@@ -78,6 +77,7 @@ public class ElevatorFaultTest {
         Elevator elevator1 = elevatorList.get(0);
         elevator1.addRequest(serviceRequest);
         elevator1.toggleMessageTransfer();
+        elevator1.toggleTravelTime();
 
         initElevatorThreads();
 
@@ -121,10 +121,11 @@ public class ElevatorFaultTest {
         Elevator elevator1 = elevatorList.get(0);
         elevator1.addRequest(serviceRequest);
         // include message transfer
+        elevator1.toggleTravelTime();
 
         initElevatorThreads();
 
-        // wait the same amount of time as the elevator's travel time
+        // wait the same amount of time or more as the elevator's travel time
         try {
             TimeUnit.MILLISECONDS.sleep(2000);
         } catch (InterruptedException e) {
@@ -134,5 +135,41 @@ public class ElevatorFaultTest {
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
                 Fault.ARRIVAL_SENSOR_FAIL.getName() + ": " + elevator1.getFault().toString());
         assertEquals(Fault.ARRIVAL_SENSOR_FAIL, elevator1.getFault());
+    }
+
+    @Test
+    void testClosingDoorsInterrupt() {
+        int numberOfElevators = 1;
+        initNumberOfElevators(numberOfElevators);
+        Elevator elevator1 = elevatorList.get(0);
+        // disable message transfer
+        elevator1.toggleMessageTransfer();
+        // enable door time
+        elevator1.toggleDoorTime();
+
+        Runnable closeDoorsRunnable = elevator1::attemptToCloseDoors;
+        Thread elevatorThread = new Thread(closeDoorsRunnable);
+        threads.add(elevatorThread);
+        elevatorThread.start();
+
+        elevatorThread.interrupt();
+
+        // give elevator time to respond (set Fault) -> doesn't work without this
+        try {
+            TimeUnit.MILLISECONDS.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
+                Fault.DOORS_INTERRUPTED.getName() + ": " + elevator1.getFault().toString());
+        assertEquals(Fault.DOORS_INTERRUPTED, elevator1.getFault());
+    }
+
+    @Test
+    void testDoorsClosingInterruptMultipleTimes() {
+        for (int i = 0; i < numberOfTimesToTest; i++) {
+            testClosingDoorsInterrupt();
+        }
     }
 }
