@@ -148,7 +148,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 					}
 				} catch (InterruptedException ie) {
 					setFault(Fault.ELEVATOR_STUCK);
-					System.out.println("Elevator #" + elevatorNumber + " Fault: " + fault.toString() + ".");
 					// handle ApproachEvent wait interrupt
 					// TODO: Not sure if should have if-else for (approachEvent == null)
 					ie.printStackTrace();
@@ -223,6 +222,30 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 	}
 
+	public void attemptToOpenDoors() {
+		synchronized (this) {
+			try {
+				wait(300);
+				doors.open();
+			} catch (InterruptedException e) {
+				setFault(Fault.DOORS_INTERRUPTED);
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void attemptToCloseDoors() {
+		synchronized (this) {
+			try {
+				wait(300);
+				doors.close();
+			} catch (InterruptedException e) {
+				setFault(Fault.DOORS_INTERRUPTED);
+				e.printStackTrace();
+			}
+		}
+	}
+
 	/**
 	 * Closes the doors and updates elevator properties to be moving towards a floor.
 	 *
@@ -230,9 +253,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void startMovingToFloor(int floorToVisit) {
 
-		while (doors.areOpen()) {
-			doors.close();
-		}
+		attemptToCloseDoors();
 
 		motor.startMoving();
 		motor.changeDirection(currentFloor, floorToVisit);
@@ -251,9 +272,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			motor.stop();
 		}
 
-		while (doors.areClosed()) {
-			doors.open();
-		}
+		attemptToOpenDoors();
 	}
 
 	/**
@@ -488,5 +507,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void setFault(Fault fault) {
 		this.fault = fault;
+		System.out.println("Elevator #" + elevatorNumber + " Fault: " + this.fault.toString() + ".");
 	}
 }
