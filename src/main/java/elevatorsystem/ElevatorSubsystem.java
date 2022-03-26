@@ -66,7 +66,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	 * @param elevatorMonitor an elevator monitor containing updated elevator information.
 	 */
 	public void handleElevatorMonitorUpdate(ElevatorMonitor elevatorMonitor) {
-		requestQueue.add(elevatorMonitor);
+		eventQueue.add(elevatorMonitor);
 	}
 
 	/**
