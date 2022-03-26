@@ -11,12 +11,11 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * TreeSetTest demonstrates the utility of TreeSet with Comparators
- * and Comparable classes.
+ * TreeSetTest demonstrates the utility of TreeSet with Comparators and
+ * Comparable classes.
  *
  * Resources used:
  * https://howtodoinjava.com/java/collections/java-priorityqueue/
- * https://stackoverflow.com/a/10078729
  *
  * @author Liam Tripp
  */
@@ -31,20 +30,19 @@ public class TreeSetTest {
     void setUp() {
         requests = new ArrayList<>();
         for (int i = 1; i <= NUM_REQUESTS; i++) {
-            requests.add(new ServiceRequest(LocalTime.now(), i, Direction.DOWN, Origin.ELEVATOR_SYSTEM));
+            requests.add(new ServiceRequest(LocalTime.now(), i,
+                    Direction.DOWN, Origin.ELEVATOR_SYSTEM));
         }
         // randomize order of requests
         Collections.shuffle(requests);
-
-        Comparator<ServiceRequest> reverseRequestSorter = (sr1, sr2) -> -sr1.compareTo(sr2);
-
         forwardQueue = new TreeSet<>(requests);
-        backwardsQueue = new TreeSet<>(reverseRequestSorter);
+        backwardsQueue = new TreeSet<>(Collections.reverseOrder());
         backwardsQueue.addAll(requests);
     }
 
     /**
-     * Add ElevatorRequests to requests. Demonstrates Comparable compatibility with inheritance.
+     * Add ElevatorRequests to requests. Demonstrates Comparable
+     * compatibility with inheritance.
      */
     void addElevatorRequests() {
         for (int i = 10; i <= NUM_REQUESTS + 10; i++) {
