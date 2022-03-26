@@ -75,10 +75,9 @@ Tests:
 - InputReaderTest.java: tests related to reading the JSON input file
 - SchedulerTest.java: tests related to passing data between the systems
 - DirectionTest: tests related to the Direction enum search function
-- BoundedBufferTest: tests related tothe BoundedBuffer methods for Thread-Safe messaging
-- ElevatorMotorTest: tests for the proper updating of states in the elevator motor class.
-- FloorsQueueTest: test for realted to the proper manipulation of the queues.
-- MessageTransferTest: ensures that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets.
+- ElevatorMotorTest: tests for the proper updating of states in the elevator motor class
+- RequestQueueTest: testing the elevator's lists of floors to visit
+- MessageTransferTest: ensures that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
 
 </details>
 
