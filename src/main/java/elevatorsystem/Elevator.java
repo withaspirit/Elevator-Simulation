@@ -226,6 +226,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 	}
 
+	/**
+	 * Attempts to open the Elevator's Doors. If DoorTime is enabled, the
+	 * elevator waits before taking action on the Doors. If the Doors have
+	 * malfunctioned, the Elevator takes action accordingly.
+	 */
+	// FIXME: attemptToOpenDoors and attemptToCloseDoors are very similar
 	public void attemptToOpenDoors() {
 		synchronized (this) {
 			try {
@@ -248,6 +254,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 	}
 
+	/**
+	 * Attempts to close the Elevator's Doors. If DoorTime is enabled, the
+	 * elevator waits before taking action on the Doors. If the Doors have
+	 * malfunctioned, the Elevator takes action accordingly. If the Doors
+	 * are interrupted, the doors reverse course.
+	 */
 	public void attemptToCloseDoors() {
 		synchronized (this) {
 			try {
