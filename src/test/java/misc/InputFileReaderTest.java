@@ -39,7 +39,7 @@ public class InputFileReaderTest {
      * Initializes the JSONArray for a test to the "inputs" file.
      */
     private void initStandardInputArray() {
-        jsonArray = inputFileReader.createJSONArray("inputs");
+        jsonArray = inputFileReader.createJSONArray(InputFileReader.INPUTS_FILENAME);
     }
 
     // Assert all inputs are in correct format
@@ -80,7 +80,7 @@ public class InputFileReaderTest {
     @Test
     void testReadInputFileEquality() {
         // Fill queue with inputs
-        ArrayList<SystemEvent> queue = inputFileReader.readInputFile("inputs");
+        ArrayList<SystemEvent> queue = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 
         // Fill JSONArray with inputs
         initStandardInputArray();

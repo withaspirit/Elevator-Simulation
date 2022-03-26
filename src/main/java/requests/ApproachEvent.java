@@ -4,6 +4,7 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * ApproachEvent is a SystemEvent that is sent by an Elevator to a Floor's ArrivalSensor when
@@ -13,7 +14,6 @@ import java.time.LocalTime;
  */
 public class ApproachEvent extends ServiceRequest {
 
-    private final int elevatorNumber;
     /**
      * Indicates whether an elevator should stop at a floor
      */
@@ -30,8 +30,8 @@ public class ApproachEvent extends ServiceRequest {
      */
     public ApproachEvent(LocalTime time, int floorNumber, Direction direction, int elevatorNumber, Origin origin) {
         super(time, floorNumber, direction, origin);
-        this.elevatorNumber = elevatorNumber;
         this.elevatorMayStop = false;
+        setElevatorNumber(elevatorNumber);
     }
 
     /**
@@ -44,15 +44,6 @@ public class ApproachEvent extends ServiceRequest {
     public ApproachEvent(ElevatorRequest elevatorRequest, int floorNumber, int elevatorNumber) {
         this(elevatorRequest.getTime(), floorNumber,
                 elevatorRequest.getDirection(), elevatorNumber, elevatorRequest.getOrigin());
-    }
-
-    /**
-     * Returns the number of the Elevator that created the event.
-     *
-     * @return number the number of the elevator that created the event
-     */
-    public int getElevatorNumber() {
-        return elevatorNumber;
     }
 
     /**
@@ -69,5 +60,17 @@ public class ApproachEvent extends ServiceRequest {
      */
     public void allowElevatorStop() {
         elevatorMayStop = true;
+    }
+
+    /**
+     * Convert ApproachEvent to a String.
+     */
+    @Override
+    public String toString() {
+        String formattedString = "[Time, Elevator #, FloorNumber, ElevatorDirxn, ElevatorMayStop]:\n";
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+        String formattedDate = getTime().format(dateTimeFormat);
+        formattedString += formattedDate + " " + getElevatorNumber() + " " + getFloorNumber() + " " + getDirection().getName() + " " + elevatorMayStop;
+        return formattedString;
     }
 }

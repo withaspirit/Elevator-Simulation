@@ -1,11 +1,13 @@
 package elevatorsystem;
 
+import client_server_host.Client;
+import client_server_host.Port;
+import client_server_host.RequestMessage;
 import requests.*;
-import systemwide.BoundedBuffer;
-import systemwide.Direction;
-import systemwide.Origin;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 /**
@@ -13,44 +15,29 @@ import java.util.ArrayList;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
+public class ElevatorSubsystem implements Runnable, SystemEventListener {
 
-    private final BoundedBuffer elevatorSubsystemBuffer; // Elevator Subsystem - Scheduler link
-    private final ArrayList<Elevator> elevatorList;
-	private Origin origin;
+	private final ArrayList<Elevator> elevatorList;
+	private Client server;
+	private final Queue<SystemEvent> eventQueue;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
-	 *
-	 * @param buffer the buffer the ElevatorSubsystem passes messages to and receives messages from
 	 */
-	public ElevatorSubsystem(BoundedBuffer buffer) {
-		this.elevatorSubsystemBuffer = buffer;
+	public ElevatorSubsystem() {
+		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
-		origin = Origin.ELEVATOR_SYSTEM;
+		eventQueue = new LinkedList<>();
 	}
 
 	/**
 	 * Simple message requesting and sending between subsystems.
 	 * ElevatorSubsystem
-	 * Sends: ApproachEvent
+	 * Sends: ApproachEvent, ElevatorMonitor
 	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
-		while (true) {
-			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, origin);
-			if (request instanceof ElevatorRequest elevatorRequest) {
-				int chosenElevator = chooseElevator(elevatorRequest);
-				// Choose elevator
-				// Move elevator
-				elevatorList.get(chosenElevator - 1).addRequest(elevatorRequest);
-
-				sendMessage(new FloorRequest(elevatorRequest, chosenElevator), elevatorSubsystemBuffer, origin);
-				System.out.println(origin + " Sent Request Successful to Scheduler");
-			} else if (request instanceof ApproachEvent approachEvent) {
-				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-			}
-		}
+		subsystemUDPMethod();
 	}
 
 	/**
@@ -69,56 +56,74 @@ public class ElevatorSubsystem implements Runnable, SubsystemMessagePasser, Syst
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		sendMessage(approachEvent, elevatorSubsystemBuffer, origin);
+		eventQueue.add(approachEvent);
+	}
+
+
+	/**
+	 * Sends new updated elevator status information to the scheduler.
+	 *
+	 * @param elevatorMonitor an elevator monitor containing updated elevator information.
+	 */
+	public void handleElevatorMonitorUpdate(ElevatorMonitor elevatorMonitor) {
+		requestQueue.add(elevatorMonitor);
 	}
 
 	/**
-	 * Returns an elevator number corresponding to an elevator that is
-	 * best suited to perform the given ElevatorRequest based on
-	 * expected time to fulfill the request and direction of elevator.
-	 *
-	 * @param elevatorRequest an ElevatorRequest
-	 * @return a number corresponding to an elevator
+	 * Sends and receives messages for system using UDP packets.
 	 */
-	public int chooseElevator(ElevatorRequest elevatorRequest) {
-		double elevatorBestExpectedTime = 0.0;
-		double elevatorWorstExpectedTime = 0.0;
-		int chosenBestElevator = 0;
-		int chosenWorstElevator = 0;
-		for (Elevator elevator : elevatorList) {
-//			sendMessage(new StatusRequest(elevatorRequest,Origin.currentOrigin(), i), elevatorSubsystemBuffer, Origin.currentOrigin());
-//			SystemEvent request = receiveMessage(elevatorSubsystemBuffer, Origin.currentOrigin());
-			double tempExpectedTime = elevator.getExpectedTime(elevatorRequest);
-			if (elevator.getMotor().isIdle()) {
-				return elevator.getElevatorNumber();
-
-			} else if (!elevator.getMotor().isActive()) {
-				System.err.println("Elevator is stuck");
-
-			} else if (elevator.getDirection() == elevatorRequest.getDirection()) {
-				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
-					if (elevatorRequest.getDirection() == Direction.DOWN && elevator.getCurrentFloor() > elevatorRequest.getDesiredFloor()) {
-						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
-
-					} else if (elevatorRequest.getDirection() == Direction.UP && elevator.getCurrentFloor() < elevatorRequest.getDesiredFloor()) {
-						elevatorBestExpectedTime = tempExpectedTime;
-						chosenBestElevator = elevator.getElevatorNumber();
-            
-					} else {
-						// Add to the third queue of the elevator
-					}
-				}
+	private void subsystemUDPMethod() {
+		while (true) {
+			Object object;
+			if (!eventQueue.isEmpty()) {
+				object = server.sendAndReceiveReply(eventQueue.remove());
 			} else {
-				if (elevatorWorstExpectedTime == 0 || elevatorWorstExpectedTime > tempExpectedTime) {
-					elevatorWorstExpectedTime = tempExpectedTime;
-					chosenWorstElevator = elevator.getElevatorNumber();
+				object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
+			}
+
+			if (object instanceof ElevatorRequest elevatorRequest) {
+				Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
+				elevator.addRequest(elevatorRequest);
+				eventQueue.add(elevator.makeElevatorMonitor());
+			} else if (object instanceof ApproachEvent approachEvent) {
+				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+			} else if (object instanceof String string) {
+				if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
-		if (chosenBestElevator == 0) {
-			chosenBestElevator = chosenWorstElevator;
+	}
+
+	/**
+	 * Initialize the elevatorSubsystem with elevators
+	 * and start threads for each elevator and the elevatorSubsystem.
+	 *
+	 * @param args not used
+	 */
+	public static void main(String[] args) {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		return chosenBestElevator;
+		int numberOfElevators = 2;
+		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+		ArrayList<Elevator> elevatorList = new ArrayList<>();
+		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
+			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
+			elevatorSubsystem.addElevator(elevator);
+			elevatorList.add(elevator);
+		}
+		new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName()).start();
+
+		// Start elevator Origins
+		for (int i = 0; i < numberOfElevators; i++) {
+			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
+		}
 	}
 }

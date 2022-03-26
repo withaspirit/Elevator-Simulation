@@ -1,36 +1,33 @@
 package floorsystem;
 
-import misc.*;
+import client_server_host.Client;
+import client_server_host.Port;
+import client_server_host.RequestMessage;
+import misc.InputFileReader;
 import requests.*;
-import systemwide.BoundedBuffer;
-import systemwide.Origin;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 /**
  * FloorSubsystem manages the floors and their requests to the Scheduler
- * 
+ *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemEventListener {
+public class FloorSubsystem implements Runnable, SystemEventListener {
 
-	private final BoundedBuffer floorSubsystemBuffer; // Floor Subsystem- Scheduler link
-	private final ArrayList<SystemEvent> requests;
+	private Client client;
+	private final ArrayList<SystemEvent> eventList;
 	private final ArrayList<Floor> floorList;
-	private Origin origin;
 
 	/**
 	 * Constructor for FloorSubsystem.
-	 *
-	 * @param buffer the buffer the FloorSubsystem passes messages to and receives messages from
 	 */
-	public FloorSubsystem(BoundedBuffer buffer) {
-		this.floorSubsystemBuffer = buffer;
+	public FloorSubsystem() {
+		client = new Client(Port.CLIENT.getNumber());
 		InputFileReader inputFileReader = new InputFileReader();
-		requests = inputFileReader.readInputFile("inputs");
+		eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 		floorList = new ArrayList<>();
-		origin = Origin.FLOOR_SYSTEM;
 	}
 
 	/**
@@ -40,32 +37,29 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	 * Receives: ApproachEvent
 	 */
 	public void run() {
-		Collections.reverse(requests);
+		Collections.reverse(eventList);
 
 		while (true) {
-			if (!requests.isEmpty()) {
-				// Sending Data to Scheduler
-				SystemEvent event = requests.remove(requests.size() -1);
-
-				sendMessage(event, floorSubsystemBuffer, origin);
-				System.out.println(origin + " Sent Request Successful to Scheduler");
-			}
-			SystemEvent request = receiveMessage(floorSubsystemBuffer, origin);
-			if (request instanceof FloorRequest floorRequest) {
-				System.out.println("FloorSubsystem: Received FloorRequest: in  Elevator# " +
-						floorRequest.getElevatorNumber() + " Arrived \n");
-			} else if (request instanceof ApproachEvent approachEvent) {
-				Floor floor = floorList.get(approachEvent.getFloorNumber());
-				floor.receiveApproachEvent(approachEvent);
-				requests.add(approachEvent);
-			}
+			subsystemUDPMethod();
 		}
 	}
 
 	/**
-	 * Adds a floor to the subsystem's list of floors.
+	 * Processes an ApproachEvent, checking its corresponding floor to see whether
+	 * an Elevator should stop.
 	 *
-	 * @param floor a floor
+	 * @param approachEvent the ApproachEvent used to determine whether the Elevator should stop
+	 */
+	public void processApproachEvent(ApproachEvent approachEvent) {
+		Floor floor = floorList.get(approachEvent.getFloorNumber() - 1);
+		floor.receiveApproachEvent(approachEvent);
+		eventList.add(approachEvent);
+	}
+
+	/**
+	 * Adds a floor to the FloorSubsystem's list of floors.
+	 *
+	 * @param floor a floor in the FloorSubsystem
 	 */
 	public void addFloor(Floor floor) {
 		floorList.add(floor);
@@ -74,10 +68,71 @@ public class FloorSubsystem implements Runnable, SubsystemMessagePasser, SystemE
 	/**
 	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
 	 *
-	 * @param approachEvent the approach event for the system
+	 * @param approachEvent the ApproachEvent for the system
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		sendMessage(approachEvent, floorSubsystemBuffer, origin);
+		eventList.add(approachEvent);
+	}
+
+	/**
+	 * Gets the size of the event list.
+	 *
+	 * @return the number of events in the event list
+	 */
+	public int getEventListSize() {
+		return eventList.size();
+	}
+
+	/**
+	 * Adds a SystemEvent to the FloorSubsystem.
+	 *
+	 * @param systemEvent a SystemEvent originating from the FloorSubsystem
+	 */
+	public void addEvent(SystemEvent systemEvent) {
+		eventList.add(systemEvent);
+	}
+
+	/**
+	 * Sends and receives messages for the system using UDP packets.
+	 */
+	private void subsystemUDPMethod() {
+		while (true) {
+			if (!eventList.isEmpty()) {
+				client.sendAndReceiveReply(eventList.remove(eventList.size() - 1));
+			} else {
+				Object object = client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
+
+				if (object instanceof ApproachEvent approachEvent) {
+					processApproachEvent(approachEvent);
+				} else if (object instanceof ElevatorRequest elevatorRequest) {
+					eventList.add(elevatorRequest);
+				} else if (object instanceof String string) {
+					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
+						try {
+							Thread.sleep(5);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		int numberOfFloors = 10;
+		FloorSubsystem floorSubsystem = new FloorSubsystem();
+		for (int i = 1; i <= numberOfFloors; i++) {
+			Floor floor = new Floor(i, floorSubsystem);
+			floorSubsystem.addFloor(floor);
+		}
+		Thread floorSubsystemThead = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
+		floorSubsystemThead.start();
 	}
 }

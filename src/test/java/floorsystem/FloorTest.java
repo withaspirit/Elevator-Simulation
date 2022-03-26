@@ -3,14 +3,13 @@ package floorsystem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ApproachEvent;
-import systemwide.BoundedBuffer;
 import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * FloorTest verifies the methods of the Floor class. Namely, the
@@ -25,8 +24,7 @@ public class FloorTest {
 
     @BeforeEach
     void setUp() {
-        BoundedBuffer buffer = new BoundedBuffer();
-        FloorSubsystem floorSubsystem = new FloorSubsystem(buffer);
+        FloorSubsystem floorSubsystem = new FloorSubsystem();
         floor = new Floor(1, floorSubsystem);
     }
 
