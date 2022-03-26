@@ -63,4 +63,9 @@ public class ServiceRequest extends SystemEvent implements Comparable<ServiceReq
 		String formattedDate = getTime().format(dateTimeFormat);
 		return formattedDate + " " + getFloorNumber() + " " + getDirection().getName();
 	}
+
+	@Override
+	public int compareTo(ServiceRequest request) {
+		return Integer.compare(this.getFloorNumber(), request.getFloorNumber());
+	}
 }
