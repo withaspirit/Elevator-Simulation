@@ -189,8 +189,6 @@ public class ElevatorFaultTest {
         threads.add(elevatorThread);
         elevatorThread.start();
 
-        elevator1.toggleDoorMalfunction();
-
         // give elevator time to enter wait statement -> doesn't work without this
         try {
             TimeUnit.MILLISECONDS.sleep(100);
