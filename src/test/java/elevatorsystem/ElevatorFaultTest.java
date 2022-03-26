@@ -141,8 +141,7 @@ public class ElevatorFaultTest {
 
     @Test
     void testClosingDoorsInterrupted() {
-        int numberOfElevators = 1;
-        initNumberOfElevators(numberOfElevators);
+        initNumberOfElevators(1);
         Elevator elevator1 = elevatorList.get(0);
         // disable message transfer
         elevator1.toggleMessageTransfer();
@@ -178,8 +177,7 @@ public class ElevatorFaultTest {
 
     @Test
     void testDoorsStuckOnClosing() {
-        int numberOfElevators = 1;
-        initNumberOfElevators(numberOfElevators);
+        initNumberOfElevators(1);
         Elevator elevator1 = elevatorList.get(0);
         // disable message transfer
         elevator1.toggleMessageTransfer();
@@ -195,20 +193,17 @@ public class ElevatorFaultTest {
 
         // give elevator time to enter wait statement -> doesn't work without this
         try {
-            System.out.println("Attempting sleep");
             TimeUnit.MILLISECONDS.sleep(100);
-            System.out.println("Finished sleep");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        elevator1.toggleDoorMalfunction();
         // time should be the same as the DOOR_TIME
         try {
             TimeUnit.MILLISECONDS.sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
                 Fault.DOORS_STUCK.getName() + ": " + elevator1.getFault().toString());
         assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
@@ -224,8 +219,7 @@ public class ElevatorFaultTest {
 
     @Test
     void testDoorsStuckOnOpening() {
-        int numberOfElevators = 1;
-        initNumberOfElevators(numberOfElevators);
+        initNumberOfElevators(1);
         Elevator elevator1 = elevatorList.get(0);
         // disable message transfer
         elevator1.toggleMessageTransfer();
@@ -239,27 +233,23 @@ public class ElevatorFaultTest {
 
         // give elevator time to enter wait statement -> doesn't work without this
         try {
-            System.out.println("Attempting sleep");
             TimeUnit.MILLISECONDS.sleep(100);
-            System.out.println("Finished sleep");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         elevator1.toggleDoorMalfunction();
-
         // time should be the same as the DOOR_TIME
         try {
             TimeUnit.MILLISECONDS.sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
                 Fault.DOORS_STUCK.getName() + ": " + elevator1.getFault().toString());
         assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
         assertEquals(Fault.DOORS_STUCK, elevator1.getFault());
     }
+
     @Test
     void testDoorsStuckOnOpeningMultipleTimes() {
         for (int i = 0; i < numberOfTimesToTest; i++) {
