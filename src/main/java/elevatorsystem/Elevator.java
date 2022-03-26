@@ -42,6 +42,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private boolean messageTransferEnabled;
 	private boolean travelTimeEnabled;
 	private boolean doorTimeEnabled;
+	private volatile boolean doorsMalfunctioning;
 
 	/**
 	 * Constructor for Elevator.
@@ -63,6 +64,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		messageTransferEnabled = true;
 		travelTimeEnabled = false;
 		doorTimeEnabled = false;
+		doorsMalfunctioning = false;
 	}
 
 	/**
@@ -228,10 +230,18 @@ public class Elevator implements Runnable, SubsystemPasser {
 				if (doorTimeEnabled) {
 					wait(300);
 				}
-				doors.open();
+
+				if (!doorsMalfunctioning) {
+					doors.open();
+				} else {
+					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
+					throw new IllegalStateException(messageToPrint);
+				}
 			} catch (InterruptedException e) {
-				setFault(Fault.DOORS_INTERRUPTED);
-				e.printStackTrace();
+				// do nothing. doors opening can never be interrupted
+			} catch (IllegalStateException ise) {
+				setFault(Fault.DOORS_STUCK);
+				ise.printStackTrace();
 			}
 		}
 	}
@@ -242,10 +252,19 @@ public class Elevator implements Runnable, SubsystemPasser {
 				if (doorTimeEnabled) {
 					wait(300);
 				}
-				doors.close();
-			} catch (InterruptedException e) {
+
+				if (!doorsMalfunctioning) {
+					doors.close();
+				} else {
+					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
+					throw new IllegalStateException(messageToPrint);
+				}
+			} catch (InterruptedException ie) {
 				setFault(Fault.DOORS_INTERRUPTED);
-				e.printStackTrace();
+				ie.printStackTrace();
+			} catch (IllegalStateException ise) {
+				setFault(Fault.DOORS_STUCK);
+				ise.printStackTrace();
 			}
 		}
 	}
@@ -442,6 +461,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void toggleDoorTime() {
 		doorTimeEnabled = !doorTimeEnabled;
+	}
+
+	/**
+	 * Toggles the Door Malfunction flag of the Elevator.
+	 */
+	public void toggleDoorMalfunction() {
+		doorsMalfunctioning = !doorsMalfunctioning;
 	}
 
 	/**
