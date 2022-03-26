@@ -5,7 +5,6 @@ import client_server_host.Port;
 import client_server_host.RequestMessage;
 import misc.InputFileReader;
 import requests.*;
-import systemwide.Origin;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +17,7 @@ import java.util.Collections;
 public class FloorSubsystem implements Runnable, SystemEventListener {
 
 	private Client client;
-	private final ArrayList<SystemEvent> requests;
+	private final ArrayList<SystemEvent> eventList;
 	private final ArrayList<Floor> floorList;
 
 	/**
@@ -27,7 +26,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	public FloorSubsystem() {
 		client = new Client(Port.CLIENT.getNumber());
 		InputFileReader inputFileReader = new InputFileReader();
-		requests = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
+		eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 		floorList = new ArrayList<>();
 	}
 
@@ -38,7 +37,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	 * Receives: ApproachEvent
 	 */
 	public void run() {
-		Collections.reverse(requests);
+		Collections.reverse(eventList);
 
 		while (true) {
 			subsystemUDPMethod();
@@ -54,11 +53,11 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	public void processApproachEvent(ApproachEvent approachEvent) {
 		Floor floor = floorList.get(approachEvent.getFloorNumber() - 1);
 		floor.receiveApproachEvent(approachEvent);
-		requests.add(approachEvent);
+		eventList.add(approachEvent);
 	}
 
 	/**
-	 * Adds a floor to the subsystem's list of floors.
+	 * Adds a floor to the FloorSubsystem's list of floors.
 	 *
 	 * @param floor a floor in the FloorSubsystem
 	 */
@@ -69,29 +68,29 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	/**
 	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
 	 *
-	 * @param approachEvent the approach event for the system
+	 * @param approachEvent the ApproachEvent for the system
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		requests.add(approachEvent);
+		eventList.add(approachEvent);
 	}
 
 	/**
-	 * Gets the size of the requests list.
+	 * Gets the size of the event list.
 	 *
-	 * @return the size of the requests list
+	 * @return the number of events in the event list
 	 */
-	public int getRequestSize() {
-		return requests.size();
+	public int getEventListSize() {
+		return eventList.size();
 	}
 
 	/**
-	 * Add a request to the requests list.
+	 * Adds a SystemEvent to the FloorSubsystem.
 	 *
-	 * @param systemEvent a new system event
+	 * @param systemEvent a SystemEvent originating from the FloorSubsystem
 	 */
-	public void addRequest(SystemEvent systemEvent){
-		requests.add(systemEvent);
+	public void addEvent(SystemEvent systemEvent) {
+		eventList.add(systemEvent);
 	}
 
 	/**
@@ -99,15 +98,15 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	 */
 	private void subsystemUDPMethod() {
 		while (true) {
-			if (!requests.isEmpty()) {
-				client.sendAndReceiveReply(requests.remove(requests.size() - 1));
+			if (!eventList.isEmpty()) {
+				client.sendAndReceiveReply(eventList.remove(eventList.size() - 1));
 			} else {
 				Object object = client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
 
 				if (object instanceof ApproachEvent approachEvent) {
 					processApproachEvent(approachEvent);
 				} else if (object instanceof ElevatorRequest elevatorRequest) {
-					requests.add(elevatorRequest);
+					eventList.add(elevatorRequest);
 				} else if (object instanceof String string) {
 					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
 						try {

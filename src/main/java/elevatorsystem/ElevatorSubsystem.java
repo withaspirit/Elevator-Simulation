@@ -4,7 +4,6 @@ import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import requests.*;
-import systemwide.Origin;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -20,7 +19,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 
 	private final ArrayList<Elevator> elevatorList;
 	private Client server;
-	private final Queue<SystemEvent> requestQueue;
+	private final Queue<SystemEvent> eventQueue;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
@@ -28,7 +27,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	public ElevatorSubsystem() {
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
-		requestQueue = new LinkedList<>();
+		eventQueue = new LinkedList<>();
 	}
 
 	/**
@@ -57,7 +56,17 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	 */
 	@Override
 	public void handleApproachEvent(ApproachEvent approachEvent) {
-		requestQueue.add(approachEvent);
+		eventQueue.add(approachEvent);
+	}
+
+
+	/**
+	 * Sends new updated elevator status information to the scheduler.
+	 *
+	 * @param elevatorMonitor an elevator monitor containing updated elevator information.
+	 */
+	public void handleElevatorMonitorUpdate(ElevatorMonitor elevatorMonitor) {
+		requestQueue.add(elevatorMonitor);
 	}
 
 	/**
@@ -66,8 +75,8 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	private void subsystemUDPMethod() {
 		while (true) {
 			Object object;
-			if (!requestQueue.isEmpty()) {
-				object = server.sendAndReceiveReply(requestQueue.remove());
+			if (!eventQueue.isEmpty()) {
+				object = server.sendAndReceiveReply(eventQueue.remove());
 			} else {
 				object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
 			}
@@ -75,7 +84,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 			if (object instanceof ElevatorRequest elevatorRequest) {
 				Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
 				elevator.addRequest(elevatorRequest);
-				requestQueue.add(elevator.makeElevatorMonitor());
+				eventQueue.add(elevator.makeElevatorMonitor());
 			} else if (object instanceof ApproachEvent approachEvent) {
 				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
 			} else if (object instanceof String string) {

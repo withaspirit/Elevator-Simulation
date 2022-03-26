@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;
 import requests.ElevatorRequest;
-import requests.ServiceRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
@@ -90,12 +89,12 @@ class SchedulerTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        assertEquals(1, floorSubsystem.getRequestSize()); // fails because floorSubsystem processes requests instantly
+        assertEquals(1, floorSubsystem.getEventListSize()); // fails because floorSubsystem processes requests instantly
     }
 
     @Test
     void receiveElevatorRequest() {
-        floorSubsystem.addRequest(elevatorRequest);
+        floorSubsystem.addEvent(elevatorRequest);
 
     }
 
