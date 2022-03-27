@@ -303,6 +303,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (attemptToCloseDoors()) {
 			motor.startMoving();
 			motor.changeDirection(currentFloor, floorToVisit);
+		// if doors opening also unsuccessful, shut down elevator
 		} else if (fault == Fault.DOORS_INTERRUPTED) {
 			if (!attemptToOpenDoors()) {
 				doors.setToStuck();
@@ -312,7 +313,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// door malfunction behavior
 			shutDownElevator();
 		}
-			// if doors opening also unsuccessful, shut down elevator
 	}
 
 	/**
