@@ -303,11 +303,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (attemptToCloseDoors()) {
 			motor.startMoving();
 			motor.changeDirection(currentFloor, floorToVisit);
-		} else if (!attemptToOpenDoors()) {
-			// if doors opening also unsuccessful, shut down elevator
-			doors.setToStuck();
+		} else if (fault == Fault.DOORS_INTERRUPTED) {
+			if (!attemptToOpenDoors()) {
+				doors.setToStuck();
+				shutDownElevator();
+			}
+		} else {
+			// door malfunction behavior
 			shutDownElevator();
 		}
+			// if doors opening also unsuccessful, shut down elevator
 	}
 
 	/**
@@ -321,7 +326,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (attemptToOpenDoors()) {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
 		} else {
-			// door malfunction behavior ???
+			// door malfunction behavior
+			doors.setToStuck();
+			shutDownElevator();
 		}
 	}
 
@@ -335,6 +342,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			removeRequest = requestQueue.removeRequest();
 		} while (removeRequest != -1);
 		motor.setDirection(Direction.NONE);
+		// send shutdown message here ?
 	}
 
 	/**
