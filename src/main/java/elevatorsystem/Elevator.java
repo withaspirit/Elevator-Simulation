@@ -94,8 +94,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void respondToRequest() {
 		System.out.println();
 
-		int requestFloor = requestQueue.peekNextRequest();
-		//int requestFloor = requestQueue.removeRequest();
+		ServiceRequest request = requestQueue.peekNextRequest();
+		int requestFloor = request.getFloorNumber();
 
 		// Print status
 		printStatus(requestFloor);
@@ -179,10 +179,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param requestFloor the floor to be removed from the requestQueue
 	 */
 	public void attemptToRemoveFloor(int requestFloor) {
-		int removedFloor = requestQueue.removeRequest();
+		ServiceRequest removedRequest = requestQueue.removeRequest();
+		int removedFloor = removedRequest.getFloorNumber();
 		boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
 
-		if (removedFloor == -1) {
+		if (removedRequest == null) {
 			throw new IllegalArgumentException("A value of -1 was received from the requestQueue.");
 		} else if (!sameFloorRemovedAsPeeked) {
 			System.out.println("Floor peeked " + requestFloor + ", Floor Removed: " + removedFloor);

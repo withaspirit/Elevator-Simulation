@@ -291,9 +291,9 @@ class RequestQueueTest {
 		assertFalse(testQueue.isCurrentQueueEmpty());
 
 		// ensure integers are removed in forward order
-		int floor1 = testQueue.removeRequest();
-		assertTrue(floor1 < testQueue.peekNextRequest());
-		int floor2 = testQueue.removeRequest();
+		int floor1 = testQueue.removeRequest().getFloorNumber();
+		assertTrue(floor1 < testQueue.peekNextRequest().getFloorNumber());
+		int floor2 = testQueue.removeRequest().getFloorNumber();
 		assertTrue(floor1 < floor2);
 	}
 
@@ -321,15 +321,15 @@ class RequestQueueTest {
 		assertFalse(testQueue.isCurrentQueueEmpty());
 
 		// ensure integers are removed in reverse order
-		int floor1 = testQueue.removeRequest();
-		assertTrue(floor1 > testQueue.peekNextRequest());
-		int floor2 = testQueue.removeRequest();
+		int floor1 = testQueue.removeRequest().getFloorNumber();
+		assertTrue(floor1 > testQueue.peekNextRequest().getFloorNumber());
+		int floor2 = testQueue.removeRequest().getFloorNumber();
 		assertTrue(floor1 > floor2);
 
 		// ensure keep adding to the reverse order queue
 		// assume serviceDirection has been reversed
 		testQueue.addRequest(elevatorFloor, Direction.DOWN, elevatorRequest2);
-		assertTrue(testQueue.removeRequest() > testQueue.removeRequest());
+		assertTrue(testQueue.removeRequest().getFloorNumber() > testQueue.removeRequest().getFloorNumber());
 	}
 
 	@Test
