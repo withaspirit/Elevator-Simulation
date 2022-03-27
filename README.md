@@ -287,11 +287,11 @@ Instructions:
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | | |
+  | Ryan Dash | | | Code Review
   | Ramit Mahajan | Doors Upgrade, Doors State Changes in Elevator | UML Class Diagram |
   | Brady Norton | | |
-  | Julian Obando Velez | | |
-  | Liam Tripp | ElevatorFaultTest, Faults enum, Elevator Faults, Elevator Movement Tests, changed RequestQueue from PriorityQueue to TreeSet, Improved console output Statements, Movement bug fixes | Work Breakdown Structure, Updated Movement State Machine Diagram |
+  | Julian Obando Velez | | | Code Review
+  | Liam Tripp | ElevatorFaultTest, Faults enum, Elevator Faults, Elevator Movement Tests, changed RequestQueue from PriorityQueue to TreeSet, Improved Console Output Statements, Movement bug fixes | Work Breakdown Structure, Updated Movement State Machine Diagram | Code Review
 
   ### Diagrams
 
