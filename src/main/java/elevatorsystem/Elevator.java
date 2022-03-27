@@ -94,14 +94,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void respondToRequest() {
 		System.out.println();
 
-		ServiceRequest request = requestQueue.peekNextRequest();
-		int requestFloor = request.getFloorNumber();
+		ServiceRequest nextRequest = requestQueue.peekNextRequest();
+		int requestFloor = nextRequest.getFloorNumber();
 
 		// Print status
 		printStatus(requestFloor);
 		// Compare the request floor and the next floor
 		compareFloors(requestFloor);
-		moveToNextFloor(requestFloor);
+		moveToNextFloor(nextRequest);
 		// stop elevator if moving and new floor is request floor
 		if (!motor.isIdle()) {
 			compareFloors(requestFloor);
@@ -111,18 +111,19 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Moves the Elevator to the next floor.
 	 *
-	 * @param requestFloor the floor at the top of the queue of requests
+	 * @param request the serviceRequest at the top of the queue of requests
 	 */
 	// FIXME: this is deeply nested and could be broken into 2 or more methods:
 	//  attemptToMove (boolean ???) and printElevatorAction (maybe)
-	public void moveToNextFloor(int requestFloor) {
+	public void moveToNextFloor(ServiceRequest request) {
+		int requestFloor = request.getFloorNumber();
 		int nextFloor = motor.move(currentFloor, requestFloor);
 
 		// in future iterations, shouldStopAtNextFloor will be followed by sending an ApproachRequest
 		if (messageTransferEnabled) {
 			// communicate with Scheduler to see if Elevator should stop at this floor
-			ApproachEvent newApproachEvent = new ApproachEvent(LocalTime.now(), nextFloor,
-					serviceDirection, elevatorNumber, Origin.ELEVATOR_SYSTEM);
+			ApproachEvent newApproachEvent = new ApproachEvent(request.getTime(), nextFloor,
+					request.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
 			passApproachEvent(newApproachEvent);
 			// stall while waiting to receive the approachEvent from ElevatorSubsystem
 
