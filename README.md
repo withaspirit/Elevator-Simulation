@@ -72,12 +72,15 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 3. Right click on the directory and select "Run As" -> "JUnit Test". This runs all the unit tests
 
 Tests: 
-- InputReaderTest.java: tests related to reading the JSON input file
+- InputFileReaderTest.java: tests related to reading the JSON input file
 - SchedulerTest.java: tests related to passing data between the systems
-- DirectionTest: tests related to the Direction enum search function
+- DirectionTest: tests the Direction enum's getDirectionByName function
 - ElevatorMotorTest: tests for the proper updating of states in the elevator motor class
-- RequestQueueTest: testing the elevator's lists of floors to visit
-- MessageTransferTest: ensures that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
+- ElevatorSelectionTest:
+- ElevatorFaultTest: tests the fault-handling behavior of the Elevator for the faults: Doors Interrupted, Doors Stuck, Elevator Interrupted, Elevator Stuck
+- RequestQueueTest: tests that the RequestQueue adds ServiceRequests to the correct list and that requests are added and removed in the correct order
+- MessageTransferTest: tests that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
+- FloorTest: tests that the ArrivalSensor correctly modifies an ApproachEvent
 
 </details>
 
@@ -247,7 +250,7 @@ Instructions:
   | Ramit Mahajan | Integrating Doors class | UML Diagram, README | Code review
   | Brady Norton | Elevator Movement Algorithm, Elevator Movement Properties Modification, Integrating Floors Queue into Movement, Movement Tests | Movement Design | Code review
   | Julian Obando Velez | Message Encoding/Decoding, Client for UDP, JUnit testing | Diagram Review | TA contact, Code review
-  | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integration | Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML CLass Diagram | Code review
+  | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integrationm, FloorSubsystemTest| Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML CLass Diagram | Code review
 
   ### Diagrams
    
