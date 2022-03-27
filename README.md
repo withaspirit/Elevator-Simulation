@@ -34,7 +34,7 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 
 <details>
   <summary>Installation</summary>
-
+  
 1.	Download and extract the ZIP folder
 2. 	Open up Eclipse and select file
 3. 	Click "Open Projects from File System" and select the project folder
@@ -78,6 +78,31 @@ Tests:
 - ElevatorMotorTest: tests for the proper updating of states in the elevator motor class
 - RequestQueueTest: testing the elevator's lists of floors to visit
 - MessageTransferTest: ensures that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
+
+</details>
+
+<details>
+  <summary>Running</summary>
+
+<br>
+The program can be run as one program with the class Structure. The program can also be run as multiple separate programs with the classes Scheduler, ElevatorSubsystem, and FloorSubsystem.
+
+The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: Scheduler, ElevatorSubsystem, and FloorSubsystem. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
+
+#### Eclipse
+
+- Set the Run Configuration to run these classes in order: Scheduler, ElevatorSubsystem, and FloorSubsystem.
+
+#### IntelliJ
+
+IntelliJ does not allow ordered run configurations, so the Multirun plugin is used. 
+
+Instructions:
+- To install Multirun, click the Setting icon in the top right corner of IntelliJ. Select plugins. 
+- Search for Multirun in the plugins list. If it does not show up, there should be an option to search aftermarket plugins which you can click. 
+- Click the install button
+- Multirun should now be installed and ready to use.
+- The run option should now be available in IntelliJ's run configurations..
 
 </details>
 
@@ -244,21 +269,14 @@ Tests:
   In this iteration, fault detecting and handling is implemented. The simulation now shows faults for elevators.
 
   #### Major Changes
-  - added configuration files to automate running multiple main methods with a single button in Intellij
-  
-  #### Multirun Installation in Intellij
-  - To install Multirun click the setting icon in the top right corner of IntelliJ. Click plugins. 
-  - Search multirun in the plugins list. If it does not show up there should be an option to search aftermarket plugins which you can click. 
-  - Click install 
-  - Multirun should now be installed and ready to use.
-  - A new run option should now be available to use in Intellij.
-    <br>
+  - Added configuration files to automate running multiple main methods with a single button in Intellij
+  <br>
 
   <details>
     <summary>Show Long Description</summary>
-  
-    * Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This will allow for fast testing in Intellij. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
-    * 
+    
+    * Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This allows for fast testing in Intellij. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
+
   </details>
 
   ### Contributions
@@ -266,12 +284,17 @@ Tests:
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
   | Ryan Dash | | |
-  | Ramit Mahajan | | |
+  | Ramit Mahajan | Doors Upgrade, Doors State Changes in Elevator | UML Class Diagram |
   | Brady Norton | | |
   | Julian Obando Velez | | |
   | Liam Tripp | | |
 
+  ### Diagrams
+
+  #### UML Class Diagram
+
   </details>
+  
 
 - ## Iteration 5
   <details>
@@ -295,5 +318,9 @@ Tests:
   | Brady Norton | | |
   | Julian Obando Velez | | |
   | Liam Tripp | | |
+  
+  ### Diagrams
+
+  #### UML Class Diagram
 
   </details>
