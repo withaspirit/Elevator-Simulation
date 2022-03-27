@@ -77,14 +77,15 @@ public class ElevatorFaultTest {
         Elevator elevator1 = elevatorList.get(0);
         elevator1.addRequest(serviceRequest);
         elevator1.toggleMessageTransfer();
-        elevator1.toggleTravelTime();
+        int travelTime = 300;
+        elevator1.setTravelTime(travelTime);
 
         initElevatorThreads();
 
         // give elevator time to enter wait statement -> doesn't work without this
         try {
             System.out.println("Attempting sleep");
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(travelTime / 3);
             System.out.println("Finished sleep");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -94,7 +95,7 @@ public class ElevatorFaultTest {
 
         // give elevator time to respond (set Fault) -> doesn't work without this
         try {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(travelTime / 3);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -123,13 +124,14 @@ public class ElevatorFaultTest {
         elevator1.addRequest(serviceRequest);
         // include message transfer
         // enable travel time
-        elevator1.toggleTravelTime();
+        int travelTime = 300;
+        elevator1.setTravelTime(travelTime);
 
         initElevatorThreads();
 
         // wait the same amount of time or more as the elevator's travel time
         try {
-            TimeUnit.MILLISECONDS.sleep(2000);
+            TimeUnit.MILLISECONDS.sleep(travelTime * 2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -146,7 +148,8 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        elevator1.toggleDoorTime();
+        int doorTime = 300;
+        elevator1.setDoorTime(doorTime);
 
         Runnable closeDoorsRunnable = elevator1::attemptToCloseDoors;
         Thread elevatorThread = new Thread(closeDoorsRunnable);
@@ -157,7 +160,7 @@ public class ElevatorFaultTest {
 
         // give elevator time to respond (set Fault) -> doesn't work without this
         try {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(doorTime / 3);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -182,7 +185,8 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        elevator1.toggleDoorTime();
+        int doorTime = 300;
+        elevator1.setDoorTime(doorTime);
 
         Runnable closeDoorsRunnable = elevator1::attemptToCloseDoors;
         Thread elevatorThread = new Thread(closeDoorsRunnable);
@@ -191,14 +195,14 @@ public class ElevatorFaultTest {
 
         // give elevator time to enter wait statement -> doesn't work without this
         try {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(doorTime / 3);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         elevator1.toggleDoorMalfunction();
         // time should be the same as the DOOR_TIME
         try {
-            TimeUnit.MILLISECONDS.sleep(300);
+            TimeUnit.MILLISECONDS.sleep(doorTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -222,7 +226,8 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        elevator1.toggleDoorTime();
+        int doorTime = 300;
+        elevator1.setDoorTime(doorTime);
 
         Runnable openDoorsRunnable = elevator1::attemptToOpenDoors;
         Thread elevatorThread = new Thread(openDoorsRunnable);
@@ -231,14 +236,14 @@ public class ElevatorFaultTest {
 
         // give elevator time to enter wait statement -> doesn't work without this
         try {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(doorTime / 3);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         elevator1.toggleDoorMalfunction();
         // time should be the same as the DOOR_TIME
         try {
-            TimeUnit.MILLISECONDS.sleep(300);
+            TimeUnit.MILLISECONDS.sleep(doorTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
