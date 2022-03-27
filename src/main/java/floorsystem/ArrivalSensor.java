@@ -2,14 +2,13 @@ package floorsystem;
 
 import requests.ApproachEvent;
 import requests.ServiceRequest;
-
 import java.util.ArrayList;
 
 /**
  * Arrival Sensor checks the floorNumber in ApproachEvent is equal to the Floor's floorNumber
  * if Both the values are equal allowElevatorStop method from ApproachEvent is called
  *
- * @author Ramit Mahajan
+ * @author Ramit Mahajan, Brady Norton
  */
 public class ArrivalSensor{
 
@@ -53,20 +52,13 @@ public class ArrivalSensor{
 	 *
 	 * @return true if the elevator approaching should stop, false if not
 	 */
-	public boolean shouldStop(ApproachEvent approachEvent){
-		if(!activeRequests.isEmpty()){
-			for(int i=0; i<activeRequests.size(); i++){
-				if(approachEvent.getElevatorNumber() == activeRequests.get(i).getElevatorNumber()){
-					if(approachEvent.getDirection() == activeRequests.get(i).getDirection()){
-						if(approachEvent.getFloorNumber() == approachEvent.getFloorToVisit() && approachEvent.getFloorNumber() == activeRequests.get(i).getFloorNumber()){
-							// Should this be called? or just return true/false?
-							approachEvent.allowElevatorStop();
-							return true;
-						}
-					}
-				}
+	public void shouldStop(ApproachEvent approachEvent){
+		for(ServiceRequest request: activeRequests){
+			if(approachEvent.getElevatorNumber() == request.getElevatorNumber() && approachEvent.getDirection() == request.getDirection()
+					&& approachEvent.getFloorNumber() == approachEvent.getFloorToVisit() && approachEvent.getFloorNumber() == request.getFloorNumber()){
+				// Set boolean in approachEvent that will allow elevator to stop
+				approachEvent.allowElevatorStop();
 			}
 		}
-		return false;
 	}
 }

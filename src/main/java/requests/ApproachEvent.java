@@ -66,6 +66,11 @@ public class ApproachEvent extends ServiceRequest {
         elevatorMayStop = true;
     }
 
+    /**
+     * Gets the elevators floor to visit
+     *
+     * @return int floorToVisit
+     */
     public int getFloorToVisit(){ return floorToVisit; }
 
     /**
