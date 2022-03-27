@@ -230,9 +230,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * Attempts to open the Elevator's Doors. If DoorTime is enabled, the
 	 * elevator waits before taking action on the Doors. If the Doors have
 	 * malfunctioned, the Elevator takes action accordingly.
+	 *
+	 * @return true if attempt is successful, false otherwise
 	 */
 	// FIXME: attemptToOpenDoors and attemptToCloseDoors are very similar
-	public void attemptToOpenDoors() {
+	public boolean attemptToOpenDoors() {
 		synchronized (this) {
 			try {
 				if (doorTime >= 0) {
@@ -241,15 +243,18 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 				if (!doorsMalfunctioning) {
 					doors.open();
+					return true;
 				} else {
 					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
 					throw new IllegalStateException(messageToPrint);
 				}
 			} catch (InterruptedException e) {
 				// do nothing. doors opening can never be interrupted
+				return true;
 			} catch (IllegalStateException ise) {
 				setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();
+				return false;
 			}
 		}
 	}
@@ -259,8 +264,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * elevator waits before taking action on the Doors. If the Doors have
 	 * malfunctioned, the Elevator takes action accordingly. If the Doors
 	 * are interrupted, the doors reverse course.
+	 *
+	 * @return true if attempt is successful, false otherwise
 	 */
-	public void attemptToCloseDoors() {
+	public boolean attemptToCloseDoors() {
 		synchronized (this) {
 			try {
 				if (doorTime >= 0) {
@@ -269,6 +276,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 				if (!doorsMalfunctioning) {
 					doors.close();
+					return true;
 				} else {
 					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
 					throw new IllegalStateException(messageToPrint);
@@ -276,9 +284,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 			} catch (InterruptedException ie) {
 				setFault(Fault.DOORS_INTERRUPTED);
 				ie.printStackTrace();
+				return false;
 			} catch (IllegalStateException ise) {
 				setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();
+				return false;
 			}
 		}
 	}
@@ -289,11 +299,20 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param floorToVisit the next floor the elevator will visit
 	 */
 	public void startMovingToFloor(int floorToVisit) {
-
-		attemptToCloseDoors();
-
-		motor.startMoving();
-		motor.changeDirection(currentFloor, floorToVisit);
+		// proceed only if door closing successful
+		if (attemptToCloseDoors()) {
+			motor.startMoving();
+			motor.changeDirection(currentFloor, floorToVisit);
+		// if doors opening also unsuccessful, shut down elevator
+		} else if (fault == Fault.DOORS_INTERRUPTED) {
+			if (!attemptToOpenDoors()) {
+				doors.setToStuck();
+				shutDownElevator();
+			}
+		} else if (fault == Fault.DOORS_STUCK) {
+			// door malfunction behavior
+			shutDownElevator();
+		}
 	}
 
 	/**
@@ -303,13 +322,27 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void stopAtFloor(int requestFloor) {
 		attemptToRemoveFloor(requestFloor);
-		System.out.println("Elevator #" + elevatorNumber + " reached destination");
-
-		if (motor.isActive()) {
-			motor.stop();
+		// proceed only if door opening successful
+		if (attemptToOpenDoors()) {
+			System.out.println("Elevator #" + elevatorNumber + " reached destination");
+		} else {
+			// door malfunction behavior
+			doors.setToStuck();
+			shutDownElevator();
 		}
+	}
 
-		attemptToOpenDoors();
+	/**
+	 * Shuts down the elevator and prevents further use
+	 */
+	public void shutDownElevator() {
+		// empty the request queue
+		int removeRequest;
+		do {
+			removeRequest = requestQueue.removeRequest();
+		} while (removeRequest != -1);
+		motor.setDirection(Direction.NONE);
+		// send shutdown message here ?
 	}
 
 	/**
