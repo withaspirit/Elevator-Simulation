@@ -323,6 +323,18 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Shuts down the elevator and prevents further use
+	 */
+	public void shutDownElevator() {
+		// empty the request queue
+		int removeRequest;
+		do {
+			removeRequest = requestQueue.removeRequest();
+		} while (removeRequest != -1);
+		motor.setDirection(Direction.NONE);
+	}
+
+	/**
 	 * Swaps the requestQueue and changes the service direction before elevator moves to next floor.
 	 * TODO: In the future, there should be a check when the ElevatorMotor
 	 * TODO: MovementState is IDLE. If so, the elevator uses this method.
