@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * ElevatorFaultTest ensures the fault methods for the elevator function correctly.
@@ -72,10 +73,12 @@ public class ElevatorFaultTest {
         int floorNumber = 2;
         Direction requestDirection = Direction.UP;
         ServiceRequest serviceRequest = new ServiceRequest(LocalTime.now(), floorNumber, requestDirection, Origin.ELEVATOR_SYSTEM);
+        ServiceRequest serviceRequest2 = new ServiceRequest(LocalTime.now(), floorNumber + 1, requestDirection, Origin.ELEVATOR_SYSTEM);
 
         initNumberOfElevators(numberOfElevators);
         Elevator elevator1 = elevatorList.get(0);
         elevator1.addRequest(serviceRequest);
+        elevator1.addRequest(serviceRequest2);
         elevator1.toggleMessageTransfer();
         int travelTime = 300;
         elevator1.setTravelTime(travelTime);
@@ -102,6 +105,7 @@ public class ElevatorFaultTest {
 
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after interrupt: " + elevator1.getFault().toString());
         assertEquals(Fault.ELEVATOR_STUCK, elevator1.getFault());
+        assertTrue(elevator1.hasNoRequests());
     }
 
     @Test

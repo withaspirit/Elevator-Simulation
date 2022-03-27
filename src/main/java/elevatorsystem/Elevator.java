@@ -154,12 +154,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 					motor.setMovementState(MovementState.STUCK);
 					motor.setDirection(Direction.NONE);
 					shutDownElevator();
+					approachEvent = null;
+					return;
 				} catch (TimeoutException te) {
 					setFault(Fault.ARRIVAL_SENSOR_FAIL);
 					// shut down elevator
 					motor.setMovementState(MovementState.STUCK);
 					motor.setDirection(Direction.NONE);
 					shutDownElevator();
+					approachEvent = null;
+					return;
 				}
 			}
 		}
