@@ -80,10 +80,13 @@ public class RequestQueue {
 			}
 		}
 		// add to selected queue
-		queueToAddTo.add(request);
 		if (request instanceof ElevatorRequest elevatorRequest) {
-			ServiceRequest newRequest = new ServiceRequest(request.getTime(), ((ElevatorRequest) request).getDesiredFloor(), request.getDirection(), request.getOrigin());
-			queueToAddTo.add(newRequest);
+			ServiceRequest serviceRequest1 = new ServiceRequest(request.getTime(), elevatorRequest.getDesiredFloor(), request.getDirection(), request.getOrigin());
+			ServiceRequest serviceRequest2 = new ServiceRequest(request.getTime(), request.getFloorNumber(), request.getDirection(), request.getOrigin());
+			queueToAddTo.add(serviceRequest1);
+			queueToAddTo.add(serviceRequest2);
+		} else {
+			queueToAddTo.add(request);
 		}
 	}
 
