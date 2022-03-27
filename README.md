@@ -298,7 +298,7 @@ Instructions:
   | ------ | ------ | ------------- | ----
   | Ryan Dash | | Updating README | Code Review
   | Ramit Mahajan | Doors Upgrade, Doors State Changes in Elevator | UML Class Diagram |
-  | Brady Norton | | |
+  | Brady Norton | ArrivalSensor Integration, ApproachEvent Changes | README Contribution | Code Review, Some Fault Type Ideas
   | Julian Obando Velez | | | Code Review
   | Liam Tripp | ElevatorFaultTest, Faults enum, Elevator Faults, Elevator Movement Tests, changed RequestQueue from PriorityQueue to TreeSet, Improved Console Output Statements, Movement bug fixes | Work Breakdown Structure, Updated Movement State Machine Diagram, Updating README | Code Review
 
