@@ -274,12 +274,21 @@ Instructions:
 
   #### Major Changes
   - Added configuration files to automate running multiple main methods with a single button in Intellij
+  - Introduced Fault Handling for Elevator
+  - Removed BoundedBuffer, BoundedBufferTest
+  <br>
   <br>
 
   <details>
     <summary>Show Long Description</summary>
-    
+    <br>
+
     * Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This allows for fast testing in Intellij. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
+    * Faults: There are four different types of Faults. It is assumed only one can occur at a time. All are hard faults except DOORS_INTERRUPTED, which is a soft fault. For the hard faults, the Elevator shuts down. For the soft faults, the Elevator is corrected so that it may continue. It is assumed that opening the doors is uninterruptable and that Doors may only be opened or closed when the Elevator is stopped.There is no fault handling for when a packet is lost, as that was not in the Iteration requirements itself. 
+      - ELEVATOR_STUCK occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). 
+      - ARRIVAL_SENSOR_FAIL occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
+      - DOORS_STUCK occurs when the Doors malfunction while opening or closing.
+      - DOORS_INTERRUPTED occurs when the Doors are interrupted while closing. 
 
   </details>
 
@@ -287,11 +296,11 @@ Instructions:
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | | | Code Review
+  | Ryan Dash | | Updating README | Code Review
   | Ramit Mahajan | Doors Upgrade, Doors State Changes in Elevator | UML Class Diagram |
   | Brady Norton | | |
   | Julian Obando Velez | | | Code Review
-  | Liam Tripp | ElevatorFaultTest, Faults enum, Elevator Faults, Elevator Movement Tests, changed RequestQueue from PriorityQueue to TreeSet, Improved Console Output Statements, Movement bug fixes | Work Breakdown Structure, Updated Movement State Machine Diagram | Code Review
+  | Liam Tripp | ElevatorFaultTest, Faults enum, Elevator Faults, Elevator Movement Tests, changed RequestQueue from PriorityQueue to TreeSet, Improved Console Output Statements, Movement bug fixes | Work Breakdown Structure, Updated Movement State Machine Diagram, Updating README | Code Review
 
   ### Diagrams
 
