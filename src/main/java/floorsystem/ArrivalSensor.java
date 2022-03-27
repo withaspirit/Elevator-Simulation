@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author Ramit Mahajan, Brady Norton
  */
-public class ArrivalSensor{
+public class ArrivalSensor {
 
 	// Requests for this arrival sensors floor
 	ArrayList<ServiceRequest> activeRequests;
@@ -41,7 +41,7 @@ public class ArrivalSensor{
 	/**
 	 * Receive ServiceRequest and add it to the list of activeRequests for this arrival sensor
 	 */
-	public void addRequest(ServiceRequest request){
+	public void addRequest(ServiceRequest request) {
 		activeRequests.add(request);
 	}
 
@@ -52,7 +52,7 @@ public class ArrivalSensor{
 	 *
 	 * @return true if the elevator approaching should stop, false if not
 	 */
-	public void shouldStop(ApproachEvent approachEvent){
+	public void shouldStop(ApproachEvent approachEvent) {
 		for(ServiceRequest request: activeRequests){
 			if(approachEvent.getElevatorNumber() == request.getElevatorNumber() && approachEvent.getDirection() == request.getDirection()
 					&& approachEvent.getFloorNumber() == approachEvent.getFloorToVisit() && approachEvent.getFloorNumber() == request.getFloorNumber()){
