@@ -40,8 +40,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private volatile ApproachEvent approachEvent;
 	// variable for allowing / disallowing Elevator's message transfer
 	private boolean messageTransferEnabled;
-	private boolean travelTimeEnabled;
-	private boolean doorTimeEnabled;
+	private int travelTime;
+	private int doorTime;
 	private volatile boolean doorsMalfunctioning;
 
 	/**
@@ -62,8 +62,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 		serviceDirection = Direction.UP;
 		approachEvent = null;
 		messageTransferEnabled = true;
-		travelTimeEnabled = false;
-		doorTimeEnabled = false;
+		travelTime = -1;
+		doorTime = -1;
 		doorsMalfunctioning = false;
 	}
 
@@ -134,15 +134,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// otherwise, wait forever
 		}
 		// FIXME: this is too deeply nested. extract into methods
-		if (!travelTimeEnabled && messageTransferEnabled) {
+		if (travelTime < 0 && messageTransferEnabled) {
 			while (approachEvent == null) {
 			}
-		} else if (travelTimeEnabled) {
+		} else if (travelTime >= 0 ) {
 
 			synchronized (this) {
 				try {
 					// wait to simulate movement
-					wait(300);
+					wait(travelTime);
 
 					if (messageTransferEnabled && approachEvent == null) {
 						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before [travelTime] expired.";
@@ -235,8 +235,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void attemptToOpenDoors() {
 		synchronized (this) {
 			try {
-				if (doorTimeEnabled) {
-					wait(300);
+				if (doorTime >= 0) {
+					wait(doorTime);
 				}
 
 				if (!doorsMalfunctioning) {
@@ -263,8 +263,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void attemptToCloseDoors() {
 		synchronized (this) {
 			try {
-				if (doorTimeEnabled) {
-					wait(300);
+				if (doorTime >= 0) {
+					wait(doorTime);
 				}
 
 				if (!doorsMalfunctioning) {
@@ -463,18 +463,18 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Toggles the Elevator thread waiting while moving to simulate movement.
-	 * If TravelTime is enabled, the Elevator may experience interrupts.
+	 * Sets the Elevator's time traveling between floors when MOVING
+	 * and waiting on a floor when STOPPED.
 	 */
-	public void toggleTravelTime() {
-		travelTimeEnabled = !travelTimeEnabled;
+	public void setTravelTime(int time) {
+		travelTime = time;
 	}
 
 	/**
-	 * Toggles whether an Elevator Thread waits time when the Doors are opening and closing.
+	 * Sets the Elevator's Doors' opening / closing time.
 	 */
-	public void toggleDoorTime() {
-		doorTimeEnabled = !doorTimeEnabled;
+	public void setDoorTime(int time) {
+		doorTime = time;
 	}
 
 	/**

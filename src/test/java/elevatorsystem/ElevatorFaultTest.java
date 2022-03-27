@@ -77,7 +77,7 @@ public class ElevatorFaultTest {
         Elevator elevator1 = elevatorList.get(0);
         elevator1.addRequest(serviceRequest);
         elevator1.toggleMessageTransfer();
-        elevator1.toggleTravelTime();
+        elevator1.setTravelTime(300);
 
         initElevatorThreads();
 
@@ -123,7 +123,7 @@ public class ElevatorFaultTest {
         elevator1.addRequest(serviceRequest);
         // include message transfer
         // enable travel time
-        elevator1.toggleTravelTime();
+        elevator1.setTravelTime(300);
 
         initElevatorThreads();
 
@@ -146,7 +146,7 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        elevator1.toggleDoorTime();
+        elevator1.setDoorTime(300);
 
         Runnable closeDoorsRunnable = elevator1::attemptToCloseDoors;
         Thread elevatorThread = new Thread(closeDoorsRunnable);
@@ -182,7 +182,7 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        elevator1.toggleDoorTime();
+        elevator1.setDoorTime(300);
 
         Runnable closeDoorsRunnable = elevator1::attemptToCloseDoors;
         Thread elevatorThread = new Thread(closeDoorsRunnable);
@@ -222,7 +222,7 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        elevator1.toggleDoorTime();
+        elevator1.setDoorTime(300);
 
         Runnable openDoorsRunnable = elevator1::attemptToOpenDoors;
         Thread elevatorThread = new Thread(openDoorsRunnable);
