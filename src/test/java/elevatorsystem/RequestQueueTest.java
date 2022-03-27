@@ -3,10 +3,12 @@ package elevatorsystem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
+import requests.ServiceRequest;
 import systemwide.Direction;
 import systemwide.Origin;
 
 import java.time.LocalTime;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -340,5 +342,22 @@ class RequestQueueTest {
 	@Test
 	void testOppositeAndMissedCorrectRemovalOrder() {
 
+	}
+
+	@Test
+	void testDuplicatesNotAdded() {
+		int requestFloor1 = 1;
+		int requestFloor2 = 1;
+		ServiceRequest serviceRequest1 = new ServiceRequest(LocalTime.now(), requestFloor1, Direction.UP, Origin.ELEVATOR_SYSTEM);
+		// ensure that different time doesn't make a difference
+		try {
+			TimeUnit.MILLISECONDS.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		ServiceRequest serviceRequest2 = new ServiceRequest(LocalTime.now(), requestFloor2, Direction.UP, Origin.FLOOR_SYSTEM);
+		testQueue.addRequest(1, Direction.UP, serviceRequest1);
+		testQueue.addRequest(1, Direction.UP, serviceRequest2);
+		assertFalse(testQueue.toString().contains(","));
 	}
 }
