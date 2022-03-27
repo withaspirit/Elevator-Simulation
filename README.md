@@ -81,6 +81,7 @@ Tests:
 - RequestQueueTest: tests that the RequestQueue adds ServiceRequests to the correct list and that requests are added and removed in the correct order
 - MessageTransferTest: tests that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
 - FloorTest: tests that the ArrivalSensor correctly modifies an ApproachEvent
+- FloorSubsystemTest: tests that the correct Floor is selected when an ApproachEvent is received
 
 </details>
 
