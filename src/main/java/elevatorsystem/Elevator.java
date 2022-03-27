@@ -309,7 +309,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				doors.setToStuck();
 				shutDownElevator();
 			}
-		} else {
+		} else if (fault == Fault.DOORS_STUCK) {
 			// door malfunction behavior
 			shutDownElevator();
 		}
