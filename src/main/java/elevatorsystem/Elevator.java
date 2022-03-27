@@ -230,9 +230,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * Attempts to open the Elevator's Doors. If DoorTime is enabled, the
 	 * elevator waits before taking action on the Doors. If the Doors have
 	 * malfunctioned, the Elevator takes action accordingly.
+	 *
+	 * @return true if attempt is successful, false otherwise
 	 */
 	// FIXME: attemptToOpenDoors and attemptToCloseDoors are very similar
-	public void attemptToOpenDoors() {
+	public boolean attemptToOpenDoors() {
 		synchronized (this) {
 			try {
 				if (doorTimeEnabled) {
@@ -241,15 +243,18 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 				if (!doorsMalfunctioning) {
 					doors.open();
+					return true;
 				} else {
 					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
 					throw new IllegalStateException(messageToPrint);
 				}
 			} catch (InterruptedException e) {
 				// do nothing. doors opening can never be interrupted
+				return true;
 			} catch (IllegalStateException ise) {
 				setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();
+				return false;
 			}
 		}
 	}
@@ -259,8 +264,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * elevator waits before taking action on the Doors. If the Doors have
 	 * malfunctioned, the Elevator takes action accordingly. If the Doors
 	 * are interrupted, the doors reverse course.
+	 *
+	 * @return true if attempt is successful, false otherwise
 	 */
-	public void attemptToCloseDoors() {
+	public boolean attemptToCloseDoors() {
 		synchronized (this) {
 			try {
 				if (doorTimeEnabled) {
@@ -269,6 +276,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 				if (!doorsMalfunctioning) {
 					doors.close();
+					return true;
 				} else {
 					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
 					throw new IllegalStateException(messageToPrint);
@@ -276,9 +284,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 			} catch (InterruptedException ie) {
 				setFault(Fault.DOORS_INTERRUPTED);
 				ie.printStackTrace();
+				return false;
 			} catch (IllegalStateException ise) {
 				setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();
+				return false;
 			}
 		}
 	}
