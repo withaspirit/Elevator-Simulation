@@ -150,13 +150,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 					}
 				} catch (InterruptedException ie) {
 					setFault(Fault.ELEVATOR_STUCK);
-					// handle ApproachEvent wait interrupt
-					// TODO: Not sure if should have if-else for (approachEvent == null)
-					ie.printStackTrace();
+					// shut down elevator
+					motor.setMovementState(MovementState.STUCK);
+					motor.setDirection(Direction.NONE);
+					shutDownElevator();
 				} catch (TimeoutException te) {
 					setFault(Fault.ARRIVAL_SENSOR_FAIL);
-					// handle ArrivalSensor Fault
-					te.printStackTrace();
+					// shut down elevator
+					motor.setMovementState(MovementState.STUCK);
+					motor.setDirection(Direction.NONE);
+					shutDownElevator();
 				}
 			}
 		}
