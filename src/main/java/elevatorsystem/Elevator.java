@@ -221,7 +221,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// elevator has reached destination after moving one floor
 				stopAtFloor(requestFloor);
 			} else if (floorToVisit == requestFloor) {
-				// (???) do nothing
+				// do nothing
 			} else {
 				// floorToVisit != requestFloor
 				// keep moving
