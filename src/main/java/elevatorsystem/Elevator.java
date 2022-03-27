@@ -299,11 +299,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param floorToVisit the next floor the elevator will visit
 	 */
 	public void startMovingToFloor(int floorToVisit) {
-
-		attemptToCloseDoors();
-
-		motor.startMoving();
-		motor.changeDirection(currentFloor, floorToVisit);
+		// proceed only if door closing successful
+		if (attemptToCloseDoors()) {
+			motor.startMoving();
+			motor.changeDirection(currentFloor, floorToVisit);
+		} else if (!attemptToOpenDoors()) {
+			// if doors opening also unsuccessful, shut down elevator
+			doors.setToStuck();
+			shutDownElevator();
+		}
 	}
 
 	/**
@@ -313,13 +317,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void stopAtFloor(int requestFloor) {
 		attemptToRemoveFloor(requestFloor);
-		System.out.println("Elevator #" + elevatorNumber + " reached destination");
-
-		if (motor.isActive()) {
-			motor.stop();
+		// proceed only if door opening successful
+		if (attemptToOpenDoors()) {
+			System.out.println("Elevator #" + elevatorNumber + " reached destination");
+		} else {
+			// door malfunction behavior ???
 		}
-
-		attemptToOpenDoors();
 	}
 
 	/**
