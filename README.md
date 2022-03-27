@@ -72,8 +72,8 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 3. Right click on the directory and select "Run As" -> "JUnit Test". This runs all the unit tests
 
 Tests: 
-- InputFileReaderTest.java: tests related to reading the JSON input file
-- SchedulerTest.java: tests related to passing data between the systems
+- InputFileReaderTest: tests related to reading the JSON input file
+- SchedulerTest: tests related to passing data between the systems
 - DirectionTest: tests the Direction enum's getDirectionByName function
 - ElevatorMotorTest: tests for the proper updating of states in the elevator motor class
 - ElevatorSelectionTest:
