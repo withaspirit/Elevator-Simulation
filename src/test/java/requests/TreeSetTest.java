@@ -14,8 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * TreeSetTest demonstrates the utility of TreeSet with Comparators and
  * Comparable classes.
  *
- * Resources used:
- * https://howtodoinjava.com/java/collections/java-priorityqueue/
+ * Resource used: https://howtodoinjava.com/java/collections/java-priorityqueue/
  *
  * @author Liam Tripp
  */
