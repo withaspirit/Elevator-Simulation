@@ -34,7 +34,7 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 
 <details>
   <summary>Installation</summary>
-  
+
 1.	Download and extract the ZIP folder
 2. 	Open up Eclipse and select file
 3. 	Click "Open Projects from File System" and select the project folder
