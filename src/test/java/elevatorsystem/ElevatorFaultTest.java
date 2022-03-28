@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * ElevatorFaultTest ensures the fault methods for the elevator function correctly.
@@ -72,10 +73,12 @@ public class ElevatorFaultTest {
         int floorNumber = 2;
         Direction requestDirection = Direction.UP;
         ServiceRequest serviceRequest = new ServiceRequest(LocalTime.now(), floorNumber, requestDirection, Origin.ELEVATOR_SYSTEM);
+        ServiceRequest serviceRequest2 = new ServiceRequest(LocalTime.now(), floorNumber + 1, requestDirection, Origin.ELEVATOR_SYSTEM);
 
         initNumberOfElevators(numberOfElevators);
         Elevator elevator1 = elevatorList.get(0);
         elevator1.addRequest(serviceRequest);
+        elevator1.addRequest(serviceRequest2);
         elevator1.toggleMessageTransfer();
         int travelTime = 300;
         elevator1.setTravelTime(travelTime);
@@ -102,6 +105,7 @@ public class ElevatorFaultTest {
 
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after interrupt: " + elevator1.getFault().toString());
         assertEquals(Fault.ELEVATOR_STUCK, elevator1.getFault());
+        assertTrue(elevator1.hasNoRequests());
     }
 
     @Test
@@ -118,10 +122,12 @@ public class ElevatorFaultTest {
         int floorNumber = 2;
         Direction requestDirection = Direction.UP;
         ServiceRequest serviceRequest = new ServiceRequest(LocalTime.now(), floorNumber, requestDirection, Origin.ELEVATOR_SYSTEM);
+        ServiceRequest serviceRequest2 = new ServiceRequest(LocalTime.now(), floorNumber + 1, requestDirection, Origin.ELEVATOR_SYSTEM);
 
         initNumberOfElevators(numberOfElevators);
         Elevator elevator1 = elevatorList.get(0);
         elevator1.addRequest(serviceRequest);
+        elevator1.addRequest(serviceRequest2);
         // include message transfer
         // enable travel time
         int travelTime = 300;
@@ -139,6 +145,7 @@ public class ElevatorFaultTest {
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
                 Fault.ARRIVAL_SENSOR_FAIL.getName() + ": " + elevator1.getFault().toString());
         assertEquals(Fault.ARRIVAL_SENSOR_FAIL, elevator1.getFault());
+        assertTrue(elevator1.hasNoRequests());
     }
 
     @Test
@@ -210,6 +217,7 @@ public class ElevatorFaultTest {
                 Fault.DOORS_STUCK.getName() + ": " + elevator1.getFault().toString());
         assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
         assertEquals(Fault.DOORS_STUCK, elevator1.getFault());
+        assertTrue(elevator1.hasNoRequests());
     }
 
     @Test
@@ -258,5 +266,43 @@ public class ElevatorFaultTest {
         for (int i = 0; i < numberOfTimesToTest; i++) {
             testDoorsStuckOnOpening();
         }
+    }
+
+    @Test
+    void testDoorsStuckOnClosingShutsDownElevator() {
+        initNumberOfElevators(1);
+        int requestFloor = 1;
+        ServiceRequest serviceRequest = new ServiceRequest(LocalTime.now(), requestFloor, Direction.UP, Origin.ELEVATOR_SYSTEM);
+        Elevator elevator1 = elevatorList.get(0);
+        elevator1.addRequest(serviceRequest);
+        // disable message transfer
+        elevator1.toggleMessageTransfer();
+        // enable door time
+        int doorTime = 300;
+        elevator1.setDoorTime(doorTime);
+
+        Runnable closeDoorsRunnable = () -> elevator1.stopAtFloor(requestFloor);
+        Thread elevatorThread = new Thread(closeDoorsRunnable);
+        threads.add(elevatorThread);
+        elevatorThread.start();
+
+        // give elevator time to enter wait statement -> doesn't work without this
+        try {
+            TimeUnit.MILLISECONDS.sleep(doorTime / 3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        elevator1.toggleDoorMalfunction();
+        // time should be the same as the DOOR_TIME
+        try {
+            TimeUnit.MILLISECONDS.sleep(doorTime * 5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
+                Fault.DOORS_STUCK.getName() + ": " + elevator1.getFault().toString());
+        assertEquals(Doors.State.STUCK, elevator1.getDoors().getState());
+        assertEquals(Fault.DOORS_STUCK, elevator1.getFault());
+        assertTrue(elevator1.hasNoRequests());
     }
 }
