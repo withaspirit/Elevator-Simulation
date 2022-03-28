@@ -48,7 +48,7 @@ public class ArrivalSensor {
 	 *
 	 * @param approachEvent indicates that an elevator is approaching this floor
 	 */
-	public void shouldStop(ApproachEvent approachEvent) {
+	public void compareToListOfRequests(ApproachEvent approachEvent) {
 		for (ServiceRequest request: requestsOnFloor) {
 			if (approachEvent.getElevatorNumber() == request.getElevatorNumber() &&
 					approachEvent.getDirection() == request.getDirection() &&
