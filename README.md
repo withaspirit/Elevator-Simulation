@@ -276,6 +276,7 @@ Instructions:
   - Added configuration files to automate running multiple main methods with a single button in Intellij
   - Introduced Fault Handling for Elevator
   - Removed BoundedBuffer, BoundedBufferTest
+  - fixed elevator selection algorithm to meet requirements
   <br>
 
   <details>
@@ -289,7 +290,7 @@ Instructions:
       - DOORS_INTERRUPTED occurs when the Doors are interrupted while closing. 
     * Faults are tested using the ElevatorFaultTest file.
     * Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This allows for fast testing in Intellij. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
-
+    * Moved Elevator Selection to Scheduler and reworked IntermediateHost to allow for selection of elevators to work properly
   </details>
 
   ### Contributions
