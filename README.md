@@ -275,6 +275,7 @@ Instructions:
   #### Major Changes
   - Added configuration files to automate running multiple main methods with a single button in Intellij
   - Introduced Fault Handling for Elevator
+  - Injected faults in the form of JUnit tests
   - Removed BoundedBuffer, BoundedBufferTest
   <br>
   <br>
