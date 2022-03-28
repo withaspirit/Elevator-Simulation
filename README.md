@@ -291,6 +291,7 @@ Instructions:
     * Faults are tested using the ElevatorFaultTest file.
     * Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This allows for fast testing in Intellij. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
     * Moved Elevator Selection to Scheduler and reworked IntermediateHost to allow for selection of elevators to work properly
+    * Note that there is currently an unhandled case where an Elevator is at floor 1 and moving to floor 3. If it receives an request to move to floor 2 just before it is about to pass floor 2, it might not have enough time to stop or send and receive an approachEvent. This problem has yet to be dealt with.
   </details>
 
   ### Contributions
