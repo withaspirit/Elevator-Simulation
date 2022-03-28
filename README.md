@@ -311,6 +311,9 @@ Instructions:
   Arrival Sensor Fault
   ![ArrivalSensorFault](https://user-images.githubusercontent.com/71390371/160315145-06c438b2-cb96-4d46-9060-d0d52dbae82b.PNG)
 
+  Elevator Stuck Fault
+  ![ElevatorStuckFault](https://user-images.githubusercontent.com/71390371/160318124-d13e65a2-c7a1-47b4-abfb-22ea892e0bb2.PNG)
+  
   Door Stuck Fault
   ![DoorFault](https://user-images.githubusercontent.com/71390371/160315213-693b2eb4-a16a-410b-8327-489baa8ecb12.PNG)
 
