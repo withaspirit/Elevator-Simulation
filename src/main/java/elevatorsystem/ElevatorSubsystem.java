@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-
 /**
  * ElevatorSubsystem manages the elevators and their requests to the Scheduler
  *
@@ -58,7 +57,6 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	public void handleApproachEvent(ApproachEvent approachEvent) {
 		eventQueue.add(approachEvent);
 	}
-
 
 	/**
 	 * Sends new updated elevator status information to the scheduler.
