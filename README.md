@@ -307,6 +307,8 @@ Instructions:
   ### Diagrams
 
   #### UML Class Diagram
+
+  ![image](https://user-images.githubusercontent.com/61635007/160321686-72ed3f7e-c35d-4d6e-a65b-0a8bcfc80e01.png)
   
   #### Timing Diagram
   Arrival Sensor Fault
