@@ -53,8 +53,8 @@ public class ArrivalSensor {
 	 * @return true if the elevator approaching should stop, false if not
 	 */
 	public void shouldStop(ApproachEvent approachEvent) {
-		for(ServiceRequest request: activeRequests){
-			if(approachEvent.getElevatorNumber() == request.getElevatorNumber() && approachEvent.getDirection() == request.getDirection()
+		for (ServiceRequest request: activeRequests) {
+			if (approachEvent.getElevatorNumber() == request.getElevatorNumber() && approachEvent.getDirection() == request.getDirection()
 					&& approachEvent.getFloorNumber() == approachEvent.getFloorToVisit() && approachEvent.getFloorNumber() == request.getFloorNumber()){
 				// Set boolean in approachEvent that will allow elevator to stop
 				approachEvent.allowElevatorStop();
