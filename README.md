@@ -72,13 +72,41 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 3. Right click on the directory and select "Run As" -> "JUnit Test". This runs all the unit tests
 
 Tests: 
-- InputReaderTest.java: tests related to reading the JSON input file
-- SchedulerTest.java: tests related to passing data between the systems
-- DirectionTest: tests related to the Direction enum search function
-- BoundedBufferTest: tests related tothe BoundedBuffer methods for Thread-Safe messaging
-- ElevatorMotorTest: tests for the proper updating of states in the elevator motor class.
-- FloorsQueueTest: test for realted to the proper manipulation of the queues.
-- MessageTransferTest: ensures that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets.
+- InputFileReaderTest: tests related to reading the JSON input file
+- SchedulerTest: tests related to passing data between the systems
+- DirectionTest: tests the Direction enum's getDirectionByName function
+- ElevatorMotorTest: tests for the proper updating of states in the elevator motor class
+- ElevatorSelectionTest:
+- ElevatorFaultTest: tests the fault-handling behavior of the Elevator for the faults: Doors Interrupted, Doors Stuck, Elevator Interrupted, Elevator Stuck
+- RequestQueueTest: tests that the RequestQueue adds ServiceRequests to the correct list and that requests are added and removed in the correct order
+- MessageTransferTest: tests that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
+- FloorTest: tests that the ArrivalSensor correctly modifies an ApproachEvent
+- FloorSubsystemTest: tests that the correct Floor is selected when an ApproachEvent is received
+
+</details>
+
+<details>
+  <summary>Running</summary>
+
+<br>
+The program can be run as one program with the class Structure. The program can also be run as multiple separate programs with the classes Scheduler, ElevatorSubsystem, and FloorSubsystem.
+
+The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: Scheduler, ElevatorSubsystem, and FloorSubsystem. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
+
+#### Eclipse
+
+- Set the Run Configuration to run these classes in order: Scheduler, ElevatorSubsystem, and FloorSubsystem.
+
+#### IntelliJ
+
+IntelliJ does not allow ordered run configurations, so the Multirun plugin is used. 
+
+Instructions:
+- To install Multirun, click the Setting icon in the top right corner of IntelliJ. Select plugins. 
+- Search for Multirun in the plugins list. If it does not show up, there should be an option to search aftermarket plugins which you can click. 
+- Click the install button
+- Multirun should now be installed and ready to use.
+- The run option should now be available in IntelliJ's run configurations..
 
 </details>
 
@@ -223,7 +251,7 @@ Tests:
   | Ramit Mahajan | Integrating Doors class | UML Diagram, README | Code review
   | Brady Norton | Elevator Movement Algorithm, Elevator Movement Properties Modification, Integrating Floors Queue into Movement, Movement Tests | Movement Design | Code review
   | Julian Obando Velez | Message Encoding/Decoding, Client for UDP, JUnit testing | Diagram Review | TA contact, Code review
-  | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integration | Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML CLass Diagram | Code review
+  | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integrationm, FloorTest, RequestQueueTest | Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML CLass Diagram | Code review
 
   ### Diagrams
    
@@ -242,22 +270,56 @@ Tests:
 
   ### Description
 
-  Lorem ipsum
+  In this iteration, fault detecting and handling is implemented. The simulation now shows faults for elevators.
+
+  #### Major Changes
+  - Added configuration files to automate running multiple main methods with a single button in Intellij
+  - Introduced Fault Handling for Elevator
+  - Removed BoundedBuffer, BoundedBufferTest
+  - Fixed elevator selection algorithm to meet requirements
+  <br>
 
   <details>
     <summary>Show Long Description</summary>
-    
+    <br>
+  
+    * Faults: There are four different types of Faults. It is assumed only one can occur at a time. All are hard faults except DOORS_INTERRUPTED, which is a soft fault. For the hard faults, the Elevator shuts down. For the soft faults, the Elevator is corrected so that it may continue. It is assumed that opening the doors is uninterruptable and that Doors may only be opened or closed when the Elevator is stopped.There is no fault handling for when a packet is lost, as that was not in the Iteration requirements itself. 
+      - ELEVATOR_STUCK occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). 
+      - ARRIVAL_SENSOR_FAIL occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
+      - DOORS_STUCK occurs when the Doors malfunction while opening or closing.
+      - DOORS_INTERRUPTED occurs when the Doors are interrupted while closing. 
+    * Faults are tested using the ElevatorFaultTest file.
+    * Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This allows for fast testing in Intellij. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
+    * Moved Elevator Selection to Scheduler and reworked IntermediateHost to allow for selection of elevators to work properly
+    * Note that there is currently an unhandled case where an Elevator is at floor 1 and moving to floor 3. If it receives an request to move to floor 2 just before it is about to pass floor 2, it might not have enough time to stop or send and receive an approachEvent. This problem has yet to be dealt with.
   </details>
 
   ### Contributions
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | | |
-  | Ramit Mahajan | | |
-  | Brady Norton | | |
-  | Julian Obando Velez | | |
-  | Liam Tripp | | |
+  | Ryan Dash | Moved elevator selection to Scheduler, Reworked IntermediateHost for Elevator Selection, Improved Elevator Monitors | Updating README | Code Review
+  | Ramit Mahajan | Doors Upgrade, Doors State Changes in Elevator | UML Class Diagram |
+  | Brady Norton | ArrivalSensor Integration, ApproachEvent Changes | README Contribution | Code Review, Some Fault Type Ideas
+  | Julian Obando Velez | | Timing Diagrams | Code Review
+  | Liam Tripp | ElevatorFaultTest, Faults enum, Elevator Faults, Elevator Movement Tests, changed RequestQueue from PriorityQueue to TreeSet, Improved Console Output Statements, Movement bug fixes | Work Breakdown Structure, Updated Movement State Machine Diagram, Updating README | Code Review
+
+  ### Diagrams
+
+  #### UML Class Diagram
+
+  ![image](https://user-images.githubusercontent.com/61635007/160321686-72ed3f7e-c35d-4d6e-a65b-0a8bcfc80e01.png)
+  
+  #### Timing Diagrams
+
+  - Arrival Sensor Fault
+  ![ArrivalSensorFault](https://user-images.githubusercontent.com/71390371/160315145-06c438b2-cb96-4d46-9060-d0d52dbae82b.PNG)
+
+  - Elevator Stuck Fault
+  ![ElevatorStuckFault](https://user-images.githubusercontent.com/71390371/160318124-d13e65a2-c7a1-47b4-abfb-22ea892e0bb2.PNG)
+  
+  - Door Stuck Fault
+  ![DoorFault](https://user-images.githubusercontent.com/71390371/160315213-693b2eb4-a16a-410b-8327-489baa8ecb12.PNG)
 
   </details>
 
@@ -282,6 +344,10 @@ Tests:
   | Ramit Mahajan | | |
   | Brady Norton | | |
   | Julian Obando Velez | | |
-  | Liam Tripp | | |
+  | Liam Tripp | |  |
+  
+  ### Diagrams
+
+  #### UML Class Diagram
 
   </details>
