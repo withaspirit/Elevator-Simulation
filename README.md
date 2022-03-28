@@ -281,6 +281,7 @@ Instructions:
   <details>
     <summary>Show Long Description</summary>
     <br>
+  
     * Faults: There are four different types of Faults. It is assumed only one can occur at a time. All are hard faults except DOORS_INTERRUPTED, which is a soft fault. For the hard faults, the Elevator shuts down. For the soft faults, the Elevator is corrected so that it may continue. It is assumed that opening the doors is uninterruptable and that Doors may only be opened or closed when the Elevator is stopped.There is no fault handling for when a packet is lost, as that was not in the Iteration requirements itself. 
       - ELEVATOR_STUCK occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). 
       - ARRIVAL_SENSOR_FAIL occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
