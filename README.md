@@ -295,7 +295,7 @@ Instructions:
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | | Updating README | Code Review
+  | Ryan Dash | Moved elevator selection to Scheduler, Reworked IntermediateHost for Elevator Selection, Improved Elevator Monitors | Updating README | Code Review
   | Ramit Mahajan | Doors Upgrade, Doors State Changes in Elevator | UML Class Diagram |
   | Brady Norton | ArrivalSensor Integration, ApproachEvent Changes | README Contribution | Code Review, Some Fault Type Ideas
   | Julian Obando Velez | | Timing Diagrams | Code Review
