@@ -276,7 +276,7 @@ Instructions:
   - Added configuration files to automate running multiple main methods with a single button in Intellij
   - Introduced Fault Handling for Elevator
   - Removed BoundedBuffer, BoundedBufferTest
-  - fixed elevator selection algorithm to meet requirements
+  - Fixed elevator selection algorithm to meet requirements
   <br>
 
   <details>
