@@ -1,13 +1,16 @@
 package GUI;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class ElevatorMainGUI {
+
+	private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
 	public ElevatorMainGUI(){
 		JFrame mainFrame = new JFrame("Elevator GUI");
 		ElevatorDoorPanel doorPanel = new ElevatorDoorPanel();
-		ElevatorButtonPanel buttonGUI = new ElevatorButtonPanel(22);
+		ElevatorButtonPanel buttonGUI = new ElevatorButtonPanel(22, screenSize.height/2);
 		mainFrame.add(doorPanel.getPanel());
 		mainFrame.add(buttonGUI.getPanel());
 		mainFrame.setSize(buttonGUI.getPanel().getSize());
