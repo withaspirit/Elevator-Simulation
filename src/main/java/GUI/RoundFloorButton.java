@@ -44,6 +44,7 @@ public class RoundFloorButton extends JButton implements ActionListener{
 		g.setColor(Color.DARK_GRAY);
 		g.fillOval(3, 3, getSize().width - 7, getSize().height - 7);
 		super.paintComponent(g);
+		setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12 * getSize().width/50));
 	}
 
 	/**
