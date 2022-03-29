@@ -23,11 +23,14 @@ public class ElevatorButtonPanel {
 		int numberOfRows = numberOfFloors/4 + 1;
 		elevatorButtons = new JPanel();
 		elevatorButtons.setLayout(new GridLayout(numberOfRows, 4));
-		for (int i = 1; i <= 4; i++){
-			for (int j = 1; j <= numberOfRows; j++){
-				elevatorButtons.add(new RoundFloorButton(numberOfFloors--));
-				if (numberOfFloors == 0){
-					break;
+		int floor = 0;
+		for (int i = 0; i < numberOfRows; i++){
+			for (int j = 4; j > 0; j--){
+				floor = numberOfFloors - (i * 4 + j);
+				if (floor > 0){
+					elevatorButtons.add(new RoundFloorButton(floor));
+				} else{
+					elevatorButtons.add(new JButton("Emergency"));
 				}
 			}
 		}
@@ -51,7 +54,7 @@ public class ElevatorButtonPanel {
 		JPanel panel = new ElevatorButtonPanel(22).getPanel();
 		JFrame frame = new JFrame();
 		frame.add(panel);
-		frame.setSize(400, (int) (width/4));
+		frame.setSize(400, 200);
 		frame.setVisible(true);
 	}
 }
