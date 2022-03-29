@@ -9,12 +9,12 @@ public class ElevatorMainGUI {
 
 	public ElevatorMainGUI(){
 		JFrame mainFrame = new JFrame("Elevator GUI");
-		ElevatorDoorPanel doorPanel = new ElevatorDoorPanel();
+		mainFrame.setLayout(new BorderLayout());
+		ElevatorDoorPanel doorPanel = new ElevatorDoorPanel(screenSize.height/2);
 		ElevatorButtonPanel buttonGUI = new ElevatorButtonPanel(22, screenSize.height/2);
-		mainFrame.add(doorPanel.getPanel());
-		mainFrame.add(buttonGUI.getPanel());
-		mainFrame.setSize(buttonGUI.getPanel().getSize());
-		mainFrame.setPreferredSize(mainFrame.getSize());
+		mainFrame.add(doorPanel.getPanel(), BorderLayout.NORTH);
+		mainFrame.add(buttonGUI.getPanel(), BorderLayout.SOUTH);
+		mainFrame.setSize(buttonGUI.getPanel().getWidth(), screenSize.height);
 		mainFrame.setVisible(true);
 	}
 
