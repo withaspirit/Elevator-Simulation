@@ -1,4 +1,4 @@
-package systemwide;
+package GUI;
 
 import javax.swing.*;
 import java.awt.*;

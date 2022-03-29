@@ -1,4 +1,4 @@
-package systemwide;
+package GUI;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,6 +15,7 @@ public class RoundFloorButton extends JButton implements ActionListener{
 
 	// Hit detection
 	private Shape shape;
+	private Boolean buttonClicked = false;
 
 	/**
 	 * Main Constructor for RoundFloorButton
@@ -23,8 +24,7 @@ public class RoundFloorButton extends JButton implements ActionListener{
 	 */
 	public RoundFloorButton(int floorNumber) {
 		super("" + floorNumber);
-
-		setBackground(Color.lightGray);
+		setForeground(Color.lightGray);
 		setFocusable(false);
 		Dimension size = getPreferredSize();
 		size.width = size.height = Math.max(size.width, size.height);
@@ -39,14 +39,10 @@ public class RoundFloorButton extends JButton implements ActionListener{
 	 * @param g the graphics for the button
 	 */
 	protected void paintComponent(Graphics g) {
-		if (getModel().isArmed()) {
-			g.setColor(Color.gray);
-		} else {
-			g.setColor(getBackground());
-		}
+		g.setColor(new Color(192,192,192));
 		g.fillOval(0, 0, getSize().width - 1, getSize().height - 1);
-		g.setColor(Color.orange);
-		g.fillOval(5, 5, getSize().width - 11, getSize().height - 11);
+		g.setColor(Color.DARK_GRAY);
+		g.fillOval(3, 3, getSize().width - 7, getSize().height - 7);
 		super.paintComponent(g);
 	}
 
@@ -56,8 +52,19 @@ public class RoundFloorButton extends JButton implements ActionListener{
 	 * @param g the graphics for the button
 	 */
 	protected void paintBorder(Graphics g) {
-		g.setColor(Color.BLACK);
+		g.setColor(Color.DARK_GRAY);
 		g.drawOval(0, 0, getSize().width - 1, getSize().height - 1);
+		if (getModel().isArmed()) {
+			g.setColor(getBackground());
+			buttonClicked = !buttonClicked;
+		} else {
+			if (!buttonClicked){
+				g.setColor(Color.RED);
+			} else {
+				g.setColor(Color.GREEN);
+			}
+		}
+		g.drawOval(3, 3, getSize().width - 7, getSize().height - 7);
 	}
 
 	/**
@@ -84,7 +91,6 @@ public class RoundFloorButton extends JButton implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int floor = Integer.parseInt(e.getActionCommand());
-
 	}
 
 	/**
