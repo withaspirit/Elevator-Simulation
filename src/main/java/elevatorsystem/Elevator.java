@@ -342,16 +342,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Shuts down the elevator and prevents further use
+	 * Shuts down the elevator by removing all Requests from its RequestQueue.
 	 */
 	public void shutDownElevator() {
 		// empty the request queue
-		int removeRequest;
+		ServiceRequest removeRequest;
 		do {
 			removeRequest = requestQueue.removeRequest();
-		} while (removeRequest != -1);
+		} while (removeRequest != null);
 		motor.setDirection(Direction.NONE);
-		// send shutdown message here ?
 	}
 
 	/**
