@@ -166,7 +166,7 @@ public class RequestQueue {
 	}
 
 	/**
-	 * Returns the occupancy status of the missed requests queue
+	 * Returns the occupancy status of the missed RequestQueue
 	 *
 	 * @return status true if empty
 	 */
