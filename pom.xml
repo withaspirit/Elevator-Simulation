@@ -6,7 +6,7 @@
 
     <groupId>elevatorsiml4g4</groupId>
     <artifactId>ElevatorSystem</artifactId>
-    <version>3.0</version>
+    <version>4.0</version>
 
     <properties>
     	<!-- if running a different JDK, change this -->

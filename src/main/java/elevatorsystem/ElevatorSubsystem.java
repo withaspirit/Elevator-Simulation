@@ -58,7 +58,6 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		eventQueue.add(approachEvent);
 	}
 
-
 	/**
 	 * Sends new updated elevator status information to the scheduler.
 	 *

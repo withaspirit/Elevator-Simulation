@@ -19,6 +19,8 @@ public class ApproachEvent extends ServiceRequest {
      */
     private boolean elevatorMayStop;
 
+    private int floorToVisit;
+
     /**
      * Constructor for ApproachEvent.
      *
@@ -44,6 +46,8 @@ public class ApproachEvent extends ServiceRequest {
     public ApproachEvent(ElevatorRequest elevatorRequest, int floorNumber, int elevatorNumber) {
         this(elevatorRequest.getTime(), floorNumber,
                 elevatorRequest.getDirection(), elevatorNumber, elevatorRequest.getOrigin());
+        // Set the destination floor of the elevator
+        floorToVisit = elevatorRequest.getDesiredFloor();
     }
 
     /**
@@ -61,6 +65,13 @@ public class ApproachEvent extends ServiceRequest {
     public void allowElevatorStop() {
         elevatorMayStop = true;
     }
+
+    /**
+     * Gets the elevators floor to visit
+     *
+     * @return int floorToVisit
+     */
+    public int getFloorToVisit() { return floorToVisit; }
 
     /**
      * Convert ApproachEvent to a String.
