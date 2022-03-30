@@ -1,6 +1,7 @@
 package floorsystem;
 
 import requests.ApproachEvent;
+import requests.ServiceRequest;
 import requests.SubsystemPasser;
 
 /**
@@ -49,4 +50,11 @@ public class Floor implements SubsystemPasser {
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
 		arrivalSensor.compareToListOfRequests(approachEvent);
 	}
+
+	/**
+	 * Adds a floor request to the list of requests held in the ArrivalSensor
+	 *
+	 * @param serviceRequest the floor request to be added
+	 */
+	public void addFloorRequest(ServiceRequest serviceRequest) { arrivalSensor.addRequest(serviceRequest); }
 }

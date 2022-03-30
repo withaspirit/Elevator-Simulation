@@ -85,12 +85,39 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
+	 * Gets the next ApproachEvent in the event list
+	 *
+	 * @return ApproachEvent object from the event list, or null if there is no ApproachEvent in the event list
+	 */
+	public ApproachEvent getNextEventListApproachEvent() {
+		for (SystemEvent systemEvent : eventList) {
+			if (systemEvent instanceof ApproachEvent) {
+				return (ApproachEvent) systemEvent;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Adds a SystemEvent to the FloorSubsystem.
 	 *
 	 * @param systemEvent a SystemEvent originating from the FloorSubsystem
 	 */
 	public void addEvent(SystemEvent systemEvent) {
 		eventList.add(systemEvent);
+	}
+
+	/**
+	 * Adds a ServiceRequest to a list of requests held in the appropriate floors' ArrivalSensor
+	 *
+	 * @param serviceRequest the ServiceRequest to be added
+	 */
+	public void addServiceRequestToFloor(ServiceRequest serviceRequest) {
+		// Get request floor in ServiceRequest from the list of floors
+		Floor floor = floorList.get(serviceRequest.getFloorNumber() - 1);
+
+		// Add the ServiceRequest to the floors ArrivalSensor
+		floor.addFloorRequest(serviceRequest);
 	}
 
 	/**
