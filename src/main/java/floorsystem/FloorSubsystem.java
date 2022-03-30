@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * FloorSubsystem manages the floors and their requests to the Scheduler
+ * FloorSubsystem manages the floors and their requests to the Scheduler.
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */

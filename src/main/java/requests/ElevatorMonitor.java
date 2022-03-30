@@ -23,7 +23,7 @@ public class ElevatorMonitor extends SystemEvent {
     private boolean hasNoRequests;
 
     /**
-     * Main Constructor for ElevatorMonitor
+     * Main Constructor for ElevatorMonitor.
      *
      * @param elevatorNumber the elevator number of the elevator that is being monitored for status changes
      */

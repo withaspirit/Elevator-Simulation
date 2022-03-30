@@ -69,7 +69,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	/**
 	 * Checks if there are any more requests to process and processes
-	 * and new requests
+	 * and new requests.
 	 */
 	@Override
 	public void run() {
@@ -201,7 +201,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Compares the requestFloor to the next floor and updates the Motor accordingly
+	 * Compares the requestFloor to the next floor and updates the Motor accordingly.
 	 *
 	 * @param requestFloor the floor the elevator is going to visit
 	 */
@@ -340,7 +340,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Shuts down the Elevator and prevents further use
+	 * Shuts down the Elevator and prevents further use.
 	 */
 	public void shutDownElevator() {
 		// empty the RequestQueue
@@ -365,7 +365,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Returns the elevator number
+	 * Returns the elevator number.
 	 *
 	 * @return an integer corresponding to the elevator's number
 	 */
@@ -413,7 +413,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the distance until the next floor as a float
+	 * Gets the distance until the next floor as a float.
 	 *
 	 * @return distance until next floor
 	 */
@@ -567,7 +567,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the RequestQueue of the elevator
+	 * Gets the RequestQueue of the elevator.
 	 *
 	 * @return the RequestQueue of the elevator
 	 */

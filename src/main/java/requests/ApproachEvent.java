@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 public class ApproachEvent extends ServiceRequest {
 
     /**
-     * Indicates whether an elevator should stop at a floor
+     * Indicates whether an elevator should stop at a floor.
      */
     private boolean elevatorMayStop;
 
@@ -67,7 +67,7 @@ public class ApproachEvent extends ServiceRequest {
     }
 
     /**
-     * Gets the elevators floor to visit
+     * Gets the elevators floor to visit.
      *
      * @return int floorToVisit
      */

@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * ElevatorSubsystem manages the elevators and their requests to the Scheduler
+ * ElevatorSubsystem manages the elevators and their requests to the Scheduler.
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
@@ -27,6 +27,15 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
 		eventQueue = new LinkedList<>();
+	}
+
+	/**
+	 * Returns the list of Elevators in the ElevatorSubsystem.
+	 *
+	 * @return the list of Elevators
+	 */
+	public ArrayList<Elevator> getElevatorList() {
+		return elevatorList;
 	}
 
 	/**
