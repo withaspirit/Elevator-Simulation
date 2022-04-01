@@ -16,16 +16,16 @@ import java.util.Queue;
  */
 public class ElevatorSubsystem implements Runnable, SystemEventListener {
 
-	private final ArrayList<Elevator> elevatorList;
-	private Client server;
+	private final Client server;
+	private final Elevator elevator;
 	private final Queue<SystemEvent> eventQueue;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
 	 */
-	public ElevatorSubsystem() {
-		server = new Client(Port.SERVER.getNumber());
-		elevatorList = new ArrayList<>();
+	public ElevatorSubsystem(Elevator elevator) {
+		server = new Client(Port.SERVER.getNumber() + elevator.getElevatorNumber());
+		this.elevator = elevator;
 		eventQueue = new LinkedList<>();
 	}
 
@@ -37,15 +37,6 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	 */
 	public void run() {
 		subsystemUDPMethod();
-	}
-
-	/**
-	 * Adds an elevator to the subsystem's list of elevators.
-	 *
-	 * @param elevator an elevator
-	 */
-	public void addElevator(Elevator elevator) {
-		elevatorList.add(elevator);
 	}
 
 	/**
@@ -80,11 +71,10 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 			}
 
 			if (object instanceof ElevatorRequest elevatorRequest) {
-				Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
 				elevator.addRequest(elevatorRequest);
 				eventQueue.add(elevator.makeElevatorMonitor());
 			} else if (object instanceof ApproachEvent approachEvent) {
-				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+				elevator.receiveApproachEvent(approachEvent);
 			} else if (object instanceof String string) {
 				if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
 					try {
@@ -110,14 +100,11 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 			e.printStackTrace();
 		}
 		int numberOfElevators = 2;
-		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 		ArrayList<Elevator> elevatorList = new ArrayList<>();
 		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
-			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
-			elevatorSubsystem.addElevator(elevator);
+			Elevator elevator = new Elevator(elevatorNumber);
 			elevatorList.add(elevator);
 		}
-		new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName()).start();
 
 		// Start elevator Origins
 		for (int i = 0; i < numberOfElevators; i++) {

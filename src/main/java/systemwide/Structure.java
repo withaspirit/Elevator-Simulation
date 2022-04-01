@@ -76,11 +76,9 @@ public class Structure {
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
 
-		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 		ArrayList<Elevator> elevatorList = new ArrayList<>();
 		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
-			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
-			elevatorSubsystem.addElevator(elevator);
+			Elevator elevator = new Elevator(elevatorNumber);
 			schedulerClient.addElevatorMonitor(elevatorNumber);
 			elevatorList.add(elevator);
 		}
@@ -94,12 +92,10 @@ public class Structure {
 
 		schedulerClientOrigin = new Thread(schedulerClient, schedulerClient.getClass().getSimpleName());
 		schedulerServerOrigin = new Thread(schedulerServer, schedulerServer.getClass().getSimpleName());
-		elevatorSubsystemOrigin = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
 		floorSubsystemOrigin = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
 
 		schedulerClientOrigin.start();
 		schedulerServerOrigin.start();
-		elevatorSubsystemOrigin.start();
 		floorSubsystemOrigin.start();
 
 		// Start elevator Origins

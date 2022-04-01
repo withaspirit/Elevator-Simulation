@@ -49,11 +49,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
 	 *
 	 * @param elevatorNumber the number of the elevator
-	 * @param elevatorSubsystem the elevator subsystem for elevators
 	 */
-	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
+	public Elevator(int elevatorNumber) {
 		this.elevatorNumber = elevatorNumber;
-		this.elevatorSubsystem = elevatorSubsystem;
+		this.elevatorSubsystem = new ElevatorSubsystem(this);
 		requestQueue = new RequestQueue();
 		motor = new ElevatorMotor();
 		doors = new Doors();
@@ -73,6 +72,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	@Override
 	public void run() {
+		new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName() + elevatorNumber).start();
 		while (true) {
 			moveElevatorWhilePossible();
 		}

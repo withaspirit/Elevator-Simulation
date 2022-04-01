@@ -76,7 +76,7 @@ public class Scheduler implements Runnable {
 
 						String messageToPrint = LocalTime.now() + "\n";
 						messageToPrint += "Scheduler assigned to Elevator #" + chosenElevator + " the " +
-								elevatorRequest.getClass().getSimpleName() + ": "  + elevatorRequest + ".\n";
+								elevatorRequest.getClass().getSimpleName() + ": " + elevatorRequest + ".\n";
 						System.out.println(messageToPrint);
 					}
 				} else {
@@ -84,7 +84,6 @@ public class Scheduler implements Runnable {
 				}
 				// send the object right away
 				intermediateHost.sendObject(dataObject, receivePacket.getAddress(), receivePacket.getPort());
-
 			} else if (object instanceof SystemEvent systemEvent) {
 				intermediateHost.acknowledgeDataReception(receivePacket);
 				processData(systemEvent);

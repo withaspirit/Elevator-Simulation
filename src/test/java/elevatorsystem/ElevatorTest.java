@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class ElevatorTest {
 
-    private ElevatorSubsystem elevatorSubsystem;
     private ArrayList<Elevator> elevatorList;
     private ArrayList<SystemEvent> eventList;
     private final int numberOfTimesToTest = 20;
@@ -32,7 +31,6 @@ class ElevatorTest {
 
     @BeforeEach
     void setUp() {
-        elevatorSubsystem = new ElevatorSubsystem();
         threads = new ArrayList<>();
         elevatorList = new ArrayList<>();
         InputFileReader inputFileReader = new InputFileReader();
@@ -50,10 +48,9 @@ class ElevatorTest {
         threads.clear();
         // initialize the list of elevators
         for (int i = 1; i <= numberOfElevators; i++) {
-            Elevator elevator = new Elevator(i, elevatorSubsystem);
+            Elevator elevator = new Elevator(i);
             System.out.println("Elevator " + i + " instantiated");
             elevatorList.add(elevator);
-            elevatorSubsystem.addElevator(elevator);
             elevator.toggleMessageTransfer();
         }
     }

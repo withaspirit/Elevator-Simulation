@@ -47,11 +47,8 @@ public class ElevatorSelectionTest {
         }
 
         //Setup a ElevatorSubsystem
-        elevatorSubsystem = new ElevatorSubsystem();
-        elevator1 = new Elevator(1, elevatorSubsystem);
-        elevator2 = new Elevator(2, elevatorSubsystem);
-        elevatorSubsystem.addElevator(elevator1);
-        elevatorSubsystem.addElevator(elevator2);
+        elevator1 = new Elevator(1);
+        elevator2 = new Elevator(2);
 
         // Setup and start Scheduler Threads to send to ElevatorSubsystem
         schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());

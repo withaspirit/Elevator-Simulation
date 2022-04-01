@@ -43,15 +43,12 @@ class SchedulerTest {
         schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
         schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
         floorSubsystem = new FloorSubsystem();
-        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-        elevator1 = new Elevator(1, elevatorSubsystem);
-        elevatorSubsystem.addElevator(elevator1);
+        elevator1 = new Elevator(1);
         schedulerClient.addElevatorMonitor(elevator1.getElevatorNumber());
 
         new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName()).start();
         new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
         new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
-        new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName()).start();
     }
 
     @AfterEach
