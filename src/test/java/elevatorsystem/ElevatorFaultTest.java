@@ -27,7 +27,6 @@ public class ElevatorFaultTest {
 
     @BeforeEach
     void setUp() {
-        elevatorSubsystem = new ElevatorSubsystem();
         threads = new ArrayList<>();
         elevatorList = new ArrayList<>();
     }
@@ -43,10 +42,9 @@ public class ElevatorFaultTest {
         threads.clear();
         // initialize the list of elevators
         for (int i = 1; i <= numberOfElevators; i++) {
-            Elevator elevator = new Elevator(i, elevatorSubsystem);
+            Elevator elevator = new Elevator(i);
             System.out.println("Elevator " + i + " instantiated");
             elevatorList.add(elevator);
-            elevatorSubsystem.addElevator(elevator);
         }
     }
 

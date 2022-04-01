@@ -25,7 +25,7 @@ public class IntermediateHost {
      */
     public IntermediateHost(int portNumber) {
         messageTransfer = new MessageTransfer(portNumber);
-        messageQueue = new LinkedList<SystemEvent>();
+        messageQueue = new LinkedList<>();
     }
 
     /**
@@ -85,7 +85,7 @@ public class IntermediateHost {
     /**
      * Removes and returns a SystemEvent from the queue of packets to be processed.
      *
-     * @return a packet from the queue
+     * @return a system event from the queue
      */
     public SystemEvent getPacketFromQueue() {
         return messageQueue.remove();
@@ -98,5 +98,14 @@ public class IntermediateHost {
      */
     public boolean queueIsEmpty() {
         return messageQueue.isEmpty();
+    }
+
+    /**
+     * Returns the top SystemEvent for the queue to be processed by the scheduler.
+     *
+     * @return a system event from the queue
+     */
+    public SystemEvent peekPacketFromQueue() {
+        return messageQueue.peek();
     }
 }

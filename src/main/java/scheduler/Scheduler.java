@@ -21,8 +21,6 @@ public class Scheduler implements Runnable {
 
 	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private final IntermediateHost intermediateHost;
-	// private ArrayList<Elevator> elevators;
-	// private ArrayList<Floor> floors;
 
 	/**
 	 * Constructor for Scheduler.
@@ -58,36 +56,45 @@ public class Scheduler implements Runnable {
 	 * Otherwise, it's a request for data.
 	 */
 	private void receiveAndProcessPacket() {
-			DatagramPacket receivePacket = intermediateHost.receivePacket();
-			Object object = intermediateHost.convertToObject(receivePacket);
+		DatagramPacket receivePacket = intermediateHost.receivePacket();
+		Object object = intermediateHost.convertToObject(receivePacket);
 
-			// respond to Data Request
-			if (object instanceof String) {
-				Object dataObject;
+		// respond to Data Request
+		if (object instanceof String) {
+			SystemEvent request;
 
-				// queue is not empty, return data
-				// otherwise, send dummy message notifying empty status
-				if (!intermediateHost.queueIsEmpty()) {
-					dataObject = intermediateHost.getPacketFromQueue();
-
-					if (dataObject instanceof ElevatorRequest elevatorRequest) {
-						int chosenElevator = chooseElevator(elevatorRequest);
-						elevatorRequest.setElevatorNumber(chosenElevator);
-
-						String messageToPrint = LocalTime.now() + "\n";
-						messageToPrint += "Scheduler assigned to Elevator #" + chosenElevator + " the " +
-								elevatorRequest.getClass().getSimpleName() + ": " + elevatorRequest + ".\n";
-						System.out.println(messageToPrint);
+			// queue is not empty, return data
+			// otherwise, send dummy message notifying empty status
+			if (!intermediateHost.queueIsEmpty()) {
+				request = intermediateHost.peekPacketFromQueue();
+				if (request instanceof ElevatorRequest elevatorRequest) {
+					int chosenElevator = chooseElevator(elevatorRequest);
+					elevatorRequest.setElevatorNumber(chosenElevator);
+					String messageToPrint = LocalTime.now() + "\n";
+					messageToPrint += "Scheduler assigned to Elevator #" + chosenElevator + " the " +
+							elevatorRequest.getClass().getSimpleName() + ": " + elevatorRequest + ".\n";
+					System.out.println(messageToPrint);
+				}
+				int port = receivePacket.getPort();
+				if (port > Port.SERVER.getNumber()) {
+					if (request.getElevatorNumber() == (port - Port.SERVER.getNumber())){
+						object = intermediateHost.getPacketFromQueue();
+					} else {
+						object = RequestMessage.EMPTYQUEUE.getMessage();
 					}
 				} else {
-					dataObject = RequestMessage.EMPTYQUEUE.getMessage();
+					object = intermediateHost.getPacketFromQueue();
 				}
-				// send the object right away
-				intermediateHost.sendObject(dataObject, receivePacket.getAddress(), receivePacket.getPort());
-			} else if (object instanceof SystemEvent systemEvent) {
-				intermediateHost.acknowledgeDataReception(receivePacket);
-				processData(systemEvent);
+				System.out.println(port + " " + request.getElevatorNumber());
+			} else {
+				object = RequestMessage.EMPTYQUEUE.getMessage();
 			}
+			// send the object right away
+			intermediateHost.sendObject(object, receivePacket.getAddress(), receivePacket.getPort());
+		} else if (object instanceof SystemEvent systemEvent) {
+			intermediateHost.acknowledgeDataReception(receivePacket);
+			processData(systemEvent);
+		}
 	}
 
 	/**
@@ -202,6 +209,5 @@ public class Scheduler implements Runnable {
 		schedulerClient.addElevatorMonitor(2);
 		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
 		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
-
 	}
 }
