@@ -203,6 +203,5 @@ public class Scheduler implements Runnable {
 		schedulerClient.addElevatorMonitor(2);
 		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
 		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
-
 	}
 }
