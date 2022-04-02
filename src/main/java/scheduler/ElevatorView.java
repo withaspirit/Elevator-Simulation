@@ -36,15 +36,23 @@ public class ElevatorView {
         //  StatusPanels contain a JTextPane and an information JLabel
         //  Having elevatorPanel and statusPanelContainer separate allows elevatorPanel to have more features later if we choose
         //  We want direct access to each JTextPane to let us update them directly
+
+        for (int i = 0; i < NUMBER_OF_STATUS_PANES; i++) {
+            statusPanes[i] = new JTextPane();
+            statusPanes[i].setEditable(false);
+            statusPanels[i] = new JPanel();
+            statusPanels[i].add(statusPanes[i]);
+            statusPanelContainer.add(statusPanels[i]);
+        }
         elevatorPanel = new JPanel();
         elevatorPanel.add(statusPanelContainer);
 
         // Stuff that makes it pretty
         // https://docs.oracle.com/javase/tutorial/uiswing/components/border.html
-        // give elevatorPanel a title reading "Elevator X" on the top left
+        // give elevatorPanel a title reading "Elevator X" above
         Border border = BorderFactory.createLineBorder(Color.BLACK);
         TitledBorder titledBorder = BorderFactory.createTitledBorder(border, "Elevator " + elevatorNumber);
-        titledBorder.setTitleJustification(TitledBorder.DEFAULT_JUSTIFICATION);
+        titledBorder.setTitleJustification(TitledBorder.CENTER);
         titledBorder.setTitlePosition(TitledBorder.ABOVE_TOP);
         elevatorPanel.setBorder(titledBorder);
     }
