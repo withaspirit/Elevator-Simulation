@@ -73,7 +73,7 @@ public class ElevatorView {
 
         // Stuff that makes it pretty
         // https://docs.oracle.com/javase/tutorial/uiswing/components/border.html
-        // give elevatorPanel a title reading "Elevator X" above
+        // give elevatorPanel a title reading "Elevator X" above in center
         Border border = BorderFactory.createLineBorder(Color.BLACK);
         TitledBorder titledBorder = BorderFactory.createTitledBorder(border, "Elevator " + elevatorNumber);
         titledBorder.setTitleJustification(TitledBorder.CENTER);
@@ -97,7 +97,7 @@ public class ElevatorView {
      */
     public void update(ElevatorMonitor elevatorMonitor) {
 
-        // TODO: ElevatorMonitor: add MovementDirection, DoorState, and Fault to
+        // TODO: ElevatorMonitor: add MovementDirection, DoorState, and Fault
         for (int i = 0; i < NUMBER_OF_STATUS_PANES; i++) {
             String statusPaneText = "";
             // these values are hard coded; not very good practice
@@ -116,7 +116,6 @@ public class ElevatorView {
             }
             statusPanes[i].setText(statusPaneText);
         }
-
         elevatorPanel.repaint();
         elevatorPanel.revalidate();
     }
