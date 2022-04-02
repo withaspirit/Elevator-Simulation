@@ -40,10 +40,31 @@ public class ElevatorView {
         for (int i = 0; i < NUMBER_OF_STATUS_PANES; i++) {
             statusPanes[i] = new JTextPane();
             statusPanes[i].setEditable(false);
+
+            String labelText = "";
+            // these values are hard coded; not very good practice
+            if (i == 0) {
+                labelText = "Current Floor:";
+            } else if (i == 1) {
+                labelText = "Service Direction:";
+            } else if (i == 2) {
+                labelText = "MovementState:";
+            } else if (i == 3) {
+                labelText = "MovementDirection:";
+            } else if (i == 4) {
+                labelText = "Door State:";
+            } else if (i == 5) {
+                labelText = "Fault:";
+            }
+            JLabel label = new JLabel();
+            label.setText(labelText);
+
             statusPanels[i] = new JPanel();
+            statusPanels[i].add(label);
             statusPanels[i].add(statusPanes[i]);
             statusPanelContainer.add(statusPanels[i]);
         }
+
         elevatorPanel = new JPanel();
         elevatorPanel.add(statusPanelContainer);
 
@@ -72,7 +93,12 @@ public class ElevatorView {
      * @param elevatorMonitor contains the status information of an Elevator
      */
     public void update(ElevatorMonitor elevatorMonitor) {
+        int elevatorNumber = elevatorMonitor.getElevatorNumber();
+
+        String statusPaneText = "";
+
         // TODO: update each of the statusPanes
+
         elevatorPanel.repaint();
         elevatorPanel.revalidate();
     }
