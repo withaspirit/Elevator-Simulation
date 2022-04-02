@@ -1,6 +1,9 @@
 package scheduler;
 
+import elevatorsystem.Fault;
+import elevatorsystem.MovementState;
 import requests.ElevatorMonitor;
+import systemwide.Direction;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -26,7 +29,9 @@ public class ElevatorView {
      * @param elevatorNumber the number of the Elevator that this View corresponds to
      */
     public ElevatorView(int elevatorNumber) {
+        elevatorPanel = new JPanel();
         this.statusPanelContainer = new JPanel(new GridLayout(1, NUMBER_OF_STATUS_PANES));
+        elevatorPanel.add(statusPanelContainer);
         this.statusPanels = new JPanel[NUMBER_OF_STATUS_PANES];
         this.statusPanes = new JTextPane[NUMBER_OF_STATUS_PANES];
 
@@ -40,6 +45,8 @@ public class ElevatorView {
         for (int i = 0; i < NUMBER_OF_STATUS_PANES; i++) {
             statusPanes[i] = new JTextPane();
             statusPanes[i].setEditable(false);
+            statusPanels[i] = new JPanel();
+            statusPanelContainer.add(statusPanels[i]);
 
             String labelText = "";
             // these values are hard coded; not very good practice
@@ -58,15 +65,12 @@ public class ElevatorView {
             }
             JLabel label = new JLabel();
             label.setText(labelText);
-
-            statusPanels[i] = new JPanel();
             statusPanels[i].add(label);
-            statusPanels[i].add(statusPanes[i]);
-            statusPanelContainer.add(statusPanels[i]);
-        }
 
-        elevatorPanel = new JPanel();
-        elevatorPanel.add(statusPanelContainer);
+            statusPanels[i].add(statusPanes[i]);
+        }
+        // FIXME: this is a bit awkward
+        update(new ElevatorMonitor(elevatorNumber));
 
         // Stuff that makes it pretty
         // https://docs.oracle.com/javase/tutorial/uiswing/components/border.html
@@ -93,9 +97,27 @@ public class ElevatorView {
      * @param elevatorMonitor contains the status information of an Elevator
      */
     public void update(ElevatorMonitor elevatorMonitor) {
-        int elevatorNumber = elevatorMonitor.getElevatorNumber();
 
-        String statusPaneText = "";
+        for (int i = 0; i < NUMBER_OF_STATUS_PANES; i++) {
+            String statusPaneText = "";
+            // these values are hard coded; not very good practice
+            if (i == 0) {
+                statusPaneText = Integer.toString(elevatorMonitor.getCurrentFloor());
+            } else if (i == 1) {
+                statusPaneText = elevatorMonitor.getDirection().getName();
+            } else if (i == 2) {
+                statusPaneText = elevatorMonitor.getState().getName();
+            } else if (i == 3) {
+                statusPaneText = "Up";
+            } else if (i == 4) {
+                statusPaneText = "Open";
+            } else if (i == 5) {
+                statusPaneText = "None";
+            }
+            statusPanes[i].setText(statusPaneText);
+            statusPanes[i].repaint();
+            statusPanes[i].revalidate();
+        }
 
         // TODO: update each of the statusPanes
 
