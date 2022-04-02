@@ -5,8 +5,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * ElevatorViewContainer displays a list of ElevatorViews and provides methods
- * to access them.
+ * ElevatorViewContainer contains and displays a list of ElevatorViews. It provides
+ * methods to access them.
  *
  * @author Liam Tripp
  */
@@ -48,8 +48,9 @@ public class ElevatorViewContainer {
      */
     public ElevatorView getElevatorView(int elevatorNumber) {
         if (elevatorNumber >= elevatorViews.size()) {
-            String messageToPrint = "The number " + elevatorNumber + " is greater than the actual number of ElevatorViews, " + elevatorViews.size() + ".";
-            throw new IllegalArgumentException(messageToPrint);
+            String exceptionMessage = "The number " + elevatorNumber + " is greater " +
+                    "than the actual number of ElevatorViews, " + elevatorViews.size() + ".";
+            throw new IllegalArgumentException(exceptionMessage);
         }
         return elevatorViews.get(elevatorNumber);
     }

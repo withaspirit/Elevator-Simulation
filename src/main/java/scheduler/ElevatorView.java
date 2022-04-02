@@ -56,6 +56,11 @@ public class ElevatorView {
         return elevatorPanel;
     }
 
+    /**
+     * Updates the ElevatorView with information from an ElevatorMonitor.
+     *
+     * @param elevatorMonitor contains the status information of an Elevator
+     */
     public void update(ElevatorMonitor elevatorMonitor) {
         // TODO: update each of the statusPanes
         elevatorPanel.repaint();
