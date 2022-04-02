@@ -25,9 +25,12 @@ public class ElevatorViewContainer {
      */
     public ElevatorViewContainer(int numberOfElevators) {
         this.elevatorViews = new ArrayList<>();
-        // TODO: initialize ElevatorViews, add to elevatorListPanel
+        elevatorListPanel = new JPanel(new GridLayout(numberOfElevators, 1));
+        for (int i = 0; i < numberOfElevators; i++) {
+            elevatorViews.add(new ElevatorView(i));
+            elevatorListPanel.add(elevatorViews.get(i).getPanel());
+        }
 
-        elevatorListPanel = new JPanel(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane(elevatorListPanel);
         scrollPane.setBorder(BorderFactory.createEtchedBorder());
         containerPanel.add(scrollPane);
