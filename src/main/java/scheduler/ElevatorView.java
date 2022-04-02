@@ -36,7 +36,6 @@ public class ElevatorView {
         //    (distinguishing from statusPanelContainer allows more features to be added later)
         //  StatusPanelContainer contains the statusPanels
         //  StatusPanels contain a JTextPane and an information JLabel
-        //  Having elevatorPanel and statusPanelContainer separate allows elevatorPanel to have more features later if we choose
         //  We want direct access to each JTextPane to let us update them directly
 
         for (int i = 0; i < NUMBER_OF_STATUS_PANES; i++) {
@@ -71,7 +70,7 @@ public class ElevatorView {
         //  to ElevatorView's constructor?
         update(new ElevatorMonitor(elevatorNumber));
 
-        // Stuff that makes it pretty
+        // GUI stuff
         // https://docs.oracle.com/javase/tutorial/uiswing/components/border.html
         // give elevatorPanel a title reading "Elevator X" above in center
         Border border = BorderFactory.createLineBorder(Color.BLACK);
