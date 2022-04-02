@@ -28,7 +28,6 @@ public class ViewUpdater {
         this.elevatorViewContainer = elevatorViewContainer;
     }
 
-
     // TODO: decide between Scheduler and ElevatorSubsystem / ElevatorMessenge
     //  for the model
     /*
@@ -46,6 +45,4 @@ public class ViewUpdater {
         ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber() - 1);
         elevatorView.update(elevatorMonitor);
     }
-
-
 }
