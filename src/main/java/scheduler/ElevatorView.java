@@ -1,9 +1,6 @@
 package scheduler;
 
-import elevatorsystem.Fault;
-import elevatorsystem.MovementState;
 import requests.ElevatorMonitor;
-import systemwide.Direction;
 
 import javax.swing.*;
 import javax.swing.border.Border;
