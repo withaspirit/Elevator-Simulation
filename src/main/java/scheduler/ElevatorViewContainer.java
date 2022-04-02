@@ -20,8 +20,10 @@ public class ElevatorViewContainer {
 
     /**
      * Constructor for ElevatorViewContainer.
+     *
+     * @param numberOfElevators the number of ElevatorViews in the ElevatorViewList
      */
-    public ElevatorViewContainer() {
+    public ElevatorViewContainer(int numberOfElevators) {
         this.elevatorViews = new ArrayList<>();
         // TODO: initialize ElevatorViews, add to elevatorListPanel
 
