@@ -1,0 +1,60 @@
+package scheduler;
+
+import requests.ElevatorMonitor;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+
+/**
+ * ElevatorView presents the status information of an Elevator.
+ *
+ * @author Liam Tripp
+ */
+public class ElevatorView {
+
+    private JPanel elevatorPanel;
+    private JPanel statusPanelContainer;
+    private int NUMBER_OF_STATUS_PANES = 8;
+    private JPanel[] statusPanels;
+    private JTextPane[] statusPanes;
+
+    /**
+     * Constructor for ElevatorView.
+     *
+     * @param elevatorNumber the number of the Elevator that this View corresponds to
+     */
+    public ElevatorView(int elevatorNumber) {
+        this.statusPanelContainer = new JPanel(new GridLayout(1, NUMBER_OF_STATUS_PANES));
+        this.statusPanels = new JPanel[NUMBER_OF_STATUS_PANES];
+        this.statusPanes = new JTextPane[NUMBER_OF_STATUS_PANES];
+
+        // one JTextPane per status panel
+        // we want direct access to each JTextPane to let us update them directly
+        elevatorPanel = new JPanel();
+        // add label to each JPanel for what information it is
+
+        elevatorPanel.add(statusPanelContainer);
+
+        // Stuff that makes it pretty
+        // https://docs.oracle.com/javase/tutorial/uiswing/components/border.html
+        // give elevatorPanel a title reading "Elevator X" on the top left
+        Border border = BorderFactory.createLineBorder(Color.BLACK);
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(border, "Elevator " + elevatorNumber);
+        titledBorder.setTitleJustification(TitledBorder.DEFAULT_JUSTIFICATION);
+        titledBorder.setTitlePosition(TitledBorder.ABOVE_TOP);
+        elevatorPanel.setBorder(titledBorder);
+    }
+
+
+    public JPanel getPanel() {
+        return elevatorPanel;
+    }
+
+    public void update(ElevatorMonitor elevatorMonitor) {
+        // update each of the statusPanes
+        elevatorPanel.repaint();
+        elevatorPanel.revalidate();
+    }
+}
