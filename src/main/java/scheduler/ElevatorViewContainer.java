@@ -1,14 +1,12 @@
 package scheduler;
 
-import requests.ElevatorMonitor;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 /**
  * ElevatorViewContainer displays a list of ElevatorViews and provides methods
- * to update them.
+ * to access them.
  *
  * @author Liam Tripp
  */
@@ -33,7 +31,26 @@ public class ElevatorViewContainer {
         containerPanel.add(scrollPane);
     }
 
-    public void receiveElevatorMonitor(ElevatorMonitor elevatorMonitor) {
-        //elevatorViews.get(elevatorMonitor.getElevatorNumber() - 1).update(elevatorMonitor);
+    /**
+     * Gets the list of ElevatorViews in the ElevatorViewContainer.
+     *
+     * @return the ElevatorViews contained in the ElevatorViewContainer's elevatorListPanel
+     */
+    public ArrayList<ElevatorView> getElevatorViews() {
+        return elevatorViews;
+    }
+
+    /**
+     * Returns an ElevatorView corresponding to an Elevator's Number.
+     *
+     * @param elevatorNumber the elevatorNumber of the Elevator
+     * @return elevatorView corresponding to the ElevatorNumber.
+     */
+    public ElevatorView getElevatorView(int elevatorNumber) {
+        if (elevatorNumber >= elevatorViews.size()) {
+            String messageToPrint = "The number " + elevatorNumber + " is greater than the actual number of ElevatorViews, " + elevatorViews.size() + ".";
+            throw new IllegalArgumentException(messageToPrint);
+        }
+        return elevatorViews.get(elevatorNumber);
     }
 }

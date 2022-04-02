@@ -37,8 +37,14 @@ public class ViewUpdater {
     }
      */
 
-    public void receiveElevatorMonitor(ElevatorMonitor elevatorMonitor) {
-
+    /**
+     * Updates the ElevatorView corresponding to the ElevatorMonitor's elevator number.
+     *
+     * @param elevatorMonitor the elevatorMonitor containing the status information of the Elevator
+     */
+    public void updateElevatorView(ElevatorMonitor elevatorMonitor) {
+        ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber() - 1);
+        elevatorView.update(elevatorMonitor);
     }
 
 
