@@ -21,7 +21,7 @@ public class ElevatorView {
     private JPanel statusPanelContainer;
     private JPanel[] statusPanels;
     private JTextPane[] statusPanes;
-    private final static int NUMBER_OF_STATUS_PANES = 8;
+    private final static int NUMBER_OF_STATUS_PANES = 6;
 
     /**
      * Constructor for ElevatorView.
@@ -63,6 +63,7 @@ public class ElevatorView {
             } else if (i == 5) {
                 labelText = "Fault:";
             }
+            // TODO: add currentRequest?
             JLabel label = new JLabel();
             label.setText(labelText);
             statusPanels[i].add(label);
