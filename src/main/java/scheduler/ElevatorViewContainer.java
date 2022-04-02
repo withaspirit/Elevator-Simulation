@@ -38,6 +38,15 @@ public class ElevatorViewContainer {
     }
 
     /**
+     * Gets the JPanel associated with the ElevatorViewContainer.
+     *
+     * @return the ElevatorViewContainer's JPanel
+     */
+    public JPanel getPanel() {
+        return containerPanel;
+    }
+
+    /**
      * Gets the list of ElevatorViews in the ElevatorViewContainer.
      *
      * @return the ElevatorViews contained in the ElevatorViewContainer's elevatorListPanel
