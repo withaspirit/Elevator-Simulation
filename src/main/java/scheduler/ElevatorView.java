@@ -69,7 +69,8 @@ public class ElevatorView {
 
             statusPanels[i].add(statusPanes[i]);
         }
-        // FIXME: this is a bit awkward
+        // FIXME: this is awkward; should we pass elevator number or ElevatorMonitor
+        //  to ElevatorView's constructor?
         update(new ElevatorMonitor(elevatorNumber));
 
         // Stuff that makes it pretty
@@ -98,6 +99,7 @@ public class ElevatorView {
      */
     public void update(ElevatorMonitor elevatorMonitor) {
 
+        // TODO: ElevatorMonitor: add MovementDirection, DoorState, and Fault to
         for (int i = 0; i < NUMBER_OF_STATUS_PANES; i++) {
             String statusPaneText = "";
             // these values are hard coded; not very good practice
@@ -115,11 +117,7 @@ public class ElevatorView {
                 statusPaneText = "None";
             }
             statusPanes[i].setText(statusPaneText);
-            statusPanes[i].repaint();
-            statusPanes[i].revalidate();
         }
-
-        // TODO: update each of the statusPanes
 
         elevatorPanel.repaint();
         elevatorPanel.revalidate();
