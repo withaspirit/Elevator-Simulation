@@ -33,6 +33,7 @@ public class ElevatorViewContainer {
 
         JScrollPane scrollPane = new JScrollPane(elevatorListPanel);
         scrollPane.setBorder(BorderFactory.createEtchedBorder());
+        containerPanel = new JPanel();
         containerPanel.add(scrollPane);
     }
 
