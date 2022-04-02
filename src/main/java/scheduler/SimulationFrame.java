@@ -39,7 +39,7 @@ public class SimulationFrame {
         SimulationFrame simulationFrame = new SimulationFrame();
         simulationFrame.frameSetup();
         ElevatorMonitor elevatorMonitor = new ElevatorMonitor(0);
-        elevatorMonitor.updateMonitor(new ElevatorMonitor(0, MovementState.IDLE, 1, Direction.UP, 0, true));
+        elevatorMonitor.updateMonitor(new ElevatorMonitor(0, MovementState.ACTIVE, 2, Direction.DOWN, 0, true));
         simulationFrame.testElevatorMonitorUpdate(elevatorMonitor);
     }
 }
