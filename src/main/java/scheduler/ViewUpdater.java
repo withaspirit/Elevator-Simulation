@@ -7,7 +7,8 @@ import requests.ElevatorMonitor;
  *
  * @author Liam Tripp
  */
-// TODO: rename this class, the name is so bad
+// TODO: rename this class, the name will not communicate its intent if we ever
+//  add a "start" button before everything is initiated
 public class ViewUpdater {
 
     private ElevatorViewContainer elevatorViewContainer;
