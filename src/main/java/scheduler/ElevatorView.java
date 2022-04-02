@@ -48,6 +48,11 @@ public class ElevatorView {
     }
 
 
+    /**
+     * Returns the JPanel of ElevatorView.
+     *
+     * @return the ElevatorView's JPanel
+     */
     public JPanel getPanel() {
         return elevatorPanel;
     }

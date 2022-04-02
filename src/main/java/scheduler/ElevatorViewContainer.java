@@ -7,7 +7,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * ElevatorViewContainer displays a list of ElevatorViews and updates them when accessed.
+ * ElevatorViewContainer displays a list of ElevatorViews and provides methods
+ * to update them.
  *
  * @author Liam Tripp
  */
