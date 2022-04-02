@@ -52,9 +52,9 @@ public class ElevatorView {
             } else if (i == 1) {
                 labelText = "Service Direction:";
             } else if (i == 2) {
-                labelText = "MovementState:";
+                labelText = "Movement State:";
             } else if (i == 3) {
-                labelText = "MovementDirection:";
+                labelText = "Movement Direction:";
             } else if (i == 4) {
                 labelText = "Door State:";
             } else if (i == 5) {
