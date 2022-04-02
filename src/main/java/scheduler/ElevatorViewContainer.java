@@ -7,7 +7,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * ElevatorViewContainer displays a list of ElevatorViews and updates them when accessed.
+ * ElevatorViewContainer displays a list of ElevatorViews and provides methods
+ * to update them.
  *
  * @author Liam Tripp
  */
@@ -24,6 +25,7 @@ public class ElevatorViewContainer {
      */
     public ElevatorViewContainer() {
         this.elevatorViews = new ArrayList<>();
+        // TODO: initialize ElevatorViews, add to elevatorListPanel
 
         elevatorListPanel = new JPanel(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane(elevatorListPanel);

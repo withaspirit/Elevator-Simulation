@@ -16,9 +16,9 @@ public class ElevatorView {
 
     private JPanel elevatorPanel;
     private JPanel statusPanelContainer;
-    private int NUMBER_OF_STATUS_PANES = 8;
     private JPanel[] statusPanels;
     private JTextPane[] statusPanes;
+    private final static int NUMBER_OF_STATUS_PANES = 8;
 
     /**
      * Constructor for ElevatorView.
@@ -30,10 +30,10 @@ public class ElevatorView {
         this.statusPanels = new JPanel[NUMBER_OF_STATUS_PANES];
         this.statusPanes = new JTextPane[NUMBER_OF_STATUS_PANES];
 
-        // one JTextPane per status panel
+        // TODO: one JTextPane per status panel
         // we want direct access to each JTextPane to let us update them directly
         elevatorPanel = new JPanel();
-        // add label to each JPanel for what information it is
+        // TODO: add label to each JPanel for what information it is
 
         elevatorPanel.add(statusPanelContainer);
 
@@ -47,13 +47,17 @@ public class ElevatorView {
         elevatorPanel.setBorder(titledBorder);
     }
 
-
+    /**
+     * Returns the JPanel of ElevatorView.
+     *
+     * @return the ElevatorView's JPanel
+     */
     public JPanel getPanel() {
         return elevatorPanel;
     }
 
     public void update(ElevatorMonitor elevatorMonitor) {
-        // update each of the statusPanes
+        // TODO: update each of the statusPanes
         elevatorPanel.repaint();
         elevatorPanel.revalidate();
     }

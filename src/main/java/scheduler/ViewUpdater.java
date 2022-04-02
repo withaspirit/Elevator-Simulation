@@ -7,6 +7,7 @@ import requests.ElevatorMonitor;
  *
  * @author Liam Tripp
  */
+// TODO: rename this class, the name is so bad
 public class ViewUpdater {
 
     private ElevatorViewContainer elevatorViewContainer;
@@ -27,6 +28,9 @@ public class ViewUpdater {
         this.elevatorViewContainer = elevatorViewContainer;
     }
 
+
+    // TODO: decide between Scheduler and ElevatorSubsystem / ElevatorMessenge
+    //  for the model
     /*
     public void addModel() {
 
