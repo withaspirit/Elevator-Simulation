@@ -13,7 +13,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 /**
- * Scheduler handles the requests from all system components
+ * Scheduler handles the requests from all system components.
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
