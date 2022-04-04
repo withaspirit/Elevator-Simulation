@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * ElevatorSubsystem manages the elevators and their requests to the Scheduler
+ * ElevatorSubsystem manages the elevators and their requests to the Scheduler.
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
@@ -27,6 +27,15 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
 		eventQueue = new LinkedList<>();
+	}
+
+	/**
+	 * Returns the list of Elevators in the ElevatorSubsystem.
+	 *
+	 * @return the list of Elevators
+	 */
+	public ArrayList<Elevator> getElevatorList() {
+		return elevatorList;
 	}
 
 	/**
@@ -98,30 +107,38 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
-	 * Initialize the elevatorSubsystem with elevators
-	 * and start threads for each elevator and the elevatorSubsystem.
+	 * Initializes the ElevatorSubsystem with the specified number of Elevators.
 	 *
-	 * @param args not used
+	 * @param numberOfElevators the number of Elevators for the ElevatorSubsystem
 	 */
-	public static void main(String[] args) {
+	public void initializeElevators(int numberOfElevators) {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		int numberOfElevators = 2;
-		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-		ArrayList<Elevator> elevatorList = new ArrayList<>();
-		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
-			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
-			elevatorSubsystem.addElevator(elevator);
-			elevatorList.add(elevator);
+		// initialize the list of elevators
+		for (int i = 1; i <= numberOfElevators; i++) {
+			Elevator elevator = new Elevator(i, this);
+			addElevator(elevator);
 		}
-		new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName()).start();
+	}
 
-		// Start elevator Origins
-		for (int i = 0; i < numberOfElevators; i++) {
-			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
+	/**
+	 * Initializes the Elevator threads for the ElevatorSubsystem.
+	 */
+	public void initializeElevatorThreads() {
+		// Start elevator Threads
+		for (Elevator elevator : elevatorList) {
+			(new Thread(elevator, elevator.getClass().getSimpleName())).start();
 		}
+	}
+
+	public static void main(String[] args) {
+		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+		elevatorSubsystem.initializeElevators(2);
+		Thread elevatorSubsystemThread = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
+		elevatorSubsystemThread.start();
+		elevatorSubsystem.initializeElevatorThreads();
 	}
 }

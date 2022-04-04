@@ -7,7 +7,7 @@ import systemwide.Direction;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test class for ElevatorMotor methods
+ * Test class for ElevatorMotor methods/
  *
  * @author Julian
  */
