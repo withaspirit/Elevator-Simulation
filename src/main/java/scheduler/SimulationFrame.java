@@ -10,14 +10,14 @@ import java.awt.*;
 public class SimulationFrame {
 
     private ElevatorViewContainer elevatorViewContainer;
-    private ViewUpdater viewUpdater;
+    private Presenter presenter;
     private JFrame frame;
 
 
     public SimulationFrame() {
         elevatorViewContainer = new ElevatorViewContainer(20);
-        viewUpdater = new ViewUpdater();
-        viewUpdater.addView(elevatorViewContainer);
+        presenter = new Presenter();
+        presenter.addView(elevatorViewContainer);
     }
 
     public void frameSetup() {
@@ -31,8 +31,9 @@ public class SimulationFrame {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
+    // TODO: this method should be moved to the model
     public void testElevatorMonitorUpdate(ElevatorMonitor elevatorMonitor) {
-        viewUpdater.updateElevatorView(elevatorMonitor);
+        presenter.updateElevatorView(elevatorMonitor);
     }
 
     public static void main(String[] args) {
