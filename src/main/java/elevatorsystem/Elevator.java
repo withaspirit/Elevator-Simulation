@@ -177,8 +177,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 			messageToPrint += "Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor;
 		}
 
-		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
-
 		System.out.println(messageToPrint);
 		setCurrentFloor(nextFloor);
 	}
@@ -337,6 +335,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 			doors.setToStuck();
 			shutDownElevator();
 		}
+
+		if (requestQueue.isEmpty()){
+			motor.stop();
+			serviceDirection = Direction.NONE;
+		}
+
+		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
 	}
 
 	/**
