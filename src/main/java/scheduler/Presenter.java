@@ -3,25 +3,23 @@ package scheduler;
 import requests.ElevatorMonitor;
 
 /**
- * ViewUpdater updates the View of the system with information from the Model.
+ * Presenter updates the View of the system with information from the Model.
  *
  * @author Liam Tripp
  */
-// TODO: rename this class, the name will not communicate its intent if we ever
-//  add a "start" button before everything is initiated
-public class ViewUpdater {
+public class Presenter {
 
     private ElevatorViewContainer elevatorViewContainer;
 
     /**
-     * Constructor for ViewUpdater.
+     * Constructor for Presenter.
      */
-    public ViewUpdater() {
+    public Presenter() {
 
     }
 
     /**
-     * Adds an ElevatorViewContainer to the ViewUpdater.
+     * Adds an ElevatorViewContainer to the Presenter.
      *
      * @param elevatorViewContainer the View component that displays the list of elevators
      */
