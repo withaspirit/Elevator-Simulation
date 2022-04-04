@@ -7,12 +7,16 @@ import systemwide.Direction;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * SimulatoinFrame demos the GUI of the simulation.
+ *
+ * @author Liam Tripp
+ */
 public class SimulationFrame {
 
     private ElevatorViewContainer elevatorViewContainer;
     private Presenter presenter;
     private JFrame frame;
-
 
     public SimulationFrame() {
         elevatorViewContainer = new ElevatorViewContainer(20);
@@ -31,7 +35,7 @@ public class SimulationFrame {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    // TODO: this method should be moved to the model
+    // TODO: this method should be moved to the model and renamed
     public void testElevatorMonitorUpdate(ElevatorMonitor elevatorMonitor) {
         presenter.updateElevatorView(elevatorMonitor);
     }
