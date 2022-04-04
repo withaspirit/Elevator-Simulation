@@ -191,7 +191,7 @@ class ElevatorTest {
 
         // add different request
         elevator.addRequest(serviceRequest2);
-        elevator.moveToNextFloor(serviceRequest1);
+        elevator.moveToNextFloor(requestFloor1);
 
         if (!elevator.getMotor().isIdle()) {
             elevator.compareFloors(requestFloor1);

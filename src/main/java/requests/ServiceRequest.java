@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author Liam Tripp, Ramit Mahajan, Ryan Dash
  */
-public class ServiceRequest extends SystemEvent implements Comparable<ServiceRequest> {
+public class ServiceRequest extends SystemEvent {
 
 	private final int floorNumber;
 	private Direction direction;
@@ -57,15 +57,13 @@ public class ServiceRequest extends SystemEvent implements Comparable<ServiceReq
 		this.direction = direction;
 	}
 
+	/**
+	 * Convert ServiceRequest to a String.
+	 */
 	@Override
 	public String toString() {
 		DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 		String formattedDate = getTime().format(dateTimeFormat);
 		return formattedDate + " " + getFloorNumber() + " " + getDirection().getName();
-	}
-
-	@Override
-	public int compareTo(ServiceRequest request) {
-		return Integer.compare(this.getFloorNumber(), request.getFloorNumber());
 	}
 }

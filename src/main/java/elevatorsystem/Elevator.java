@@ -98,14 +98,14 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void respondToRequest() {
 		System.out.println();
 
-		ServiceRequest nextRequest = requestQueue.peekNextRequest();
-		int requestFloor = nextRequest.getFloorNumber();
+		int requestFloor = requestQueue.peekNextRequest();
+		//int requestFloor = requestQueue.removeRequest();
 
 		// Print status
 		printStatus(requestFloor);
 		// Compare the request floor and the next floor
 		compareFloors(requestFloor);
-		moveToNextFloor(nextRequest);
+		moveToNextFloor(requestFloor);
 		// stop elevator if moving and new floor is request floor
 		if (!motor.isIdle()) {
 			compareFloors(requestFloor);
@@ -115,19 +115,18 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Moves the Elevator to the next floor.
 	 *
-	 * @param request the serviceRequest at the top of the queue of requests
+	 * @param requestFloor the floor at the top of the queue of requests
 	 */
 	// FIXME: this is deeply nested and could be broken into 2 or more methods:
 	//  attemptToMove (boolean ???) and printElevatorAction (maybe)
-	public void moveToNextFloor(ServiceRequest request) {
-		int requestFloor = request.getFloorNumber();
+	public void moveToNextFloor(int requestFloor) {
 		int nextFloor = motor.move(currentFloor, requestFloor);
 
 		// in future iterations, shouldStopAtNextFloor will be followed by sending an ApproachRequest
 		if (messageTransferEnabled) {
 			// communicate with Scheduler to see if Elevator should stop at this floor
-			ApproachEvent newApproachEvent = new ApproachEvent(request.getTime(), nextFloor,
-					request.getDirection(), elevatorNumber, Origin.ELEVATOR_SYSTEM);
+			ApproachEvent newApproachEvent = new ApproachEvent(LocalTime.now(), nextFloor,
+					serviceDirection, elevatorNumber, Origin.ELEVATOR_SYSTEM);
 			passApproachEvent(newApproachEvent);
 			// stall while waiting to receive the approachEvent from ElevatorSubsystem
 
@@ -188,11 +187,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param requestFloor the floor to be removed from the requestQueue
 	 */
 	public void attemptToRemoveFloor(int requestFloor) {
-		ServiceRequest removedRequest = requestQueue.removeRequest();
-		int removedFloor = removedRequest.getFloorNumber();
+		int removedFloor = requestQueue.removeRequest();
 		boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
 
-		if (removedRequest == null) {
+		if (removedFloor == -1) {
 			throw new IllegalArgumentException("A value of -1 was received from the requestQueue.");
 		} else if (!sameFloorRemovedAsPeeked) {
 			System.out.println("Floor peeked " + requestFloor + ", Floor Removed: " + removedFloor);
@@ -347,15 +345,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Shuts down the elevator by removing all Requests from its RequestQueue.
+	 * Shuts down the elevator and prevents further use
 	 */
 	public void shutDownElevator() {
 		// empty the request queue
-		ServiceRequest removeRequest;
+		int removeRequest;
 		do {
 			removeRequest = requestQueue.removeRequest();
-		} while (removeRequest != null);
+		} while (removeRequest != -1);
 		motor.setDirection(Direction.NONE);
+		// send shutdown message here ?
 	}
 
 	/**

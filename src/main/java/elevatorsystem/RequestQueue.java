@@ -10,22 +10,21 @@ import java.util.TreeSet;
 import static elevatorsystem.Elevator.*;
 
 /**
- * RequestQueue maintains queues of serviceRequests that indicate
- * the floors  for an elevator to visit. It also provides methods
- * to manage and modify the queues.
+ * RequestQueue maintains queues of floor numbers for an elevator to visit.
+ * It also provides methods to manage and modify the queues.
  *
  * @author Julian, Liam Tripp
  */
 public class RequestQueue {
 
-	private volatile TreeSet<ServiceRequest> currentDirectionQueue;
-	private volatile TreeSet<ServiceRequest> oppositeDirectionQueue;
+	private volatile TreeSet<Integer> currentDirectionQueue;
+	private volatile TreeSet<Integer> oppositeDirectionQueue;
 	/**
 	 * MissedRequests is for requests in the elevators' serviceDirection whose
 	 * floorNumbers are below (if serviceDirection is UP) or above
 	 * (if serviceDirection is DOWN) the elevator's floor.
 	 */
-	private final TreeSet<ServiceRequest> missedRequests;
+	private final TreeSet<Integer> missedRequests;
 
 	/**
 	 * Constructor for the class
@@ -51,7 +50,7 @@ public class RequestQueue {
 			throw new IllegalArgumentException("FloorNumber must be greater than zero.");
 		}
 
-		TreeSet<ServiceRequest> queueToAddTo;
+		TreeSet<Integer> queueToAddTo;
 		// if the elevator's floor number == request floor number
 		if (elevatorFloorNumber == floorNumber) {
 			// if serviceDirection is the same as the request direction,
@@ -80,13 +79,9 @@ public class RequestQueue {
 			}
 		}
 		// add to selected queue
+		queueToAddTo.add(floorNumber);
 		if (request instanceof ElevatorRequest elevatorRequest) {
-			ServiceRequest serviceRequest1 = new ServiceRequest(request.getTime(), elevatorRequest.getDesiredFloor(), request.getDirection(), request.getOrigin());
-			ServiceRequest serviceRequest2 = new ServiceRequest(request.getTime(), request.getFloorNumber(), request.getDirection(), request.getOrigin());
-			queueToAddTo.add(serviceRequest1);
-			queueToAddTo.add(serviceRequest2);
-		} else {
-			queueToAddTo.add(request);
+			queueToAddTo.add(elevatorRequest.getDesiredFloor());
 		}
 	}
 
@@ -95,11 +90,11 @@ public class RequestQueue {
 	 *
 	 * @return the request at the head of the currentDirectionQueue, -1 if queue is empty
 	 */
-	public ServiceRequest removeRequest() {
+	public int removeRequest() {
 		if (!currentDirectionQueue.isEmpty()) {
 			return currentDirectionQueue.pollFirst();
 		} else {
-			return null;
+			return -1;
 		}
 	}
 
@@ -108,13 +103,13 @@ public class RequestQueue {
 	 *
 	 * @return nextFloor the next floor in queue, -1 if the currentDirectionQueue is empty
 	 */
-	public ServiceRequest peekNextRequest() {
+	public int peekNextRequest() {
 		if (!currentDirectionQueue.isEmpty()) {
 			return currentDirectionQueue.first();
 		} else {
 			System.err.println("RequestQueue.peekNextFloor should not be accessed " +
 					"while the active queue is empty. Swapping should be done beforehand.");
-			return null;
+			return -1;
 		}
 	}
 
@@ -134,7 +129,7 @@ public class RequestQueue {
 
 			// switch to opposite direction queue if possible
 			if (!oppositeDirectionQueue.isEmpty()) {
-				TreeSet<ServiceRequest> tempQueue = currentDirectionQueue;
+				TreeSet<Integer> tempQueue = currentDirectionQueue;
 				currentDirectionQueue = oppositeDirectionQueue;
 				oppositeDirectionQueue = tempQueue;
 				status = true;
@@ -207,24 +202,21 @@ public class RequestQueue {
 	public double getExpectedTime(int elevatorFloor) {
 		double queueTime = 0;
 
-		for (ServiceRequest request: currentDirectionQueue) {
-			int floor = request.getFloorNumber();
+		for (int floor: currentDirectionQueue) {
 			if (elevatorFloor != floor) {
 				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
 				elevatorFloor = floor;
 			}
 		}
 
-		for (ServiceRequest request: oppositeDirectionQueue) {
-			int floor = request.getFloorNumber();
+		for (int floor: oppositeDirectionQueue) {
 			if (elevatorFloor != floor) {
 				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
 				elevatorFloor = floor;
 			}
 		}
 
-		for (ServiceRequest request: missedRequests) {
-			int floor = request.getFloorNumber();
+		for (int floor: missedRequests) {
 			if (elevatorFloor != floor) {
 				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
 				elevatorFloor = floor;
