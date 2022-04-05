@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>l4g4</groupId>
-    <artifactId>ElevatorSimulation</artifactId>
+    <artifactId>elevatorsim</artifactId>
     <version>5.0</version>
 
     <properties>
