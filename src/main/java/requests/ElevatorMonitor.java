@@ -16,6 +16,16 @@ import java.time.LocalTime;
  */
 public class ElevatorMonitor extends SystemEvent {
 
+    /*
+    Attributes:
+    1. elevator number
+    2. currentFloor
+    3. serviceDirection
+    4. MovementState
+    5. Boolean empty
+    6. queueTime
+     */
+
     private double queueTime;
     private MovementState state;
     private int currentFloor;
@@ -46,7 +56,7 @@ public class ElevatorMonitor extends SystemEvent {
      * @param serviceDirection the direction that the elevator is serving
      * @param elevatorNumber the number of the elevator
      */
-    public ElevatorMonitor(double queueTime, MovementState movementState, int currentFloor, Direction serviceDirection, int elevatorNumber, boolean empty) {
+    public ElevatorMonitor(int elevatorNumber, int currentFloor, Direction serviceDirection, MovementState movementState, Boolean empty, double queueTime) {
         this(elevatorNumber);
         this.queueTime = queueTime;
         this.state = movementState;

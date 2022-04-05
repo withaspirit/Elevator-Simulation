@@ -84,7 +84,7 @@ public class ElevatorSelectionTest {
 
 
         for (ElevatorMonitor elevatorMonitor: Scheduler.getElevatorMonitorList()){
-            elevatorMonitor.updateMonitor(new ElevatorMonitor(0.0, MovementState.IDLE, 1, Direction.UP, elevatorMonitor.getElevatorNumber(), true));
+            elevatorMonitor.updateMonitor(new ElevatorMonitor(elevatorMonitor.getElevatorNumber(), 1, Direction.UP, MovementState.IDLE, true, 0.0));
         }
     }
 

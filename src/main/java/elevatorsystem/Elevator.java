@@ -588,7 +588,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @return a StatusUpdate containing new elevator information.
 	 */
 	public ElevatorMonitor makeElevatorMonitor() {
-		return new ElevatorMonitor(requestQueue.getExpectedTime(currentFloor), motor.getMovementState(), currentFloor, serviceDirection, elevatorNumber, requestQueue.isEmpty());
+		return new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor));
 	}
 
 	/**
