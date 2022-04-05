@@ -113,7 +113,9 @@ Tests:
   <summary>Running</summary>
 
 <br>
+
 The program can be run as one program with the class Structure. The program can also be run as multiple separate programs with the classes Scheduler, ElevatorSubsystem, and FloorSubsystem.
+
 
 The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: Scheduler, ElevatorSubsystem, and FloorSubsystem. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
 
