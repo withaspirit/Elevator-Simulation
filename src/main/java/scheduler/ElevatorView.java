@@ -58,6 +58,16 @@ public class ElevatorView {
     }
 
     /**
+     * Returns the ElevatorView's array of statusPanes. Used for testing
+     * updates to ElevatorView.
+     *
+     * @return a JTextPane array containing information about the Elevator's status
+     */
+    public JTextPane[] getStatusPanes() {
+        return statusPanes;
+    }
+
+    /**
      * Updates the ElevatorView with information from an ElevatorMonitor.
      *
      * @param elevatorMonitor contains the status information of an Elevator
