@@ -28,11 +28,15 @@ public class ElevatorMonitor extends SystemEvent {
     6. queueTime
      */
 
+
     private double queueTime;
     private MovementState state;
     private int currentFloor;
     private Direction currentDirection;
     private boolean hasNoRequests;
+    private Direction movementDirection;
+    private Fault fault;
+    private Doors.State doorsState;
 
     /**
      * Main Constructor for ElevatorMonitor.
@@ -63,11 +67,14 @@ public class ElevatorMonitor extends SystemEvent {
      */
     public ElevatorMonitor(int elevatorNumber, int currentFloor, Direction serviceDirection, MovementState movementState, Direction movementDirection, Doors.State doorState, Fault fault, Boolean empty, double queueTime) {
         this(elevatorNumber);
-        this.queueTime = queueTime;
-        this.state = movementState;
         this.currentFloor = currentFloor;
         this.currentDirection = serviceDirection;
+        this.state = movementState;
+        this.movementDirection = movementDirection;
+        this.doorsState = doorState;
+        this.fault = fault;
         this.hasNoRequests = empty;
+        this.queueTime = queueTime;
     }
 
     /**
@@ -139,5 +146,18 @@ public class ElevatorMonitor extends SystemEvent {
         String formattedString = "[ElevatorNumber, queueTime, MovementState, CurrFloor, CurrDirxn]:\n";
         formattedString += getElevatorNumber() + " " + String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection();
         return formattedString;
+    }
+
+    public String[] propertiesToString() {
+
+        String[] properties = new String[6]; //{"CurrentFloor", "ServiceDirection", "MovementState", "MovementDirection", "DoorState", "Fault"};
+        properties[0] = String.valueOf(getCurrentFloor());
+        properties[1] = getDirection().toString();
+        properties[2] = state.getName();
+        properties[3] = movementDirection.getName();
+        properties[4] = doorsState.toString();
+        properties[5] = fault.getName();
+
+        return properties;
     }
 }
