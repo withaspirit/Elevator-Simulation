@@ -91,8 +91,8 @@ This is for importing the project and its entire branch history.
 
 #### In Eclipse:
 
-1. Ensure the project is loaded as a Maven project (instructions contained in Editing section)
-2. Locate the test directory in the workspace
+1. Ensure the project is loaded as a Maven project (instructions contained in Installation if downloaded via ZIP, or in the Editing section if connected to repository via Git)
+2. Locate the test directory "src/test/java" in the workspace
 3. Right click on the directory and select "Run As" -> "JUnit Test". This runs all the unit tests
 
 Tests: 
