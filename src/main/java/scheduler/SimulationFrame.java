@@ -16,7 +16,7 @@ public class SimulationFrame {
         Presenter presenter = new Presenter();
         presenter.addView(elevatorViewContainer);
 
-        presenter.frameSetup();
+        presenter.startGUI();
         ElevatorMonitor elevatorMonitor = new ElevatorMonitor(0);
         elevatorMonitor.updateMonitor(new ElevatorMonitor(0, MovementState.ACTIVE, 2, Direction.DOWN, 0, true));
         presenter.updateElevatorView(elevatorMonitor);

@@ -51,7 +51,7 @@ public class Presenter {
     /**
      * Initializes the GUI of the system and makes it viewable.
      */
-    public void frameSetup() {
+    public void startGUI() {
         if (elevatorViewContainer == null) {
             throw new RuntimeException("ElevatorViewContainer must be instantiated and added to " + getClass().getSimpleName() + ".");
         }
