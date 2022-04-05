@@ -13,30 +13,19 @@ import java.time.LocalTime;
  * which Elevator to send new ServiceRequests to. Scheduler's list of ElevatorMonitors is
  * updated by Elevator sending ElevatorMonitors to Scheduler.
  *
- * @author Ryan Dash
- * @version 2022/03/10
+ * @author Ryan Dash, Brady Norton
+ * @version 2022/04/05
  */
 public class ElevatorMonitor extends SystemEvent {
 
-    /*
-    Attributes:
-    1. elevator number
-    2. currentFloor
-    3. serviceDirection
-    4. MovementState
-    5. Boolean empty
-    6. queueTime
-     */
-
-
-    private double queueTime;
-    private MovementState state;
     private int currentFloor;
     private Direction currentDirection;
-    private boolean hasNoRequests;
+    private MovementState state;
     private Direction movementDirection;
-    private Fault fault;
     private Doors.State doorsState;
+    private Fault fault;
+    private boolean hasNoRequests;
+    private double queueTime;
 
     /**
      * Main Constructor for ElevatorMonitor.
@@ -148,9 +137,9 @@ public class ElevatorMonitor extends SystemEvent {
         return formattedString;
     }
 
-    public String[] propertiesToString() {
-
-        String[] properties = new String[6]; //{"CurrentFloor", "ServiceDirection", "MovementState", "MovementDirection", "DoorState", "Fault"};
+    public String[] propertiesToStringArray() {
+        String[] properties = new String[6];
+        //{"CurrentFloor", "ServiceDirection", "MovementState", "MovementDirection", "DoorState", "Fault"};
         properties[0] = String.valueOf(getCurrentFloor());
         properties[1] = getDirection().toString();
         properties[2] = state.getName();
