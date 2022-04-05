@@ -1,5 +1,7 @@
 package requests;
 
+import elevatorsystem.Doors;
+import elevatorsystem.Fault;
 import elevatorsystem.MovementState;
 import systemwide.Direction;
 import systemwide.Origin;
@@ -50,13 +52,16 @@ public class ElevatorMonitor extends SystemEvent {
     /**
      * Constructor for all of ElevatorMonitor's properties.
      *
-     * @param queueTime the estimated time for elevator to fulfill all of its requests
-     * @param movementState the MovementState of the Elevator's motor
+     * @param elevatorNumber the number of the elevator
      * @param currentFloor the currentFloor of the Elevator
      * @param serviceDirection the direction that the elevator is serving
-     * @param elevatorNumber the number of the elevator
+     * @param movementState the MovementState of the Elevator's motor
+     * @param movementDirection
+     * @param doorState
+     * @param fault
+     * @param queueTime the estimated time for elevator to fulfill all of its requests
      */
-    public ElevatorMonitor(int elevatorNumber, int currentFloor, Direction serviceDirection, MovementState movementState, Boolean empty, double queueTime) {
+    public ElevatorMonitor(int elevatorNumber, int currentFloor, Direction serviceDirection, MovementState movementState, Direction movementDirection, Doors.State doorState, Fault fault, Boolean empty, double queueTime) {
         this(elevatorNumber);
         this.queueTime = queueTime;
         this.state = movementState;
