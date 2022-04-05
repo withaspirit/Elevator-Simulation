@@ -28,7 +28,7 @@ public class RequestQueue {
 	private final TreeSet<ServiceRequest> missedRequests;
 
 	/**
-	 * Constructor for the class
+	 * Constructor for RequestQueue.
 	 */
 	public RequestQueue() {
 		currentDirectionQueue = new TreeSet<>();
@@ -104,7 +104,7 @@ public class RequestQueue {
 	}
 
 	/**
-	 * Returns the next floor in queue for the direction
+	 * Returns the next floor in queue for the direction.
 	 *
 	 * @return nextFloor the next floor in queue, -1 if the currentDirectionQueue is empty
 	 */
@@ -171,7 +171,7 @@ public class RequestQueue {
 	}
 
 	/**
-	 * Returns the occupancy status of the missed requests queue
+	 * Returns the occupancy status of the missed RequestQueue.
 	 *
 	 * @return status true if empty
 	 */

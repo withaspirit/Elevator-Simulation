@@ -69,7 +69,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	/**
 	 * Checks if there are any more requests to process and processes
-	 * and new requests
+	 * and new requests.
 	 */
 	@Override
 	public void run() {
@@ -115,7 +115,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Moves the Elevator to the next floor.
 	 *
-	 * @param request the serviceRequest at the top of the queue of requests
+	 * @param request at the floor at the top of the RequestQueue
 	 */
 	// FIXME: this is deeply nested and could be broken into 2 or more methods:
 	//  attemptToMove (boolean ???) and printElevatorAction (maybe)
@@ -178,8 +178,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 			messageToPrint += "Elevator #" + elevatorNumber + " moved (stayed) on floor " + nextFloor;
 		}
 
-		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
-
 		System.out.println(messageToPrint);
 		setCurrentFloor(nextFloor);
 	}
@@ -203,7 +201,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Compares the requestFloor to the next floor and updates the Motor accordingly
+	 * Compares the requestFloor to the next floor and updates the Motor accordingly.
 	 *
 	 * @param requestFloor the floor the elevator is going to visit
 	 */
@@ -339,6 +337,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 			doors.setToStuck();
 			shutDownElevator();
 		}
+
+		if (requestQueue.isEmpty()){
+			motor.stop();
+			serviceDirection = Direction.NONE;
+		}
+
+		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
 	}
 
 	/**
@@ -354,7 +359,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Swaps the requestQueue and changes the service direction before elevator moves to next floor.
+	 * Swaps the RequestQueue and changes the service direction before elevator moves to next floor.
 	 * TODO: In the future, there should be a check when the ElevatorMotor
 	 * TODO: MovementState is IDLE. If so, the elevator uses this method.
 	 */
@@ -366,7 +371,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Returns the elevator number
+	 * Returns the elevator number.
 	 *
 	 * @return an integer corresponding to the elevator's number
 	 */
@@ -384,7 +389,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Adds a request to the queue of requests for Elevator to service.
+	 * Adds a request to the RequestQueue for Elevator to service.
 	 *
 	 * @param serviceRequest a service request for the elevator to perform
 	 */
@@ -395,9 +400,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Returns whether the request queue is empty.
+	 * Returns whether the RequestQueue is empty.
 	 *
-	 * @return true if the request queue is empty, false otherwise
+	 * @return true if the RequestQueue is empty, false otherwise
 	 */
 	public boolean hasNoRequests() {
 		return requestQueue.isEmpty();
@@ -414,7 +419,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the distance until the next floor as a float
+	 * Gets the distance until the next floor as a float.
 	 *
 	 * @return distance until next floor
 	 */
@@ -568,9 +573,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the request queue of the elevator
+	 * Gets the RequestQueue of the elevator.
 	 *
-	 * @return the request queue of the elevator
+	 * @return the RequestQueue of the elevator
 	 */
 	public RequestQueue getRequestQueue() {
 		return requestQueue;
