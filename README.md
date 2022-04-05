@@ -35,22 +35,46 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 <details>
   <summary>Installation</summary>
 
-1.	Download and extract the ZIP folder
-2. 	Open up Eclipse and select file
-3. 	Click "Open Projects from File System" and select the project folder
-4. 	Select Finish and then build the project
-5. 	To begin the simulation, navigate to the systemwide directory
-6. 	src -> main -> java -> systemwide
-7. 	Run Structure.java
+#### Eclipse:
+
+1. Download the ZIP file for the project. (In GitHub, found under "Code" button).
+2. Extract the ZIP file. Remember where you put the extracted folder.
+3. Open Eclipse. In the upper left corner, select File -> Import -> Maven -> Existing Maven Project. Click "Next" to continue.
+4. [See "Import Maven Project"] On the new popup screen, for "Root Directory," select the extracted project folder. Ignore the folder within the extracted project folder.
+
+  <details>
+  <summary>Show "Import Maven Project"</summary>
+
+  ![Import Maven Project](https://user-images.githubusercontent.com/61635007/161658503-5c94a77e-a862-4493-b24d-2ecfe9fbe226.png)
+
+  </details>
+
+5. Once the root directory is selected, in Eclipse, activate the "Advanced" dropdown. For the "Name Template" options, select [groupId].[artifactId]-[version].
+6. Make sure "Resolve Workplace Projects" is checked under "Advanced."
+7. Check the box where the project is. Select "Finish." The project should be added to the Project Explorer in Eclipse.
+8. At this point there may be unresolved dependencies. To resolve this, in the Project Explorer, right click the project folder, or "pom.xml." From the context menu that pops up, select Maven -> Update Maven Project.
+9. [See "Update Maven Project"]. A popup menu appears. Ensure the project checkbox is selected. Ensure the three checkboxes at the bottom of the popup menu are also checked.
+
+  <details>
+  <summary>Show "Update Maven Project"</summary>
+
+  ![Update_Maven_Project](https://user-images.githubusercontent.com/61635007/161658707-fa88dcad-5d5e-4871-abc7-fd34c2e69011.png)
+
+  </details>
+
+10. In the popup menu, select "Finish." This downloads all dependencies from Maven automatically. They are locally stored in the directory "C:\Users\[your name]\.m2"
+11. You should now be able to run the project.
 
 </details>
 
 <details>
   <summary>Editing</summary>
 
-#### In Eclipse:
+This is for importing the project and its entire branch history.
+
+#### Eclipse:
   
-1. Open the File menu and select "Import". This will open the "Import" window. From there select "Git"->"Projects from Git" as the import wizard and press Next>
+1. Open Eclipse. Open the File menu and select "Import". This will open the "Import" window. From there select "Git"->"Projects from Git" as the import wizard and press Next>
 2. From the next window, select "Clone URI" as the repository source and press Next>
 3. Enter the URL of the git repository in this window which can be found by pressing the "Code" button and selecting the preferred connection protocol on the project's GitHub page
 4. Paste the information obtained from the project page into the window. It may prefill some of the information in the window. Enter any required information
@@ -58,7 +82,7 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 6. After over coming the erorr, press Next> and it will show you the branches of the repository, do not make any changes to the default selected branches.
 7. It will open the Local Destination window in which you can select the location of the folder where you want clone the repository. Press Next> 
 8. In the next window, Select "Import as general project" as the wizard from import and press Next>. This will load the project
-9. From the project explorer window, right click the project folder and from the popup menu, select "Configure", then "Convert to Maven Project". This will convert the project into a Maven project
+9. From the project explorer window, right click the project folder and from the popup menu, select "Configure", then "Convert to Maven Project". This will convert the project into a Maven project.
 
 </details>
 
@@ -106,7 +130,7 @@ Instructions:
 - Search for Multirun in the plugins list. If it does not show up, there should be an option to search aftermarket plugins which you can click. 
 - Click the install button
 - Multirun should now be installed and ready to use.
-- The run option should now be available in IntelliJ's run configurations..
+- The run option should now be available in IntelliJ's run configurations.
 
 </details>
 
@@ -348,7 +372,7 @@ Instructions:
   | Ramit Mahajan | | |
   | Brady Norton | | |
   | Julian Obando Velez | | |
-  | Liam Tripp | |  |
+  | Liam Tripp | | README Installation instructions |
   
   ### Diagrams
 
