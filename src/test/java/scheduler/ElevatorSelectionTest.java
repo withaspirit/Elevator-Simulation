@@ -69,13 +69,13 @@ public class ElevatorSelectionTest {
     @AfterEach
     void cleanUP(){
         while (!elevator1.getRequestQueue().isEmpty()){
-            if (elevator1.getRequestQueue().removeRequest() == -1){
+            if (elevator1.getRequestQueue().removeRequest() == null){
                 break;
             }
         }
 
         while (!elevator2.getRequestQueue().isEmpty()){
-            if (elevator2.getRequestQueue().removeRequest() == -1){
+            if (elevator2.getRequestQueue().removeRequest() == null){
                 break;
             }
         }
