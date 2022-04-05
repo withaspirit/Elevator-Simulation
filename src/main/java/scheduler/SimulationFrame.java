@@ -5,7 +5,7 @@ import requests.ElevatorMonitor;
 import systemwide.Direction;
 
 /**
- * SimulatoinFrame demos the GUI of the simulation.
+ * SimulationFrame demos the GUI of the simulation.
  *
  * @author Liam Tripp
  */
@@ -17,6 +17,7 @@ public class SimulationFrame {
         presenter.addView(elevatorViewContainer);
 
         presenter.startGUI();
+
         ElevatorMonitor elevatorMonitor = new ElevatorMonitor(0);
         elevatorMonitor.updateMonitor(new ElevatorMonitor(0, MovementState.ACTIVE, 2, Direction.DOWN, 0, true));
         presenter.updateElevatorView(elevatorMonitor);
