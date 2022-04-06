@@ -16,19 +16,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * MessageTransferTest ensures the encoding/decoding methods provided by the
- * MessageTransfer class are functional.
+ * MessageTransferTest ensures the encoding/decoding and send/receive methods
+ * provided by the MessageTransfer class are functional.
  *
  * @author Julian, Liam Tripp
  */
 public class MessageTransferTest {
 
-	MessageTransfer msgTransfer;
-	ElevatorRequest elevatorRequest;
-	FloorRequest floorRequest;
-	ApproachEvent approachEvent;
-	LocalTime timeNow;
-	int portNumber;
+	private MessageTransfer msgTransfer;
+	private ElevatorRequest elevatorRequest;
+	private FloorRequest floorRequest;
+	private ApproachEvent approachEvent;
+	private LocalTime timeNow;
+	private int portNumber;
 
 	@BeforeEach
 	void setUp() {
