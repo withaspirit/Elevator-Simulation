@@ -7,6 +7,8 @@ import elevatorsystem.MovementState;
 import requests.*;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.Structure;
+import systemwide.SystemStatus;
 
 import java.net.DatagramPacket;
 import java.time.LocalTime;
@@ -21,6 +23,7 @@ public class Scheduler implements Runnable {
 
 	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private final IntermediateHost intermediateHost;
+	private volatile SystemStatus systemStatus;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
 
@@ -32,6 +35,7 @@ public class Scheduler implements Runnable {
 	public Scheduler(int portNumber) {
 		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = new IntermediateHost(portNumber);
+		systemStatus = new SystemStatus(false);
 	}
 
 	/**
@@ -50,6 +54,15 @@ public class Scheduler implements Runnable {
 	 */
 	public static ArrayList<ElevatorMonitor> getElevatorMonitorList() {
 		return elevatorMonitorList;
+	}
+
+	/**
+	 * Gets the SystemStatus of the System.
+	 *
+	 * @return the SystemStatus of the System
+	 */
+	public SystemStatus getSystemStatus() {
+		return systemStatus;
 	}
 
 	/**
@@ -191,6 +204,8 @@ public class Scheduler implements Runnable {
 	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
+
+		// TODO: replace with systemActivated
 		while (true) {
 			receiveAndProcessPacket();
 		}
@@ -205,7 +220,7 @@ public class Scheduler implements Runnable {
 
 
 		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
-			schedulerClient.addElevatorMonitor(i);
+			schedulerClient.addElevatorMonitor(i + 1);
 		}
 		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
 		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
