@@ -39,6 +39,9 @@ public class ElevatorMonitor extends SystemEvent {
         state = MovementState.IDLE;
         currentFloor = 1;
         currentDirection = Direction.NONE;
+        movementDirection = Direction.NONE;
+        doorsState = Doors.State.OPEN;
+        fault = Fault.NONE;
         hasNoRequests = true;
     }
 
@@ -102,6 +105,17 @@ public class ElevatorMonitor extends SystemEvent {
         return currentDirection;
     }
 
+    public Direction getMovementDirection() {
+        return movementDirection;
+    }
+
+    public Doors.State getDoorsState() {
+        return doorsState;
+    }
+
+    public Fault getFault() {
+        return fault;
+    }
 
     /**
      * Gets whether of not the elevator has requests.
@@ -122,6 +136,9 @@ public class ElevatorMonitor extends SystemEvent {
         this.state = elevatorMonitor.getState();
         this.currentFloor = elevatorMonitor.getCurrentFloor();
         this.currentDirection = elevatorMonitor.getDirection();
+        movementDirection = elevatorMonitor.getMovementDirection();
+        doorsState = elevatorMonitor.getDoorsState();
+        fault = elevatorMonitor.getFault();
         this.hasNoRequests = elevatorMonitor.getHasNoRequests();
     }
 
