@@ -4,6 +4,7 @@ import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import requests.*;
+import systemwide.Structure;
 import systemwide.SystemStatus;
 
 import java.util.ArrayList;
@@ -122,18 +123,23 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	/**
 	 * Initializes the ElevatorSubsystem with the specified number of Elevators.
 	 *
-	 * @param numberOfElevators the number of Elevators for the ElevatorSubsystem
+	 * @param structure contains the values relevant to initializing the elevators
 	 */
-	public void initializeElevators(int numberOfElevators) {
+	public void initializeElevators(Structure structure) {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		// initialize the list of elevators
-		for (int i = 1; i <= numberOfElevators; i++) {
+		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
 			Elevator elevator = new Elevator(i, this);
 			addElevator(elevator);
+			if (structure.timeIsEnabled()) {
+				// TODO: add time values to Structure
+				elevator.setDoorTime(100);
+				elevator.setTravelTime(100);
+			}
 		}
 	}
 
@@ -147,11 +153,19 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		}
 	}
 
+	public Structure attemptToReceiveStructure() {
+		Structure structure = (Structure) server.receive();
+		return structure ;
+	}
+
 	public static void main(String[] args) {
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-		elevatorSubsystem.initializeElevators(2);
+		Structure structure = elevatorSubsystem.attemptToReceiveStructure();
+		elevatorSubsystem.initializeElevators(structure);
+
 		Thread elevatorSubsystemThread = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
 		elevatorSubsystemThread.start();
+		System.out.println("ElevatorSubsystem initialized");
 		elevatorSubsystem.initializeElevatorThreads();
 	}
 }

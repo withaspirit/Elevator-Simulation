@@ -126,15 +126,12 @@ public class Scheduler implements Runnable {
 	 * Enables Scheduler and the other systems.
 	 *
 	 * @param structure contains the values with which to initialize the other systems
+	 * @param inetAddress the IP address of the destination
+	 * @param portNumber the port the packet is being sent to
 	 */
-	public void enableSystem(Structure structure) {
-		try {
-			systemStatus.setSystemActivated(true);
-			intermediateHost.sendObject(structure, InetAddress.getLocalHost(), Port.CLIENT_TO_SERVER.getNumber());
-			intermediateHost.sendObject(structure, InetAddress.getLocalHost(), Port.SERVER_TO_CLIENT.getNumber());
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+	public void enableSystem(Structure structure, InetAddress inetAddress, int portNumber) {
+		systemStatus.setSystemActivated(true);
+		intermediateHost.sendObject(structure, inetAddress, portNumber);
 	}
 
 	/**
@@ -237,6 +234,14 @@ public class Scheduler implements Runnable {
 		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
 			schedulerClient.addElevatorMonitor(i + 1);
 		}
+
+		try {
+			schedulerClient.enableSystem(structure, InetAddress.getLocalHost(), Port.SERVER.getNumber());
+			schedulerServer.enableSystem(structure, InetAddress.getLocalHost(), Port.CLIENT.getNumber());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+
 		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
 		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
 	}

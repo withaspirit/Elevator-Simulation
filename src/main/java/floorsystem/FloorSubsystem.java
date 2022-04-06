@@ -5,6 +5,7 @@ import client_server_host.Port;
 import client_server_host.RequestMessage;
 import misc.InputFileReader;
 import requests.*;
+import systemwide.Structure;
 import systemwide.SystemStatus;
 
 import java.util.ArrayList;
@@ -152,16 +153,23 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		return floorList;
 	}
 
+	public Structure attemptToReceiveStructure() {
+		Structure structure = (Structure) client.receive();
+		return structure;
+	}
+
 	public static void main(String[] args) {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		int numberOfFloors = 10;
 		FloorSubsystem floorSubsystem = new FloorSubsystem();
-		floorSubsystem.initializeFloors(numberOfFloors);
-		Thread floorSubsystemThead = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
-		floorSubsystemThead.start();
+		Structure structure = floorSubsystem.attemptToReceiveStructure();
+
+		floorSubsystem.initializeFloors(structure.getNumberOfFloors());
+		System.out.println("Floors initialized");
+		Thread floorSubsystemThread = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
+		floorSubsystemThread.start();
 	}
 }
