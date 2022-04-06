@@ -18,7 +18,7 @@ public class ElevatorView {
     private JPanel statusPanelContainer;
     private JPanel[] statusPanels;
     private JTextPane[] statusPanes;
-    private final static int NUMBER_OF_STATUS_PANES = 8;
+    private final static int NUMBER_OF_STATUS_PANES = 6;
 
     /**
      * Constructor for ElevatorView.
@@ -26,7 +26,9 @@ public class ElevatorView {
      * @param elevatorNumber the number of the Elevator that this View corresponds to
      */
     public ElevatorView(int elevatorNumber) {
+        elevatorPanel = new JPanel();
         this.statusPanelContainer = new JPanel(new GridLayout(1, NUMBER_OF_STATUS_PANES));
+        elevatorPanel.add(statusPanelContainer);
         this.statusPanels = new JPanel[NUMBER_OF_STATUS_PANES];
         this.statusPanes = new JTextPane[NUMBER_OF_STATUS_PANES];
 
@@ -35,15 +37,45 @@ public class ElevatorView {
         //  StatusPanelContainer contains the statusPanels
         //  StatusPanels contain a JTextPane and an information JLabel
         //  We want direct access to each JTextPane to let us update them directly
-        elevatorPanel = new JPanel();
-        elevatorPanel.add(statusPanelContainer);
+
+        for (int i = 0; i < NUMBER_OF_STATUS_PANES; i++) {
+            statusPanes[i] = new JTextPane();
+            statusPanes[i].setEditable(false);
+            statusPanels[i] = new JPanel();
+            statusPanelContainer.add(statusPanels[i]);
+
+            String labelText = "";
+            // these values are hard coded; not very good practice
+            if (i == 0) {
+                labelText = "Current Floor:";
+            } else if (i == 1) {
+                labelText = "Service Direction:";
+            } else if (i == 2) {
+                labelText = "Movement State:";
+            } else if (i == 3) {
+                labelText = "Movement Direction:";
+            } else if (i == 4) {
+                labelText = "Door State:";
+            } else if (i == 5) {
+                labelText = "Fault:";
+            }
+            // TODO: add currentRequest?
+            JLabel label = new JLabel();
+            label.setText(labelText);
+            statusPanels[i].add(label);
+
+            statusPanels[i].add(statusPanes[i]);
+        }
+        // FIXME: this is awkward; should we pass elevator number or ElevatorMonitor
+        //  to ElevatorView's constructor?
+        update(new ElevatorMonitor(elevatorNumber));
 
         // GUI stuff
         // https://docs.oracle.com/javase/tutorial/uiswing/components/border.html
-        // give elevatorPanel a title reading "Elevator X" on the top left
+        // give elevatorPanel a title reading "Elevator X" above in center
         Border border = BorderFactory.createLineBorder(Color.BLACK);
         TitledBorder titledBorder = BorderFactory.createTitledBorder(border, "Elevator " + elevatorNumber);
-        titledBorder.setTitleJustification(TitledBorder.DEFAULT_JUSTIFICATION);
+        titledBorder.setTitleJustification(TitledBorder.CENTER);
         titledBorder.setTitlePosition(TitledBorder.ABOVE_TOP);
         elevatorPanel.setBorder(titledBorder);
     }
@@ -73,6 +105,11 @@ public class ElevatorView {
      * @param elevatorMonitor contains the status information of an Elevator
      */
     public void update(ElevatorMonitor elevatorMonitor) {
+        String[] elevatorProperties = elevatorMonitor.propertiesToStringArray();
+
+        for (int i = 0; i < elevatorProperties.length; i++) {
+            statusPanes[i].setText(elevatorProperties[i]);
+        }
         // TODO: update each of the statusPanes
         elevatorPanel.repaint();
         elevatorPanel.revalidate();
