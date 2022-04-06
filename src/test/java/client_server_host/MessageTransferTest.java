@@ -1,11 +1,11 @@
 package client_server_host;
 
+import elevatorsystem.Doors;
+import elevatorsystem.Fault;
+import elevatorsystem.MovementState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import requests.ApproachEvent;
-import requests.ElevatorRequest;
-import requests.FloorRequest;
-import requests.SystemEvent;
+import requests.*;
 import systemwide.Direction;
 import systemwide.Origin;
 
@@ -27,6 +27,7 @@ public class MessageTransferTest {
 	private ElevatorRequest elevatorRequest;
 	private FloorRequest floorRequest;
 	private ApproachEvent approachEvent;
+	private ElevatorMonitor elevatorMonitor;
 	private LocalTime timeNow;
 	private int portNumber;
 
@@ -38,6 +39,7 @@ public class MessageTransferTest {
 		elevatorRequest = new ElevatorRequest(timeNow, 2, Direction.UP, 4, Origin.FLOOR_SYSTEM);
 		floorRequest = new FloorRequest(timeNow, 7, Direction.DOWN, 0, Origin.SCHEDULER);
 		approachEvent = new ApproachEvent(elevatorRequest, 3, 5);
+		elevatorMonitor = new ElevatorMonitor(0, 1, Direction.UP, MovementState.IDLE, Direction.UP, Doors.State.OPEN, Fault.NONE, true, 0);
 	}
 
 	@Test
@@ -105,6 +107,9 @@ public class MessageTransferTest {
 		assertTrue(byteArray.length < maxByteArraySize);
 
 		byteArray = msgTransfer.encodeObject(floorRequest);
+		assertTrue(byteArray.length < maxByteArraySize);
+
+		byteArray = msgTransfer.encodeObject(elevatorMonitor);
 		assertTrue(byteArray.length < maxByteArraySize);
 	}
 
