@@ -11,6 +11,8 @@ import systemwide.Structure;
 import systemwide.SystemStatus;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
@@ -121,6 +123,21 @@ public class Scheduler implements Runnable {
 	}
 
 	/**
+	 * Enables Scheduler and the other systems.
+	 *
+	 * @param structure contains the values with which to initialize the other systems
+	 */
+	public void enableSystem(Structure structure) {
+		try {
+			systemStatus.setSystemActivated(true);
+			intermediateHost.sendObject(structure, InetAddress.getLocalHost(), Port.CLIENT_TO_SERVER.getNumber());
+			intermediateHost.sendObject(structure, InetAddress.getLocalHost(), Port.SERVER_TO_CLIENT.getNumber());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * Returns an elevator number corresponding to an elevator that is
 	 * best suited to perform the given ElevatorRequest based on
 	 * expected time to fulfill the request and direction of elevator.
@@ -216,8 +233,6 @@ public class Scheduler implements Runnable {
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
 
 		Structure structure = new Structure(10, 2);
-
-
 
 		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
 			schedulerClient.addElevatorMonitor(i + 1);
