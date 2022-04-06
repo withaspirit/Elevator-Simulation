@@ -1,5 +1,7 @@
 package requests;
 
+import elevatorsystem.Doors;
+import elevatorsystem.Fault;
 import elevatorsystem.MovementState;
 import systemwide.Direction;
 import systemwide.Origin;
@@ -11,16 +13,19 @@ import java.time.LocalTime;
  * which Elevator to send new ServiceRequests to. Scheduler's list of ElevatorMonitors is
  * updated by Elevator sending ElevatorMonitors to Scheduler.
  *
- * @author Ryan Dash
- * @version 2022/03/10
+ * @author Ryan Dash, Brady Norton
+ * @version 2022/04/05
  */
 public class ElevatorMonitor extends SystemEvent {
 
-    private double queueTime;
-    private MovementState state;
     private int currentFloor;
     private Direction currentDirection;
+    private MovementState state;
+    private Direction movementDirection;
+    private Doors.State doorsState;
+    private Fault fault;
     private boolean hasNoRequests;
+    private double queueTime;
 
     /**
      * Main Constructor for ElevatorMonitor.
@@ -40,19 +45,25 @@ public class ElevatorMonitor extends SystemEvent {
     /**
      * Constructor for all of ElevatorMonitor's properties.
      *
-     * @param queueTime the estimated time for elevator to fulfill all of its requests
-     * @param movementState the MovementState of the Elevator's motor
+     * @param elevatorNumber the number of the elevator
      * @param currentFloor the currentFloor of the Elevator
      * @param serviceDirection the direction that the elevator is serving
-     * @param elevatorNumber the number of the elevator
+     * @param movementState the MovementState of the Elevator's motor
+     * @param movementDirection
+     * @param doorState
+     * @param fault
+     * @param queueTime the estimated time for elevator to fulfill all of its requests
      */
-    public ElevatorMonitor(double queueTime, MovementState movementState, int currentFloor, Direction serviceDirection, int elevatorNumber, boolean empty) {
+    public ElevatorMonitor(int elevatorNumber, int currentFloor, Direction serviceDirection, MovementState movementState, Direction movementDirection, Doors.State doorState, Fault fault, Boolean empty, double queueTime) {
         this(elevatorNumber);
-        this.queueTime = queueTime;
-        this.state = movementState;
         this.currentFloor = currentFloor;
         this.currentDirection = serviceDirection;
+        this.state = movementState;
+        this.movementDirection = movementDirection;
+        this.doorsState = doorState;
+        this.fault = fault;
         this.hasNoRequests = empty;
+        this.queueTime = queueTime;
     }
 
     /**
@@ -124,5 +135,18 @@ public class ElevatorMonitor extends SystemEvent {
         String formattedString = "[ElevatorNumber, queueTime, MovementState, CurrFloor, CurrDirxn]:\n";
         formattedString += getElevatorNumber() + " " + String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection();
         return formattedString;
+    }
+
+    public String[] propertiesToStringArray() {
+        String[] properties = new String[6];
+        //{"CurrentFloor", "ServiceDirection", "MovementState", "MovementDirection", "DoorState", "Fault"};
+        properties[0] = String.valueOf(getCurrentFloor());
+        properties[1] = getDirection().toString();
+        properties[2] = state.getName();
+        properties[3] = movementDirection.getName();
+        properties[4] = doorsState.toString();
+        properties[5] = fault.getName();
+
+        return properties;
     }
 }
