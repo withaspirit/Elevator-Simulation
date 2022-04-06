@@ -57,16 +57,18 @@ public class ArrivalSensor {
 	 *
 	 * @param approachEvent indicates that an elevator is approaching this floor
 	 */
-	public void compareToListOfRequests(ApproachEvent approachEvent) {
+	public boolean compareToListOfRequests(ApproachEvent approachEvent) {
 		for (ServiceRequest request: requestsOnFloor) {
 			if (approachEvent.getElevatorNumber() == request.getElevatorNumber() &&
 					approachEvent.getDirection() == request.getDirection() &&
 					approachEvent.getFloorNumber() == approachEvent.getFloorToVisit() &&
 					approachEvent.getFloorNumber() == request.getFloorNumber()) {
 				// Set boolean in approachEvent that will allow elevator to stop
-				approachEvent.allowElevatorStop();
+				//approachEvent.allowElevatorStop();
+				return true;
 			}
 		}
+		return false;
 	}
 
 	/**

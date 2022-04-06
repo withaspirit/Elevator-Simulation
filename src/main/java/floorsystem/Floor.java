@@ -3,6 +3,7 @@ package floorsystem;
 import requests.ApproachEvent;
 import requests.ServiceRequest;
 import requests.SubsystemPasser;
+import systemwide.Direction;
 
 /**
  * Floor simulates a level of a structure that an elevator can visit.
@@ -56,5 +57,42 @@ public class Floor implements SubsystemPasser {
 	 *
 	 * @param serviceRequest the floor request to be added
 	 */
-	public void addFloorRequest(ServiceRequest serviceRequest) { arrivalSensor.addRequest(serviceRequest); }
+	public void addRequestToSensor(ServiceRequest serviceRequest) { arrivalSensor.addRequest(serviceRequest); }
+
+	/**
+	 * Removes a floor request from the list of requests held in the ArrivalSensor
+	 *
+	 * @param serviceRequest the floor request to be removed
+	 */
+	public void removeRequestFromSensor(ServiceRequest serviceRequest) { arrivalSensor.removeRequest(serviceRequest); }
+
+	/**
+	 * Gets the number of requests the floor has active
+	 *
+	 * @return the number of requests on this floor
+	 */
+	public int getNumberOfRequests() { return arrivalSensor.getRequestsOnFloorSize(); }
+
+	/**
+	 * Gets the number of this Floor
+	 *
+	 * @return the number of this floor as int
+	 */
+	public int getFloorNumber() { return floorNumber; }
+
+	/**
+	 * Checks if any of the ServiceRequests held the floors requestsOnFloor list have
+	 * an elevator assigned to it that matches the requested elevatorNumber
+	 *
+	 * @param elevatorNumber the elevator number of the requested elevator
+	 * @return true if the ArrivalSensor is expecting the given elevator number, false otherwise
+	 */
+	public boolean isElevatorExpected(int elevatorNumber, Direction elevatorDirection) {
+		for (ServiceRequest serviceRequest : arrivalSensor.requestsOnFloor) {
+			if (serviceRequest.getElevatorNumber() == elevatorNumber && serviceRequest.getDirection() == elevatorDirection) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
