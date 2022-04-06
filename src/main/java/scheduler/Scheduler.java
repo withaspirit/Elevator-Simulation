@@ -199,8 +199,14 @@ public class Scheduler implements Runnable {
 	public static void main(String[] args) {
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
-		schedulerClient.addElevatorMonitor(1);
-		schedulerClient.addElevatorMonitor(2);
+
+		Structure structure = new Structure(10, 2);
+
+
+
+		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
+			schedulerClient.addElevatorMonitor(i);
+		}
 		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
 		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
 	}
