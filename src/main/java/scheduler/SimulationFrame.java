@@ -1,5 +1,7 @@
 package scheduler;
 
+import elevatorsystem.Doors;
+import elevatorsystem.Fault;
 import elevatorsystem.MovementState;
 import requests.ElevatorMonitor;
 import systemwide.Direction;
@@ -19,7 +21,7 @@ public class SimulationFrame {
         presenter.startGUI();
 
         ElevatorMonitor elevatorMonitor = new ElevatorMonitor(0);
-        elevatorMonitor.updateMonitor(new ElevatorMonitor(0, MovementState.ACTIVE, 2, Direction.DOWN, 0, true));
+        elevatorMonitor.updateMonitor(new ElevatorMonitor(0, 2, Direction.DOWN, MovementState.ACTIVE, Direction.UP, Doors.State.OPEN, Fault.NONE, false, 0));
         presenter.updateElevatorView(elevatorMonitor);
     }
 }

@@ -95,25 +95,10 @@ public class ElevatorView {
      * @param elevatorMonitor contains the status information of an Elevator
      */
     public void update(ElevatorMonitor elevatorMonitor) {
+        String[] elevatorProperties = elevatorMonitor.propertiesToStringArray();
 
-        // TODO: ElevatorMonitor: add MovementDirection, DoorState, and Fault
-        for (int i = 0; i < NUMBER_OF_STATUS_PANES; i++) {
-            String statusPaneText = "";
-            // these values are hard coded; not very good practice
-            if (i == 0) {
-                statusPaneText = Integer.toString(elevatorMonitor.getCurrentFloor());
-            } else if (i == 1) {
-                statusPaneText = elevatorMonitor.getDirection().getName();
-            } else if (i == 2) {
-                statusPaneText = elevatorMonitor.getState().getName();
-            } else if (i == 3) {
-                statusPaneText = "Up";
-            } else if (i == 4) {
-                statusPaneText = "Open";
-            } else if (i == 5) {
-                statusPaneText = "None";
-            }
-            statusPanes[i].setText(statusPaneText);
+        for (int i = 0; i < elevatorProperties.length; i++) {
+            statusPanes[i].setText(elevatorProperties[i]);
         }
         elevatorPanel.repaint();
         elevatorPanel.revalidate();
