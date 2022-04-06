@@ -18,6 +18,7 @@ public class Structure {
 
 	private int numberOfFloors;
 	private int numberOfElevators;
+	private boolean timeToggle;
 
 	/**
 	 * Constructor for Structure.
@@ -28,6 +29,7 @@ public class Structure {
 	public Structure(int numberOfFloors, int numberOfElevators) {
 		this.numberOfFloors = numberOfFloors;
 		this.numberOfElevators = numberOfElevators;
+		timeToggle = false;
 	}
 
 	/**
@@ -64,6 +66,24 @@ public class Structure {
 	 */
 	public void setNumberOfElevators(int numberOfElevators) {
 		this.numberOfElevators = numberOfElevators;
+	}
+
+	/**
+	 * Indicates whether time has been enabled for the system.
+	 *
+	 * @return true if travel time and door time have been enabled for the Elevators, false otherwise
+	 */
+	public boolean timeIsEnabled() {
+		return timeToggle;
+	}
+
+	/**
+	 * Sets the value of the time toggle.
+	 *
+	 * @param timeToggleValue the value of the time toggle for the system
+	 */
+	public void setTimeToggle(boolean timeToggleValue) {
+		timeToggle = timeToggleValue;
 	}
 
 	/**
