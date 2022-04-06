@@ -197,6 +197,10 @@ public class Scheduler implements Runnable {
 		return chosenBestElevator;
 	}
 
+	/**
+	 * Resets the inactivity timer to show that the scheduler did work 
+	 * 
+	 * */
 	public void resetTimer() {
 		if(this.timerTask.cancel()) {
 			this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
@@ -230,9 +234,11 @@ public class Scheduler implements Runnable {
 		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
 	}
 	
-	
-	
-	
+	/** 
+	 * SchedulerTimeOut calculates the elapsed time for the scheduler thread 
+	 * in the form of a TimerTask triggered by inactivity
+	 * 
+	 * */
 	public class SchedulerTimeOut extends TimerTask {
 
 		Timer timer;
