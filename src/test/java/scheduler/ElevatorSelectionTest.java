@@ -3,9 +3,7 @@ package scheduler;
 import client_server_host.MessageTransfer;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
-import elevatorsystem.Elevator;
-import elevatorsystem.ElevatorSubsystem;
-import elevatorsystem.MovementState;
+import elevatorsystem.*;
 import misc.InputFileReader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -69,13 +67,13 @@ public class ElevatorSelectionTest {
     @AfterEach
     void cleanUP(){
         while (!elevator1.getRequestQueue().isEmpty()){
-            if (elevator1.getRequestQueue().removeRequest() == -1){
+            if (elevator1.getRequestQueue().removeRequest() == null){
                 break;
             }
         }
 
         while (!elevator2.getRequestQueue().isEmpty()){
-            if (elevator2.getRequestQueue().removeRequest() == -1){
+            if (elevator2.getRequestQueue().removeRequest() == null){
                 break;
             }
         }
@@ -84,7 +82,7 @@ public class ElevatorSelectionTest {
 
 
         for (ElevatorMonitor elevatorMonitor: Scheduler.getElevatorMonitorList()){
-            elevatorMonitor.updateMonitor(new ElevatorMonitor(0.0, MovementState.IDLE, 1, Direction.UP, elevatorMonitor.getElevatorNumber(), true));
+            elevatorMonitor.updateMonitor(new ElevatorMonitor(elevatorMonitor.getElevatorNumber(), 1, Direction.UP, MovementState.IDLE, Direction.NONE, Doors.State.OPEN, Fault.NONE, true, 0.0));
         }
     }
 
