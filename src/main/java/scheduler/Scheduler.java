@@ -125,7 +125,7 @@ public class Scheduler implements Runnable {
 	/**
 	 * Enables Scheduler and the other systems.
 	 *
-	 * @param structure contains the values with which to initialize the other systems
+	 * @param structure contains the information to initialize the other systems
 	 * @param inetAddress the IP address of the destination
 	 * @param portNumber the port the packet is being sent to
 	 */

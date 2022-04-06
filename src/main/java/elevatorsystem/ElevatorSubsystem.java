@@ -123,14 +123,9 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	/**
 	 * Initializes the ElevatorSubsystem with the specified number of Elevators.
 	 *
-	 * @param structure contains the values relevant to initializing the elevators
+	 * @param structure contains the information for initializing the elevators
 	 */
 	public void initializeElevators(Structure structure) {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		// initialize the list of elevators
 		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
 			Elevator elevator = new Elevator(i, this);

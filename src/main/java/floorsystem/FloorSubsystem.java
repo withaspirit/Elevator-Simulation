@@ -159,11 +159,6 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	public static void main(String[] args) {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		FloorSubsystem floorSubsystem = new FloorSubsystem();
 		Structure structure = floorSubsystem.attemptToReceiveStructure();
 
