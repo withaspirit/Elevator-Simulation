@@ -28,7 +28,7 @@ public class Scheduler implements Runnable {
 	// private ArrayList<Floor> floors;
 	private Timer timer;
 	private TimerTask timerTask;
-	private long startTime;
+	private long startTime = -1;
 	private final int timerTimeOut = 7;
 	private final int millSecsToSecs = 1000;
 
@@ -77,6 +77,11 @@ public class Scheduler implements Runnable {
 				// queue is not empty, return data
 				// otherwise, send dummy message notifying empty status
 				if (!intermediateHost.queueIsEmpty()) {
+					if (this.startTime == -1) {
+						this.startTime = System.nanoTime();
+						System.out.print("time started with string");
+					}
+					
 					dataObject = intermediateHost.getPacketFromQueue();
 
 					if (dataObject instanceof ElevatorRequest elevatorRequest) {
@@ -97,6 +102,11 @@ public class Scheduler implements Runnable {
 				intermediateHost.sendObject(dataObject, receivePacket.getAddress(), receivePacket.getPort());
 
 			} else if (object instanceof SystemEvent systemEvent) {
+				if (this.startTime == -1) {
+					this.startTime = System.nanoTime();
+					System.out.print("time started with string");
+				}
+				
 				intermediateHost.acknowledgeDataReception(receivePacket);
 				processData(systemEvent);
 				//Resets the inactivity timer when there's activity.
@@ -216,7 +226,7 @@ public class Scheduler implements Runnable {
 	 */
 	public void run() {
 		//Starts the inactivity timer and performance measurement
-		this.startTime = System.nanoTime();
+		//this.startTime = System.nanoTime();
 		this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
 		this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);   
 		
