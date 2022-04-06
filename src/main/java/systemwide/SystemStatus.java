@@ -7,7 +7,7 @@ package systemwide;
  */
 public class SystemStatus {
 
-    private boolean systemActivated;
+    private volatile boolean systemActivated;
 
     /**
      * Constructor for SystemStatus
