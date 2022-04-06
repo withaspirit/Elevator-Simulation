@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.lang.System;
 
 /**
  * Scheduler handles the requests from all system components.
@@ -27,7 +28,8 @@ public class Scheduler implements Runnable {
 	// private ArrayList<Floor> floors;
 	private Timer timer;
 	private TimerTask timerTask;
-	private final int timerTimeOut = 15;
+	private long startTime;
+	private final int timerTimeOut = 7;
 	private final int millSecsToSecs = 1000;
 
 	/**
@@ -197,7 +199,7 @@ public class Scheduler implements Runnable {
 
 	public void resetTimer() {
 		if(this.timerTask.cancel()) {
-			this.timerTask = new SchedulerTimeOut(this.timer);
+			this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
 			this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);
 		} 
 	}
@@ -209,9 +211,11 @@ public class Scheduler implements Runnable {
 	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
-		//Starts the inactivity timer
-		this.timerTask = new SchedulerTimeOut(this.timer);
+		//Starts the inactivity timer and performance measurement
+		this.startTime = System.nanoTime();
+		this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
 		this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);   
+		
 		while (true) {
 			receiveAndProcessPacket();
 		}
@@ -232,13 +236,16 @@ public class Scheduler implements Runnable {
 	public class SchedulerTimeOut extends TimerTask {
 
 		Timer timer;
+		long startTime;
 		
-		SchedulerTimeOut(Timer timer){
+		SchedulerTimeOut(Timer timer, long startTime){
 			this.timer = timer;
+			this.startTime = startTime;
 		}
 		
 		public void run() {
-			System.out.print("Stop the count\n");
+			long timeElapsed = (System.nanoTime() - this.startTime) / 1000000 - timerTimeOut * millSecsToSecs;
+			System.out.print("A scheduler thread took "+timeElapsed+" milliseconds to complete\n");
 			this.timer.cancel();
 		}
 	}
