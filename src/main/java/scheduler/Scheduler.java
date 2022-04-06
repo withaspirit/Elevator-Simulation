@@ -86,10 +86,8 @@ public class Scheduler implements Runnable {
 								elevatorRequest.getClass().getSimpleName() + ": "  + elevatorRequest + ".\n";
 						System.out.println(messageToPrint);
 					}
-					
 					//Resets the inactivity timer when there's activity.
 					resetTimer();
-					
 				} else {
 					dataObject = RequestMessage.EMPTYQUEUE.getMessage();
 				}
@@ -99,7 +97,6 @@ public class Scheduler implements Runnable {
 			} else if (object instanceof SystemEvent systemEvent) {
 				intermediateHost.acknowledgeDataReception(receivePacket);
 				processData(systemEvent);
-				
 				//Resets the inactivity timer when there's activity.
 				resetTimer();
 			} 
