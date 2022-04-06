@@ -27,7 +27,7 @@ public class Scheduler implements Runnable {
 	// private ArrayList<Floor> floors;
 	private Timer timer;
 	private TimerTask timerTask;
-	private final int timerTimeOut = 7;
+	private final int timerTimeOut = 15;
 	private final int millSecsToSecs = 1000;
 
 	/**
@@ -39,7 +39,6 @@ public class Scheduler implements Runnable {
 		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = new IntermediateHost(portNumber);
 		timer = new Timer();
-		timerTask = new SchedulerTimeOut();
 	}
 
 	/**
@@ -87,6 +86,10 @@ public class Scheduler implements Runnable {
 								elevatorRequest.getClass().getSimpleName() + ": "  + elevatorRequest + ".\n";
 						System.out.println(messageToPrint);
 					}
+					
+					//Resets the inactivity timer when there's activity.
+					resetTimer();
+					
 				} else {
 					dataObject = RequestMessage.EMPTYQUEUE.getMessage();
 				}
@@ -96,7 +99,10 @@ public class Scheduler implements Runnable {
 			} else if (object instanceof SystemEvent systemEvent) {
 				intermediateHost.acknowledgeDataReception(receivePacket);
 				processData(systemEvent);
-			}
+				
+				//Resets the inactivity timer when there's activity.
+				resetTimer();
+			} 
 	}
 
 	/**
@@ -192,6 +198,13 @@ public class Scheduler implements Runnable {
 		return chosenBestElevator;
 	}
 
+	public void resetTimer() {
+		if(this.timerTask.cancel()) {
+			this.timerTask = new SchedulerTimeOut(this.timer);
+			this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);
+		} 
+	}
+	
 	/**
 	 * Simple message requesting and sending between subsystems.
 	 * Scheduler
@@ -200,13 +213,10 @@ public class Scheduler implements Runnable {
 	 */
 	public void run() {
 		//Starts the inactivity timer
-		this.timer.schedule(new SchedulerTimeOut(), timerTimeOut * millSecsToSecs);   
+		this.timerTask = new SchedulerTimeOut(this.timer);
+		this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);   
 		while (true) {
 			receiveAndProcessPacket();
-			//Resets the inactivity timer when there's activity.
-			if(this.timerTask.cancel()) {
-				this.timer.schedule(new SchedulerTimeOut(), timerTimeOut * millSecsToSecs);
-			} 
 		}
 	}
 
@@ -224,8 +234,15 @@ public class Scheduler implements Runnable {
 	
 	public class SchedulerTimeOut extends TimerTask {
 
+		Timer timer;
+		
+		SchedulerTimeOut(Timer timer){
+			this.timer = timer;
+		}
+		
 		public void run() {
 			System.out.print("Stop the count\n");
+			this.timer.cancel();
 		}
 	}
 }
