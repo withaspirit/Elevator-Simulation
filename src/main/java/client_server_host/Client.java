@@ -24,7 +24,7 @@ public class Client {
     }
 
     /**
-     * Builds a Datagram Packet according to its class type
+     * Builds a Datagram Packet according to its class type.
      *
      * @param object to convert into a packet
      * @return packet of the object
@@ -61,7 +61,7 @@ public class Client {
     }
 
     /**
-     * Send and Receive a reply using messageTransfer
+     * Send and Receive a reply using MessageTransfer.
      *
      * @param object with the message to send, either an Event or an Array
      * @return packet of the object
