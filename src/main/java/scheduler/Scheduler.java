@@ -199,13 +199,12 @@ public class Scheduler implements Runnable {
 
 	/**
 	 * Resets the inactivity timer to show that the scheduler did work 
-	 * 
-	 * */
+	 */
 	public void resetTimer() {
-		if(this.timerTask.cancel()) {
+		if (this.timerTask.cancel()) {
 			this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
 			this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);
-		} 
+		}
 	}
 	
 	/**
@@ -237,8 +236,7 @@ public class Scheduler implements Runnable {
 	/** 
 	 * SchedulerTimeOut calculates the elapsed time for the scheduler thread 
 	 * in the form of a TimerTask triggered by inactivity
-	 * 
-	 * */
+	 */
 	public class SchedulerTimeOut extends TimerTask {
 
 		Timer timer;
@@ -251,7 +249,7 @@ public class Scheduler implements Runnable {
 		
 		public void run() {
 			long timeElapsed = (System.nanoTime() - this.startTime) / 1000000 - timerTimeOut * millSecsToSecs;
-			System.out.print("A scheduler thread took "+timeElapsed+" milliseconds to complete\n");
+			System.out.print("A scheduler thread took " + timeElapsed + " milliseconds to complete\n");
 			this.timer.cancel();
 		}
 	}
