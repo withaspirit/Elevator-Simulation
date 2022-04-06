@@ -14,7 +14,7 @@ This is a group project for designing, creating, and simulating an elevator syst
 
 ## Instructions
 
-Note that this project is set up as a Maven project. In Eclipse, it requires the [M2Eclipse](https://www.eclipse.org/m2e/) plugin. Most Eclipse downloads already include M2Eclipse, but if your system does not have it, instructions on how to download that can be found [here](https://stackoverflow.com/a/13640110).
+Note that this project is set up as a Maven project. In Eclipse, it requires the [M2Eclipse](https://www.eclipse.org/m2e/) plugin. Most Eclipse downloads already include M2Eclipse, but if your system does not have it, download instructions can be found [here](https://stackoverflow.com/a/13640110).
 
 <details>
   <summary>Downloading a Release / Iteration Code</summary>
@@ -370,11 +370,11 @@ Instructions:
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | | |
+  | Ryan Dash | | | Brainstorming, Code Review
   | Ramit Mahajan | | |
   | Brady Norton | | |
-  | Julian Obando Velez | | |
-  | Liam Tripp | | README Installation instructions |
+  | Julian Obando Velez | | | Brainstorming, Code Review
+  | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests | System Design README Installation instructions | Brainstorming, Code Review
   
   ### Diagrams
 
