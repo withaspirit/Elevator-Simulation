@@ -11,6 +11,8 @@ import systemwide.Origin;
 import java.net.DatagramPacket;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Scheduler handles the requests from all system components.
@@ -23,6 +25,10 @@ public class Scheduler implements Runnable {
 	private final IntermediateHost intermediateHost;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
+	private Timer timer;
+	private TimerTask timerTask;
+	private final int timerTimeOut = 7;
+	private final int millSecsToSecs = 1000;
 
 	/**
 	 * Constructor for Scheduler.
@@ -32,6 +38,8 @@ public class Scheduler implements Runnable {
 	public Scheduler(int portNumber) {
 		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = new IntermediateHost(portNumber);
+		timer = new Timer();
+		timerTask = new SchedulerTimeOut();
 	}
 
 	/**
@@ -191,8 +199,14 @@ public class Scheduler implements Runnable {
 	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
+		//Starts the inactivity timer
+		this.timer.schedule(new SchedulerTimeOut(), timerTimeOut * millSecsToSecs);   
 		while (true) {
 			receiveAndProcessPacket();
+			//Resets the inactivity timer when there's activity.
+			if(this.timerTask.cancel()) {
+				this.timer.schedule(new SchedulerTimeOut(), timerTimeOut * millSecsToSecs);
+			} 
 		}
 	}
 
@@ -203,5 +217,15 @@ public class Scheduler implements Runnable {
 		schedulerClient.addElevatorMonitor(2);
 		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
 		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
+	}
+	
+	
+	
+	
+	public class SchedulerTimeOut extends TimerTask {
+
+		public void run() {
+			System.out.print("Stop the count\n");
+		}
 	}
 }
