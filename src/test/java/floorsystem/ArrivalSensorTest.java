@@ -38,7 +38,7 @@ class ArrivalSensorTest {
     }
 
     @Test
-    void addRequest() {
+    void testAddRequest() {
         // Check requests in ArrivalSensor
         System.out.println("Size: " + arrivalSensor.requestsOnFloor.size());
         assertEquals(0, arrivalSensor.getRequestsOnFloorSize());
@@ -52,7 +52,7 @@ class ArrivalSensorTest {
     }
 
     @Test
-    void removeRequest() {
+    void testRemoveRequest() {
         // Check requests in ArrivalSensor
         System.out.println("Size: " + arrivalSensor.requestsOnFloor.size());
         assertEquals(0, arrivalSensor.getRequestsOnFloorSize());
