@@ -4,6 +4,8 @@ import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import requests.*;
+import systemwide.Structure;
+import systemwide.SystemStatus;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -19,6 +21,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	private final ArrayList<Elevator> elevatorList;
 	private Client server;
 	private final Queue<SystemEvent> eventQueue;
+	private volatile SystemStatus systemStatus;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
@@ -27,6 +30,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
 		eventQueue = new LinkedList<>();
+		systemStatus = new SystemStatus(false);
 	}
 
 	/**
@@ -45,7 +49,10 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
-		subsystemUDPMethod();
+		// TODO: replace with systemActivated
+		while (true) {
+			subsystemUDPMethod();
+		}
 	}
 
 	/**
@@ -77,10 +84,18 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
+	 * Gets the SystemStatus of the System.
+	 *
+	 * @return the SystemStatus of the System
+	 */
+	public SystemStatus getSystemStatus() {
+		return systemStatus;
+	}
+
+	/**
 	 * Sends and receives messages for system using UDP packets.
 	 */
 	private void subsystemUDPMethod() {
-		while (true) {
 			Object object;
 			if (!eventQueue.isEmpty()) {
 				object = server.sendAndReceiveReply(eventQueue.remove());
@@ -103,24 +118,23 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 					}
 				}
 			}
-		}
 	}
 
 	/**
 	 * Initializes the ElevatorSubsystem with the specified number of Elevators.
 	 *
-	 * @param numberOfElevators the number of Elevators for the ElevatorSubsystem
+	 * @param structure contains the information for initializing the elevators
 	 */
-	public void initializeElevators(int numberOfElevators) {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	public void initializeElevators(Structure structure) {
 		// initialize the list of elevators
-		for (int i = 1; i <= numberOfElevators; i++) {
+		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
 			Elevator elevator = new Elevator(i, this);
 			addElevator(elevator);
+			if (structure.timeIsEnabled()) {
+				// TODO: add time values to Structure
+				elevator.setDoorTime(100);
+				elevator.setTravelTime(100);
+			}
 		}
 	}
 
@@ -134,11 +148,19 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		}
 	}
 
+	public Structure attemptToReceiveStructure() {
+		Structure structure = (Structure) server.receive();
+		return structure ;
+	}
+
 	public static void main(String[] args) {
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-		elevatorSubsystem.initializeElevators(2);
+		Structure structure = elevatorSubsystem.attemptToReceiveStructure();
+		elevatorSubsystem.initializeElevators(structure);
+
 		Thread elevatorSubsystemThread = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
 		elevatorSubsystemThread.start();
+		System.out.println("ElevatorSubsystem initialized");
 		elevatorSubsystem.initializeElevatorThreads();
 	}
 }
