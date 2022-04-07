@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * FloorSubsystem manages the floors and their requests to the Scheduler
+ * FloorSubsystem manages the floors and their requests to the Scheduler.
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
@@ -158,6 +158,27 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		}
 	}
 
+	/**
+	 * Initializes the specified number of Floors for the FloorSubsystem.
+	 *
+	 * @param numberOfFloors the number of the Floors to be initialized
+	 */
+	public void initializeFloors(int numberOfFloors) {
+		for (int i = 1; i <= numberOfFloors; i++) {
+			Floor floor = new Floor(i, this);
+			this.addFloor(floor);
+		}
+	}
+
+	/**
+	 * Returns the list of Floors in the FloorSubystem.
+	 *
+	 * @return the list of Floors
+	 */
+	public ArrayList<Floor> getFloorList() {
+		return floorList;
+	}
+
 	public static void main(String[] args) {
 		try {
 			Thread.sleep(1000);
@@ -166,10 +187,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		}
 		int numberOfFloors = 10;
 		FloorSubsystem floorSubsystem = new FloorSubsystem();
-		for (int i = 1; i <= numberOfFloors; i++) {
-			Floor floor = new Floor(i, floorSubsystem);
-			floorSubsystem.addFloor(floor);
-		}
+		floorSubsystem.initializeFloors(numberOfFloors);
 		Thread floorSubsystemThead = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
 		floorSubsystemThead.start();
 	}

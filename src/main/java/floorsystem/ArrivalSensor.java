@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Arrival Sensor checks the floorNumber in ApproachEvent is equal to the Floor's floorNumber
- * if Both the values are equal allowElevatorStop method from ApproachEvent is called
+ * if both the values are equal allowElevatorStop method from ApproachEvent is called.
  *
  * @author Ramit Mahajan, Brady Norton
  */
