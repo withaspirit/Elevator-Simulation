@@ -10,7 +10,7 @@ import systemwide.Structure;
 public class SimulationFrame {
 
     public static void main(String[] args) {
-        Structure structure = new Structure(10, 2);
+        Structure structure = new Structure(10, 2, 1000, 1000);
 
         ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators());
         Presenter presenter = new Presenter();
@@ -22,8 +22,6 @@ public class SimulationFrame {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        structure.setTimeToggle(true);
 
         structure.initializeStructure(presenter);
     }

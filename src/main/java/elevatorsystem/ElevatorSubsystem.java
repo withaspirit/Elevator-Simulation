@@ -130,11 +130,8 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
 			Elevator elevator = new Elevator(i, this);
 			addElevator(elevator);
-			if (structure.timeIsEnabled()) {
-				// TODO: add time values to Structure
-				elevator.setDoorTime(1000);
-				elevator.setTravelTime(1000);
-			}
+			elevator.setTravelTime(structure.getElevatorTime());
+			elevator.setDoorTime(structure.getDoorsTime());
 		}
 	}
 
