@@ -10,7 +10,7 @@ import scheduler.Scheduler;
 import java.util.ArrayList;
 
 /**
- * Structure instantiates the overall system.
+ * Structure contains information to initialize the simulation.
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
