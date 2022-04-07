@@ -18,7 +18,8 @@ public class Structure {
 
 	private int numberOfFloors;
 	private int numberOfElevators;
-	private boolean timeToggle;
+	private int elevatorTime;
+	private int doorsTime;
 
 	/**
 	 * Constructor for Structure.
@@ -29,7 +30,8 @@ public class Structure {
 	public Structure(int numberOfFloors, int numberOfElevators) {
 		this.numberOfFloors = numberOfFloors;
 		this.numberOfElevators = numberOfElevators;
-		timeToggle = false;
+		elevatorTime = -1;
+		doorsTime = -1;
 	}
 
 	/**
@@ -69,29 +71,45 @@ public class Structure {
 	}
 
 	/**
-	 * Indicates whether time has been enabled for the system.
+	 * Returns the Elevator's travel and floor waiting time.
 	 *
-	 * @return true if travel time and door time have been enabled for the Elevators, false otherwise
+	 * @return the travel and floor waiting time for the Elevator
 	 */
-	public boolean timeIsEnabled() {
-		return timeToggle;
+	public int getElevatorTime() {
+		return elevatorTime;
 	}
 
 	/**
-	 * Sets the value of the time toggle.
+	 * Sets the value of the Elevator's travel and floor waiting time.
 	 *
-	 * @param timeToggleValue the value of the time toggle for the system
+	 * @param time the new value for the elevatorTime
 	 */
-	public void setTimeToggle(boolean timeToggleValue) {
-		timeToggle = timeToggleValue;
+	public void setElevatorTime(int time) {
+		elevatorTime = time;
+	}
+
+	/**
+	 * Returns the time for doors to open and close.
+	 *
+	 * @return time for the doors to open and close
+	 */
+	public int getElevatorDoorTime() {
+		return doorsTime;
+	}
+
+	/**
+	 * Sets the time it takes for doors to open and close.
+	 *
+	 * @param time the new time value for the opening and closing time of the doors
+	 */
+	public void setDoorsTime(int time) {
+		doorsTime = time;
 	}
 
 	/**
 	 * Initializes the Structure's properties.
 	 */
 	public void initializeStructure() {
-		//BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
-		//BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
