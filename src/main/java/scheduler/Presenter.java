@@ -45,7 +45,7 @@ public class Presenter {
      */
     public void updateElevatorView(ElevatorMonitor elevatorMonitor) {
         ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber());
-        elevatorView.update(elevatorMonitor);
+        elevatorView.updateStatus(elevatorMonitor);
     }
 
     /**
@@ -69,6 +69,5 @@ public class Presenter {
         // center the JFrame
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 }
