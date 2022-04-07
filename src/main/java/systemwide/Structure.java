@@ -5,6 +5,7 @@ import elevatorsystem.Elevator;
 import elevatorsystem.ElevatorSubsystem;
 import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
+import scheduler.Presenter;
 import scheduler.Scheduler;
 
 import java.io.Serializable;
@@ -87,15 +88,20 @@ public class Structure implements Serializable {
 		timeToggle = timeToggleValue;
 	}
 
+
 	/**
 	 * Initializes the Structure's properties.
 	 */
-	public void initializeStructure() {
+	public void initializeStructure(Presenter presenter) {
 		//BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
 		//BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
+
+		if (presenter != null){
+			schedulerClient.setPresenter(presenter);
+		}
 
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 		ArrayList<Elevator> elevatorList = new ArrayList<>();
@@ -105,6 +111,8 @@ public class Structure implements Serializable {
 			schedulerClient.addElevatorMonitor(elevatorNumber);
 			elevatorList.add(elevator);
 		}
+		elevatorSubsystem.initializeElevators(this);
+
 		FloorSubsystem floorSubsystem = new FloorSubsystem();
 		for (int i = 1; i <= numberOfFloors; i++) {
 			Floor floor = new Floor(i, floorSubsystem);
@@ -122,15 +130,10 @@ public class Structure implements Serializable {
 		schedulerServerOrigin.start();
 		elevatorSubsystemOrigin.start();
 		floorSubsystemOrigin.start();
-
-		// Start elevator Origins
-		for (int i = 0; i < numberOfElevators; i++) {
-			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
-		}
 	}
 
 	public static void main(String[] args) {
 		Structure structure = new Structure(10, 2);
-		structure.initializeStructure();
+		structure.initializeStructure(null);
 	}
 }

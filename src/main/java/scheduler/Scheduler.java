@@ -25,6 +25,7 @@ public class Scheduler implements Runnable {
 
 	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private final IntermediateHost intermediateHost;
+	private static Presenter presenter;
 	private volatile SystemStatus systemStatus;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
@@ -38,6 +39,7 @@ public class Scheduler implements Runnable {
 		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = new IntermediateHost(portNumber);
 		systemStatus = new SystemStatus(false);
+		this.presenter = null;
 	}
 
 	/**
@@ -47,6 +49,10 @@ public class Scheduler implements Runnable {
 	 */
 	public void addElevatorMonitor(int elevatorNumber) {
 		elevatorMonitorList.add(new ElevatorMonitor(elevatorNumber));
+	}
+
+	public void setPresenter(Presenter presenter){
+		this.presenter = presenter;
 	}
 
 	/**
@@ -116,6 +122,9 @@ public class Scheduler implements Runnable {
 
 		if (event instanceof ElevatorMonitor elevatorMonitor){
 			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
+			if (presenter != null){
+				presenter.updateElevatorView(elevatorMonitor);
+			}
 		} else {
 			event.setOrigin(Origin.changeOrigin(event.getOrigin()));
 			intermediateHost.addEventToQueue(event);

@@ -132,8 +132,8 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 			addElevator(elevator);
 			if (structure.timeIsEnabled()) {
 				// TODO: add time values to Structure
-				elevator.setDoorTime(100);
-				elevator.setTravelTime(100);
+				elevator.setDoorTime(1000);
+				elevator.setTravelTime(1000);
 			}
 		}
 	}
