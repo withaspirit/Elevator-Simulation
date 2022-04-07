@@ -51,8 +51,14 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	 * @param approachEvent the ApproachEvent used to determine whether the Elevator should stop
 	 */
 	public void processApproachEvent(ApproachEvent approachEvent) {
-		Floor floor = floorList.get(approachEvent.getFloorNumber() - 1);
-		floor.receiveApproachEvent(approachEvent);
+		// Send ApproachEvent to the correct floor for comparison
+		floorList.get(approachEvent.getFloorNumber() - 1).receiveApproachEvent(approachEvent);
+
+		if (getSpecificFloor(approachEvent.getFloorNumber()).isElevatorExpected(approachEvent.getElevatorNumber(), approachEvent.getDirection())){
+			approachEvent.allowElevatorStop();
+		}
+
+		// Add the ApproachEvent to the event list
 		eventList.add(approachEvent);
 	}
 
@@ -85,6 +91,20 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
+	 * Gets the next ApproachEvent in the event list
+	 *
+	 * @return ApproachEvent object from the event list, or null if there is no ApproachEvent in the event list
+	 */
+	public ApproachEvent getNextEventListApproachEvent() {
+		for (SystemEvent systemEvent : eventList) {
+			if (systemEvent instanceof ApproachEvent) {
+				return (ApproachEvent) systemEvent;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Adds a SystemEvent to the FloorSubsystem.
 	 *
 	 * @param systemEvent a SystemEvent originating from the FloorSubsystem
@@ -92,6 +112,24 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	public void addEvent(SystemEvent systemEvent) {
 		eventList.add(systemEvent);
 	}
+
+	/**
+	 * Adds a ServiceRequest to a list of requests held in the appropriate floors' ArrivalSensor
+	 *
+	 * @param serviceRequest the ServiceRequest to be added
+	 */
+	public void addServiceRequestToFloor(ServiceRequest serviceRequest) {
+		// Get the specific floor from
+		floorList.get(serviceRequest.getFloorNumber() - 1).addRequestToSensor(serviceRequest);
+	}
+
+	/**
+	 * Gets a specific Floor from floorList
+	 *
+	 * @param floorNumber the number of the requested floor
+	 * @return the Floor object in floorList at the floorNumber index
+	 */
+	public Floor getSpecificFloor(int floorNumber) { return floorList.get(floorNumber - 1); }
 
 	/**
 	 * Sends and receives messages for the system using UDP packets.

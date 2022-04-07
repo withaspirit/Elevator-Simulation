@@ -44,19 +44,39 @@ public class ArrivalSensor {
 	}
 
 	/**
+	 * Remove ServiceRequest from requestsOnFloor list
+	 */
+	public void removeRequest(ServiceRequest request) {
+		// Iterate over each ServiceRequest in requestsOnFloor
+		// Remove the request from the list if it's found in the list
+		requestsOnFloor.removeIf(request::equals);
+	}
+
+	/**
 	 * Compare the ApproachEvent with the ServiceRequests in requestsOnFloor.
 	 *
 	 * @param approachEvent indicates that an elevator is approaching this floor
 	 */
-	public void compareToListOfRequests(ApproachEvent approachEvent) {
+	public boolean compareToListOfRequests(ApproachEvent approachEvent) {
 		for (ServiceRequest request: requestsOnFloor) {
 			if (approachEvent.getElevatorNumber() == request.getElevatorNumber() &&
 					approachEvent.getDirection() == request.getDirection() &&
 					approachEvent.getFloorNumber() == approachEvent.getFloorToVisit() &&
 					approachEvent.getFloorNumber() == request.getFloorNumber()) {
 				// Set boolean in approachEvent that will allow elevator to stop
-				approachEvent.allowElevatorStop();
+				//approachEvent.allowElevatorStop();
+				return true;
 			}
 		}
+		return false;
+	}
+
+	/**
+	 * Gets the size of the requestsOnFloor list
+	 *
+	 * @return the number of ServiceRequests on this floor
+	 */
+	public int getRequestsOnFloorSize() {
+		return requestsOnFloor.size();
 	}
 }
