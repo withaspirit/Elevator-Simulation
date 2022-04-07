@@ -90,6 +90,27 @@ public class ElevatorSelectionTest {
         }
     }
 
+    /**
+     * Sends an event to the scheduler.
+     *
+     * @param event a SystemEvent containing a request
+     */
+    private void sendEvent(SystemEvent event){
+        messageElevator = messageTransfer.encodeObject(event);
+        try {
+            elevatorPacket = new DatagramPacket(messageElevator, messageElevator.length, InetAddress.getLocalHost(), Port.CLIENT_TO_SERVER.getNumber());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        messageTransfer.sendMessage(elevatorPacket);
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     void testSelectingIdleElevators() {
         //Both elevator's status' are idle
@@ -160,27 +181,5 @@ public class ElevatorSelectionTest {
 
         //Elevator 1 floor requests up [1, 2, 3, 5, 6]
         //Elevator 2 floor requests up [2, 4], down [7, 4, 3, 1]
-    }
-
-    /**
-     * Sending a ElevatorRequest packet through its journey of the system
-     * and receiving a packet back on the same socket.
-     *
-     * @param event a SystemEvent containing a request to the scheduler
-     */
-    private void sendEvent(SystemEvent event){
-        messageElevator = messageTransfer.encodeObject(event);
-        try {
-            elevatorPacket = new DatagramPacket(messageElevator, messageElevator.length, InetAddress.getLocalHost(), Port.CLIENT_TO_SERVER.getNumber());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        messageTransfer.sendMessage(elevatorPacket);
-
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }
