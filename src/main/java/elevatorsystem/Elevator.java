@@ -21,28 +21,28 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private final ElevatorMotor motor;
 	private final Doors doors;
 
+	// Elevator Properties
+	private final int elevatorNumber;
+	private int currentFloor;
+	private Direction serviceDirection;
+	// FIXME: should we allow for there to be one or more faults?
+	private Fault fault;
+
+	// toggles for Elevator sending messages and taking time to move
+	private boolean messageTransferEnabled;
+	private volatile ApproachEvent approachEvent;
+	private int travelTime;
+	private int doorTime;
+	private volatile boolean doorsMalfunctioning;
+
 	// Elevator Measurements
+	private float speed;
 	public static final float MAX_SPEED = 2.67f; // meters/second
 	public static final float ACCELERATION = 0.304f; // meters/second^2
 	public static final float LOAD_TIME = 9.5f; // seconds
 	public static final float FLOOR_HEIGHT = 3.91f; // meters (22 steps/floor @ 0.1778 meters/step)
 	public static final double ACCELERATION_DISTANCE = Math.pow(MAX_SPEED, 2) / (2 * ACCELERATION); // Vf^2 = Vi^2 + 2as therefore s = vf^2/2a
 	public static final double ACCELERATION_TIME = Math.sqrt((FLOOR_HEIGHT * 2) / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
-
-	// Elevator Properties
-	private final int elevatorNumber;
-	private int currentFloor;
-	private Direction serviceDirection;
-	private float speed;
-	// FIXME: should we allow for there to be one or more faults?
-	private Fault fault;
-
-	private volatile ApproachEvent approachEvent;
-	// variable for allowing / disallowing Elevator's message transfer
-	private boolean messageTransferEnabled;
-	private int travelTime;
-	private int doorTime;
-	private volatile boolean doorsMalfunctioning;
 
 	/**
 	 * Constructor for Elevator.
