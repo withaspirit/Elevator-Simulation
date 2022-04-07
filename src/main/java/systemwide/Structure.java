@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Structure instantiates the overall system.
+ * Structure contains information to initialize the simulation.
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
@@ -20,18 +20,22 @@ public class Structure implements Serializable {
 
 	private int numberOfFloors;
 	private int numberOfElevators;
-	private boolean timeToggle;
+	private int elevatorTime;
+	private int doorsTime;
 
 	/**
 	 * Constructor for Structure.
 	 *
 	 * @param numberOfFloors the number of floors in the structure
 	 * @param numberOfElevators the number of elevators in the structure
+	 * @param elevatorTime the time for an Elevator to wait at or travel to a floor
+	 * @param doorsTime the time for doors in the simulation to open and close
 	 */
-	public Structure(int numberOfFloors, int numberOfElevators) {
+	public Structure(int numberOfFloors, int numberOfElevators, int elevatorTime, int doorsTime) {
 		this.numberOfFloors = numberOfFloors;
 		this.numberOfElevators = numberOfElevators;
-		timeToggle = false;
+		this.elevatorTime = elevatorTime;
+		this.doorsTime = doorsTime;
 	}
 
 	/**
@@ -71,30 +75,45 @@ public class Structure implements Serializable {
 	}
 
 	/**
-	 * Indicates whether time has been enabled for the system.
+	 * Returns the Elevator's travel and floor waiting time.
 	 *
-	 * @return true if travel time and door time have been enabled for the Elevators, false otherwise
+	 * @return the travel and floor waiting time for the Elevator
 	 */
-	public boolean timeIsEnabled() {
-		return timeToggle;
+	public int getElevatorTime() {
+		return elevatorTime;
 	}
 
 	/**
-	 * Sets the value of the time toggle.
+	 * Sets the value of the Elevator's travel and floor waiting time.
 	 *
-	 * @param timeToggleValue the value of the time toggle for the system
+	 * @param time the new value for the elevatorTime
 	 */
-	public void setTimeToggle(boolean timeToggleValue) {
-		timeToggle = timeToggleValue;
+	public void setElevatorTime(int time) {
+		elevatorTime = time;
 	}
 
+	/**
+	 * Returns the time for doors to open and close.
+	 *
+	 * @return time for the doors to open and close
+	 */
+	public int getDoorsTime() {
+		return doorsTime;
+	}
+
+	/**
+	 * Sets the time it takes for doors to open and close.
+	 *
+	 * @param time the new time value for the opening and closing time of the doors
+	 */
+	public void setDoorsTime(int time) {
+		doorsTime = time;
+	}
 
 	/**
 	 * Initializes the Structure's properties.
 	 */
 	public void initializeStructure(Presenter presenter) {
-		//BoundedBuffer elevatorSubsystemBuffer = new BoundedBuffer();
-		//BoundedBuffer floorSubsystemBuffer = new BoundedBuffer();
 
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
@@ -130,7 +149,7 @@ public class Structure implements Serializable {
 	}
 
 	public static void main(String[] args) {
-		Structure structure = new Structure(10, 2);
+		Structure structure = new Structure(10, 2, -1, -1);
 		structure.initializeStructure(null);
 	}
 }
