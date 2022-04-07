@@ -27,7 +27,8 @@ public class PresenterTest {
     void updatingViewTest(){
     	presenter.addView(elevatorViewContainer);
     	
-    	int elevatorNubmer = 0;
+    	//Updating first view
+    	int elevatorNumber = 0;
         int currentFloor = 2;
         Direction currentDirection = Direction.DOWN;
         MovementState movementState = MovementState.ACTIVE;
@@ -35,11 +36,33 @@ public class PresenterTest {
         Doors.State doorsState = Doors.State.OPEN;
         Fault fault = Fault.NONE;
     	
-        ElevatorMonitor elevatorMonitor = new ElevatorMonitor(0, 2, Direction.DOWN, MovementState.ACTIVE, Direction.UP, Doors.State.OPEN, Fault.NONE, false, 0);
+        ElevatorMonitor elevatorMonitor = new ElevatorMonitor(elevatorNumber, currentFloor, currentDirection, movementState, movementDirection, doorsState, fault, false, 0);
     	presenter.updateElevatorView(elevatorMonitor);
     	
     	ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber());
     	JTextPane[] panes = elevatorView.getStatusPanes();
+    	assertEquals(panes[0].getText(), Integer.toString(currentFloor));
+    	assertEquals(panes[1].getText(), currentDirection.toString());
+    	assertEquals(panes[2].getText(), movementState.toString());
+    	//assertEquals(panes[3].getText(), movementDirection.toString());
+    	//assertEquals(panes[4].getText(), doorsState.toString());
+    	//assertEquals(panes[5].getText(), fault.toString());
+    	
+    	
+    	//Updating a second view for a different elevator
+    	elevatorNumber = 3;
+        currentFloor = 1;
+        currentDirection = Direction.UP;
+        movementState = MovementState.ACTIVE;
+        movementDirection = Direction.DOWN;
+        doorsState = Doors.State.OPEN;
+        fault = Fault.ELEVATOR_STUCK;
+    	
+        elevatorMonitor = new ElevatorMonitor(elevatorNumber, currentFloor, currentDirection, movementState, movementDirection, doorsState, fault, false, 0);
+    	presenter.updateElevatorView(elevatorMonitor);
+    	
+    	elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber());
+    	panes = elevatorView.getStatusPanes();
     	assertEquals(panes[0].getText(), Integer.toString(currentFloor));
     	assertEquals(panes[1].getText(), currentDirection.toString());
     	assertEquals(panes[2].getText(), movementState.toString());
