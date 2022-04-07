@@ -26,12 +26,14 @@ public class Structure {
 	 *
 	 * @param numberOfFloors the number of floors in the structure
 	 * @param numberOfElevators the number of elevators in the structure
+	 * @param elevatorTime the time for an Elevator to wait at or travel to a floor
+	 * @param doorsTime the time for doors in the simulation to open and close
 	 */
-	public Structure(int numberOfFloors, int numberOfElevators) {
+	public Structure(int numberOfFloors, int numberOfElevators, int elevatorTime, int doorsTime) {
 		this.numberOfFloors = numberOfFloors;
 		this.numberOfElevators = numberOfElevators;
-		elevatorTime = -1;
-		doorsTime = -1;
+		this.elevatorTime = elevatorTime;
+		this.doorsTime = doorsTime;
 	}
 
 	/**
@@ -147,7 +149,7 @@ public class Structure {
 	}
 
 	public static void main(String[] args) {
-		Structure structure = new Structure(10, 2);
+		Structure structure = new Structure(10, 2, -1, -1);
 		structure.initializeStructure();
 	}
 }
