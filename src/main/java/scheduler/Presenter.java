@@ -62,6 +62,12 @@ public class Presenter {
         frame.setSize(width, height);
         frame.add(elevatorViewContainer.getPanel());
 
+        frame.pack();
+        frame.repaint();
+        frame.revalidate();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // center the JFrame
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
