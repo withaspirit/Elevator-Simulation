@@ -96,7 +96,7 @@ public class Structure implements Serializable {
 	 *
 	 * @return time for the doors to open and close
 	 */
-	public int getElevatorDoorTime() {
+	public int getDoorsTime() {
 		return doorsTime;
 	}
 
