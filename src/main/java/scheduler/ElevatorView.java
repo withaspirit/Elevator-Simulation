@@ -68,7 +68,7 @@ public class ElevatorView {
         }
         // FIXME: this is awkward; should we pass elevator number or ElevatorMonitor
         //  to ElevatorView's constructor?
-        updateStatus(new ElevatorMonitor(elevatorNumber));
+        updateStatusPanes(new ElevatorMonitor(elevatorNumber));
 
         // GUI stuff
         // https://docs.oracle.com/javase/tutorial/uiswing/components/border.html
@@ -104,7 +104,7 @@ public class ElevatorView {
      *
      * @param elevatorMonitor contains the status information of an Elevator
      */
-    public void updateStatus(ElevatorMonitor elevatorMonitor) {
+    public void updateStatusPanes(ElevatorMonitor elevatorMonitor) {
         String[] elevatorProperties = elevatorMonitor.propertiesToStringArray();
 
         for (int i = 0; i < elevatorProperties.length; i++) {

@@ -44,7 +44,7 @@ public class Presenter {
      */
     public void updateElevatorView(ElevatorMonitor elevatorMonitor) {
         ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber());
-        elevatorView.updateStatus(elevatorMonitor);
+        elevatorView.updateStatusPanes(elevatorMonitor);
     }
 
     /**
