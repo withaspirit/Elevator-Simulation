@@ -478,6 +478,34 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Toggles whether the elevator may send / receive messages
+	 * to and from the Scheduler.
+	 */
+	public void toggleMessageTransfer() {
+		messageTransferEnabled = !messageTransferEnabled;
+	}
+
+	/**
+	 * Passes an ApproachEvent to the ElevatorSubsystem.
+	 *
+	 * @param approachEvent the ApproachEvent to be passed to the subsystem
+	 */
+	@Override
+	public void passApproachEvent(ApproachEvent approachEvent) {
+		elevatorSubsystem.handleApproachEvent(approachEvent);
+	}
+
+	/**
+	 * Receives an ApproachEvent from the Subsystem and returns it to the component.
+	 *
+	 * @param approachEvent the ApproachEvent to be received from the Subsystem
+	 */
+	@Override
+	public void receiveApproachEvent(ApproachEvent approachEvent) {
+		this.approachEvent = approachEvent;
+	}
+
+	/**
 	 * Returns the Elevator's current Fault.
 	 *
 	 * @return the current Fault of the elevator
@@ -512,34 +540,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void interrupt() {
 		Thread.currentThread().interrupt();
-	}
-
-	/**
-	 * Toggles whether the elevator may send / receive messages
-	 * to and from the Scheduler.
-	 */
-	public void toggleMessageTransfer() {
-		messageTransferEnabled = !messageTransferEnabled;
-	}
-
-	/**
-	 * Passes an ApproachEvent to the ElevatorSubsystem.
-	 *
-	 * @param approachEvent the ApproachEvent to be passed to the subsystem
-	 */
-	@Override
-	public void passApproachEvent(ApproachEvent approachEvent) {
-		elevatorSubsystem.handleApproachEvent(approachEvent);
-	}
-
-	/**
-	 * Receives an ApproachEvent from the Subsystem and returns it to the component.
-	 *
-	 * @param approachEvent the ApproachEvent to be received from the Subsystem
-	 */
-	@Override
-	public void receiveApproachEvent(ApproachEvent approachEvent) {
-		this.approachEvent = approachEvent;
 	}
 
 	/**
