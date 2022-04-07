@@ -7,6 +7,8 @@ import elevatorsystem.MovementState;
 import requests.*;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.Structure;
+import systemwide.SystemStatus;
 
 import java.net.DatagramPacket;
 import java.time.LocalTime;
@@ -24,6 +26,7 @@ public class Scheduler implements Runnable {
 
 	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private final IntermediateHost intermediateHost;
+	private volatile SystemStatus systemStatus;
 	// private ArrayList<Elevator> elevators;
 	// private ArrayList<Floor> floors;
 	private Timer timer;
@@ -40,6 +43,7 @@ public class Scheduler implements Runnable {
 	public Scheduler(int portNumber) {
 		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = new IntermediateHost(portNumber);
+		systemStatus = new SystemStatus(false);
 		timer = new Timer();
 	}
 
@@ -59,6 +63,15 @@ public class Scheduler implements Runnable {
 	 */
 	public static ArrayList<ElevatorMonitor> getElevatorMonitorList() {
 		return elevatorMonitorList;
+	}
+
+	/**
+	 * Gets the SystemStatus of the System.
+	 *
+	 * @return the SystemStatus of the System
+	 */
+	public SystemStatus getSystemStatus() {
+		return systemStatus;
 	}
 
 	/**
@@ -224,11 +237,13 @@ public class Scheduler implements Runnable {
 	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
+    
 		//Starts the inactivity timer and performance measurement
 		//this.startTime = System.nanoTime();
 		this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
 		this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);   
 		
+		// TODO: replace with systemActivated
 		while (true) {
 			receiveAndProcessPacket();
 		}
@@ -237,8 +252,14 @@ public class Scheduler implements Runnable {
 	public static void main(String[] args) {
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
-		schedulerClient.addElevatorMonitor(1);
-		schedulerClient.addElevatorMonitor(2);
+
+		Structure structure = new Structure(10, 2, -1, -1);
+
+
+
+		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
+			schedulerClient.addElevatorMonitor(i + 1);
+		}
 		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
 		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
 	}

@@ -5,6 +5,7 @@ import client_server_host.Port;
 import client_server_host.RequestMessage;
 import misc.InputFileReader;
 import requests.*;
+import systemwide.SystemStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +20,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	private Client client;
 	private final ArrayList<SystemEvent> eventList;
 	private final ArrayList<Floor> floorList;
+	private volatile SystemStatus systemStatus;
 
 	/**
 	 * Constructor for FloorSubsystem.
@@ -28,6 +30,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		InputFileReader inputFileReader = new InputFileReader();
 		eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 		floorList = new ArrayList<>();
+		systemStatus = new SystemStatus(false);
 	}
 
 	/**
@@ -39,6 +42,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	public void run() {
 		Collections.reverse(eventList);
 
+		// TODO: replace with systemActivated
 		while (true) {
 			subsystemUDPMethod();
 		}
@@ -94,10 +98,18 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
+	 * Gets the SystemStatus of the System.
+	 *
+	 * @return the SystemStatus of the System
+	 */
+	public SystemStatus getSystemStatus() {
+		return systemStatus;
+	}
+
+	/**
 	 * Sends and receives messages for the system using UDP packets.
 	 */
 	private void subsystemUDPMethod() {
-		while (true) {
 			if (!eventList.isEmpty()) {
 				client.sendAndReceiveReply(eventList.remove(eventList.size() - 1));
 			} else {
@@ -117,7 +129,6 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 					}
 				}
 			}
-		}
 	}
 
 	/**
