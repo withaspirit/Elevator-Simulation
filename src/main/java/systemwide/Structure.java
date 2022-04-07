@@ -104,14 +104,11 @@ public class Structure implements Serializable {
 		}
 
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-		ArrayList<Elevator> elevatorList = new ArrayList<>();
 		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
-			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
-			elevatorSubsystem.addElevator(elevator);
 			schedulerClient.addElevatorMonitor(elevatorNumber);
-			elevatorList.add(elevator);
 		}
 		elevatorSubsystem.initializeElevators(this);
+		elevatorSubsystem.initializeElevatorThreads();
 
 		FloorSubsystem floorSubsystem = new FloorSubsystem();
 		for (int i = 1; i <= numberOfFloors; i++) {
