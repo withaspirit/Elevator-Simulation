@@ -100,13 +100,14 @@ Tests:
 - SchedulerTest: tests related to passing data between the systems
 - DirectionTest: tests the Direction enum's getDirectionByName function
 - ElevatorMotorTest: tests for the proper updating of states in the elevator motor class
-- ElevatorSelectionTest:
+- ElevatorSelectionTest: tests selecting idle elevators and tests adding more requests to active elevators using the selection algorithm.
 - ElevatorFaultTest: tests the fault-handling behavior of the Elevator for the faults: Doors Interrupted, Doors Stuck, Elevator Interrupted, Elevator Stuck
 - RequestQueueTest: tests that the RequestQueue adds ServiceRequests to the correct list and that requests are added and removed in the correct order
 - MessageTransferTest: tests that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
 - FloorTest: tests that the ArrivalSensor correctly modifies an ApproachEvent
 - FloorSubsystemTest: tests that the correct Floor is selected when an ApproachEvent is received
 
+- ElevatorSelectionTest must be run independently of other tests as it uses multiple threads with ports to test selecting an appropriate elevator and the port are used in previous tests causing "Address already in use: bind" to occur
 </details>
 
 <details>
