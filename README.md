@@ -106,6 +106,7 @@ Tests:
 - MessageTransferTest: tests that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
 - FloorTest: tests that the ArrivalSensor correctly modifies an ApproachEvent
 - FloorSubsystemTest: tests that the correct Floor is selected when an ApproachEvent is received
+- PresenterTest: tests that presenter updates the view with the proper values and integration with the system
   
 </details>
 
