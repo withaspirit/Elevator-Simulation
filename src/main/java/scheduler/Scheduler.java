@@ -260,12 +260,12 @@ public class Scheduler implements Runnable {
 	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
-
+    
 		//Starts the inactivity timer and performance measurement
 		//this.startTime = System.nanoTime();
 		this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
-		this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);
-
+		this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);   
+		
 		// TODO: replace with systemActivated
 		while (true) {
 			receiveAndProcessPacket();
