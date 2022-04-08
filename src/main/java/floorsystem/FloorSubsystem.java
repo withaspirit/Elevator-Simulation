@@ -114,7 +114,10 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	private void subsystemUDPMethod() {
 			if (!eventList.isEmpty()) {
 				SystemEvent event = eventList.remove(eventList.size() - 1);
-				event.setTime(LocalTime.now());
+				// exclude ApproachEvent from having its time modified
+				if (event instanceof ElevatorRequest) {
+					event.setTime(LocalTime.now());
+				}
 				client.sendAndReceiveReply(event);
 			} else {
 				Object object = client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
