@@ -129,9 +129,9 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		// initialize the list of elevators
 		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
 			Elevator elevator = new Elevator(i, this);
-			addElevator(elevator);
 			elevator.setTravelTime(structure.getElevatorTime());
 			elevator.setDoorTime(structure.getDoorsTime());
+			addElevator(elevator);
 		}
 	}
 
@@ -146,8 +146,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	public Structure attemptToReceiveStructure() {
-		Structure structure = (Structure) server.receive();
-		return structure ;
+		return (Structure) server.receive();
 	}
 
 	public static void main(String[] args) {

@@ -48,7 +48,7 @@ public class Scheduler implements Runnable {
 		intermediateHost = new IntermediateHost(portNumber);
 		systemStatus = new SystemStatus(false);
 		timer = new Timer();
-		this.presenter = null;
+		presenter = null;
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class Scheduler implements Runnable {
 	}
 
 	public void setPresenter(Presenter presenter){
-		this.presenter = presenter;
+		Scheduler.presenter = presenter;
 	}
 
 	/**
@@ -273,10 +273,17 @@ public class Scheduler implements Runnable {
 	}
 
 	public static void main(String[] args) {
+		Structure structure = new Structure(10, 2, 1000, 1000);
+
+		ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators());
+		Presenter presenter = new Presenter();
+		presenter.addView(elevatorViewContainer);
+		presenter.startGUI();
+
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
 
-		Structure structure = new Structure(10, 2, -1, -1);
+		schedulerClient.setPresenter(presenter);
 
 		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
 			schedulerClient.addElevatorMonitor(i + 1);
