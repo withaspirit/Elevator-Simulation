@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Scheduler and subsystems" type="Multirun" separateTabs="false" reuseTabsWithFailures="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="0.1">
-    <runConfiguration name="Scheduler" type="Application" />
-    <runConfiguration name="FloorSubsystem" type="Application" />
     <runConfiguration name="ElevatorSubsystem" type="Application" />
-    <method v="2" />
+    <runConfiguration name="FloorSubsystem" type="Application" />
+    <runConfiguration name="Scheduler" type="Application" />
+    <method v="3" />
   </configuration>
 </component>

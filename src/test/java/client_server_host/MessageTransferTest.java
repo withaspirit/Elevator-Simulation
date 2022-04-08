@@ -1,13 +1,14 @@
 package client_server_host;
 
+import elevatorsystem.Doors;
+import elevatorsystem.Fault;
+import elevatorsystem.MovementState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import requests.ApproachEvent;
-import requests.ElevatorRequest;
-import requests.FloorRequest;
-import requests.SystemEvent;
+import requests.*;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.Structure;
 
 import java.net.DatagramPacket;
 import java.time.LocalTime;
@@ -16,19 +17,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * MessageTransferTest ensures the encoding/decoding methods provided by the
- * MessageTransfer class are functional.
+ * MessageTransferTest ensures the encoding/decoding and send/receive methods
+ * provided by the MessageTransfer class are functional.
  *
  * @author Julian, Liam Tripp
  */
 public class MessageTransferTest {
 
-	MessageTransfer msgTransfer;
-	ElevatorRequest elevatorRequest;
-	FloorRequest floorRequest;
-	ApproachEvent approachEvent;
-	LocalTime timeNow;
-	int portNumber;
+	private MessageTransfer msgTransfer;
+	private ElevatorRequest elevatorRequest;
+	private FloorRequest floorRequest;
+	private ApproachEvent approachEvent;
+	private ElevatorMonitor elevatorMonitor;
+	private Structure structure;
+	private LocalTime timeNow;
+	private int portNumber;
 
 	@BeforeEach
 	void setUp() {
@@ -38,6 +41,8 @@ public class MessageTransferTest {
 		elevatorRequest = new ElevatorRequest(timeNow, 2, Direction.UP, 4, Origin.FLOOR_SYSTEM);
 		floorRequest = new FloorRequest(timeNow, 7, Direction.DOWN, 0, Origin.SCHEDULER);
 		approachEvent = new ApproachEvent(elevatorRequest, 3, 5);
+		elevatorMonitor = new ElevatorMonitor(0, 1, Direction.UP, MovementState.IDLE, Direction.UP, Doors.State.OPEN, Fault.NONE, true, 0);
+		structure = new Structure(22, 4, 1000, 1000);
 	}
 
 	@Test
@@ -105,6 +110,12 @@ public class MessageTransferTest {
 		assertTrue(byteArray.length < maxByteArraySize);
 
 		byteArray = msgTransfer.encodeObject(floorRequest);
+		assertTrue(byteArray.length < maxByteArraySize);
+
+		byteArray = msgTransfer.encodeObject(elevatorMonitor);
+		assertTrue(byteArray.length < maxByteArraySize);
+
+		byteArray = msgTransfer.encodeObject(structure);
 		assertTrue(byteArray.length < maxByteArraySize);
 	}
 

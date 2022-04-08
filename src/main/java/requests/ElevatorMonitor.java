@@ -1,5 +1,7 @@
 package requests;
 
+import elevatorsystem.Doors;
+import elevatorsystem.Fault;
 import elevatorsystem.MovementState;
 import systemwide.Direction;
 import systemwide.Origin;
@@ -11,19 +13,22 @@ import java.time.LocalTime;
  * which Elevator to send new ServiceRequests to. Scheduler's list of ElevatorMonitors is
  * updated by Elevator sending ElevatorMonitors to Scheduler.
  *
- * @author Ryan Dash
- * @version 2022/03/10
+ * @author Ryan Dash, Brady Norton
+ * @version 2022/04/05
  */
 public class ElevatorMonitor extends SystemEvent {
 
-    private double queueTime;
-    private MovementState state;
     private int currentFloor;
     private Direction currentDirection;
+    private MovementState state;
+    private Direction movementDirection;
+    private Doors.State doorsState;
+    private Fault fault;
     private boolean hasNoRequests;
+    private double queueTime;
 
     /**
-     * Main Constructor for ElevatorMonitor
+     * Main Constructor for ElevatorMonitor.
      *
      * @param elevatorNumber the elevator number of the elevator that is being monitored for status changes
      */
@@ -34,25 +39,34 @@ public class ElevatorMonitor extends SystemEvent {
         state = MovementState.IDLE;
         currentFloor = 1;
         currentDirection = Direction.NONE;
+        movementDirection = Direction.NONE;
+        doorsState = Doors.State.OPEN;
+        fault = Fault.NONE;
         hasNoRequests = true;
     }
 
     /**
      * Constructor for all of ElevatorMonitor's properties.
      *
-     * @param queueTime the estimated time for elevator to fulfill all of its requests
-     * @param movementState the MovementState of the Elevator's motor
+     * @param elevatorNumber the number of the elevator
      * @param currentFloor the currentFloor of the Elevator
      * @param serviceDirection the direction that the elevator is serving
-     * @param elevatorNumber the number of the elevator
+     * @param movementState the MovementState of the Elevator's motor
+     * @param movementDirection the direction the elevator's motor is moving
+     * @param doorState the state of the elevator's doors
+     * @param fault the elevator fault that represents the elevator's error state
+     * @param queueTime the estimated time for elevator to fulfill all of its requests
      */
-    public ElevatorMonitor(double queueTime, MovementState movementState, int currentFloor, Direction serviceDirection, int elevatorNumber, boolean empty) {
+    public ElevatorMonitor(int elevatorNumber, int currentFloor, Direction serviceDirection, MovementState movementState, Direction movementDirection, Doors.State doorState, Fault fault, Boolean empty, double queueTime) {
         this(elevatorNumber);
-        this.queueTime = queueTime;
-        this.state = movementState;
         this.currentFloor = currentFloor;
         this.currentDirection = serviceDirection;
+        this.state = movementState;
+        this.movementDirection = movementDirection;
+        this.doorsState = doorState;
+        this.fault = fault;
         this.hasNoRequests = empty;
+        this.queueTime = queueTime;
     }
 
     /**
@@ -83,14 +97,40 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
-     * Gets the current direction of the elevator.
+     * Gets the current service direction of the elevator.
      *
-     * @return the current direction of the elevator
+     * @return the service direction of the elevator
      */
     public Direction getDirection() {
         return currentDirection;
     }
 
+    /**
+     * Gets the Movement Direction of the elevator
+     *
+     * @return the current direction the elevator is moving
+     */
+    public Direction getMovementDirection() {
+        return movementDirection;
+    }
+
+    /**
+     * Gets the state of the Doors of the elevator
+     *
+     * @return the State of the elevator Doors from the State enum
+     */
+    public Doors.State getDoorsState() {
+        return doorsState;
+    }
+
+    /**
+     * Gets the Fault representing the error state of the elevator
+     *
+     * @return the Fault for the elevator
+     */
+    public Fault getFault() {
+        return fault;
+    }
 
     /**
      * Gets whether of not the elevator has requests.
@@ -111,6 +151,9 @@ public class ElevatorMonitor extends SystemEvent {
         this.state = elevatorMonitor.getState();
         this.currentFloor = elevatorMonitor.getCurrentFloor();
         this.currentDirection = elevatorMonitor.getDirection();
+        movementDirection = elevatorMonitor.getMovementDirection();
+        doorsState = elevatorMonitor.getDoorsState();
+        fault = elevatorMonitor.getFault();
         this.hasNoRequests = elevatorMonitor.getHasNoRequests();
     }
 
@@ -124,5 +167,26 @@ public class ElevatorMonitor extends SystemEvent {
         String formattedString = "[ElevatorNumber, queueTime, MovementState, CurrFloor, CurrDirxn]:\n";
         formattedString += getElevatorNumber() + " " + String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection();
         return formattedString;
+    }
+
+    /**
+     * Returns a String array of size 6 containing the elevator's properties.
+     *
+     * The elevators properties in order from position 1 to position 6 in the array:
+     * Current Floor, Service Direction, Movement State, Movement Direction, Doors State, Fault
+     *
+     * @return a String array containing 6 elevator properties
+     */
+    public String[] propertiesToStringArray() {
+        String[] properties = new String[6];
+        //{"CurrentFloor", "ServiceDirection", "MovementState", "MovementDirection", "DoorState", "Fault"};
+        properties[0] = String.valueOf(getCurrentFloor());
+        properties[1] = getDirection().toString();
+        properties[2] = state.getName();
+        properties[3] = movementDirection.getName();
+        properties[4] = doorsState.toString();
+        properties[5] = fault.getName();
+
+        return properties;
     }
 }

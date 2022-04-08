@@ -105,7 +105,7 @@ public class ElevatorMotor {
 	}
 
 	/**
-	 * Simulates the elevator moving up
+	 * Simulates the elevator moving up.
 	 */
 	// TODO: remove
 	public void moveUp() {
@@ -115,7 +115,7 @@ public class ElevatorMotor {
 	}
 
 	/**
-	 * Simulates the elevator moving down
+	 * Simulates the elevator moving down.
 	 */
 	// TODO: remove
 	public void moveDown() {

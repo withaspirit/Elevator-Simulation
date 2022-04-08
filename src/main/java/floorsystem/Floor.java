@@ -37,6 +37,7 @@ public class Floor implements SubsystemPasser {
 	 *
 	 * @param approachEvent the ApproachEvent that is examined by the ArrivalSensor
 	 */
+	@Override
 	public void passApproachEvent(ApproachEvent approachEvent) {
 		floorSubsystem.handleApproachEvent(approachEvent);
 	}
@@ -46,7 +47,8 @@ public class Floor implements SubsystemPasser {
 	 *
 	 * @param approachEvent the ApproachEvent to be received from the Subsystem
 	 */
+	@Override
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
-		arrivalSensor.checkFloorNumber(approachEvent);
+		arrivalSensor.compareToListOfRequests(approachEvent);
 	}
 }

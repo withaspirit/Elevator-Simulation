@@ -3,9 +3,7 @@ package scheduler;
 import client_server_host.MessageTransfer;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
-import elevatorsystem.Elevator;
-import elevatorsystem.ElevatorSubsystem;
-import elevatorsystem.MovementState;
+import elevatorsystem.*;
 import misc.InputFileReader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,6 +27,7 @@ public class ElevatorSelectionTest {
     static ElevatorSubsystem elevatorSubsystem;
     static Elevator elevator1, elevator2;
     static Scheduler schedulerClient, schedulerServer;
+    static ArrayList<ElevatorMonitor> monitorList;
     static Thread schedulerClientThread, schedulerServerThread, elevatorSubsystemThread;
     private final InputFileReader inputFileReader = new InputFileReader();
     private final ArrayList<SystemEvent> eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
@@ -58,6 +57,7 @@ public class ElevatorSelectionTest {
         schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
         schedulerClient.addElevatorMonitor(elevator1.getElevatorNumber());
         schedulerClient.addElevatorMonitor(elevator2.getElevatorNumber());
+        monitorList = Scheduler.getElevatorMonitorList();
         schedulerClientThread = new Thread(schedulerClient, schedulerClient.getClass().getSimpleName());
         schedulerServerThread = new Thread(schedulerServer, schedulerServer.getClass().getSimpleName());
         elevatorSubsystemThread = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
@@ -69,13 +69,13 @@ public class ElevatorSelectionTest {
     @AfterEach
     void cleanUP(){
         while (!elevator1.getRequestQueue().isEmpty()){
-            if (elevator1.getRequestQueue().removeRequest() == -1){
+            if (elevator1.getRequestQueue().removeRequest() == null){
                 break;
             }
         }
 
         while (!elevator2.getRequestQueue().isEmpty()){
-            if (elevator2.getRequestQueue().removeRequest() == -1){
+            if (elevator2.getRequestQueue().removeRequest() == null){
                 break;
             }
         }
@@ -83,8 +83,29 @@ public class ElevatorSelectionTest {
         elevator2.getMotor().setMovementState(MovementState.IDLE);
 
 
-        for (ElevatorMonitor elevatorMonitor: Scheduler.getElevatorMonitorList()){
-            elevatorMonitor.updateMonitor(new ElevatorMonitor(0.0, MovementState.IDLE, 1, Direction.UP, elevatorMonitor.getElevatorNumber(), true));
+        for (ElevatorMonitor elevatorMonitor: monitorList){
+            elevatorMonitor.updateMonitor(new ElevatorMonitor(elevatorMonitor.getElevatorNumber(), 1, Direction.UP, MovementState.IDLE, Direction.NONE, Doors.State.OPEN, Fault.NONE, true, 0.0));
+        }
+    }
+
+    /**
+     * Sends an event to the scheduler.
+     *
+     * @param event a SystemEvent containing a request
+     */
+    private void sendEvent(SystemEvent event){
+        messageElevator = messageTransfer.encodeObject(event);
+        try {
+            elevatorPacket = new DatagramPacket(messageElevator, messageElevator.length, InetAddress.getLocalHost(), Port.CLIENT_TO_SERVER.getNumber());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        messageTransfer.sendMessage(elevatorPacket);
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -98,92 +119,65 @@ public class ElevatorSelectionTest {
         assertEquals(elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()), 0.0);
         assertEquals(elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor()), 0.0);
 
-        ElevatorMonitor monitor = sendReceiveMonitor(eventList.get(0));
-        assertEquals(monitor.getElevatorNumber(), 1);
-        assertFalse(monitor.getHasNoRequests());
+        sendEvent(eventList.get(0));
+        assertEquals(monitorList.get(0).getElevatorNumber(), 1);
+        assertFalse(monitorList.get(0).getHasNoRequests());
         assertFalse(elevator1.getRequestQueue().isEmpty());
-        assertEquals(14.57185228514697, monitor.getQueueTime());
+        assertEquals(14.57185228514697, monitorList.get(0).getQueueTime());
         // Elevator move from floor 1 to 2 elevator was idle
 
-        monitor = sendReceiveMonitor(eventList.get(1));
-        assertEquals(monitor.getElevatorNumber(), 2);
-        assertFalse(monitor.getHasNoRequests());
+        sendEvent(eventList.get(1));
+        assertEquals(monitorList.get(1).getElevatorNumber(), 2);
+        assertFalse(monitorList.get(1).getHasNoRequests());
         assertFalse(elevator2.getRequestQueue().isEmpty());
-        assertEquals(31.24453457315479, monitor.getQueueTime());
+        assertEquals(31.24453457315479, monitorList.get(1).getQueueTime());
+
+        System.out.println("success");
         // Elevator move from floor 2 to 4 elevator was idle
     }
 
     @Test
     void testSelectingActiveElevators(){
-        ElevatorMonitor monitor = sendReceiveMonitor(eventList.get(0));
-        assertEquals(monitor.getElevatorNumber(), 1);
-        assertFalse(monitor.getHasNoRequests());
+        sendEvent(eventList.get(0));
+        assertEquals(monitorList.get(0).getElevatorNumber(), 1);
+        assertFalse(monitorList.get(0).getHasNoRequests());
         assertFalse(elevator1.getRequestQueue().isEmpty());
-        assertEquals(14.57185228514697, monitor.getQueueTime());
+        assertEquals(14.57185228514697, monitorList.get(0).getQueueTime());
         // Elevator 1 move from floor 1 to 2 elevator was idle
 
-        monitor = sendReceiveMonitor(eventList.get(1));
-        assertEquals(monitor.getElevatorNumber(), 2);
-        assertFalse(monitor.getHasNoRequests());
+        sendEvent(eventList.get(1));
+        assertEquals(monitorList.get(1).getElevatorNumber(), 2);
+        assertFalse(monitorList.get(1).getHasNoRequests());
         assertFalse(elevator1.getRequestQueue().isEmpty());
-        assertEquals(31.24453457315479, monitor.getQueueTime());
+        assertEquals(31.24453457315479, monitorList.get(1).getQueueTime());
         // Elevator 2 move from floor 2 to 4 elevator was idle
 
-        monitor = sendReceiveMonitor(eventList.get(2));
-        assertEquals(monitor.getElevatorNumber(), 2);
-        assertEquals(49.52924050879059, monitor.getQueueTime());
+        sendEvent(eventList.get(2));
+        assertEquals(monitorList.get(1).getElevatorNumber(), 2);
+        assertEquals(49.52924050879059, monitorList.get(1).getQueueTime());
         // Elevator 2 move from floor 4 to 1 elevator 2 traveling to floor 4
 
-        monitor = sendReceiveMonitor(eventList.get(3));
-        assertEquals(monitor.getElevatorNumber(), 1);
-        assertEquals(34.21555685544091, monitor.getQueueTime());
+        sendEvent(eventList.get(3));
+        assertEquals(monitorList.get(0).getElevatorNumber(), 1);
+        assertEquals(34.21555685544091, monitorList.get(0).getQueueTime());
         // Elevator 1 move from floor 2 to 6 elevator 1 traveling to floor 2
 
-        monitor = sendReceiveMonitor(eventList.get(4));
-        assertEquals(monitor.getElevatorNumber(), 2);
-        assertEquals(99.05848101758119, monitor.getQueueTime());
+        sendEvent(eventList.get(4));
+        assertEquals(monitorList.get(1).getElevatorNumber(), 2);
+        assertEquals(99.05848101758119, monitorList.get(1).getQueueTime());
         // Elevator 2 move from floor 7 to 3 elevator 2 less time to complete its queue, so it was picked
 
-        monitor = sendReceiveMonitor(eventList.get(5));
-        assertEquals(monitor.getElevatorNumber(), 1);
-        assertEquals(60.38823914344873, monitor.getQueueTime());
+        sendEvent(eventList.get(5));
+        assertEquals(monitorList.get(0).getElevatorNumber(), 1);
+        assertEquals(60.38823914344873, monitorList.get(0).getQueueTime());
         // Elevator 1 move from floor 3 to 5 elevator 1 traveling passing floor 3 to destination floor 4 takes priority
 
-        monitor = sendReceiveMonitor(eventList.get(6));
-        assertEquals(monitor.getElevatorNumber(), 2);
-        assertEquals(99.05848101758119, monitor.getQueueTime());
+        sendEvent(eventList.get(6));
+        assertEquals(monitorList.get(1).getElevatorNumber(), 2);
+        assertEquals(99.05848101758119, monitorList.get(1).getQueueTime());
         // Elevator 2 traveling in same direction has higher priority and Elevator 2 has 3 and 1 in queue
 
         //Elevator 1 floor requests up [1, 2, 3, 5, 6]
         //Elevator 2 floor requests up [2, 4], down [7, 4, 3, 1]
-    }
-
-    /**
-     * Sending a ElevatorRequest packet through its journey of the system
-     * and receiving a packet back on the same socket.
-     *
-     * @return an ElevatorMonitor with updates elevator information
-     */
-    private ElevatorMonitor sendReceiveMonitor(SystemEvent event){
-        messageElevator = messageTransfer.encodeObject(event);
-        try {
-            elevatorPacket = new DatagramPacket(messageElevator, messageElevator.length, InetAddress.getLocalHost(), Port.CLIENT_TO_SERVER.getNumber());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        messageTransfer.sendMessage(elevatorPacket);
-        messageTransfer.receiveMessage();
-        // Wait for Threads to finish transferring and processing requests before trying to get information
-        boolean nullPacket = true;
-        ElevatorMonitor monitor = null;
-        while (nullPacket) {
-            messageTransfer.sendMessage(messagePacket);
-            Object object = messageTransfer.decodeObject(messageTransfer.receiveMessage().getData());
-            if (object instanceof ElevatorMonitor elevatorMonitor) {
-                monitor = elevatorMonitor;
-                nullPacket = false;
-            }
-        }
-        return monitor;
     }
 }

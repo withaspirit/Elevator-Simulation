@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test class for InputFileReader methods
+ * Test class for InputFileReader methods.
  *
  * @author Ryan Dash, Brady, Liam Tripp
  */

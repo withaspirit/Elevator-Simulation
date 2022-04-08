@@ -1,16 +1,13 @@
 package scheduler;
 
 import client_server_host.Port;
-import elevatorsystem.Elevator;
-import elevatorsystem.ElevatorSubsystem;
-import elevatorsystem.MovementState;
+import elevatorsystem.*;
 import floorsystem.FloorSubsystem;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;
 import requests.ElevatorRequest;
-import requests.ServiceRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
@@ -37,7 +34,8 @@ class SchedulerTest {
     static void setUpOnce() {
         // Request
         elevatorRequest = new ElevatorRequest(LocalTime.now(), 1, Direction.UP, 2, Origin.FLOOR_SYSTEM);
-        elevatorMonitor = new ElevatorMonitor(0.0, MovementState.ACTIVE, 1, Direction.UP, 1, false);
+        //elevatorMonitor = new ElevatorMonitor(0.0, MovementState.ACTIVE, 1, Direction.UP, 1, false);
+        elevatorMonitor = new ElevatorMonitor(1, 1, Direction.UP, MovementState.ACTIVE, Direction.UP, Doors.State.CLOSED, Fault.NONE, false, 0.0);
         elevatorMonitor.setOrigin(Origin.ELEVATOR_SYSTEM);
 
         // Set up systems
@@ -90,12 +88,12 @@ class SchedulerTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        assertEquals(1, floorSubsystem.getRequestSize()); // fails because floorSubsystem processes requests instantly
+        assertEquals(1, floorSubsystem.getEventListSize()); // fails because floorSubsystem processes requests instantly
     }
 
     @Test
     void receiveElevatorRequest() {
-        floorSubsystem.addRequest(elevatorRequest);
+        floorSubsystem.addEvent(elevatorRequest);
 
     }
 
