@@ -114,25 +114,26 @@ Tests:
 
 <br>
 
+#### Description
+
 The program can be run as one program with the class Structure. The program can also be run as multiple separate programs with the classes Scheduler, ElevatorSubsystem, and FloorSubsystem.
 
-
-The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: Scheduler, ElevatorSubsystem, and FloorSubsystem. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
+The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: ElevatorSubsystem, FloorSubsystem and Scheduler. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
 
 #### Eclipse
 
-- Set the Run Configuration to run these classes in order: Scheduler, ElevatorSubsystem, and FloorSubsystem.
+- Set the Run Configuration to run these classes in order: ElevatorSubsystem, FloorSubsystem, and Scheduler.
 
 #### IntelliJ
 
-IntelliJ does not allow ordered run configurations, so the Multirun plugin is used. 
+As IntelliJ does not allow ordered run configurations, the Multirun plugin is used. 
 
 Instructions:
-- To install Multirun, click the Setting icon in the top right corner of IntelliJ. Select plugins. 
-- Search for Multirun in the plugins list. If it does not show up, there should be an option to search aftermarket plugins which you can click. 
-- Click the install button
-- Multirun should now be installed and ready to use.
-- The run option should now be available in IntelliJ's run configurations.
+1. To install Multirun, click the Setting icon in the top right corner of IntelliJ. Select plugins. 
+2. Search for Multirun in the plugins list. If it does not show up, there should be an option to search aftermarket plugins which you can click. 
+3. Click the install button.
+4. Multirun should now be installed and ready to use.
+5. The run option should now be available in IntelliJ's run configurations.
 
 </details>
 
