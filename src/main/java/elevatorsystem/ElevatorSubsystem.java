@@ -153,7 +153,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	@Override
 	public Structure receiveStructure() {
 		Structure structure = (Structure) server.receive();
-		return structure ;
+		return structure;
 	}
 
 	public static void main(String[] args) {
