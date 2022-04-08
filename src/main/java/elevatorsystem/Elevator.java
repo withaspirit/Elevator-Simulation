@@ -207,13 +207,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// Next floor in service direction
 		int floorToVisit = motor.move(currentFloor, requestFloor);
 
-
-
-		// elevator is stopped
 		if (currentFloor == requestFloor) {
 			stopAtFloor(requestFloor);
 		} else if (motor.isIdle()) {
-			// requestFloor != floorToVisit
 			startMovingToFloor(floorToVisit);
 		}
 
