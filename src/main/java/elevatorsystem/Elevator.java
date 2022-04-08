@@ -37,13 +37,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	// Elevator Measurements
 	private float speed;
-	public static final float MAX_SPEED = 2.67f; // meters/second
 	public static final float ACCELERATION = 0.304f; // meters/second^2
-	public static final float LOAD_TIME = 9.5f; // seconds
-	public static final float FLOOR_HEIGHT = 3.91f; // meters (22 steps/floor @ 0.1778 meters/step)
-	public static final double ACCELERATION_DISTANCE = Math.pow(MAX_SPEED, 2) / (2 * ACCELERATION); // Vf^2 = Vi^2 + 2as therefore s = vf^2/2a
-	public static final double ACCELERATION_TIME = Math.sqrt((FLOOR_HEIGHT * 2) / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
-
 	/**
 	 * Constructor for Elevator.
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
@@ -54,13 +48,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
 		this.elevatorNumber = elevatorNumber;
 		this.elevatorSubsystem = elevatorSubsystem;
-		requestQueue = new RequestQueue();
 		motor = new ElevatorMotor();
 		doors = new Doors();
 		currentFloor = 1;
 		serviceDirection = Direction.UP;
 		travelTime = -1;
 		doorTime = -1;
+		requestQueue = new RequestQueue(travelTime, doorTime*2);
 		fault = Fault.NONE;
 		messageTransferEnabled = true;
 		approachEvent = null;

@@ -25,7 +25,7 @@ class RequestQueueTest {
 
 	@BeforeEach
 	void setUp() {
-		testQueue = new RequestQueue();
+		testQueue = new RequestQueue(1000, 1000);
 	}
 
 	@Test

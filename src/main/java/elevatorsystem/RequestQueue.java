@@ -27,13 +27,17 @@ public class RequestQueue {
 	 */
 	private final TreeSet<ServiceRequest> missedRequests;
 
+	private final int loadTime, travelTime;
+
 	/**
 	 * Constructor for RequestQueue.
 	 */
-	public RequestQueue() {
+	public RequestQueue(int loadTime, int travelTime) {
 		currentDirectionQueue = new TreeSet<>();
 		oppositeDirectionQueue = new TreeSet<>(Collections.reverseOrder());
 		missedRequests = new TreeSet<>();
+		this.loadTime = loadTime;
+		this.travelTime = travelTime;
 	}
 
 	/**
@@ -210,7 +214,7 @@ public class RequestQueue {
 		for (ServiceRequest request: currentDirectionQueue) {
 			int floor = request.getFloorNumber();
 			if (elevatorFloor != floor) {
-				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
+				queueTime += loadTime + requestTime(elevatorFloor, floor);
 				elevatorFloor = floor;
 			}
 		}
@@ -218,7 +222,7 @@ public class RequestQueue {
 		for (ServiceRequest request: oppositeDirectionQueue) {
 			int floor = request.getFloorNumber();
 			if (elevatorFloor != floor) {
-				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
+				queueTime += loadTime + requestTime(elevatorFloor, floor);
 				elevatorFloor = floor;
 			}
 		}
@@ -226,7 +230,7 @@ public class RequestQueue {
 		for (ServiceRequest request: missedRequests) {
 			int floor = request.getFloorNumber();
 			if (elevatorFloor != floor) {
-				queueTime += LOAD_TIME + requestTime(elevatorFloor, floor);
+				queueTime += loadTime + requestTime(elevatorFloor, floor);
 				elevatorFloor = floor;
 			}
 		}
@@ -243,11 +247,12 @@ public class RequestQueue {
 	 * @return a double containing the time to fulfil the request
 	 */
 	public double requestTime(int initialFloor, int finalFloor) {
-		double distance = Math.abs(finalFloor - initialFloor) * FLOOR_HEIGHT;
-		if (distance > ACCELERATION_DISTANCE * 2) {
-			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
-		} else {
-			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
-		}
+		return (finalFloor - initialFloor) * travelTime;
+//		double distance = Math.abs(finalFloor - initialFloor) * FLOOR_HEIGHT;
+//		if (distance > ACCELERATION_DISTANCE * 2) {
+//			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
+//		} else {
+//			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
+//		}
 	}
 }
