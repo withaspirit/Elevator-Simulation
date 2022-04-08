@@ -19,9 +19,9 @@ import java.util.Queue;
 public class ElevatorSubsystem implements Runnable, SystemEventListener {
 
 	private final ArrayList<Elevator> elevatorList;
-	private Client server;
+	private final Client server;
 	private final Queue<SystemEvent> eventQueue;
-	private volatile SystemStatus systemStatus;
+	private final SystemStatus systemStatus;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
@@ -132,8 +132,6 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 			elevator.setTravelTime(structure.getElevatorTime());
 			elevator.setDoorTime(structure.getDoorsTime());
 			addElevator(elevator);
-			elevator.setTravelTime(structure.getElevatorTime());
-			elevator.setDoorTime(structure.getDoorsTime());
 		}
 	}
 
@@ -154,8 +152,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	 */
 	@Override
 	public Structure receiveStructure() {
-		Structure structure = (Structure) server.receive();
-		return structure;
+		return (Structure) server.receive();
 	}
 
 	public static void main(String[] args) {

@@ -26,7 +26,7 @@ public class ElevatorViewContainer {
         JPanel elevatorListPanel = new JPanel(new GridLayout(numberOfElevators, 1));
         for (int i = 1; i <= numberOfElevators; i++) {
             elevatorViews.add(new ElevatorView(i));
-            elevatorListPanel.add(elevatorViews.get(i-1).getPanel());
+            elevatorListPanel.add(elevatorViews.get(i - 1).getPanel());
         }
 
         JScrollPane scrollPane = new JScrollPane(elevatorListPanel);

@@ -29,10 +29,8 @@ public class Scheduler implements Runnable {
 	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private final IntermediateHost intermediateHost;
 	private static Presenter presenter;
-	private volatile SystemStatus systemStatus;
-	// private ArrayList<Elevator> elevators;
-	// private ArrayList<Floor> floors;
-	private Timer timer;
+	private final SystemStatus systemStatus;
+	private final Timer timer;
 	private TimerTask timerTask;
 	private long startTime = -1;
 	private final int timerTimeOut = 7;
@@ -60,6 +58,12 @@ public class Scheduler implements Runnable {
 		elevatorMonitorList.add(new ElevatorMonitor(elevatorNumber));
 	}
 
+	/**
+	 * Sets the Scheduler's presenter to a valid presenter.
+	 * This will allow for output to the GUI's view.
+	 *
+	 * @param presenter a Presenter
+	 */
 	public void setPresenter(Presenter presenter){
 		Scheduler.presenter = presenter;
 	}
