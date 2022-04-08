@@ -1,12 +1,12 @@
-package elevatorsystem;
+package scheduler;
 
+import elevatorsystem.Doors;
+import elevatorsystem.Fault;
+import elevatorsystem.MovementState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import scheduler.Presenter;
-import scheduler.ElevatorView;
-import scheduler.ElevatorViewContainer;
 import systemwide.Direction;
 import requests.ElevatorMonitor;
 import javax.swing.JTextPane;
