@@ -147,9 +147,4 @@ public class Structure implements Serializable {
 		elevatorSubsystemOrigin.start();
 		floorSubsystemOrigin.start();
 	}
-
-	public static void main(String[] args) {
-		Structure structure = new Structure(10, 2, -1, -1);
-		structure.initializeStructure(null);
-	}
 }
