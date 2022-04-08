@@ -23,6 +23,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	private final ArrayList<SystemEvent> eventList;
 	private final ArrayList<Floor> floorList;
 	private volatile SystemStatus systemStatus;
+	private boolean maySendSystemEvent;
 
 	/**
 	 * Constructor for FloorSubsystem.
@@ -33,6 +34,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
 		floorList = new ArrayList<>();
 		systemStatus = new SystemStatus(false);
+		maySendSystemEvent = true;
 	}
 
 	/**
@@ -112,7 +114,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	 * Sends and receives messages for the system using UDP packets.
 	 */
 	private void subsystemUDPMethod() {
-			if (!eventList.isEmpty()) {
+			if (!eventList.isEmpty() && maySendSystemEvent) {
 				SystemEvent event = eventList.remove(eventList.size() - 1);
 				// exclude ApproachEvent from having its time modified
 				if (event instanceof ElevatorRequest) {
