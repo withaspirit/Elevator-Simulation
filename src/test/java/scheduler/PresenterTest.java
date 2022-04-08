@@ -12,11 +12,15 @@ import javax.swing.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+/**
+ * PresenterTest tests for the Presenter class methods and integration with the system
+ * 
+ * @author Julian
+ * */
 public class PresenterTest {
 
-    Presenter presenter;
-    ElevatorViewContainer elevatorViewContainer;
+    private Presenter presenter;
+    private ElevatorViewContainer elevatorViewContainer;
 
     @BeforeEach
     void setUp() {
@@ -25,7 +29,7 @@ public class PresenterTest {
     }
 
     @Test
-    void updatingViewTest() {
+    void testUpdateElevatorView() {
         presenter.addView(elevatorViewContainer);
 
         //Updating first view
