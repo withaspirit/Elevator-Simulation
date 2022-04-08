@@ -307,6 +307,7 @@ public class Scheduler implements Runnable {
 	/** 
 	 * SchedulerTimeOut calculates the elapsed time for the scheduler thread 
 	 * in the form of a TimerTask triggered by inactivity
+	 * @author Julian 
 	 */
 	public class SchedulerTimeOut extends TimerTask {
 
