@@ -153,14 +153,20 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		return floorList;
 	}
 
-	public Structure attemptToReceiveStructure() {
+	/**
+	 * Receives and returns a Structure from the Scheduler.
+	 *
+	 * @return Structure contains information to initialize the floors and elevators
+	 */
+	@Override
+	public Structure receiveStructure() {
 		Structure structure = (Structure) client.receive();
 		return structure;
 	}
 
 	public static void main(String[] args) {
 		FloorSubsystem floorSubsystem = new FloorSubsystem();
-		Structure structure = floorSubsystem.attemptToReceiveStructure();
+		Structure structure = floorSubsystem.receiveStructure();
 
 		floorSubsystem.initializeFloors(structure.getNumberOfFloors());
 		System.out.println("Floors initialized");

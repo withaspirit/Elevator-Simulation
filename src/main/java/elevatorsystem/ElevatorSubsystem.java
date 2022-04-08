@@ -145,14 +145,20 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		}
 	}
 
-	public Structure attemptToReceiveStructure() {
+	/**
+	 * Receives and returns a Structure from the Scheduler.
+	 *
+	 * @return Structure contains information to initialize the floors and elevators
+	 */
+	@Override
+	public Structure receiveStructure() {
 		Structure structure = (Structure) server.receive();
 		return structure ;
 	}
 
 	public static void main(String[] args) {
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-		Structure structure = elevatorSubsystem.attemptToReceiveStructure();
+		Structure structure = elevatorSubsystem.receiveStructure();
 		elevatorSubsystem.initializeElevators(structure);
 
 		Thread elevatorSubsystemThread = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
