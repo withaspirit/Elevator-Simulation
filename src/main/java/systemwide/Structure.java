@@ -113,7 +113,7 @@ public class Structure implements Serializable {
 	/**
 	 * Initializes the Structure's properties.
 	 */
-	public void initializeStructure(Presenter presenter) {
+	public void initializeStructure() {
 
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
@@ -146,5 +146,15 @@ public class Structure implements Serializable {
 		schedulerServerOrigin.start();
 		elevatorSubsystemOrigin.start();
 		floorSubsystemOrigin.start();
+
+		// Start elevator Origins
+		for (int i = 0; i < numberOfElevators; i++) {
+			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
+		}
+	}
+
+	public static void main(String[] args) {
+		Structure structure = new Structure(10, 2, -1, -1);
+		structure.initializeStructure();
 	}
 }
