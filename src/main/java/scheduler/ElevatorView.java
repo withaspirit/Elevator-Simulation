@@ -14,10 +14,8 @@ import java.awt.*;
  */
 public class ElevatorView {
 
-    private JPanel elevatorPanel;
-    private JPanel statusPanelContainer;
-    private JPanel[] statusPanels;
-    private JTextPane[] statusPanes;
+    private final JPanel elevatorPanel;
+    private final JTextPane[] statusPanes;
     private final static int NUMBER_OF_STATUS_PANES = 6;
 
     /**
@@ -27,10 +25,10 @@ public class ElevatorView {
      */
     public ElevatorView(int elevatorNumber) {
         elevatorPanel = new JPanel();
-        this.statusPanelContainer = new JPanel(new GridLayout(1, NUMBER_OF_STATUS_PANES));
+        JPanel statusPanelContainer = new JPanel(new GridLayout(1, NUMBER_OF_STATUS_PANES));
         elevatorPanel.add(statusPanelContainer);
-        this.statusPanels = new JPanel[NUMBER_OF_STATUS_PANES];
-        this.statusPanes = new JTextPane[NUMBER_OF_STATUS_PANES];
+        JPanel[] statusPanels = new JPanel[NUMBER_OF_STATUS_PANES];
+        statusPanes = new JTextPane[NUMBER_OF_STATUS_PANES];
 
         // TODO: elevatorPanel contains the statusPanelContainer, also has the border and title
         //    (distinguishing from statusPanelContainer allows more features to be added later)
