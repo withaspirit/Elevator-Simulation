@@ -42,15 +42,8 @@ public class InputFileReader {
 
         for (Object obj: jsonArray) {
             JSONObject inputObject = (JSONObject) obj;
-            String[] data;
-            LocalTime time = LocalTime.now();
-            if (inputObject.containsKey("event")){
-                data = ((String) inputObject.get("event")).split(" ");
-                queue.add(createElevatorRequest(data, time));
-            } else if (inputObject.containsKey("fault")){
-                data = ((String) inputObject.get("fault")).split(" ");
-                queue.add(createFaultRequest(data, time));
-            }
+            ElevatorRequest elevatorRequest = createElevatorRequest(inputObject);
+            queue.add(elevatorRequest);
         }
         return queue;
     }
@@ -85,27 +78,28 @@ public class InputFileReader {
     /**
      * Creates an ElevatorRequest from a given String array.
      *
-     * @param data a string array containing elevator request data.
-     * @param time the current local time
-     * @return an elevator request for an elevator made from the data and time
+     * @param jsonObject a ServiceRequest as a JSONObject
+     * @return elevatorRequest a request for an elevator made from an input file
      */
-    public ElevatorRequest createElevatorRequest(String[] data, LocalTime time) {
-        int floorNumber = Integer.parseInt(data[0]);
-        Direction direction = Direction.getDirection(data[1]);
-        int floorToVisit = Integer.parseInt(data[2]);
+    public ElevatorRequest createElevatorRequest(JSONObject jsonObject) {
+        String[] data = convertJSONToStringArray(jsonObject);
+        LocalTime time = LocalTime.parse(data[0]);
+        int floorNumber = Integer.parseInt(data[1]);
+        Direction direction = Direction.getDirection(data[2]);
+        int floorToVisit = Integer.parseInt(data[3]);
         // FIXME: this is true only for origin
         return new ElevatorRequest(time, floorNumber, direction, floorToVisit, Origin.FLOOR_SYSTEM);
     }
 
     /**
-     * Create an FaultRequest for a given string array
+     * Converts a JSONObject to a String array in the format:
+     * "hh:mm:ss.mmm CurrentFloorNumber Direction DesiredFloorNumber".
      *
-     * @param data a string array containing fault request data.
-     * @param time the current local time
-     * @return a faultRequest for from the data and time
+     * @param jsonObject a ServiceRequest as a JSONObject
+     * @return a String array containing information in the specified format
      */
-    public SystemEvent createFaultRequest(String[] data, LocalTime time) {
-        return new SystemEvent(time, Origin.FLOOR_SYSTEM);
+    public String[] convertJSONToStringArray(JSONObject jsonObject) {
+        return ((String) jsonObject.get("event")).split(" ");
     }
 
     /**

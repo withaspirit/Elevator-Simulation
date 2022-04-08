@@ -49,7 +49,7 @@ public class InputFileReaderTest {
 
         for (Object object : jsonArray) {
             jsonObject = (JSONObject) object;
-            String[] data = ((String) jsonObject.get("event")).split(" ");
+            String[] data = inputFileReader.convertJSONToStringArray(jsonObject);
 
             // Test that time is valid
             // This should just throw an exception if the format is invalid
@@ -92,7 +92,7 @@ public class InputFileReaderTest {
         for (int i = 0; i < queue.size(); i++) {
             elevatorRequest1 = (ElevatorRequest) queue.get(i);
             jsonObject = (JSONObject) jsonArray.get(i);
-            elevatorRequest2 = inputFileReader.createElevatorRequest(((String) jsonObject.get("event")).split(" "), LocalTime.now());
+            elevatorRequest2 = inputFileReader.createElevatorRequest(jsonObject);
             assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
         }
     }
@@ -103,7 +103,7 @@ public class InputFileReaderTest {
 
         // Event 1 -> "00:00:00.000 1 Up 2"
         jsonObject = (JSONObject) jsonArray.get(0);
-        elevatorRequest1 = inputFileReader.createElevatorRequest(((String) jsonObject.get("event")).split(" "), LocalTime.now());
+        elevatorRequest1 = inputFileReader.createElevatorRequest(jsonObject);
         String[] data = ((String) jsonObject.get("event")).split(" ");
 
         assertEquals(LocalTime.MIDNIGHT, LocalTime.parse(data[0])); // midnight = 00:00:00.000
