@@ -217,9 +217,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 			startMovingToFloor(floorToVisit);
 		}
 
-		//open floor1 close, floor2 open close floor3 open close, floor4, floor5 open close, floor6 open
-		//open floor1 close, floor2 open close, floor3, floor4 open close, floor5, floor6, floor7 open close, floor6, floor5, floor4 open close, floor3 open close, floor2, floor1 open
-
 		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
 	}
 
