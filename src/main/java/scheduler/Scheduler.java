@@ -277,7 +277,7 @@ public class Scheduler implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		Structure structure = new Structure(10, 2, 1000, 1000);
+		Structure structure = new Structure(20, 4, 1000, 1000);
 
 		ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators());
 		Presenter presenter = new Presenter();
