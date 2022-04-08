@@ -5,6 +5,7 @@ import elevatorsystem.Elevator;
 import elevatorsystem.ElevatorSubsystem;
 import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
+import scheduler.Presenter;
 import scheduler.Scheduler;
 
 import java.io.Serializable;
@@ -107,50 +108,5 @@ public class Structure implements Serializable {
 	 */
 	public void setDoorsTime(int time) {
 		doorsTime = time;
-	}
-
-	/**
-	 * Initializes the Structure's properties.
-	 */
-	public void initializeStructure() {
-
-		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
-		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
-
-		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-		ArrayList<Elevator> elevatorList = new ArrayList<>();
-		for (int elevatorNumber = 1; elevatorNumber <= numberOfElevators; elevatorNumber++) {
-			Elevator elevator = new Elevator(elevatorNumber, elevatorSubsystem);
-			elevatorSubsystem.addElevator(elevator);
-			schedulerClient.addElevatorMonitor(elevatorNumber);
-			elevatorList.add(elevator);
-		}
-		FloorSubsystem floorSubsystem = new FloorSubsystem();
-		for (int i = 1; i <= numberOfFloors; i++) {
-			Floor floor = new Floor(i, floorSubsystem);
-			floorSubsystem.addFloor(floor);
-		}
-
-		Thread schedulerClientOrigin, schedulerServerOrigin, elevatorSubsystemOrigin, floorSubsystemOrigin;
-
-		schedulerClientOrigin = new Thread(schedulerClient, schedulerClient.getClass().getSimpleName());
-		schedulerServerOrigin = new Thread(schedulerServer, schedulerServer.getClass().getSimpleName());
-		elevatorSubsystemOrigin = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
-		floorSubsystemOrigin = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
-
-		schedulerClientOrigin.start();
-		schedulerServerOrigin.start();
-		elevatorSubsystemOrigin.start();
-		floorSubsystemOrigin.start();
-
-		// Start elevator Origins
-		for (int i = 0; i < numberOfElevators; i++) {
-			(new Thread(elevatorList.get(i), elevatorList.get(i).getClass().getSimpleName())).start();
-		}
-	}
-
-	public static void main(String[] args) {
-		Structure structure = new Structure(10, 2, -1, -1);
-		structure.initializeStructure();
 	}
 }

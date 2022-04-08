@@ -28,10 +28,9 @@ public class Scheduler implements Runnable {
 
 	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private final IntermediateHost intermediateHost;
-	private volatile SystemStatus systemStatus;
-	// private ArrayList<Elevator> elevators;
-	// private ArrayList<Floor> floors;
-	private Timer timer;
+	private static Presenter presenter;
+	private final SystemStatus systemStatus;
+	private final Timer timer;
 	private TimerTask timerTask;
 	private long startTime = -1;
 	private final int timerTimeOut = 7;
@@ -47,6 +46,7 @@ public class Scheduler implements Runnable {
 		intermediateHost = new IntermediateHost(portNumber);
 		systemStatus = new SystemStatus(false);
 		timer = new Timer();
+		presenter = null;
 	}
 
 	/**
@@ -56,6 +56,16 @@ public class Scheduler implements Runnable {
 	 */
 	public void addElevatorMonitor(int elevatorNumber) {
 		elevatorMonitorList.add(new ElevatorMonitor(elevatorNumber));
+	}
+
+	/**
+	 * Sets the Scheduler's presenter to a valid presenter.
+	 * This will allow for output to the GUI's view.
+	 *
+	 * @param presenter a Presenter
+	 */
+	public void setPresenter(Presenter presenter){
+		Scheduler.presenter = presenter;
 	}
 
 	/**
@@ -139,6 +149,9 @@ public class Scheduler implements Runnable {
 
 		if (event instanceof ElevatorMonitor elevatorMonitor){
 			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
+			if (presenter != null){
+				presenter.updateElevatorView(elevatorMonitor);
+			}
 		} else {
 			event.setOrigin(Origin.changeOrigin(event.getOrigin()));
 			intermediateHost.addEventToQueue(event);
@@ -264,10 +277,17 @@ public class Scheduler implements Runnable {
 	}
 
 	public static void main(String[] args) {
+		Structure structure = new Structure(10, 2, 1000, 1000);
+
+		ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators());
+		Presenter presenter = new Presenter();
+		presenter.addView(elevatorViewContainer);
+		presenter.startGUI();
+
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
 
-		Structure structure = new Structure(10, 2, -1, -1);
+		schedulerClient.setPresenter(presenter);
 
 		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
 			schedulerClient.addElevatorMonitor(i + 1);
