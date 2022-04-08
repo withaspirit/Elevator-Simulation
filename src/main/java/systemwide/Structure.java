@@ -7,6 +7,7 @@ import floorsystem.Floor;
 import floorsystem.FloorSubsystem;
 import scheduler.Scheduler;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  *
  * @author Liam Tripp, Julian, Ryan Dash
  */
-public class Structure {
+public class Structure implements Serializable {
 
 	private int numberOfFloors;
 	private int numberOfElevators;

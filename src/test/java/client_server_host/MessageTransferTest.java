@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import requests.*;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.Structure;
 
 import java.net.DatagramPacket;
 import java.time.LocalTime;
@@ -28,6 +29,7 @@ public class MessageTransferTest {
 	private FloorRequest floorRequest;
 	private ApproachEvent approachEvent;
 	private ElevatorMonitor elevatorMonitor;
+	private Structure structure;
 	private LocalTime timeNow;
 	private int portNumber;
 
@@ -40,6 +42,7 @@ public class MessageTransferTest {
 		floorRequest = new FloorRequest(timeNow, 7, Direction.DOWN, 0, Origin.SCHEDULER);
 		approachEvent = new ApproachEvent(elevatorRequest, 3, 5);
 		elevatorMonitor = new ElevatorMonitor(0, 1, Direction.UP, MovementState.IDLE, Direction.UP, Doors.State.OPEN, Fault.NONE, true, 0);
+		structure = new Structure(22, 4, 1000, 1000);
 	}
 
 	@Test
@@ -110,6 +113,9 @@ public class MessageTransferTest {
 		assertTrue(byteArray.length < maxByteArraySize);
 
 		byteArray = msgTransfer.encodeObject(elevatorMonitor);
+		assertTrue(byteArray.length < maxByteArraySize);
+
+		byteArray = msgTransfer.encodeObject(structure);
 		assertTrue(byteArray.length < maxByteArraySize);
 	}
 
