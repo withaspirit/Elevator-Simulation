@@ -9,17 +9,20 @@ import javax.swing.*;
 public class FaultInjector {
 
 	//For elevator subsystem
-    private ArrayList<FaultButton> buttonViews;
+    private ArrayList<FaultButton> faultButtons;
     private JPanel buttonListPanel;
     private JScrollPane scrollPane;
     private JPanel containerPanel;
+    private ArrayList<Elevator> elevatorList;
 	
-	public FaultInjector(int numberOfElevators) {
-        this.buttonViews = new ArrayList<>();
+	public FaultInjector(ArrayList<Elevator> elevatorList) {
+        int numberOfElevators = elevatorList.size();
+		
+		this.faultButtons = new ArrayList<>();
         buttonListPanel = new JPanel(new GridLayout(numberOfElevators / 3, 3));
         for (int i = 0; i < numberOfElevators; i++) {
-            buttonViews.add(new FaultButton(i));
-            buttonListPanel.add(buttonViews.get(i).getPanel());
+            faultButtons.add(new FaultButton(elevatorList.get(i)));
+            buttonListPanel.add(faultButtons.get(i).getPanel());
         }
 
         JScrollPane scrollPane = new JScrollPane(buttonListPanel);
@@ -39,7 +42,7 @@ public class FaultInjector {
 	}
 
 	public static void main(String[] args) {
-		FaultInjector faultInjector = new FaultInjector(20);
+		//FaultInjector faultInjector = new FaultInjector(20);
 	}
 	
 }
