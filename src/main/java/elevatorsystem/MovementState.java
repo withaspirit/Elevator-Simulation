@@ -13,7 +13,8 @@ public enum MovementState {
     private final String name;
 
     /**
-     * Constructor for MovementState class
+     * Constructor for MovementState class.
+     *
      * @param name the name of the MovementState
      */
     MovementState(String name) {
@@ -21,7 +22,7 @@ public enum MovementState {
     }
 
     /**
-     * Gets the name of the MovementState as a String
+     * Gets the name of the MovementState as a String.
      *
      * @return name of MovementState
      */
@@ -30,7 +31,7 @@ public enum MovementState {
     }
 
     /**
-     * Returns the MovementState with the specified name
+     * Returns the MovementState with the specified name.
      *
      * @param name the name of the MovementState as a String
      * @return the MovementState and it's name

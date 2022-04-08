@@ -308,7 +308,11 @@ Instructions:
 
   #### UML Class Diagram
 
-  ![image](https://user-images.githubusercontent.com/61635007/160321686-72ed3f7e-c35d-4d6e-a65b-0a8bcfc80e01.png)
+  ![UMLClassDiagram](https://user-images.githubusercontent.com/61635007/160321686-72ed3f7e-c35d-4d6e-a65b-0a8bcfc80e01.png)
+
+  #### UML State Machine Diagram
+  - Elevator Movement (With Faults)
+  ![ElevatorMovement](https://user-images.githubusercontent.com/61635007/160426651-d9931d82-27a4-408d-95ab-5f08ccd2b4c3.png)
   
   #### Timing Diagrams
 
