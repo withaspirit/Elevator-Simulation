@@ -192,9 +192,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		int removedFloor = removedRequest.getFloorNumber();
 		boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
 
-		if (removedRequest == null) {
-			throw new IllegalArgumentException("A value of -1 was received from the requestQueue.");
-		} else if (!sameFloorRemovedAsPeeked) {
+		if (!sameFloorRemovedAsPeeked) {
 			System.out.println("Floor peeked " + requestFloor + ", Floor Removed: " + removedFloor);
 			throw new ConcurrentModificationException("A request was added to Elevator " + elevatorNumber + " while the current request was being processed.");
 		}
@@ -209,28 +207,18 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// Next floor in service direction
 		int floorToVisit = motor.move(currentFloor, requestFloor);
 
-		if (motor.isIdle()) {
-			// elevator is stopped
-			if (currentFloor == requestFloor) {
-				stopAtFloor(requestFloor);
-			} else if (floorToVisit == requestFloor) {
-				startMovingToFloor(floorToVisit);
-			} else {
-				// requestFloor != floorToVisit
-				startMovingToFloor(floorToVisit);
-			}
+		// elevator is stopped
+		if (currentFloor == requestFloor) {
+			stopAtFloor(requestFloor);
 		} else {
-			// elevator is moving
-			if (currentFloor == requestFloor) {
-				// elevator has reached destination after moving one floor
-				stopAtFloor(requestFloor);
-			} else if (floorToVisit == requestFloor) {
-				// do nothing
-			} else {
-				// floorToVisit != requestFloor
-				// keep moving
-			}
+			// requestFloor != floorToVisit
+			startMovingToFloor(floorToVisit);
 		}
+
+		//open floor1 close, floor2 open close floor3 open close, floor4, floor5 open close, floor6 open
+		//open floor1 close, floor2 open close, floor3, floor4 open close, floor5, floor6, floor7 open close, floor6, floor5, floor4 open close, floor3 open close, floor2, floor1 open
+
+		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
 	}
 
 	/**
@@ -262,6 +250,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void stopAtFloor(int requestFloor) {
 		attemptToRemoveFloor(requestFloor);
+		motor.stop();
+		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+
 		// proceed only if door opening successful
 		if (attemptToOpenDoors()) {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
@@ -272,11 +263,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 
 		if (requestQueue.isEmpty()){
-			motor.stop();
 			serviceDirection = Direction.NONE;
 		}
-
-		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
 	}
 
 	/**
