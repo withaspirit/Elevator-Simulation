@@ -247,7 +247,7 @@ public class RequestQueue {
 	 * @return a double containing the time to fulfil the request
 	 */
 	public double requestTime(int initialFloor, int finalFloor) {
-		return (finalFloor - initialFloor) * travelTime;
+		return Math.abs((finalFloor - initialFloor) * travelTime);
 //		double distance = Math.abs(finalFloor - initialFloor) * FLOOR_HEIGHT;
 //		if (distance > ACCELERATION_DISTANCE * 2) {
 //			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
