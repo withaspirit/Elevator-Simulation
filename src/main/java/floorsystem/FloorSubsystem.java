@@ -5,6 +5,7 @@ import client_server_host.Port;
 import client_server_host.RequestMessage;
 import misc.InputFileReader;
 import requests.*;
+import systemwide.Structure;
 import systemwide.SystemStatus;
 
 import java.util.ArrayList;
@@ -152,16 +153,24 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		return floorList;
 	}
 
+	/**
+	 * Receives and returns a Structure from the Scheduler.
+	 *
+	 * @return Structure contains information to initialize the floors and elevators
+	 */
+	@Override
+	public Structure receiveStructure() {
+		Structure structure = (Structure) client.receive();
+		return structure;
+	}
+
 	public static void main(String[] args) {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		int numberOfFloors = 10;
 		FloorSubsystem floorSubsystem = new FloorSubsystem();
-		floorSubsystem.initializeFloors(numberOfFloors);
-		Thread floorSubsystemThead = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
-		floorSubsystemThead.start();
+		Structure structure = floorSubsystem.receiveStructure();
+
+		floorSubsystem.initializeFloors(structure.getNumberOfFloors());
+		System.out.println("Floors initialized");
+		Thread floorSubsystemThread = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
+		floorSubsystemThread.start();
 	}
 }
