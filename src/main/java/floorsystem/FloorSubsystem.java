@@ -8,6 +8,7 @@ import requests.*;
 import systemwide.Structure;
 import systemwide.SystemStatus;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -112,7 +113,9 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	 */
 	private void subsystemUDPMethod() {
 			if (!eventList.isEmpty()) {
-				client.sendAndReceiveReply(eventList.remove(eventList.size() - 1));
+				SystemEvent event = eventList.remove(eventList.size() - 1);
+				event.setTime(LocalTime.now());
+				client.sendAndReceiveReply(event);
 			} else {
 				Object object = client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
 
