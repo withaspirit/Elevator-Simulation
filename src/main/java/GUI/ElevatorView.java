@@ -1,4 +1,4 @@
-package scheduler;
+package GUI;
 
 import requests.ElevatorMonitor;
 
@@ -109,7 +109,9 @@ public class ElevatorView {
 
         for (int i = 0; i < elevatorProperties.length; i++) {
             statusPanes[i].setText(elevatorProperties[i]);
+
         }
+
         elevatorPanel.repaint();
         elevatorPanel.revalidate();
     }

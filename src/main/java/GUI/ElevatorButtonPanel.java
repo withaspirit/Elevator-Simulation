@@ -1,6 +1,7 @@
 package GUI;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 /**
@@ -29,11 +30,13 @@ public class ElevatorButtonPanel {
 				if (floor > 0){
 					elevatorButtons.add(new RoundFloorButton(floor));
 				} else{
-					elevatorButtons.add(new JButton("Emergency"));
+					JButton blank = new JButton();
+					blank.setEnabled(false);
+					elevatorButtons.add(blank);
+					//elevatorButtons.add(new JButton("Emergency"));
 				}
 			}
 		}
-		elevatorButtons.setSize(height, (height/4 *numberOfRows));
 	}
 
 	/**
@@ -46,12 +49,28 @@ public class ElevatorButtonPanel {
 	}
 
 	/**
+	 *
+	 *
+	 * @param number
+	 * @param color
+	 */
+	public void changeButtonColor(int number, Color color){
+		for (Component buttons: elevatorButtons.getComponents()){
+			if (buttons instanceof RoundFloorButton button){
+				if (button.getText().equals(number + "")){
+					button.setForeground(color);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Used for testing the elevator button panel for creating all buttons on the panel
 	 *
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
-		JPanel panel = new ElevatorButtonPanel(22, screenSize.height/2).getPanel();
+		JPanel panel = new ElevatorButtonPanel(22, screenSize.height/4).getPanel();
 		JFrame frame = new JFrame();
 		frame.add(panel);
 		frame.setSize(panel.getSize());

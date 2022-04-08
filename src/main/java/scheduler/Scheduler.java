@@ -1,5 +1,7 @@
 package scheduler;
 
+import GUI.ElevatorViewContainer;
+import GUI.Presenter;
 import client_server_host.IntermediateHost;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
@@ -279,7 +281,7 @@ public class Scheduler implements Runnable {
 	public static void main(String[] args) {
 		Structure structure = new Structure(10, 2, 1000, 1000);
 
-		ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators());
+		ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators(), structure.getNumberOfFloors());
 		Presenter presenter = new Presenter();
 		presenter.addView(elevatorViewContainer);
 		presenter.startGUI();

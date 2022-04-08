@@ -4,7 +4,7 @@
     <module name="ElevatorSystem" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="scheduler.*" />
+        <option name="PATTERN" value="GUI.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

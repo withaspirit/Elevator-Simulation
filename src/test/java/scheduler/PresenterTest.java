@@ -1,5 +1,8 @@
 package scheduler;
 
+import GUI.ElevatorView;
+import GUI.ElevatorViewContainer;
+import GUI.Presenter;
 import elevatorsystem.Doors;
 import elevatorsystem.Fault;
 import elevatorsystem.MovementState;
@@ -25,7 +28,7 @@ public class PresenterTest {
     @BeforeEach
     void setUp() {
         presenter = new Presenter();
-        elevatorViewContainer = new ElevatorViewContainer(20);
+        elevatorViewContainer = new ElevatorViewContainer(4, 20);
     }
 
     @Test

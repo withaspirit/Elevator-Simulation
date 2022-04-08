@@ -11,7 +11,7 @@ import javax.swing.*;
  *
  * @author JavaCodex, Ryan Dash
  */
-public class RoundFloorButton extends JButton implements ActionListener{
+public class RoundFloorButton extends JButton{
 
 	// Hit detection
 	private Shape shape;
@@ -48,27 +48,6 @@ public class RoundFloorButton extends JButton implements ActionListener{
 	}
 
 	/**
-	 * Overwrite the paintBorder to make the button border black
-	 *
-	 * @param g the graphics for the button
-	 */
-	protected void paintBorder(Graphics g) {
-		g.setColor(Color.DARK_GRAY);
-		g.drawOval(0, 0, getSize().width - 1, getSize().height - 1);
-		if (getModel().isArmed()) {
-			g.setColor(getBackground());
-			buttonClicked = !buttonClicked;
-		} else {
-			if (!buttonClicked){
-				g.setColor(Color.RED);
-			} else {
-				g.setColor(Color.GREEN);
-			}
-		}
-		g.drawOval(3, 3, getSize().width - 7, getSize().height - 7);
-	}
-
-	/**
 	 * Overwrite the hit box of the JButton to the oval shape
 	 *
 	 * @param x the x position for the start of the circular button
@@ -82,16 +61,6 @@ public class RoundFloorButton extends JButton implements ActionListener{
 			shape = new Ellipse2D.Float(0, 0, getWidth(), getHeight());
 		}
 		return shape.contains(x, y);
-	}
-
-	/**
-	 * Make the button perform an action
-	 *
-	 * @param e an action event for a button press
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		int floor = Integer.parseInt(e.getActionCommand());
 	}
 
 	/**
