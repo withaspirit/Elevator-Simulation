@@ -172,24 +172,6 @@ public class Scheduler implements Runnable {
 	}
 
 	/**
-	 * Terminates the ElevatorSubsystem and the FloorSubsystem threads.
-	 */
-	public void terminateSystem() {
-		try {
-			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber;
-			if (Thread.currentThread().getName().equals("Scheduler: ElevatorToFloor")) {
-				portNumber = Port.SERVER.getNumber();
-			} else {
-				portNumber = Port.CLIENT.getNumber();
-			}
-			intermediateHost.sendObject(RequestMessage.TERMINATE.getMessage(), inetAddress, portNumber);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Returns an elevator number corresponding to an elevator that is
 	 * best suited to perform the given ElevatorRequest based on
 	 * expected time to fulfill the request and direction of elevator.
@@ -301,6 +283,7 @@ public class Scheduler implements Runnable {
 			receiveAndProcessPacket();
 		}
 		System.out.println(Thread.currentThread().getName() + " terminated");
+		intermediateHost.terminateSystem();
 	}
 
 	public static void main(String[] args) {
