@@ -9,11 +9,11 @@ import systemwide.Origin;
 import java.time.LocalTime;
 
 /**
- * ElevatorMonitor retains Elevator information to allow the Scheduler to quickly decide
+ * ElevatorMonitor retains a copy of Elevator's information to allow the Scheduler to quickly decide
  * which Elevator to send new ServiceRequests to. Scheduler's list of ElevatorMonitors is
  * updated by Elevator sending ElevatorMonitors to Scheduler.
  *
- * @author Ryan Dash, Brady Norton
+ * @author Ryan Dash, Brady Norton, Liam Tripp
  * @version 2022/04/05
  */
 public class ElevatorMonitor extends SystemEvent {
