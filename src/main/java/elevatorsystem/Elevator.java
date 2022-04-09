@@ -35,15 +35,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private int doorTime;
 	private volatile boolean doorsMalfunctioning;
 
-	// Elevator Measurements
-	private float speed;
-	public static final float MAX_SPEED = 2.67f; // meters/second
-	public static final float ACCELERATION = 0.304f; // meters/second^2
-	public static final float LOAD_TIME = 9.5f; // seconds
-	public static final float FLOOR_HEIGHT = 3.91f; // meters (22 steps/floor @ 0.1778 meters/step)
-	public static final double ACCELERATION_DISTANCE = Math.pow(MAX_SPEED, 2) / (2 * ACCELERATION); // Vf^2 = Vi^2 + 2as therefore s = vf^2/2a
-	public static final double ACCELERATION_TIME = Math.sqrt((FLOOR_HEIGHT * 2) / ACCELERATION); //s = 1/2at^2 therefore t = sqrt(s*2/a)
-
 	/**
 	 * Constructor for Elevator.
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
@@ -557,52 +548,5 @@ public class Elevator implements Runnable, SubsystemPasser {
 				" " + motor.getDirection() + " " + doors.getState() + " " + fault.getName() + "]\n";
 		messageToPrint += "RequestQueue: " + requestQueue;
 		System.out.println(messageToPrint);
-	}
-
-	/**
-	 * Gets the speed of the elevator.
-	 *
-	 * @return the speed as a float
-	 */
-	public float getSpeed() {
-		return speed;
-	}
-
-	/**
-	 * Sets the speed of the elevator.
-	 *
-	 * @param speed the speed of the elevator
-	 */
-	public void setSpeed(float speed) {
-		this.speed = speed;
-	}
-
-	/**
-	 * Calculates the amount of time it will take for the elevator to stop at it's current speed
-	 *
-	 * @return total time it will take to stop as a float
-	 */
-	public float stopTime() {
-		float numerator = 0 - speed;
-		return numerator / ACCELERATION;
-	}
-
-	/**
-	 * Gets the distance until the next floor as a float.
-	 *
-	 * @return distance until next floor
-	 */
-	public float getDistanceUntilNextFloor() {
-		float distance = 0;
-		float stopTime = stopTime();
-
-		// Using Kinematics equation: d = vt + (1/2)at^2
-		float part1 = speed * stopTime;
-		// System.out.println("Part 1: " + part1);
-
-		float part2 = (float) ((0.5) * (ACCELERATION) * (Math.pow(stopTime, 2)));
-		// System.out.println("Part 2: " + part2);
-
-		return part1 - part2;
 	}
 }
