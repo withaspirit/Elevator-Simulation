@@ -221,7 +221,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			}
 			// do nothing if floorToVisit == requestFloor || floorToVisit != requestFloor
 		}
-		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 	}
 
 	/**
@@ -254,7 +254,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void stopAtFloor(int requestFloor) {
 		attemptToRemoveFloor(requestFloor);
 		motor.stop();
-		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 
 		// proceed only if door opening successful
 		if (attemptToOpenDoors()) {
@@ -483,7 +483,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	@Override
 	public void passApproachEvent(ApproachEvent approachEvent) {
-		elevatorSubsystem.handleApproachEvent(approachEvent);
+		elevatorSubsystem.addEventToQueue(approachEvent);
 	}
 
 	/**
@@ -515,7 +515,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		System.out.println("Elevator #" + elevatorNumber + " Fault: " + this.fault.toString() + ".");
 		if (fault == Fault.ELEVATOR_STUCK) {
 			motor.setMovementState(MovementState.STUCK);
-			elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
 	}
 
