@@ -68,7 +68,5 @@ public class Presenter {
         frame.revalidate();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.pack();
     }
 }
