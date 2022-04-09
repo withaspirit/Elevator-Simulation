@@ -103,7 +103,7 @@ public class ElevatorFaultTest {
             e.printStackTrace();
         }
 
-        Fault fault = elevator1.getElevatorMonitor().getFault();
+        Fault fault = elevator1.getMonitor().getFault();
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after interrupt: " + fault.getName());
         assertEquals(Fault.ELEVATOR_STUCK, fault);
         assertTrue(elevator1.hasNoRequests());
@@ -143,7 +143,7 @@ public class ElevatorFaultTest {
             e.printStackTrace();
         }
 
-        Fault fault = elevator1.getElevatorMonitor().getFault();
+        Fault fault = elevator1.getMonitor().getFault();
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
                 Fault.ARRIVAL_SENSOR_FAIL.getName() + ": " + fault.getName());
         assertEquals(Fault.ARRIVAL_SENSOR_FAIL, fault);
@@ -174,7 +174,7 @@ public class ElevatorFaultTest {
             e.printStackTrace();
         }
 
-        Fault fault = elevator1.getElevatorMonitor().getFault();
+        Fault fault = elevator1.getMonitor().getFault();
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
                 Fault.DOORS_INTERRUPTED.getName() + ": " + fault.getName());
         assertEquals(Fault.DOORS_INTERRUPTED, fault);
@@ -216,7 +216,7 @@ public class ElevatorFaultTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Fault fault = elevator1.getElevatorMonitor().getFault();
+        Fault fault = elevator1.getMonitor().getFault();
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
                 Fault.DOORS_STUCK.getName() + ": " + fault.getName());
         assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
@@ -259,7 +259,7 @@ public class ElevatorFaultTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Fault fault = elevator1.getElevatorMonitor().getFault();
+        Fault fault = elevator1.getMonitor().getFault();
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
                 Fault.DOORS_STUCK.getName() + ": " + fault.getName());
         assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
@@ -304,7 +304,7 @@ public class ElevatorFaultTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Fault fault = elevator1.getElevatorMonitor().getFault();
+        Fault fault = elevator1.getMonitor().getFault();
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
                 Fault.DOORS_STUCK.getName() + ": " + fault.getName());
         assertEquals(Doors.State.STUCK, elevator1.getDoors().getState());
