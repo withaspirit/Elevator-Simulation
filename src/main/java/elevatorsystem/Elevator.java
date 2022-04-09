@@ -18,6 +18,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	// Elevator Subsystem
 	private final ElevatorSubsystem elevatorSubsystem;
 	private final RequestQueue requestQueue;
+	private final ElevatorMonitor elevatorMonitor;
 	private final ElevatorMotor motor;
 	private final Doors doors;
 
@@ -65,6 +66,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		messageTransferEnabled = true;
 		approachEvent = null;
 		doorsMalfunctioning = false;
+		elevatorMonitor = new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault, requestQueue.isEmpty(), 0);
 	}
 
 	/**
