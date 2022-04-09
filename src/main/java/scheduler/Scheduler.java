@@ -175,9 +175,8 @@ public class Scheduler implements Runnable {
 	 * Terminates the ElevatorSubsystem and the FloorSubsystem threads.
 	 */
 	public void terminateSystem() {
-		InetAddress inetAddress;
 		try {
-			inetAddress = InetAddress.getLocalHost();
+			InetAddress inetAddress = InetAddress.getLocalHost();
 			int portNumber;
 			if (Thread.currentThread().getName().equals("Scheduler: ElevatorToFloor")) {
 				portNumber = Port.SERVER.getNumber();
