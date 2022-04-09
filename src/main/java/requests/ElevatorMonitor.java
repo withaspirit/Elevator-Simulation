@@ -16,7 +16,7 @@ import java.time.LocalTime;
  * @author Ryan Dash, Brady Norton, Liam Tripp
  * @version 2022/04/05
  */
-// TODO: setters should be package-private, getters public
+// TODO: if this class move to elevatorsystem, setters should be package-private, getters public
 public class ElevatorMonitor extends SystemEvent {
 
     private int currentFloor;
@@ -209,7 +209,7 @@ public class ElevatorMonitor extends SystemEvent {
     /**
      * Sets the "hasNoRequests" status of the Elevator.
      *
-     * @param hasNoRequests
+     * @param hasNoRequests true if the elevator has requests, false otherwise
      */
     public void setRequestsStatus(boolean hasNoRequests) {
         this.hasNoRequests = hasNoRequests;
