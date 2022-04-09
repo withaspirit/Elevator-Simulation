@@ -25,6 +25,8 @@ public class ElevatorFaultTest {
     private ArrayList<Elevator> elevatorList;
     private final int numberOfTimesToTest = 20;
     private ArrayList<Thread> threads;
+    private final int travelTime = 300;
+    private final int doorTime = 300;
 
     @BeforeEach
     void setUp() {
@@ -43,7 +45,7 @@ public class ElevatorFaultTest {
         elevatorList.clear();
         threads.clear();
 
-        Structure structure = new Structure(10, 2, 1000, 1000);
+        Structure structure = new Structure(10, 2, -1, -1);
 
         // initialize the list of elevators
         for (int i = 1; i <= numberOfElevators; i++) {
@@ -84,7 +86,6 @@ public class ElevatorFaultTest {
         elevator1.addRequest(serviceRequest);
         elevator1.addRequest(serviceRequest2);
         elevator1.toggleMessageTransfer();
-        int travelTime = 300;
         elevator1.setTravelTime(travelTime);
 
         initElevatorThreads();
@@ -134,7 +135,6 @@ public class ElevatorFaultTest {
         elevator1.addRequest(serviceRequest2);
         // include message transfer
         // enable travel time
-        int travelTime = 300;
         elevator1.setTravelTime(travelTime);
 
         initElevatorThreads();
@@ -159,7 +159,6 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        int doorTime = 300;
         elevator1.setDoorTime(doorTime);
 
         Runnable closeDoorsRunnable = elevator1::attemptToCloseDoors;
@@ -196,7 +195,6 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        int doorTime = 300;
         elevator1.setDoorTime(doorTime);
 
         Runnable closeDoorsRunnable = elevator1::attemptToCloseDoors;
@@ -238,7 +236,6 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        int doorTime = 300;
         elevator1.setDoorTime(doorTime);
 
         Runnable openDoorsRunnable = elevator1::attemptToOpenDoors;
@@ -282,7 +279,6 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        int doorTime = 300;
         elevator1.setDoorTime(doorTime);
 
         Runnable closeDoorsRunnable = () -> elevator1.stopAtFloor(requestFloor);
