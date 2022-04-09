@@ -156,6 +156,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 					motor.setMovementState(MovementState.STUCK);
 					motor.setDirection(Direction.NONE);
 					shutDownElevator();
+					elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
 					approachEvent = null;
 					return;
 				} catch (TimeoutException te) {
@@ -506,10 +507,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void setFault(Fault fault) {
 		this.fault = fault;
 		System.out.println("Elevator #" + elevatorNumber + " Fault: " + this.fault.toString() + ".");
-		if (fault == Fault.ELEVATOR_STUCK) {
-			motor.setMovementState(MovementState.STUCK);
-			elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
-		}
 	}
 
 	/**
