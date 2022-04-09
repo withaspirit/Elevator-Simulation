@@ -149,7 +149,7 @@ public class Scheduler implements Runnable {
 	public void processData(SystemEvent event) {
 
 		if (event instanceof ElevatorMonitor elevatorMonitor){
-			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
+			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber() - 1).updateMonitor(elevatorMonitor);
 			if (presenter != null){
 				presenter.updateElevatorView(elevatorMonitor);
 			}
@@ -169,6 +169,25 @@ public class Scheduler implements Runnable {
 	public void enableSystem(Structure structure, InetAddress inetAddress, int portNumber) {
 		systemStatus.setSystemActivated(true);
 		intermediateHost.sendObject(structure, inetAddress, portNumber);
+	}
+
+	/**
+	 * Terminates the ElevatorSubsystem and the FloorSubsystem threads.
+	 */
+	public void terminateSystem() {
+		InetAddress inetAddress;
+		try {
+			inetAddress = InetAddress.getLocalHost();
+			int portNumber;
+			if (Thread.currentThread().getName().equals("Scheduler: ElevatorToFloor")) {
+				portNumber = Port.SERVER.getNumber();
+			} else {
+				portNumber = Port.CLIENT.getNumber();
+			}
+			intermediateHost.sendObject(RequestMessage.TERMINATE.getMessage(), inetAddress, portNumber);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -309,7 +328,7 @@ public class Scheduler implements Runnable {
 			e.printStackTrace();
 		}
 
-		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
-		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
+		new Thread(schedulerClient, "Scheduler: ElevatorToFloor").start();
+		new Thread(schedulerServer, "Scheduler: FloorToElevator").start();
 	}
 }
