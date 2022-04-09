@@ -76,9 +76,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	@Override
 	public void run() {
+		systemStatus.setSystemActivated(true);
 		while (systemStatus.activated()) {
 			moveElevatorWhilePossible();
 		}
+		System.out.println(getClass().getSimpleName() + " #" + elevatorNumber + " Thread terminated");
 	}
 
 	/**

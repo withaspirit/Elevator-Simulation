@@ -60,10 +60,14 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
-		// TODO: replace with systemActivated
-		while (true) {
+		systemStatus.setSystemActivated(true);
+		while (systemStatus.activated()) {
 			subsystemUDPMethod();
 		}
+		for (Elevator elevator : elevatorList) {
+			elevator.getSystemStatus().setSystemActivated(false);
+		}
+		System.out.println(getClass().getSimpleName() + " Thread terminated");
 	}
 
 	/**
@@ -127,6 +131,8 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+				} else if (string.trim().equals(RequestMessage.TERMINATE.getMessage())) {
+					systemStatus.setSystemActivated(false);
 				}
 			}
 	}
