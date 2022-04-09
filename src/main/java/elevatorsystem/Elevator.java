@@ -153,7 +153,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 					motor.setMovementState(MovementState.STUCK);
 					motor.setDirection(Direction.NONE);
 					shutDownElevator();
-					elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+					updateMonitor();
+					elevatorSubsystem.handleElevatorMonitorUpdate(monitor);
 					approachEvent = null;
 					return;
 				} catch (TimeoutException te) {
@@ -221,7 +222,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 			}
 			// do nothing if floorToVisit == requestFloor || floorToVisit != requestFloor
 		}
-		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+		updateMonitor();
+		elevatorSubsystem.handleElevatorMonitorUpdate(monitor);
 	}
 
 	/**
@@ -254,7 +256,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void stopAtFloor(int requestFloor) {
 		attemptToRemoveFloor(requestFloor);
 		motor.stop();
-		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+		updateMonitor();
+		elevatorSubsystem.handleElevatorMonitorUpdate(monitor);
 
 		// proceed only if door opening successful
 		if (attemptToOpenDoors()) {
@@ -354,6 +357,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		//TODO remove after queueTime updated properly and serviceDirection is updated properly
 		int elevatorFloorToPass = monitor.getCurrentFloor();
 		requestQueue.addRequest(elevatorFloorToPass, monitor.getServiceDirection(), serviceRequest);
+		updateMonitor();
 	}
 
 	/**
@@ -406,13 +410,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	/**
 	 * Updates the ElevatorMonitor with information from the Elevator.
-	 *
 	 */
 	public void updateMonitor() {
 		monitor.setMovementDirection(motor.getDirection());
 		monitor.setMovementState(motor.getMovementState());
 		monitor.setDoorsState(doors.getState());
 		monitor.setRequestsStatus(hasNoRequests());
+		monitor.setQueueTime(requestQueue.getExpectedTime(monitor.getCurrentFloor()));
 	}
 
 	/**
@@ -488,18 +492,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void interrupt() {
 		Thread.currentThread().interrupt();
-	}
-
-	/**
-	 * Create a status response when a rew elevator request is added
-	 * that will change the status.
-	 *
-	 * @return a StatusUpdate containing new elevator information.
-	 */
-	public ElevatorMonitor makeElevatorMonitor() {
-		int currentFloor = monitor.getCurrentFloor();
-		Fault fault = monitor.getFault();
-		return new ElevatorMonitor(elevatorNumber, currentFloor, monitor.getServiceDirection(), motor.getMovementState(), motor.getDirection(), doors.getState(), fault, requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor));
 	}
 
 	/**
