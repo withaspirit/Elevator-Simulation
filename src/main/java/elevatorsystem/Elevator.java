@@ -17,8 +17,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	// Elevator Subsystem
 	private final ElevatorSubsystem elevatorSubsystem;
-	private final RequestQueue requestQueue;
 	private final ElevatorMonitor monitor;
+	private final RequestQueue requestQueue;
 	private final ElevatorMotor motor;
 	private final Doors doors;
 
