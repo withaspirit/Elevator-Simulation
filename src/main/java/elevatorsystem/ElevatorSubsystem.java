@@ -106,7 +106,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 			if (object instanceof ElevatorRequest elevatorRequest) {
 				Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
 				elevator.addRequest(elevatorRequest);
-				eventQueue.add(elevator.makeElevatorMonitor());
+				eventQueue.add(elevator.getMonitor());
 			} else if (object instanceof ApproachEvent approachEvent) {
 				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
 			} else if (object instanceof String string) {

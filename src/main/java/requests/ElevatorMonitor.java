@@ -9,17 +9,18 @@ import systemwide.Origin;
 import java.time.LocalTime;
 
 /**
- * ElevatorMonitor retains Elevator information to allow the Scheduler to quickly decide
+ * ElevatorMonitor retains a copy of Elevator's information to allow the Scheduler to quickly decide
  * which Elevator to send new ServiceRequests to. Scheduler's list of ElevatorMonitors is
  * updated by Elevator sending ElevatorMonitors to Scheduler.
  *
- * @author Ryan Dash, Brady Norton
+ * @author Ryan Dash, Brady Norton, Liam Tripp
  * @version 2022/04/05
  */
+// TODO: if this class move to elevatorsystem, setters should be package-private, getters public
 public class ElevatorMonitor extends SystemEvent {
 
     private int currentFloor;
-    private Direction currentDirection;
+    private Direction serviceDirection;
     private MovementState state;
     private Direction movementDirection;
     private Doors.State doorsState;
@@ -38,7 +39,7 @@ public class ElevatorMonitor extends SystemEvent {
         queueTime = 0.0;
         state = MovementState.IDLE;
         currentFloor = 1;
-        currentDirection = Direction.NONE;
+        serviceDirection = Direction.NONE;
         movementDirection = Direction.NONE;
         doorsState = Doors.State.OPEN;
         fault = Fault.NONE;
@@ -60,7 +61,7 @@ public class ElevatorMonitor extends SystemEvent {
     public ElevatorMonitor(int elevatorNumber, int currentFloor, Direction serviceDirection, MovementState movementState, Direction movementDirection, Doors.State doorState, Fault fault, Boolean empty, double queueTime) {
         this(elevatorNumber);
         this.currentFloor = currentFloor;
-        this.currentDirection = serviceDirection;
+        this.serviceDirection = serviceDirection;
         this.state = movementState;
         this.movementDirection = movementDirection;
         this.doorsState = doorState;
@@ -79,6 +80,15 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
+     * Sets the queue Time of the ElevatorMonitor.
+     *
+     * @param expectedTime the new time for the ElevatorMonitor
+     */
+    public void setQueueTime(double expectedTime) {
+        queueTime = expectedTime;
+    }
+
+    /**
      * Gets the MovementState of the elevator.
      *
      * @return the movement state of the elevator
@@ -88,12 +98,30 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
-     * Gets the current floor of the elevator.
+     * Sets the movement state of the Elevator.
      *
-     * @return the current floor of the elevator
+     * @param movementState the movement state of the elevator
+     */
+    public void setMovementState(MovementState movementState) {
+        state = movementState;
+    }
+
+    /**
+     * Gets the current floor the elevator is on.
+     *
+     * @return the current floor as an int
      */
     public int getCurrentFloor() {
         return currentFloor;
+    }
+
+    /**
+     * Sets the currentFloor that the elevator is on.
+     *
+     * @param currentFloor the floor to set the elevator on
+     */
+    public void setCurrentFloor(int currentFloor) {
+        this.currentFloor = currentFloor;
     }
 
     /**
@@ -101,8 +129,17 @@ public class ElevatorMonitor extends SystemEvent {
      *
      * @return the service direction of the elevator
      */
-    public Direction getDirection() {
-        return currentDirection;
+    public Direction getServiceDirection() {
+        return serviceDirection;
+    }
+
+    /**
+     * Sets the service direction of the elevator.
+     *
+     * @param direction the elevator will be moving
+     */
+    public void setServiceDirection(Direction direction) {
+        this.serviceDirection = direction;
     }
 
     /**
@@ -115,6 +152,15 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
+     * Sets the direction of the elevator.
+     *
+     * @param direction the elevator will be moving
+     */
+    public void setMovementDirection(Direction direction) {
+        movementDirection = direction;
+    }
+
+    /**
      * Gets the state of the Doors of the elevator
      *
      * @return the State of the elevator Doors from the State enum
@@ -124,12 +170,31 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
-     * Gets the Fault representing the error state of the elevator
+     * Sets the state of the doors of the Elevator.
      *
-     * @return the Fault for the elevator
+     * @param state the new state of the doors
+     */
+    public void setDoorsState(Doors.State state) {
+        doorsState = state;
+    }
+
+    /**
+     * Returns the Elevator's current Fault.
+     *
+     * @return the current Fault of the elevator
      */
     public Fault getFault() {
         return fault;
+    }
+
+    /**
+     * Modifies the current Fault of the Elevator.
+     *
+     * @param fault the new Fault for the Elevator
+     */
+    public void setFault(Fault fault) {
+        this.fault = fault;
+        System.out.println("Elevator #" + getElevatorNumber() + " Fault: " + this.fault.getName() + ".");
     }
 
     /**
@@ -142,19 +207,28 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
+     * Sets the "hasNoRequests" status of the Elevator.
+     *
+     * @param hasNoRequests true if the elevator has requests, false otherwise
+     */
+    public void setRequestsStatus(boolean hasNoRequests) {
+        this.hasNoRequests = hasNoRequests;
+    }
+
+    /**
      * Updates the ElevatorMonitor with the latest ElevatorMonitor information.
      *
      * @param elevatorMonitor an elevator monitor containing new elevator information
      */
     public void updateMonitor(ElevatorMonitor elevatorMonitor) {
-        this.queueTime = elevatorMonitor.getQueueTime();
-        this.state = elevatorMonitor.getState();
-        this.currentFloor = elevatorMonitor.getCurrentFloor();
-        this.currentDirection = elevatorMonitor.getDirection();
+        queueTime = elevatorMonitor.getQueueTime();
+        state = elevatorMonitor.getState();
+        currentFloor = elevatorMonitor.getCurrentFloor();
+        serviceDirection = elevatorMonitor.getServiceDirection();
         movementDirection = elevatorMonitor.getMovementDirection();
         doorsState = elevatorMonitor.getDoorsState();
         fault = elevatorMonitor.getFault();
-        this.hasNoRequests = elevatorMonitor.getHasNoRequests();
+        hasNoRequests = elevatorMonitor.getHasNoRequests();
     }
 
     /**
@@ -165,7 +239,7 @@ public class ElevatorMonitor extends SystemEvent {
     @Override
     public String toString() {
         String formattedString = "[ElevatorNumber, queueTime, MovementState, CurrFloor, CurrDirxn]:\n";
-        formattedString += getElevatorNumber() + " " + String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection();
+        formattedString += getElevatorNumber() + " " + String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getServiceDirection();
         return formattedString;
     }
 
@@ -181,7 +255,7 @@ public class ElevatorMonitor extends SystemEvent {
         String[] properties = new String[6];
         //{"CurrentFloor", "ServiceDirection", "MovementState", "MovementDirection", "DoorState", "Fault"};
         properties[0] = String.valueOf(getCurrentFloor());
-        properties[1] = getDirection().toString();
+        properties[1] = getServiceDirection().toString();
         properties[2] = state.getName();
         properties[3] = movementDirection.getName();
         properties[4] = doorsState.toString();

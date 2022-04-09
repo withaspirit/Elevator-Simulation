@@ -116,8 +116,8 @@ public class ElevatorSelectionTest {
         assertTrue(elevator2.getRequestQueue().isEmpty());
 
         //Both elevators expected time to completion with new requests are 0.0
-        assertEquals(elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()), 0.0);
-        assertEquals(elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor()), 0.0);
+        assertEquals(elevator1.getRequestQueue().getExpectedTime(elevator1.getMonitor().getCurrentFloor()), 0.0);
+        assertEquals(elevator2.getRequestQueue().getExpectedTime(elevator2.getMonitor().getCurrentFloor()), 0.0);
 
         sendEvent(eventList.get(0));
         assertEquals(monitorList.get(0).getElevatorNumber(), 1);
