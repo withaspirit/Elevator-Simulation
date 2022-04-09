@@ -187,7 +187,7 @@ class ElevatorTest {
         elevator.compareFloors(requestFloor1);
         assertTrue(elevator.getMotor().isIdle());
         assertTrue(elevator.hasNoRequests());
-        assertEquals(requestFloor1, elevator.getCurrentFloor());
+        assertEquals(requestFloor1, elevator.getElevatorMonitor().getCurrentFloor());
 
         // add different request
         elevator.addRequest(serviceRequest2);

@@ -24,7 +24,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	// Elevator Properties
 	private final int elevatorNumber;
-	private int currentFloor;
 	private Direction serviceDirection;
 	// FIXME: should we allow for there to be one or more faults?
 	private Fault fault;
@@ -58,7 +57,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		requestQueue = new RequestQueue();
 		motor = new ElevatorMotor();
 		doors = new Doors();
-		currentFloor = 1;
 		serviceDirection = Direction.UP;
 		travelTime = -1;
 		doorTime = -1;
@@ -66,7 +64,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		messageTransferEnabled = true;
 		approachEvent = null;
 		doorsMalfunctioning = false;
-		elevatorMonitor = new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault, requestQueue.isEmpty(), 0);
+		elevatorMonitor = new ElevatorMonitor(elevatorNumber, 1, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault, requestQueue.isEmpty(), 0);
 	}
 
 	/**
@@ -123,6 +121,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	//  attemptToMove (boolean ???) and printElevatorAction (maybe)
 	public void moveToNextFloor(ServiceRequest request) {
 		int requestFloor = request.getFloorNumber();
+		int currentFloor = elevatorMonitor.getCurrentFloor();
 		int nextFloor = motor.move(currentFloor, requestFloor);
 
 		// in future iterations, shouldStopAtNextFloor will be followed by sending an ApproachRequest
@@ -181,7 +180,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 
 		System.out.println(messageToPrint);
-		setCurrentFloor(nextFloor);
+		elevatorMonitor.setCurrentFloor(nextFloor);
 	}
 
 	/**
@@ -207,6 +206,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void compareFloors(int requestFloor) {
 		// Next floor in service direction
+		int currentFloor = elevatorMonitor.getCurrentFloor();
 		int floorToVisit = motor.move(currentFloor, requestFloor);
 
 		if (motor.isIdle()) {
@@ -235,7 +235,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// proceed only if door closing successful
 		if (attemptToCloseDoors()) {
 			motor.startMoving();
-			motor.changeDirection(currentFloor, floorToVisit);
+			motor.changeDirection(elevatorMonitor.getCurrentFloor(), floorToVisit);
 			// if doors opening also unsuccessful, shut down elevator
 		} else if (fault == Fault.DOORS_INTERRUPTED) {
 			if (!attemptToOpenDoors()) {
@@ -358,7 +358,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		//TODO remove after queueTime updated properly and serviceDirection is updated properly
-		int elevatorFloorToPass = currentFloor;
+		int elevatorFloorToPass = elevatorMonitor.getCurrentFloor();
 		requestQueue.addRequest(elevatorFloorToPass, serviceDirection, serviceRequest);
 	}
 
@@ -402,6 +402,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Returns the Elevator's elevatorMonitor.
+	 *
+	 * @return the elevatorMonitor containing status information of the elevator
+	 */
+	public ElevatorMonitor getElevatorMonitor() {
+		return elevatorMonitor;
+	}
+
+	/**
 	 * Returns the motor associated with the Elevator.
 	 *
 	 * @return elevatorMotor the elevatorMotor for the elevator
@@ -417,24 +426,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public Doors getDoors() {
 		return doors;
-	}
-
-	/**
-	 * Gets the current floor the elevator is on.
-	 *
-	 * @return the current floor as an int
-	 */
-	public int getCurrentFloor() {
-		return currentFloor;
-	}
-
-	/**
-	 * Sets the currentFloor that the elevator is on.
-	 *
-	 * @param currentFloor the floor to set the elevator on
-	 */
-	public void setCurrentFloor(int currentFloor) {
-		this.currentFloor = currentFloor;
 	}
 
 	/**
@@ -542,6 +533,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @return a StatusUpdate containing new elevator information.
 	 */
 	public ElevatorMonitor makeElevatorMonitor() {
+		int currentFloor = elevatorMonitor.getCurrentFloor();
 		return new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor));
 	}
 
@@ -551,6 +543,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param requestFloor the floor the elevator is to service
 	 */
 	public void printStatus(int requestFloor) {
+		int currentFloor = elevatorMonitor.getCurrentFloor();
 		String messageToPrint = LocalTime.now().toString() + "\n";
 		messageToPrint += "Elevator #" + elevatorNumber + " Status:\n";
 		messageToPrint += "[currentFloor, requestFloor]: [" + currentFloor + ", " + requestFloor + "]\n";
