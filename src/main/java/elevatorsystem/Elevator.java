@@ -491,22 +491,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Returns the Elevator's current Fault.
-	 *
-	 * @return the current Fault of the elevator
-	 */
-	public Fault getFault() {
-		return fault;
-	}
-
-	/**
 	 * Modifies the current Fault of the Elevator.
 	 *
 	 * @param fault the new Fault for the Elevator
 	 */
 	public void setFault(Fault fault) {
 		this.fault = fault;
-		System.out.println("Elevator #" + elevatorNumber + " Fault: " + this.fault.toString() + ".");
+		System.out.println("Elevator #" + elevatorNumber + " Fault: " + this.fault.getName() + ".");
 	}
 
 	/**

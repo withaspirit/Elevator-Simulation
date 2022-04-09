@@ -157,7 +157,7 @@ public class ElevatorMonitor extends SystemEvent {
      */
     public void setFault(Fault fault) {
         this.fault = fault;
-        System.out.println("Elevator #" + getElevatorNumber() + " Fault: " + this.fault.toString() + ".");
+        System.out.println("Elevator #" + getElevatorNumber() + " Fault: " + this.fault.getName() + ".");
     }
 
     /**
