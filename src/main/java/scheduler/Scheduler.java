@@ -251,9 +251,16 @@ public class Scheduler implements Runnable {
 	 * Resets the inactivity timer to show that the scheduler did work 
 	 */
 	public void resetTimer() {
-		if (this.timerTask.cancel()) {
-			this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
-			this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);
+		if (timerTask == null || timerTask.cancel()) {
+			timerTask = new TimerTask() {
+				@Override
+				public void run() {
+					long timeElapsed = (System.nanoTime() - startTime) / 1000000 - timerTimeOut * millSecsToSecs;
+					System.out.print("A scheduler thread took " + timeElapsed + " milliseconds to complete\n");
+					timer.cancel();
+				}
+			};
+			timer.schedule(timerTask, timerTimeOut * millSecsToSecs);
 		}
 	}
 	
@@ -267,9 +274,8 @@ public class Scheduler implements Runnable {
     
 		//Starts the inactivity timer and performance measurement
 		//this.startTime = System.nanoTime();
-		this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
-		this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);   
-		
+		resetTimer();
+
 		// TODO: replace with systemActivated
 		while (true) {
 			receiveAndProcessPacket();
@@ -302,26 +308,5 @@ public class Scheduler implements Runnable {
 
 		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
 		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
-	}
-	
-	/** 
-	 * SchedulerTimeOut calculates the elapsed time for the scheduler thread 
-	 * in the form of a TimerTask triggered by inactivity
-	 */
-	public class SchedulerTimeOut extends TimerTask {
-
-		Timer timer;
-		long startTime;
-		
-		SchedulerTimeOut(Timer timer, long startTime){
-			this.timer = timer;
-			this.startTime = startTime;
-		}
-		
-		public void run() {
-			long timeElapsed = (System.nanoTime() - this.startTime) / 1000000 - timerTimeOut * millSecsToSecs;
-			System.out.print("A scheduler thread took " + timeElapsed + " milliseconds to complete\n");
-			this.timer.cancel();
-		}
 	}
 }
