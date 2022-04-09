@@ -76,7 +76,7 @@ class SchedulerTest {
         // Verify values
         assertEquals(1, elevator1.getRequestQueue().removeRequest());
         assertEquals(2, elevator1.getRequestQueue().removeRequest());
-        assertEquals(Direction.UP, elevator1.getServiceDirection());
+        assertEquals(Direction.UP, elevator1.getElevatorMonitor().getServiceDirection());
     }
 
     @Test

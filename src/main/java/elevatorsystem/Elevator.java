@@ -430,15 +430,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Gets the Direction the elevator is heading.
-	 *
-	 * @return serviceDirection
-	 */
-	public Direction getServiceDirection() {
-		return serviceDirection;
-	}
-
-	/**
 	 * Sets the Elevator's time traveling between floors when MOVING
 	 * and waiting on a floor when STOPPED.
 	 */
