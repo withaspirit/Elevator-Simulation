@@ -220,8 +220,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// elevator has reached destination after moving one floor
 				stopAtFloor(requestFloor);
 			}
-			// do nothing if
-			// floorToVisit == requestFloor || floorToVisit != requestFloor
+			// do nothing if floorToVisit == requestFloor || floorToVisit != requestFloor
 		}
 		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
 	}
