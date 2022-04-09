@@ -151,7 +151,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 						throw new TimeoutException(errorMessage);
 					}
 				} catch (InterruptedException ie) {
-					setFault(Fault.ELEVATOR_STUCK);
+					elevatorMonitor.setFault(Fault.ELEVATOR_STUCK);
 					// shut down elevator
 					motor.setMovementState(MovementState.STUCK);
 					motor.setDirection(Direction.NONE);
@@ -160,7 +160,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 					approachEvent = null;
 					return;
 				} catch (TimeoutException te) {
-					setFault(Fault.ARRIVAL_SENSOR_FAIL);
+					elevatorMonitor.setFault(Fault.ARRIVAL_SENSOR_FAIL);
 					// shut down elevator
 					motor.setMovementState(MovementState.STUCK);
 					motor.setDirection(Direction.NONE);
@@ -311,7 +311,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// do nothing. doors opening can never be interrupted
 				return true;
 			} catch (IllegalStateException ise) {
-				setFault(Fault.DOORS_STUCK);
+				elevatorMonitor.setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();
 				return false;
 			}
@@ -341,11 +341,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 					throw new IllegalStateException(messageToPrint);
 				}
 			} catch (InterruptedException ie) {
-				setFault(Fault.DOORS_INTERRUPTED);
+				elevatorMonitor.setFault(Fault.DOORS_INTERRUPTED);
 				ie.printStackTrace();
 				return false;
 			} catch (IllegalStateException ise) {
-				setFault(Fault.DOORS_STUCK);
+				elevatorMonitor.setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();
 				return false;
 			}
@@ -488,16 +488,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	@Override
 	public void receiveApproachEvent(ApproachEvent approachEvent) {
 		this.approachEvent = approachEvent;
-	}
-
-	/**
-	 * Modifies the current Fault of the Elevator.
-	 *
-	 * @param fault the new Fault for the Elevator
-	 */
-	public void setFault(Fault fault) {
-		this.fault = fault;
-		System.out.println("Elevator #" + elevatorNumber + " Fault: " + this.fault.getName() + ".");
 	}
 
 	/**
