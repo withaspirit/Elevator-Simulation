@@ -196,7 +196,7 @@ public class Scheduler implements Runnable {
 			int currentFloor = monitor.getCurrentFloor();
 			int desiredFloor = elevatorRequest.getDesiredFloor();
 			int elevatorNumber = monitor.getElevatorNumber();
-			Direction currentDirection = monitor.getDirection();
+			Direction currentDirection = monitor.getServiceDirection();
 
 			if (currentDirection == Direction.UP){
 				currentFloor += 1;
@@ -210,7 +210,7 @@ public class Scheduler implements Runnable {
 			} else if (state == MovementState.STUCK) {
 				System.err.println("Elevator#" + elevatorNumber + " is stuck");
 
-			} else if (monitor.getDirection() == requestDirection) {
+			} else if (monitor.getServiceDirection() == requestDirection) {
 				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
 					if (requestDirection == Direction.DOWN && currentFloor > desiredFloor) {
 						//check if request is in path current floor > directed floor going down

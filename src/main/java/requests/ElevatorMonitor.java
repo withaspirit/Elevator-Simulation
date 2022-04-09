@@ -19,7 +19,7 @@ import java.time.LocalTime;
 public class ElevatorMonitor extends SystemEvent {
 
     private int currentFloor;
-    private Direction currentDirection;
+    private Direction serviceDirection;
     private MovementState state;
     private Direction movementDirection;
     private Doors.State doorsState;
@@ -38,7 +38,7 @@ public class ElevatorMonitor extends SystemEvent {
         queueTime = 0.0;
         state = MovementState.IDLE;
         currentFloor = 1;
-        currentDirection = Direction.NONE;
+        serviceDirection = Direction.NONE;
         movementDirection = Direction.NONE;
         doorsState = Doors.State.OPEN;
         fault = Fault.NONE;
@@ -60,7 +60,7 @@ public class ElevatorMonitor extends SystemEvent {
     public ElevatorMonitor(int elevatorNumber, int currentFloor, Direction serviceDirection, MovementState movementState, Direction movementDirection, Doors.State doorState, Fault fault, Boolean empty, double queueTime) {
         this(elevatorNumber);
         this.currentFloor = currentFloor;
-        this.currentDirection = serviceDirection;
+        this.serviceDirection = serviceDirection;
         this.state = movementState;
         this.movementDirection = movementDirection;
         this.doorsState = doorState;
@@ -106,12 +106,12 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
-     * Gets the Direction the elevator is heading.
+     * Gets the current service direction of the elevator.
      *
-     * @return serviceDirection
+     * @return the service direction of the elevator
      */
     public Direction getServiceDirection() {
-        return currentDirection;
+        return serviceDirection;
     }
 
     /**
@@ -120,17 +120,7 @@ public class ElevatorMonitor extends SystemEvent {
      * @param direction the elevator will be moving
      */
     public void setServiceDirection(Direction direction) {
-        this.currentDirection = direction;
-    }
-
-
-    /**
-     * Gets the current service direction of the elevator.
-     *
-     * @return the service direction of the elevator
-     */
-    public Direction getDirection() {
-        return currentDirection;
+        this.serviceDirection = direction;
     }
 
     /**
@@ -188,7 +178,7 @@ public class ElevatorMonitor extends SystemEvent {
         this.queueTime = elevatorMonitor.getQueueTime();
         this.state = elevatorMonitor.getState();
         this.currentFloor = elevatorMonitor.getCurrentFloor();
-        this.currentDirection = elevatorMonitor.getDirection();
+        this.serviceDirection = elevatorMonitor.getServiceDirection();
         movementDirection = elevatorMonitor.getMovementDirection();
         doorsState = elevatorMonitor.getDoorsState();
         fault = elevatorMonitor.getFault();
@@ -203,7 +193,7 @@ public class ElevatorMonitor extends SystemEvent {
     @Override
     public String toString() {
         String formattedString = "[ElevatorNumber, queueTime, MovementState, CurrFloor, CurrDirxn]:\n";
-        formattedString += getElevatorNumber() + " " + String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection();
+        formattedString += getElevatorNumber() + " " + String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getServiceDirection();
         return formattedString;
     }
 
@@ -219,7 +209,7 @@ public class ElevatorMonitor extends SystemEvent {
         String[] properties = new String[6];
         //{"CurrentFloor", "ServiceDirection", "MovementState", "MovementDirection", "DoorState", "Fault"};
         properties[0] = String.valueOf(getCurrentFloor());
-        properties[1] = getDirection().toString();
+        properties[1] = getServiceDirection().toString();
         properties[2] = state.getName();
         properties[3] = movementDirection.getName();
         properties[4] = doorsState.toString();

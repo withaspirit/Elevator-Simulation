@@ -57,15 +57,15 @@ public class ElevatorMotorTest {
 		// Testing upward movement
 		/*
 		assertEquals(motor.move(2, 4), 3);
-		assertEquals(motor.getDirection(), Direction.UP);
+		assertEquals(motor.getServiceDirection(), Direction.UP);
 
 		// Testing downward movement
 		assertEquals(motor.move(4, 2), 3);
-		assertEquals(motor.getDirection(), Direction.DOWN);
+		assertEquals(motor.getServiceDirection(), Direction.DOWN);
 
 		// Testing reaching requested floor
 		assertEquals(motor.move(3, 3), 3);
-		assertEquals(motor.getDirection(), Direction.NONE);
+		assertEquals(motor.getServiceDirection(), Direction.NONE);
 		 */
 	}
 
