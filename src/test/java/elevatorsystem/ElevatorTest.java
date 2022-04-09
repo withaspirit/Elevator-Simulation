@@ -9,6 +9,7 @@ import requests.ServiceRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.Structure;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ class ElevatorTest {
     private ArrayList<SystemEvent> eventList;
     private final int numberOfTimesToTest = 20;
     private ArrayList<Thread> threads;
+    private final Structure structure = new Structure(10, 2, 1000, 1000);
 
     @BeforeEach
     void setUp() {
@@ -50,7 +52,7 @@ class ElevatorTest {
         threads.clear();
         // initialize the list of elevators
         for (int i = 1; i <= numberOfElevators; i++) {
-            Elevator elevator = new Elevator(i, elevatorSubsystem);
+            Elevator elevator = new Elevator(i, elevatorSubsystem, structure);
             System.out.println("Elevator " + i + " instantiated");
             elevatorList.add(elevator);
             elevatorSubsystem.addElevator(elevator);

@@ -3,6 +3,7 @@ package elevatorsystem;
 import requests.*;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.Structure;
 
 import java.time.LocalTime;
 import java.util.ConcurrentModificationException;
@@ -45,16 +46,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param elevatorNumber the number of the elevator
 	 * @param elevatorSubsystem the elevator subsystem for elevators
 	 */
-	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
+	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem, Structure structure) {
 		this.elevatorNumber = elevatorNumber;
 		this.elevatorSubsystem = elevatorSubsystem;
 		motor = new ElevatorMotor();
 		doors = new Doors();
 		currentFloor = 1;
 		serviceDirection = Direction.UP;
-		travelTime = -1;
-		doorTime = -1;
-		requestQueue = new RequestQueue(travelTime, doorTime*2);
+		travelTime = structure.getElevatorTime();
+		doorTime = structure.getDoorsTime();
+		requestQueue = new RequestQueue(travelTime, doorTime);
 		fault = Fault.NONE;
 		messageTransferEnabled = true;
 		approachEvent = null;

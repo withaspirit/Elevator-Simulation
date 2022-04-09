@@ -128,9 +128,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	public void initializeElevators(Structure structure) {
 		// initialize the list of elevators
 		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
-			Elevator elevator = new Elevator(i, this);
-			elevator.setTravelTime(structure.getElevatorTime());
-			elevator.setDoorTime(structure.getDoorsTime());
+			Elevator elevator = new Elevator(i, this, structure);
 			addElevator(elevator);
 		}
 	}

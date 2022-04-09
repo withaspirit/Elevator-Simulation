@@ -27,17 +27,17 @@ public class RequestQueue {
 	 */
 	private final TreeSet<ServiceRequest> missedRequests;
 
-	private final int loadTime, travelTime;
+	private final int travelTime, loadTime;
 
 	/**
 	 * Constructor for RequestQueue.
 	 */
-	public RequestQueue(int loadTime, int travelTime) {
+	public RequestQueue(int travelTime, int loadTime) {
 		currentDirectionQueue = new TreeSet<>();
 		oppositeDirectionQueue = new TreeSet<>(Collections.reverseOrder());
 		missedRequests = new TreeSet<>();
-		this.loadTime = loadTime;
 		this.travelTime = travelTime;
+		this.loadTime = loadTime;
 	}
 
 	/**
@@ -235,7 +235,7 @@ public class RequestQueue {
 			}
 		}
 
-		return queueTime;
+		return queueTime/1000;
 	}
 
 	/**

@@ -11,6 +11,7 @@ import requests.ElevatorRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.Structure;
 
 import java.time.LocalTime;
 
@@ -42,8 +43,10 @@ class SchedulerTest {
         schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
         schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
         floorSubsystem = new FloorSubsystem();
+        Structure structure = new Structure(10, 2, 1000, 1000);
+
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-        elevator1 = new Elevator(1, elevatorSubsystem);
+        elevator1 = new Elevator(1, elevatorSubsystem, structure);
         elevatorSubsystem.addElevator(elevator1);
         schedulerClient.addElevatorMonitor(elevator1.getElevatorNumber());
 
@@ -74,8 +77,8 @@ class SchedulerTest {
         assertFalse(elevator1.getRequestQueue().isCurrentQueueEmpty());
 
         // Verify values
-        assertEquals(1, elevator1.getRequestQueue().removeRequest());
-        assertEquals(2, elevator1.getRequestQueue().removeRequest());
+        assertEquals(1, elevator1.getRequestQueue().removeRequest().getFloorNumber());
+        assertEquals(2, elevator1.getRequestQueue().removeRequest().getFloorNumber());
         assertEquals(Direction.UP, elevator1.getServiceDirection());
     }
 

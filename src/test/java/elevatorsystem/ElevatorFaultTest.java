@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import requests.ServiceRequest;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.Structure;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -41,9 +42,12 @@ public class ElevatorFaultTest {
         // clear array lists to prevent concurrency issues
         elevatorList.clear();
         threads.clear();
+
+        Structure structure = new Structure(10, 2, 1000, 1000);
+
         // initialize the list of elevators
         for (int i = 1; i <= numberOfElevators; i++) {
-            Elevator elevator = new Elevator(i, elevatorSubsystem);
+            Elevator elevator = new Elevator(i, elevatorSubsystem, structure);
             System.out.println("Elevator " + i + " instantiated");
             elevatorList.add(elevator);
             elevatorSubsystem.addElevator(elevator);
