@@ -16,6 +16,7 @@ import java.time.LocalTime;
  * @author Ryan Dash, Brady Norton, Liam Tripp
  * @version 2022/04/05
  */
+// TODO: setters should be package-private, getters public
 public class ElevatorMonitor extends SystemEvent {
 
     private int currentFloor;
@@ -88,6 +89,15 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
+     * Sets the movement state of the Elevator.
+     *
+     * @param movementState the movement state of the elevator
+     */
+    public void setMovementState(MovementState movementState) {
+        state = movementState;
+    }
+
+    /**
      * Gets the current floor the elevator is on.
      *
      * @return the current floor as an int
@@ -133,12 +143,30 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
+     * Sets the direction of the elevator.
+     *
+     * @param direction the elevator will be moving
+     */
+    public void setMovementDirection(Direction direction) {
+        movementDirection = direction;
+    }
+
+    /**
      * Gets the state of the Doors of the elevator
      *
      * @return the State of the elevator Doors from the State enum
      */
     public Doors.State getDoorsState() {
         return doorsState;
+    }
+
+    /**
+     * Sets the state of the doors of the Elevator.
+     *
+     * @param state the new state of the doors
+     */
+    public void setDoorsState(Doors.State state) {
+        doorsState = state;
     }
 
     /**
@@ -170,19 +198,28 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
+     * Sets the "hasNoRequests" status of the Elevator.
+     *
+     * @param hasNoRequests
+     */
+    public void setRequestsStatus(boolean hasNoRequests) {
+        this.hasNoRequests = hasNoRequests;
+    }
+
+    /**
      * Updates the ElevatorMonitor with the latest ElevatorMonitor information.
      *
      * @param elevatorMonitor an elevator monitor containing new elevator information
      */
     public void updateMonitor(ElevatorMonitor elevatorMonitor) {
-        this.queueTime = elevatorMonitor.getQueueTime();
-        this.state = elevatorMonitor.getState();
-        this.currentFloor = elevatorMonitor.getCurrentFloor();
-        this.serviceDirection = elevatorMonitor.getServiceDirection();
+        queueTime = elevatorMonitor.getQueueTime();
+        state = elevatorMonitor.getState();
+        currentFloor = elevatorMonitor.getCurrentFloor();
+        serviceDirection = elevatorMonitor.getServiceDirection();
         movementDirection = elevatorMonitor.getMovementDirection();
         doorsState = elevatorMonitor.getDoorsState();
         fault = elevatorMonitor.getFault();
-        this.hasNoRequests = elevatorMonitor.getHasNoRequests();
+        hasNoRequests = elevatorMonitor.getHasNoRequests();
     }
 
     /**
