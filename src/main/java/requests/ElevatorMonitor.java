@@ -80,6 +80,15 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
+     * Sets the queue Time of the ElevatorMonitor.
+     *
+     * @param expectedTime the new time for the ElevatorMonitor
+     */
+    public void setQueueTime(double expectedTime) {
+        queueTime = expectedTime;
+    }
+
+    /**
      * Gets the MovementState of the elevator.
      *
      * @return the movement state of the elevator
