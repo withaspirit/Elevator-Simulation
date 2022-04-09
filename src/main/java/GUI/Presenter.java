@@ -1,8 +1,12 @@
-package scheduler;
+package GUI;
 
+import elevatorsystem.Fault;
+import elevatorsystem.MovementState;
+import requests.ApproachEvent;
 import requests.ElevatorMonitor;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Presenter updates the View of the system with information from the Model.
@@ -45,6 +49,16 @@ public class Presenter {
     public void updateElevatorView(ElevatorMonitor elevatorMonitor) {
         ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber() - 1);
         elevatorView.updateStatusPanes(elevatorMonitor);
+        ElevatorButtonPanel elevatorButtonPanel = elevatorViewContainer.getElevatorButtonPanel(elevatorMonitor.getElevatorNumber() - 1);
+        if (elevatorMonitor.getFault().equals(Fault.NONE)){
+            if (elevatorMonitor.getState().equals(MovementState.ACTIVE)){
+                elevatorButtonPanel.changeButtonColor(elevatorMonitor.getCurrentFloor(), Color.GREEN);
+            } else {
+                elevatorButtonPanel.changeButtonColor(elevatorMonitor.getCurrentFloor(), Color.lightGray);
+            }
+        } else {
+            elevatorButtonPanel.changeButtonColor(elevatorMonitor.getCurrentFloor(), Color.RED);
+        }
     }
 
     /**

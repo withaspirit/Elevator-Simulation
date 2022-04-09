@@ -1,4 +1,4 @@
-package scheduler;
+package GUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +14,7 @@ public class ElevatorViewContainer {
 
     // TODO: some of these could easily be local variables
     private final ArrayList<ElevatorView> elevatorViews;
+    private final ArrayList<ElevatorButtonPanel> elevatorButtonPanels;
     private final JPanel containerPanel;
 
     /**
@@ -21,12 +22,15 @@ public class ElevatorViewContainer {
      *
      * @param numberOfElevators the number of ElevatorViews in the ElevatorViewList
      */
-    public ElevatorViewContainer(int numberOfElevators) {
-        this.elevatorViews = new ArrayList<>();
+    public ElevatorViewContainer(int numberOfElevators, int numberOfFloors) {
+        elevatorViews = new ArrayList<>();
+        elevatorButtonPanels = new ArrayList<>();
         JPanel elevatorListPanel = new JPanel(new GridLayout(numberOfElevators, 1));
         for (int i = 1; i <= numberOfElevators; i++) {
             elevatorViews.add(new ElevatorView(i));
             elevatorListPanel.add(elevatorViews.get(i - 1).getPanel());
+            elevatorButtonPanels.add(new ElevatorButtonPanel(numberOfFloors, 400));
+            elevatorListPanel.add(elevatorButtonPanels.get(i - 1).getPanel());
         }
 
         JScrollPane scrollPane = new JScrollPane(elevatorListPanel);
@@ -67,5 +71,14 @@ public class ElevatorViewContainer {
             throw new IllegalArgumentException(exceptionMessage);
         }
         return elevatorViews.get(elevatorNumber);
+    }
+
+    public ElevatorButtonPanel getElevatorButtonPanel(int elevatorNumber) {
+        if (elevatorNumber >= elevatorButtonPanels.size()) {
+            String exceptionMessage = "The number " + elevatorNumber + " is greater " +
+                    "than the actual number of ElevatorViews, " + elevatorButtonPanels.size() + ".";
+            throw new IllegalArgumentException(exceptionMessage);
+        }
+        return elevatorButtonPanels.get(elevatorNumber);
     }
 }
