@@ -101,7 +101,7 @@ public class InputFileReaderTest {
     void inputFormatTest() {
         initStandardInputArray();
 
-        // Event 1 -> "00:00:00.000 1 Up 2"
+        // Event 1 -> "1 Up 2"
         jsonObject = (JSONObject) jsonArray.get(0);
         elevatorRequest1 = inputFileReader.createElevatorRequest(((String) jsonObject.get("event")).split(" "), LocalTime.now());
         String[] data = ((String) jsonObject.get("event")).split(" ");
