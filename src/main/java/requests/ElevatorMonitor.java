@@ -88,13 +88,41 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
-     * Gets the current floor of the elevator.
+     * Gets the current floor the elevator is on.
      *
-     * @return the current floor of the elevator
+     * @return the current floor as an int
      */
     public int getCurrentFloor() {
         return currentFloor;
     }
+
+    /**
+     * Sets the currentFloor that the elevator is on.
+     *
+     * @param currentFloor the floor to set the elevator on
+     */
+    public void setCurrentFloor(int currentFloor) {
+        this.currentFloor = currentFloor;
+    }
+
+    /**
+     * Gets the Direction the elevator is heading.
+     *
+     * @return serviceDirection
+     */
+    public Direction getServiceDirection() {
+        return currentDirection;
+    }
+
+    /**
+     * Sets the service direction of the elevator.
+     *
+     * @param direction the elevator will be moving
+     */
+    public void setServiceDirection(Direction direction) {
+        this.currentDirection = direction;
+    }
+
 
     /**
      * Gets the current service direction of the elevator.
@@ -124,12 +152,22 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
-     * Gets the Fault representing the error state of the elevator
+     * Returns the Elevator's current Fault.
      *
-     * @return the Fault for the elevator
+     * @return the current Fault of the elevator
      */
     public Fault getFault() {
         return fault;
+    }
+
+    /**
+     * Modifies the current Fault of the Elevator.
+     *
+     * @param fault the new Fault for the Elevator
+     */
+    public void setFault(Fault fault) {
+        this.fault = fault;
+        System.out.println("Elevator #" + getElevatorNumber() + " Fault: " + this.fault.toString() + ".");
     }
 
     /**
