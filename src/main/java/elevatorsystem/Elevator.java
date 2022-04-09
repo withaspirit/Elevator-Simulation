@@ -397,7 +397,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void swapServiceDirectionIfNecessary() {
 		if (requestQueue.swapQueues()) {
-			setServiceDirection(Direction.swapDirection(serviceDirection));
+			elevatorMonitor.setServiceDirection(Direction.swapDirection(serviceDirection));
 			System.out.println("Elevator #" + elevatorNumber + " swapped queues, changed serviceDirection to " + serviceDirection + "\n");
 		}
 	}
@@ -436,15 +436,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public Direction getServiceDirection() {
 		return serviceDirection;
-	}
-
-	/**
-	 * Sets the service direction of the elevator.
-	 *
-	 * @param direction the elevator will be moving
-	 */
-	public void setServiceDirection(Direction direction) {
-		this.serviceDirection = direction;
 	}
 
 	/**
