@@ -33,7 +33,7 @@ public class Scheduler implements Runnable {
 	private final Timer timer;
 	private TimerTask timerTask;
 	private long startTime = -1;
-	private final int timerTimeOut = 7;
+	private final int timerTimeOut = 7000; // milliseconds
 
 	/**
 	 * Constructor for Scheduler.
@@ -251,16 +251,15 @@ public class Scheduler implements Runnable {
 	 */
 	public void resetTimer() {
 		if (timerTask == null || timerTask.cancel()) {
-			int millSecondsToSeconds = 1000;
 			timerTask = new TimerTask() {
 				@Override
 				public void run() {
-					long timeElapsed = (System.nanoTime() - startTime) / 1000000 - (timerTimeOut * millSecondsToSeconds) ;
-					System.out.print("A scheduler thread took " + timeElapsed + " milliseconds to complete\n");
+					long timeElapsed = (System.nanoTime() - startTime) / 1000000 - timerTimeOut;
+					System.out.println(Thread.currentThread().getName() + " took " + timeElapsed + " milliseconds to complete.");
 					timer.cancel();
 				}
 			};
-			timer.schedule(timerTask, timerTimeOut * millSecondsToSeconds);
+			timer.schedule(timerTask, timerTimeOut);
 		}
 	}
 	
