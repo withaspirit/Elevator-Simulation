@@ -405,6 +405,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Updates the ElevatorMonitor with information from the Elevator.
+	 *
+	 */
+	public void updateMonitor() {
+		monitor.setMovementDirection(motor.getDirection());
+		monitor.setMovementState(motor.getMovementState());
+		monitor.setDoorsState(doors.getState());
+		monitor.setRequestsStatus(hasNoRequests());
+	}
+
+	/**
 	 * Returns the motor associated with the Elevator.
 	 *
 	 * @return elevatorMotor the elevatorMotor for the elevator
