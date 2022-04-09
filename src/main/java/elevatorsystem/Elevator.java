@@ -273,7 +273,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		if (requestQueue.isEmpty()){
 			motor.stop();
-			serviceDirection = Direction.NONE;
 		}
 
 		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
