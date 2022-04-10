@@ -149,43 +149,6 @@ public class ElevatorFaultTest {
     }
 
     @Test
-    void testClosingDoorsInterrupted() {
-        initNumberOfElevators(1);
-        Elevator elevator1 = elevatorList.get(0);
-        // disable message transfer
-        elevator1.toggleMessageTransfer();
-        // enable door time
-        int doorTime = 300;
-        elevator1.setDoorTime(doorTime);
-
-        Runnable closeDoorsRunnable = elevator1::attemptToCloseDoors;
-        Thread elevatorThread = new Thread(closeDoorsRunnable);
-        threads.add(elevatorThread);
-        elevatorThread.start();
-
-        elevatorThread.interrupt();
-
-        // give elevator time to respond (set Fault) -> doesn't work without this
-        try {
-            TimeUnit.MILLISECONDS.sleep(doorTime / 3);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
-                Fault.DOORS_INTERRUPTED.getName() + ": " + elevator1.getFault().toString());
-        assertEquals(Fault.DOORS_INTERRUPTED, elevator1.getFault());
-        assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
-    }
-
-    @Test
-    void testDoorsClosingInterruptedMultipleTimes() {
-        for (int i = 0; i < numberOfTimesToTest; i++) {
-            testClosingDoorsInterrupted();
-        }
-    }
-
-    @Test
     void testDoorsStuckOnClosing() {
         initNumberOfElevators(1);
         Elevator elevator1 = elevatorList.get(0);
