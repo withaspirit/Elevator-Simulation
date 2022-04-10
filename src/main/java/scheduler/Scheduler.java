@@ -266,7 +266,7 @@ public class Scheduler implements Runnable {
 	/**
 	 * Simple message requesting and sending between subsystems.
 	 * Scheduler
-	 * Sends: ApproachEvent, FloorRequest, ElevatorRequest
+	 * Sends: ApproachEvent, ServiceRequest, ElevatorRequest
 	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
