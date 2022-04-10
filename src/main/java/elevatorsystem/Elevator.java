@@ -234,7 +234,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// proceed until door closing successful
 		while (!changeDoorState(Doors.State.CLOSED)) {
 			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-			setFault(Fault.NONE);
 			setDoorsMalfunctioning(false);
 		}
 		System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
@@ -256,7 +255,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		// try to open doors until successful
 		while (!changeDoorState(Doors.State.OPEN)) {
 			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-			setFault(Fault.NONE);
 			setDoorsMalfunctioning(false);
 		}
 		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
@@ -314,7 +312,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 				return changeDoorState(state);
 			} catch (IllegalStateException ise) {
 				doors.setToStuck();
-				setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();
 				return false;
 			}
@@ -507,6 +504,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void setDoorsMalfunctioning(boolean doorsAreMalfunctioning) {
 		doorsMalfunctioning = doorsAreMalfunctioning;
+		if (doorsAreMalfunctioning) {
+			doors.setToStuck();
+		}
 	}
 
 	/**
