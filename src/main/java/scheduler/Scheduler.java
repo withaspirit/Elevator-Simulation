@@ -267,7 +267,7 @@ public class Scheduler implements Runnable {
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
 
-		Structure structure = new Structure(10, 2, -1, -1);
+		Structure structure = new Structure(10, 2, 1000, 1000);
 
 		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
 			schedulerClient.addElevatorMonitor(i + 1);
