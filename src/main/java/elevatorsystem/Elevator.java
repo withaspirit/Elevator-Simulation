@@ -232,7 +232,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void startMovingToFloor(int floorToVisit) {
 
 		// proceed until door closing successful
-		while (!attemptToCloseDoors()) {
+		while (!changeDoorState(Doors.State.CLOSED)) {
 			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 			setFault(Fault.NONE);
 			setDoorsMalfunctioning(false);
@@ -254,7 +254,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " reached its destination");
 
 		// try to open doors until successful
-		while (!attemptToOpenDoors()) {
+		while (!changeDoorState(Doors.State.OPEN)) {
 			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 			setFault(Fault.NONE);
 			setDoorsMalfunctioning(false);
@@ -285,16 +285,25 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 *
 	 * @return true if attempt is successful, false otherwise
 	 */
-	// FIXME: attemptToOpenDoors and attemptToCloseDoors are very similar
-	public boolean attemptToOpenDoors() {
+	public boolean changeDoorState(Doors.State state) {
+		// throw error invalid argument
+		if (!state.equals(Doors.State.OPEN) && !state.equals(Doors.State.CLOSED)) {
+			System.err.println("Invalid argument for ");
+			System.exit(1);
+		}
+		// process door change
 		synchronized (this) {
 			try {
-				if (doorTime >= 0) {
+				if (doorTime > 0) {
 					wait(doorTime);
 				}
 
 				if (!doorsMalfunctioning) {
-					doors.open();
+					if (state == Doors.State.OPEN) {
+						doors.open();
+					} else {
+						doors.close();
+					}
 					return true;
 				} else {
 					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
@@ -302,41 +311,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				}
 			} catch (InterruptedException e) {
 				// if interrupted, try to open again
-				return attemptToOpenDoors();
-			} catch (IllegalStateException ise) {
-				doors.setToStuck();
-				setFault(Fault.DOORS_STUCK);
-				ise.printStackTrace();
-				return false;
-			}
-		}
-	}
-
-	/**
-	 * Attempts to close the Elevator's Doors. If DoorTime is enabled, the
-	 * elevator waits before taking action on the Doors. If the Doors have
-	 * malfunctioned, the Elevator takes action accordingly. If the Doors
-	 * are interrupted, the doors reverse course.
-	 *
-	 * @return true if attempt is successful, false otherwise
-	 */
-	public boolean attemptToCloseDoors() {
-		synchronized (this) {
-			try {
-				if (doorTime >= 0) {
-					wait(doorTime);
-				}
-
-				if (!doorsMalfunctioning) {
-					doors.close();
-					return true;
-				} else {
-					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
-					throw new IllegalStateException(messageToPrint);
-				}
-			} catch (InterruptedException e) {
-				// if interrupted, try to close again
-				return attemptToCloseDoors();
+				return changeDoorState(state);
 			} catch (IllegalStateException ise) {
 				doors.setToStuck();
 				setFault(Fault.DOORS_STUCK);

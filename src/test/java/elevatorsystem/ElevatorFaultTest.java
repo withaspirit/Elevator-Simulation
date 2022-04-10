@@ -158,7 +158,7 @@ public class ElevatorFaultTest {
         elevator1.setDoorTime(doorTime);
         elevator1.setDoorsMalfunctioning(true);
 
-        Runnable closeDoorsRunnable = elevator1::attemptToCloseDoors;
+        Runnable closeDoorsRunnable = () -> elevator1.changeDoorState(Doors.State.CLOSED);
         Thread elevatorThread = new Thread(closeDoorsRunnable);
         threads.add(elevatorThread);
         elevatorThread.start();
@@ -230,7 +230,7 @@ public class ElevatorFaultTest {
         int doorTime = 300;
         elevator1.setDoorTime(doorTime);
 
-        Runnable openDoorsRunnable = elevator1::attemptToOpenDoors;
+        Runnable openDoorsRunnable = () -> elevator1.changeDoorState(Doors.State.OPEN);
         Thread elevatorThread = new Thread(openDoorsRunnable);
         threads.add(elevatorThread);
         elevatorThread.start();
