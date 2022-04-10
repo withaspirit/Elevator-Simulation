@@ -25,7 +25,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	private final ArrayList<Floor> floorList;
 	private volatile SystemStatus systemStatus;
 	private long startTime;
-	private long delayToSendEvent;
+	private long delayToSendRequest;
 
 	/**
 	 * Constructor for FloorSubsystem.
@@ -37,7 +37,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		eventList = new ArrayList<>();
 		floorList = new ArrayList<>();
 		systemStatus = new SystemStatus(false);
-		delayToSendEvent = -1;
+		delayToSendRequest = 0;
 		startTime = -1;
 	}
 
@@ -48,7 +48,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	 * Receives: ApproachEvent
 	 */
 	public void run() {
-		Collections.reverse(eventList);
+		Collections.reverse(requestList);
 
 		// TODO: replace with systemActivated
 		while (true) {
@@ -121,7 +121,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	 */
 	public boolean delayTimeElapsed() {
 		// convert from nanoSeconds to milliseconds
-		return (System.nanoTime() - startTime) * Math.pow(10, -6) > delayToSendEvent;
+		return (System.nanoTime() - startTime) * Math.pow(10, -6) > delayToSendRequest;
 	}
 
 	/**
@@ -137,22 +137,22 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		} else if (!eventList.isEmpty()) {
 			client.sendAndReceiveReply(eventList.remove(eventList.size() - 1));
 		} else {
-				Object object = client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
+			Object object = client.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
 
-				if (object instanceof ApproachEvent approachEvent) {
-					processApproachEvent(approachEvent);
-				} else if (object instanceof ElevatorRequest elevatorRequest) {
-					requestList.add(elevatorRequest);
-				} else if (object instanceof String string) {
-					if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
-						try {
-							Thread.sleep(5);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+			if (object instanceof ApproachEvent approachEvent) {
+				processApproachEvent(approachEvent);
+			} else if (object instanceof ElevatorRequest elevatorRequest) {
+				requestList.add(elevatorRequest);
+			} else if (object instanceof String string) {
+				if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
 			}
+		}
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		int doorsTime = structure.getDoorsTime();
 		// FIXME: unclear if these are sound conditions
 		if (elevatorTime > 0 && doorsTime > 0) {
-			delayToSendEvent = (long) elevatorTime * 2 + elevatorTime * 2;
+			delayToSendRequest = (long) (elevatorTime + doorsTime) / 5;
 			startTime = System.nanoTime();
 		}
 	}
