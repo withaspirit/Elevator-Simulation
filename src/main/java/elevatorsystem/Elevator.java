@@ -260,7 +260,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// try to open doors until successful
 		while (!attemptToOpenDoors()) {
-			toggleDoorMalfunction();
+			setDoorsMalfunctioning(false);
 		}
 		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
 
@@ -516,6 +516,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 			motor.setMovementState(MovementState.STUCK);
 			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
+	}
+
+	/**
+	 * Sets the toggle for the Elevator's Doors malfunctioning.
+	 *
+	 * @param doorsAreMalfunctioning true if the doors are malfunctioning, false otherwise
+	 */
+	public void setDoorsMalfunctioning(boolean doorsAreMalfunctioning) {
+		doorsMalfunctioning = doorsAreMalfunctioning;
 	}
 
 	/**
