@@ -64,6 +64,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		while (systemStatus.activated()) {
 			subsystemUDPMethod();
 		}
+		// terminate elevator threads
 		for (Elevator elevator : elevatorList) {
 			elevator.getSystemStatus().setSystemActivated(false);
 		}
