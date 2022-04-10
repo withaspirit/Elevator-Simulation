@@ -10,8 +10,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * ElevatorFaultTest ensures the fault methods for the elevator function correctly.
@@ -223,6 +222,46 @@ public class ElevatorFaultTest {
                 Fault.DOORS_STUCK.getName() + ": " + elevator1.getFault().toString());
         assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
         assertEquals(Fault.DOORS_STUCK, elevator1.getFault());
+    }
+
+    @Test
+    void testDoorsStuckOnOpeningHandled() {
+        // test that elevator's stopAtFloor handles getting stuck on opening
+        // from OPEN to CLOSED
+        initNumberOfElevators(1);
+        Elevator elevator1 = elevatorList.get(0);
+        // disable message transfer
+        elevator1.toggleMessageTransfer();
+        // enable door time
+        int doorTime = 300;
+        elevator1.setDoorTime(doorTime);
+        elevator1.setDoorsMalfunctioning(true);
+
+        ServiceRequest serviceRequest = new ServiceRequest(LocalTime.now(), 1, Direction.UP, Origin.ELEVATOR_SYSTEM);
+        elevator1.addRequest(serviceRequest);
+
+        Runnable stopAtFloorRunnable = () -> elevator1.stopAtFloor(serviceRequest.getFloorNumber());
+        Thread elevatorThread = new Thread(stopAtFloorRunnable);
+        threads.add(elevatorThread);
+        elevatorThread.start();
+
+        // give elevator time to enter wait statement -> doesn't work without this
+        try {
+            TimeUnit.MILLISECONDS.sleep(doorTime / 3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // time should be twice or more the DOOR_TIME -> give
+        try {
+            TimeUnit.MILLISECONDS.sleep(doorTime * 3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
+                Fault.DOORS_STUCK.getName() + ": " + elevator1.getFault().toString());
+        assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
+        assertEquals(Fault.NONE, elevator1.getFault());
+        assertFalse(elevator1.doorsAreMalfunctioning());
     }
 
     @Test
