@@ -258,8 +258,9 @@ public class Scheduler implements Runnable {
 				public void run() {
 					long timeElapsed = (System.nanoTime() - startTime) / 1000000 - timerTimeOut;
 					System.out.println(Thread.currentThread().getName() + " took " + timeElapsed + " milliseconds to complete.");
-					timer.cancel();
+					systemStatus.setSystemActivated(false);
 					schedulerThreadsTerminated++;
+					timer.cancel();
 				}
 			};
 			timer.schedule(timerTask, timerTimeOut);
@@ -279,7 +280,7 @@ public class Scheduler implements Runnable {
 		resetTimer();
 
 		// TODO: replace with systemActivated
-		while (schedulerThreadsTerminated < 2) {
+		while (systemStatus.activated()) {
 			receiveAndProcessPacket();
 		}
 		System.out.println(Thread.currentThread().getName() + " terminated");
@@ -287,7 +288,7 @@ public class Scheduler implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		Structure structure = new Structure(10, 2, 1000, 1000);
+		Structure structure = new Structure(10, 2, 0, 0);
 
 		ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators());
 		Presenter presenter = new Presenter();
@@ -310,7 +311,7 @@ public class Scheduler implements Runnable {
 			e.printStackTrace();
 		}
 
-		new Thread(schedulerClient, "Scheduler: ElevatorToFloor").start();
-		new Thread(schedulerServer, "Scheduler: FloorToElevator").start();
+		new Thread(schedulerClient, "Scheduler: FloorToElevator").start();
+		new Thread(schedulerServer, "Scheduler: ElevatorToFloor").start();
 	}
 }
