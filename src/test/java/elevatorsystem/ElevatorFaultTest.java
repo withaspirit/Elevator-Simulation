@@ -169,7 +169,7 @@ public class ElevatorFaultTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        elevator1.toggleDoorMalfunction();
+        elevator1.setDoorsMalfunctioning(true);
         // time should be the same as the DOOR_TIME
         try {
             TimeUnit.MILLISECONDS.sleep(doorTime);
@@ -211,7 +211,7 @@ public class ElevatorFaultTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        elevator1.toggleDoorMalfunction();
+        elevator1.setDoorsMalfunctioning(true);
         // time should be the same as the DOOR_TIME
         try {
             TimeUnit.MILLISECONDS.sleep(doorTime);
@@ -255,7 +255,7 @@ public class ElevatorFaultTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        elevator1.toggleDoorMalfunction();
+        elevator1.setDoorsMalfunctioning(true);
         // time should be the same as the DOOR_TIME
         try {
             TimeUnit.MILLISECONDS.sleep(doorTime * 5);

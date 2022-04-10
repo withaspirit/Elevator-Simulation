@@ -528,13 +528,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Toggles the Door Malfunction flag of the Elevator.
-	 */
-	public void toggleDoorMalfunction() {
-		doorsMalfunctioning = !doorsMalfunctioning;
-	}
-
-	/**
 	 * Interrupts Elevator's executing Thread.
 	 */
 	public void interrupt() {
