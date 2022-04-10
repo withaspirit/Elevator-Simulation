@@ -52,9 +52,9 @@ public class ElevatorMonitor extends SystemEvent {
      * @param currentFloor the currentFloor of the Elevator
      * @param serviceDirection the direction that the elevator is serving
      * @param movementState the MovementState of the Elevator's motor
-     * @param movementDirection
-     * @param doorState
-     * @param fault
+     * @param movementDirection the direction the elevator's motor is moving
+     * @param doorState the state of the elevator's doors
+     * @param fault the elevator fault that represents the elevator's error state
      * @param queueTime the estimated time for elevator to fulfill all of its requests
      */
     public ElevatorMonitor(int elevatorNumber, int currentFloor, Direction serviceDirection, MovementState movementState, Direction movementDirection, Doors.State doorState, Fault fault, Boolean empty, double queueTime) {
@@ -97,22 +97,37 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
-     * Gets the current direction of the elevator.
+     * Gets the current service direction of the elevator.
      *
-     * @return the current direction of the elevator
+     * @return the service direction of the elevator
      */
     public Direction getDirection() {
         return currentDirection;
     }
 
+    /**
+     * Gets the Movement Direction of the elevator
+     *
+     * @return the current direction the elevator is moving
+     */
     public Direction getMovementDirection() {
         return movementDirection;
     }
 
+    /**
+     * Gets the state of the Doors of the elevator
+     *
+     * @return the State of the elevator Doors from the State enum
+     */
     public Doors.State getDoorsState() {
         return doorsState;
     }
 
+    /**
+     * Gets the Fault representing the error state of the elevator
+     *
+     * @return the Fault for the elevator
+     */
     public Fault getFault() {
         return fault;
     }
@@ -154,6 +169,14 @@ public class ElevatorMonitor extends SystemEvent {
         return formattedString;
     }
 
+    /**
+     * Returns a String array of size 6 containing the elevator's properties.
+     *
+     * The elevators properties in order from position 1 to position 6 in the array:
+     * Current Floor, Service Direction, Movement State, Movement Direction, Doors State, Fault
+     *
+     * @return a String array containing 6 elevator properties
+     */
     public String[] propertiesToStringArray() {
         String[] properties = new String[6];
         //{"CurrentFloor", "ServiceDirection", "MovementState", "MovementDirection", "DoorState", "Fault"};
