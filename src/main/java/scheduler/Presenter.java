@@ -3,7 +3,6 @@ package scheduler;
 import requests.ElevatorMonitor;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Presenter updates the View of the system with information from the Model.
@@ -44,8 +43,8 @@ public class Presenter {
      * @param elevatorMonitor the elevatorMonitor containing the status information of the Elevator
      */
     public void updateElevatorView(ElevatorMonitor elevatorMonitor) {
-        ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber());
-        elevatorView.update(elevatorMonitor);
+        ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber() - 1);
+        elevatorView.updateStatusPanes(elevatorMonitor);
     }
 
     /**
@@ -57,12 +56,19 @@ public class Presenter {
         }
 
         JFrame frame = new JFrame("Elevator Simulation");
-        int height = Toolkit.getDefaultToolkit().getScreenSize().height - Toolkit.getDefaultToolkit().getScreenInsets(new JDialog().getGraphicsConfiguration()).bottom;
-        int width = Toolkit.getDefaultToolkit().getScreenSize().width;
-        frame.setSize(width, height);
+//        int height = Toolkit.getDefaultToolkit().getScreenSize().height - Toolkit.getDefaultToolkit().getScreenInsets(new JDialog().getGraphicsConfiguration()).bottom;
+//        int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+//        frame.setSize(width, height);
         frame.add(elevatorViewContainer.getPanel());
 
+        // center the JFrame
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.repaint();
+        frame.revalidate();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.pack();
     }
 }
