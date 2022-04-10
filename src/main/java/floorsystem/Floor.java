@@ -39,7 +39,7 @@ public class Floor implements SubsystemPasser {
 	 */
 	@Override
 	public void passApproachEvent(ApproachEvent approachEvent) {
-		floorSubsystem.handleApproachEvent(approachEvent);
+		floorSubsystem.addEventToQueue(approachEvent);
 	}
 
 	/**

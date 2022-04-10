@@ -96,9 +96,4 @@ class SchedulerTest {
         floorSubsystem.addEvent(elevatorRequest);
 
     }
-
-    @Test
-    void receiveFloorRequest() {
-
-    }
 }

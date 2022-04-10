@@ -13,14 +13,14 @@ import java.util.ArrayList;
 public class ArrivalSensor {
 
 	private final int floorNumber;
-	ArrayList<ServiceRequest> requestsOnFloor;
+	private final ArrayList<ServiceRequest> requestsOnFloor;
 
 	/**
 	 * The constructor for ArrivalSensor.
 	 *
 	 * @param floorNumber floorNumber from Floor class
 	 */
-	ArrivalSensor(int floorNumber) {
+	public ArrivalSensor(int floorNumber) {
 		this.floorNumber = floorNumber;
 		requestsOnFloor = new ArrayList<>();
 	}
