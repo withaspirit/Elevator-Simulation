@@ -13,10 +13,8 @@ import java.util.ArrayList;
 public class ElevatorViewContainer {
 
     // TODO: some of these could easily be local variables
-    private ArrayList<ElevatorView> elevatorViews;
-    private JPanel elevatorListPanel;
-    private JScrollPane scrollPane;
-    private JPanel containerPanel;
+    private final ArrayList<ElevatorView> elevatorViews;
+    private final JPanel containerPanel;
 
     /**
      * Constructor for ElevatorViewContainer.
@@ -25,10 +23,10 @@ public class ElevatorViewContainer {
      */
     public ElevatorViewContainer(int numberOfElevators) {
         this.elevatorViews = new ArrayList<>();
-        elevatorListPanel = new JPanel(new GridLayout(numberOfElevators, 1));
-        for (int i = 0; i < numberOfElevators; i++) {
+        JPanel elevatorListPanel = new JPanel(new GridLayout(numberOfElevators, 1));
+        for (int i = 1; i <= numberOfElevators; i++) {
             elevatorViews.add(new ElevatorView(i));
-            elevatorListPanel.add(elevatorViews.get(i).getPanel());
+            elevatorListPanel.add(elevatorViews.get(i - 1).getPanel());
         }
 
         JScrollPane scrollPane = new JScrollPane(elevatorListPanel);
