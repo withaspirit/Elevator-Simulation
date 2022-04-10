@@ -14,15 +14,13 @@ public class Client {
 
     private final int portNumber;
     private final MessageTransfer messageTransfer;
-    private Origin origin;
 
     /**
      * Constructor for Client.
      */
-    public Client(int portNumber, Origin origin) {
+    public Client(int portNumber) {
         this.portNumber = portNumber;
         messageTransfer = new MessageTransfer(portNumber);
-        this.origin = origin;
     }
 
     /**
