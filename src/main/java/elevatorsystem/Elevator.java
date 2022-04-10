@@ -138,7 +138,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (travelTime < 0 && messageTransferEnabled) {
 			while (approachEvent == null) {
 			}
-		} else if (travelTime >= 0 ) {
+		} else if (travelTime > 0) {
 
 			synchronized (this) {
 				try {
@@ -302,7 +302,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public boolean attemptToOpenDoors() {
 		synchronized (this) {
 			try {
-				if (doorTime >= 0) {
+				if (doorTime > 0) {
 					wait(doorTime);
 				}
 
