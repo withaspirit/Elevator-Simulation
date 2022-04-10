@@ -258,14 +258,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " reached its destination");
 
-		// proceed only if door opening successful
-		if (attemptToOpenDoors()) {
-			System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
-		} else {
-			// door malfunction behavior
-			doors.setToStuck();
-			shutDownElevator();
+		// try to open doors until successful
+		while (!attemptToOpenDoors()) {
+			toggleDoorMalfunction();
 		}
+		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
 
 		if (requestQueue.isEmpty()){
 			serviceDirection = Direction.NONE;
