@@ -232,7 +232,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void startMovingToFloor(int floorToVisit) {
 		// proceed only if door closing successful
 		if (attemptToCloseDoors()) {
-			System.out.println(LocalTime.now() + "\n Elevator #" + elevatorNumber + " closed doors");
+			System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
 			motor.startMoving();
 			motor.changeDirection(currentFloor, floorToVisit);
 			// if doors opening also unsuccessful, shut down elevator
@@ -256,11 +256,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 		attemptToRemoveFloor(requestFloor);
 		motor.stop();
 		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-		System.out.println(LocalTime.now() + "\n Elevator #" + elevatorNumber + " reached destination");
+		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " reached its destination");
 
 		// proceed only if door opening successful
 		if (attemptToOpenDoors()) {
-			System.out.println(LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened doors");
+			System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
 		} else {
 			// door malfunction behavior
 			doors.setToStuck();
