@@ -36,6 +36,7 @@ public class Scheduler implements Runnable {
 	private final int timerTimeOut = 7000; // milliseconds
 	private static int schedulerThreadsTerminated;
 
+
 	/**
 	 * Constructor for Scheduler.
 	 *
@@ -270,7 +271,7 @@ public class Scheduler implements Runnable {
 	/**
 	 * Simple message requesting and sending between subsystems.
 	 * Scheduler
-	 * Sends: ApproachEvent, FloorRequest, ElevatorRequest
+	 * Sends: ApproachEvent, ServiceRequest, ElevatorRequest
 	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
@@ -288,7 +289,7 @@ public class Scheduler implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		Structure structure = new Structure(10, 2, 1000, 1000);
+		Structure structure = new Structure(20, 4, 1000, 1000);
 
 		ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators());
 		Presenter presenter = new Presenter();

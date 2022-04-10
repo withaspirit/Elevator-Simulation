@@ -197,9 +197,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		int removedFloor = removedRequest.getFloorNumber();
 		boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
 
-		if (removedRequest == null) {
-			throw new IllegalArgumentException("A value of -1 was received from the requestQueue.");
-		} else if (!sameFloorRemovedAsPeeked) {
+		if (!sameFloorRemovedAsPeeked) {
 			System.out.println("Floor peeked " + requestFloor + ", Floor Removed: " + removedFloor);
 			throw new ConcurrentModificationException("A request was added to Elevator " + elevatorNumber + " while the current request was being processed.");
 		}
@@ -215,27 +213,20 @@ public class Elevator implements Runnable, SubsystemPasser {
 		int floorToVisit = motor.move(currentFloor, requestFloor);
 
 		if (motor.isIdle()) {
-			// elevator is stopped
 			if (currentFloor == requestFloor) {
 				stopAtFloor(requestFloor);
-			} else if (floorToVisit == requestFloor) {
-				startMovingToFloor(floorToVisit);
 			} else {
-				// requestFloor != floorToVisit
+				// floorToVisit == requestFloor || floorToVisit != requestFloor
 				startMovingToFloor(floorToVisit);
 			}
-		} else {
-			// elevator is moving
+		} else { // elevator is moving
 			if (currentFloor == requestFloor) {
 				// elevator has reached destination after moving one floor
 				stopAtFloor(requestFloor);
-			} else if (floorToVisit == requestFloor) {
-				// do nothing
-			} else {
-				// floorToVisit != requestFloor
-				// keep moving
 			}
+			// do nothing if floorToVisit == requestFloor || floorToVisit != requestFloor
 		}
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 	}
 
 	/**
@@ -267,6 +258,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void stopAtFloor(int requestFloor) {
 		attemptToRemoveFloor(requestFloor);
+		motor.stop();
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+
 		// proceed only if door opening successful
 		if (attemptToOpenDoors()) {
 			System.out.println("Elevator #" + elevatorNumber + " reached destination");
@@ -277,11 +271,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 		}
 
 		if (requestQueue.isEmpty()){
-			motor.stop();
 			serviceDirection = Direction.NONE;
 		}
-
-		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
 	}
 
 	/**
@@ -506,7 +497,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	@Override
 	public void passApproachEvent(ApproachEvent approachEvent) {
-		elevatorSubsystem.handleApproachEvent(approachEvent);
+		elevatorSubsystem.addEventToQueue(approachEvent);
 	}
 
 	/**
@@ -538,7 +529,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		System.out.println("Elevator #" + elevatorNumber + " Fault: " + this.fault.toString() + ".");
 		if (fault == Fault.ELEVATOR_STUCK) {
 			motor.setMovementState(MovementState.STUCK);
-			elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
 	}
 

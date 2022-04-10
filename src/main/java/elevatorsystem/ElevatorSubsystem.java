@@ -81,22 +81,13 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
-	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
+	 * Adds a SystemEvent to a System's queue of events.
 	 *
-	 * @param approachEvent the approach event for the system
+	 * @param systemEvent the SystemEvent to add
 	 */
 	@Override
-	public void handleApproachEvent(ApproachEvent approachEvent) {
-		eventQueue.add(approachEvent);
-	}
-
-	/**
-	 * Sends new updated elevator status information to the scheduler.
-	 *
-	 * @param elevatorMonitor an elevator monitor containing updated elevator information.
-	 */
-	public void handleElevatorMonitorUpdate(ElevatorMonitor elevatorMonitor) {
-		eventQueue.add(elevatorMonitor);
+	public void addEventToQueue(SystemEvent systemEvent) {
+		eventQueue.add(systemEvent);
 	}
 
 	/**
