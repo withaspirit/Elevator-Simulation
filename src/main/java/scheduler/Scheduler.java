@@ -210,14 +210,23 @@ public class Scheduler implements Runnable {
 			} else if (state == MovementState.STUCK) {
 				System.err.println("Elevator#" + elevatorNumber + " is stuck");
 
-			} else if (monitor.getDirection() == requestDirection) {
+			} else if (currentDirection == requestDirection) {
+				// scheduler considers the elevator's next floor when Elevator is moving
+				int floorToVisit = currentFloor;
+				if (monitor.getState() == MovementState.ACTIVE) {
+					if (currentDirection == Direction.DOWN) {
+						floorToVisit--;
+					} else if (currentDirection == Direction.UP) {
+						floorToVisit++;
+					}
+				}
 				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
-					if (requestDirection == Direction.DOWN && currentFloor > desiredFloor) {
+					if (requestDirection == Direction.DOWN && floorToVisit > desiredFloor) {
 						//check if request is in path current floor > directed floor going down
 						elevatorBestExpectedTime = tempExpectedTime;
 						chosenBestElevator = elevatorNumber;
 
-					} else if (requestDirection == Direction.UP && currentFloor < desiredFloor) {
+					} else if (requestDirection == Direction.UP && floorToVisit < desiredFloor) {
 						//check if request is in path current floor < directed floor going up
 						elevatorBestExpectedTime = tempExpectedTime;
 						chosenBestElevator = elevatorNumber;
