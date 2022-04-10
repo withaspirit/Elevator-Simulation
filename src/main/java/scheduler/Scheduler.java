@@ -28,14 +28,12 @@ public class Scheduler implements Runnable {
 
 	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private final IntermediateHost intermediateHost;
-	private volatile SystemStatus systemStatus;
-	// private ArrayList<Elevator> elevators;
-	// private ArrayList<Floor> floors;
-	private Timer timer;
+	private static Presenter presenter;
+	private final SystemStatus systemStatus;
+	private final Timer timer;
 	private TimerTask timerTask;
 	private long startTime = -1;
-	private final int timerTimeOut = 7;
-	private final int millSecsToSecs = 1000;
+	private final int timerTimeOut = 7000; // milliseconds
 
 	/**
 	 * Constructor for Scheduler.
@@ -47,6 +45,7 @@ public class Scheduler implements Runnable {
 		intermediateHost = new IntermediateHost(portNumber);
 		systemStatus = new SystemStatus(false);
 		timer = new Timer();
+		presenter = null;
 	}
 
 	/**
@@ -56,6 +55,16 @@ public class Scheduler implements Runnable {
 	 */
 	public void addElevatorMonitor(int elevatorNumber) {
 		elevatorMonitorList.add(new ElevatorMonitor(elevatorNumber));
+	}
+
+	/**
+	 * Sets the Scheduler's presenter to a valid presenter.
+	 * This will allow for output to the GUI's view.
+	 *
+	 * @param presenter a Presenter
+	 */
+	public void setPresenter(Presenter presenter){
+		Scheduler.presenter = presenter;
 	}
 
 	/**
@@ -139,6 +148,9 @@ public class Scheduler implements Runnable {
 
 		if (event instanceof ElevatorMonitor elevatorMonitor){
 			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
+			if (presenter != null){
+				presenter.updateElevatorView(elevatorMonitor);
+			}
 		} else {
 			event.setOrigin(Origin.changeOrigin(event.getOrigin()));
 			intermediateHost.addEventToQueue(event);
@@ -238,25 +250,31 @@ public class Scheduler implements Runnable {
 	 * Resets the inactivity timer to show that the scheduler did work 
 	 */
 	public void resetTimer() {
-		if (this.timerTask.cancel()) {
-			this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
-			this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);
+		if (timerTask == null || timerTask.cancel()) {
+			timerTask = new TimerTask() {
+				@Override
+				public void run() {
+					long timeElapsed = (System.nanoTime() - startTime) / 1000000 - timerTimeOut;
+					System.out.println(Thread.currentThread().getName() + " took " + timeElapsed + " milliseconds to complete.");
+					timer.cancel();
+				}
+			};
+			timer.schedule(timerTask, timerTimeOut);
 		}
 	}
 	
 	/**
 	 * Simple message requesting and sending between subsystems.
 	 * Scheduler
-	 * Sends: ApproachEvent, FloorRequest, ElevatorRequest
+	 * Sends: ApproachEvent, ServiceRequest, ElevatorRequest
 	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
     
 		//Starts the inactivity timer and performance measurement
 		//this.startTime = System.nanoTime();
-		this.timerTask = new SchedulerTimeOut(this.timer, this.startTime);
-		this.timer.schedule(this.timerTask, timerTimeOut * millSecsToSecs);   
-		
+		resetTimer();
+
 		// TODO: replace with systemActivated
 		while (true) {
 			receiveAndProcessPacket();
@@ -264,10 +282,17 @@ public class Scheduler implements Runnable {
 	}
 
 	public static void main(String[] args) {
+		Structure structure = new Structure(20, 4, 1000, 1000);
+
+		ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators());
+		Presenter presenter = new Presenter();
+		presenter.addView(elevatorViewContainer);
+		presenter.startGUI();
+
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
 
-		Structure structure = new Structure(10, 2, -1, -1);
+		schedulerClient.setPresenter(presenter);
 
 		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
 			schedulerClient.addElevatorMonitor(i + 1);
@@ -282,26 +307,5 @@ public class Scheduler implements Runnable {
 
 		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
 		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
-	}
-	
-	/** 
-	 * SchedulerTimeOut calculates the elapsed time for the scheduler thread 
-	 * in the form of a TimerTask triggered by inactivity
-	 */
-	public class SchedulerTimeOut extends TimerTask {
-
-		Timer timer;
-		long startTime;
-		
-		SchedulerTimeOut(Timer timer, long startTime){
-			this.timer = timer;
-			this.startTime = startTime;
-		}
-		
-		public void run() {
-			long timeElapsed = (System.nanoTime() - this.startTime) / 1000000 - timerTimeOut * millSecsToSecs;
-			System.out.print("A scheduler thread took " + timeElapsed + " milliseconds to complete\n");
-			this.timer.cancel();
-		}
 	}
 }
