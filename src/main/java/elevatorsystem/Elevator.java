@@ -230,13 +230,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param floorToVisit the next floor the elevator will visit
 	 */
 	public void startMovingToFloor(int floorToVisit) {
-		// proceed only if door closing successful
-		if (attemptToCloseDoors()) {
-			System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
-			motor.startMoving();
-			motor.changeDirection(currentFloor, floorToVisit);
-			// if doors opening also unsuccessful, shut down elevator
+
+		// proceed until door closing successful
+		while (!attemptToCloseDoors()) {
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+			setFault(Fault.NONE);
+			setDoorsMalfunctioning(false);
 		}
+		System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
+		motor.startMoving();
+		motor.changeDirection(currentFloor, floorToVisit);
 	}
 
 	/**
@@ -252,6 +255,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// try to open doors until successful
 		while (!attemptToOpenDoors()) {
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 			setFault(Fault.NONE);
 			setDoorsMalfunctioning(false);
 		}
@@ -329,9 +333,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
 					throw new IllegalStateException(messageToPrint);
 				}
-			} catch (InterruptedException ie) {
-				ie.printStackTrace();
-				return false;
+			} catch (InterruptedException e) {
+				// if interrupted, try to close again
+				return attemptToCloseDoors();
 			} catch (IllegalStateException ise) {
 				setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();

@@ -114,7 +114,6 @@ public class ElevatorFaultTest {
         }
     }
 
-
     @Test
     void testArrivalSensorFail() {
         int numberOfElevators = 1;
