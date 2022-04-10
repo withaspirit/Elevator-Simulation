@@ -304,6 +304,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// if interrupted, try to open again
 				return attemptToOpenDoors();
 			} catch (IllegalStateException ise) {
+				doors.setToStuck();
 				setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();
 				return false;
@@ -337,6 +338,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// if interrupted, try to close again
 				return attemptToCloseDoors();
 			} catch (IllegalStateException ise) {
+				doors.setToStuck();
 				setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();
 				return false;
