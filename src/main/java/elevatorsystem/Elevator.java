@@ -260,6 +260,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// try to open doors until successful
 		while (!attemptToOpenDoors()) {
+			setFault(Fault.NONE);
 			setDoorsMalfunctioning(false);
 		}
 		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
@@ -304,8 +305,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 					throw new IllegalStateException(messageToPrint);
 				}
 			} catch (InterruptedException e) {
-				// do nothing. doors opening can never be interrupted
-				return true;
+				// if interrupted, try to open again
+				return attemptToOpenDoors();
 			} catch (IllegalStateException ise) {
 				setFault(Fault.DOORS_STUCK);
 				ise.printStackTrace();
@@ -516,6 +517,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 			motor.setMovementState(MovementState.STUCK);
 			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
+	}
+
+	/**
+	 * Indicates whether the Elevator's doors are malfunctioning.
+	 *
+	 * @return true if the doors are malfunctioning, false otherwise
+	 */
+	public boolean doorsAreMalfunctioning() {
+		return doorsMalfunctioning;
 	}
 
 	/**

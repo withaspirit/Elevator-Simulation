@@ -150,6 +150,7 @@ public class ElevatorFaultTest {
 
     @Test
     void testDoorsStuckOnClosing() {
+        // from OPEN to CLOSED
         initNumberOfElevators(1);
         Elevator elevator1 = elevatorList.get(0);
         // disable message transfer
