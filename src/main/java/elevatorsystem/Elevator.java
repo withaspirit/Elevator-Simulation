@@ -236,14 +236,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 			motor.startMoving();
 			motor.changeDirection(currentFloor, floorToVisit);
 			// if doors opening also unsuccessful, shut down elevator
-		} else if (fault == Fault.DOORS_INTERRUPTED) {
-			if (!attemptToOpenDoors()) {
-				doors.setToStuck();
-				shutDownElevator();
-			}
-		} else if (fault == Fault.DOORS_STUCK) {
-			// door malfunction behavior
-			shutDownElevator();
 		}
 	}
 
@@ -338,7 +330,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 					throw new IllegalStateException(messageToPrint);
 				}
 			} catch (InterruptedException ie) {
-				setFault(Fault.DOORS_INTERRUPTED);
 				ie.printStackTrace();
 				return false;
 			} catch (IllegalStateException ise) {

@@ -10,7 +10,6 @@ import floorsystem.ArrivalSensor;
 public enum Fault {
     ARRIVAL_SENSOR_FAIL(ArrivalSensor.class.getSimpleName() + " Failed"),
     DOORS_STUCK("Doors Stuck"),
-    DOORS_INTERRUPTED("Doors Interrupted"),
     ELEVATOR_STUCK("Elevator Stuck"), // Emergency stop
     NONE("None");
 
