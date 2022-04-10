@@ -222,6 +222,7 @@ public class ElevatorFaultTest {
                 Fault.DOORS_STUCK.getName() + ": " + elevator1.getFault().toString());
         assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
         assertEquals(Fault.DOORS_STUCK, elevator1.getFault());
+        assertTrue(elevator1.doorsAreMalfunctioning());
     }
 
     @Test
@@ -251,14 +252,14 @@ public class ElevatorFaultTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        // time should be twice or more the DOOR_TIME -> give
+        // allow stopAtFloor to correct door not opening
         try {
             TimeUnit.MILLISECONDS.sleep(doorTime * 3);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
-                Fault.DOORS_STUCK.getName() + ": " + elevator1.getFault().toString());
+                Fault.DOORS_STUCK.getName() + "handled : " + elevator1.getFault().toString());
         assertEquals(Doors.State.OPEN, elevator1.getDoors().getState());
         assertEquals(Fault.NONE, elevator1.getFault());
         assertFalse(elevator1.doorsAreMalfunctioning());
