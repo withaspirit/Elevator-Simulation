@@ -138,7 +138,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (travelTime < 0 && messageTransferEnabled) {
 			while (approachEvent == null) {
 			}
-		} else if (travelTime >= 0 ) {
+		} else if (travelTime > 0) {
 
 			synchronized (this) {
 				try {
@@ -286,7 +286,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public boolean changeDoorState(Doors.State state) {
 		// throw error invalid argument
 		if (!state.equals(Doors.State.OPEN) && !state.equals(Doors.State.CLOSED)) {
-			System.err.println("Invalid argument for ");
+			System.err.println("Invalid argument for Doors State in changeDoorState");
 			System.exit(1);
 		}
 		// process door change
