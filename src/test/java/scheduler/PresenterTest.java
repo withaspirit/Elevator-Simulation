@@ -55,7 +55,7 @@ public class PresenterTest {
 
 
         //Updating a second view for a different elevator
-        elevatorNumber = 3;
+        elevatorNumber = 2;
         currentFloor = 1;
         currentDirection = Direction.UP;
         movementState = MovementState.ACTIVE;
