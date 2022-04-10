@@ -8,7 +8,7 @@ import java.net.DatagramPacket;
 /**
  * Client sends and receives messages from an IntermediateHost.
  *
- * @author Liam Tripp, Julian, Ryan Dash, Ramit Mahajan
+ * @author Liam Tripp, Julian, Ryan Dash
  */
 public class Client {
 
