@@ -33,7 +33,7 @@ public class PresenterTest {
         presenter.addView(elevatorViewContainer);
 
         //Updating first view
-        int elevatorNumber = 0;
+        int elevatorNumber = 1;
         int currentFloor = 2;
         Direction currentDirection = Direction.DOWN;
         MovementState movementState = MovementState.ACTIVE;
@@ -55,7 +55,7 @@ public class PresenterTest {
 
 
         //Updating a second view for a different elevator
-        elevatorNumber = 3;
+        elevatorNumber = 2;
         currentFloor = 1;
         currentDirection = Direction.UP;
         movementState = MovementState.ACTIVE;
