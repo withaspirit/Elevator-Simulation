@@ -281,12 +281,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Attempts to change the state of the Elevator's Doors. If DoorTime is enabled,
-	 * the elevator waits before taking action on the Doors. If the Doors have
-	 * malfunctioned, the Elevator takes action accordingly.
+	 * Attempts to open or close the door depending on the state provided.
+	 * If DoorTime is enabled, the elevator waits before acting on the Doors.
+	 * If the Doors have malfunctioned, the Elevator corrects it.
 	 *
-   * @param state the new State of the Doors
-	 * @return true if attempt is successful, false otherwise
+	 * @param state the new State of the Doors
+	 * @return true if the change is successful, false if door was set to stuck
 	 */
 	public boolean changeDoorState(Doors.State state) {
 		// throw error invalid argument
@@ -313,7 +313,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 					throw new IllegalStateException(messageToPrint);
 				}
 			} catch (InterruptedException e) {
-				// if interrupted, try to open again
+				// if interrupted, try to change state again
 				return changeDoorState(state);
 			} catch (IllegalStateException ise) {
 				doors.setToStuck();
