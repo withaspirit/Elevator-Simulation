@@ -33,7 +33,7 @@ public class Scheduler implements Runnable {
 	private final Timer timer;
 	private TimerTask timerTask;
 	private long startTime = -1;
-	private final int timerTimeOut = 7000; // milliseconds
+	private int timerTimeOut = 7000; // milliseconds
 	private static int schedulerThreadsTerminated;
 
 	/**
@@ -169,6 +169,7 @@ public class Scheduler implements Runnable {
 	public void enableSystem(Structure structure, InetAddress inetAddress, int portNumber) {
 		systemStatus.setSystemActivated(true);
 		intermediateHost.sendObject(structure, inetAddress, portNumber);
+		timerTimeOut = (structure.getDoorsTime() + structure.getElevatorTime()) * 3;
 	}
 
 	/**
