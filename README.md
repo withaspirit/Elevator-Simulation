@@ -40,10 +40,10 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 1. Download the ZIP file for the project. (In GitHub, found under "Code" button).
 2. Extract the ZIP file. Remember where you put the extracted folder.
 3. Open Eclipse. In the upper left corner, select File -> Import -> Maven -> Existing Maven Project. Click "Next" to continue.
-4. [See "Import Maven Project"] On the new popup screen, for "Root Directory," select the extracted project folder. Ignore the folder within the extracted project folder.
+4. [See "Import Maven Projects"] On the new popup screen, for "Root Directory," select the extracted project folder. Ignore the folder within the extracted project folder.
 
   <details>
-  <summary>Show "Import Maven Project"</summary>
+  <summary>Show "Import Maven Projects"</summary>
 
   ![Import Maven Project](https://user-images.githubusercontent.com/61635007/161658503-5c94a77e-a862-4493-b24d-2ecfe9fbe226.png)
 
