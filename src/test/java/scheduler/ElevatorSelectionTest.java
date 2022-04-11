@@ -178,7 +178,5 @@ public class ElevatorSelectionTest {
         assertEquals(12.6, monitorList.get(1).getQueueTime());
         // Elevator 2 traveling in same direction has higher priority and Elevator 2 has 3 and 1 in queue
 
-        //Elevator 1 floor requests up [1, 2, 3, 5, 6]
-        //Elevator 2 floor requests up [2, 4], down [7, 4, 3, 1]
     }
 }
