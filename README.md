@@ -376,7 +376,7 @@ Instructions:
 
     * Thread Initialization:
     
-    * Thread Termination: Introduced conditions to terminate the Threads of the System. Termination is activated by each of the two Scheduler's Timers expiring. Each Scheduler sends a termination message to the the System it communicates with and then terminates itself. The systems are terminated by receiving the message.
+    * Thread Termination: Introduced conditions to terminate the Threads of the Simulation. Termination is activated by each of the two Scheduler's Timers expiring. Each Scheduler sends a termination message to the the System it communicates with and then terminates itself. The systems are terminated by receiving the message.
 
     * Other changes:
     
@@ -388,9 +388,9 @@ Instructions:
   | ------ | ------ | ------------- | ----
   | Ryan Dash | | | Brainstorming, Code Review
   | Ramit Mahajan | | |
-  | Brady Norton | | |
-  | Julian Obando Velez | | Final Project Presentation, | Brainstorming, Code Review
-  | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, Final Project Presentation | Brainstorming, Code Review
+  | Brady Norton | | | Code Review
+  | Julian Obando Velez | | Final Project Presentation | Brainstorming, Code Review
+  | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, README, Final Project Presentation | Brainstorming, Code Review
   
   ### Diagrams
 
