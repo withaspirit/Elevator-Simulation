@@ -376,7 +376,7 @@ Instructions:
   | Ramit Mahajan | | |
   | Brady Norton | | |
   | Julian Obando Velez | | Final Project Presentation, | Brainstorming, Code Review
-  | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization, Refactor Elevator, Refactor Scheduler, | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, Final Project Presentation | Brainstorming, Code Review
+  | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, Final Project Presentation | Brainstorming, Code Review
   
   ### Diagrams
 
