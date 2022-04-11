@@ -282,11 +282,10 @@ public class Scheduler implements Runnable {
     
 		//Starts the inactivity timer and performance measurement
 		resetTimer();
-
 		/*
 			Use schedulerThreadsTerminated instead of systemStatus.activated()
-			because sometimes, one thread gets closed too early. Must wait for
-			both to be closed.
+			because sometimes, one scheduler's socket gets closed too early, 
+      causing a SocketException. Must wait for both to be closed.
 		 */
 		while (schedulerThreadsTerminated < 2) {
 			receiveAndProcessPacket();
@@ -296,7 +295,7 @@ public class Scheduler implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		Structure structure = new Structure(10, 2, 1000, 1000);
+		Structure structure = new Structure(20, 4, 1000, 1000);
 
 		ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators());
 		Presenter presenter = new Presenter();
