@@ -113,9 +113,9 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	 */
 	private void subsystemUDPMethod() {
 			Object object;
-			if (!eventQueue.isEmpty()) {
-				// fixme: NoSuchElementException
-				object = server.sendAndReceiveReply(eventQueue.remove());
+			SystemEvent event = eventQueue.poll();
+			if (event != null) {
+				object = server.sendAndReceiveReply(event);
 			} else {
 				object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
 			}
