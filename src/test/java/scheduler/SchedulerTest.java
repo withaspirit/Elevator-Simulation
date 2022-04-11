@@ -11,7 +11,6 @@ import requests.ElevatorRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
-import systemwide.Structure;
 
 import java.time.LocalTime;
 
@@ -75,8 +74,8 @@ class SchedulerTest {
         assertFalse(elevator1.getRequestQueue().isCurrentQueueEmpty());
 
         // Verify values
-        assertEquals(1, elevator1.getRequestQueue().removeRequest());
-        assertEquals(2, elevator1.getRequestQueue().removeRequest());
+        assertEquals(1, elevator1.getRequestQueue().removeRequest().getFloorNumber());
+        assertEquals(2, elevator1.getRequestQueue().removeRequest().getFloorNumber());
         assertEquals(Direction.UP, elevator1.getServiceDirection());
     }
 
