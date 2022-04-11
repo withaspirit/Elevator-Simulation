@@ -368,7 +368,17 @@ Instructions:
     <summary>Show Long Description</summary>
     <br>
     
+    * GUI Design Pattern: The design pattern that was selected is the [Model-Presenter-View](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is static in Scheduler, so it's shared by both.
+    
+    [IMAGE OF THE GUI]
+
+    * Timing Scheduler:
+
+    * Thread Initialization:
+    
     * Thread Termination: Introduced conditions to terminate the Threads of the System. Termination is activated by each of the two Scheduler's Timers expiring. Each Scheduler sends a termination message to the the System it communicates with and then terminates itself. The systems are terminated by receiving the message.
+
+    * Other changes:
     
   </details>
 
