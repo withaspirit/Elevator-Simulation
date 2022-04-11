@@ -33,7 +33,7 @@ public class Scheduler implements Runnable {
 	private final Timer timer;
 	private TimerTask timerTask;
 	private long startTime = -1;
-	private int timerTimeOut = 7000; // milliseconds
+	private int delayToEndSystem = 7000; // milliseconds
 
 	/**
 	 * Constructor for Scheduler.
@@ -167,7 +167,7 @@ public class Scheduler implements Runnable {
 	public void enableSystem(Structure structure, InetAddress inetAddress, int portNumber) {
 		systemStatus.setSystemActivated(true);
 		intermediateHost.sendObject(structure, inetAddress, portNumber);
-		timerTimeOut = (structure.getDoorsTime() + structure.getElevatorTime()) * 3;
+		delayToEndSystem = (structure.getDoorsTime() + structure.getElevatorTime()) * 3;
 	}
 
 	/**
@@ -255,13 +255,13 @@ public class Scheduler implements Runnable {
 			timerTask = new TimerTask() {
 				@Override
 				public void run() {
-					long timeElapsed = (System.nanoTime() - startTime) / 1000000 - timerTimeOut;
+					long timeElapsed = (System.nanoTime() - startTime) / 1000000 - delayToEndSystem;
 					System.out.println(Thread.currentThread().getName() + " took " + timeElapsed + " milliseconds to complete.");
 					systemStatus.setSystemActivated(false);
 					timer.cancel();
 				}
 			};
-			timer.schedule(timerTask, timerTimeOut);
+			timer.schedule(timerTask, delayToEndSystem);
 		}
 	}
 	
