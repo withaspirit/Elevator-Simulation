@@ -85,6 +85,10 @@ public class Scheduler implements Runnable {
 		return systemStatus;
 	}
 
+	public IntermediateHost getIntermediateHost() {
+		return intermediateHost;
+	}
+
 	/**
 	 * Takes a DatagramPacket from the IntermediateHost and processes it.
 	 * If it's data (i.e. contains a SystemEvent), it is processed by Scheduler.

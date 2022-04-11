@@ -86,5 +86,7 @@ public class SimulationTest {
             assertTrue(elevator.hasNoRequests());
         }
         assertEquals(0, floorSubsystem.getEventListSize());
+        assertTrue(schedulerElevatorsToFloors.getIntermediateHost().queueIsEmpty());
+        assertTrue(schedulerFloorsToElevators.getIntermediateHost().queueIsEmpty());
     }
 }
