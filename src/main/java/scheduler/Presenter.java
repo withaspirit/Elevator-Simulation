@@ -43,7 +43,7 @@ public class Presenter {
      * @param elevatorMonitor the elevatorMonitor containing the status information of the Elevator
      */
     public void updateElevatorView(ElevatorMonitor elevatorMonitor) {
-        ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber() - 1);
+        ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber());
         elevatorView.updateStatusPanes(elevatorMonitor);
     }
 
@@ -68,7 +68,5 @@ public class Presenter {
         frame.revalidate();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.pack();
     }
 }
