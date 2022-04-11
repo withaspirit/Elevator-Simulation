@@ -61,7 +61,7 @@ public class ElevatorViewContainer {
      * @return elevatorView corresponding to the ElevatorNumber.
      */
     public ElevatorView getElevatorView(int elevatorNumber) {
-        if (elevatorNumber >= elevatorViews.size()) {
+        if (elevatorNumber > elevatorViews.size()) {
             String exceptionMessage = "The number " + elevatorNumber + " is greater " +
                     "than the actual number of ElevatorViews, " + elevatorViews.size() + ".";
             throw new IllegalArgumentException(exceptionMessage);
