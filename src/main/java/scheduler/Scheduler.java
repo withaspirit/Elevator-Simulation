@@ -294,8 +294,8 @@ public class Scheduler implements Runnable {
 
 		schedulerClient.setPresenter(presenter);
 
-		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
-			schedulerClient.addElevatorMonitor(i + 1);
+		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
+			schedulerClient.addElevatorMonitor(i);
 		}
 
 		try {

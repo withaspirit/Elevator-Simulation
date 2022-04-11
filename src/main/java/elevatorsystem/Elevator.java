@@ -46,16 +46,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param elevatorNumber the number of the elevator
 	 * @param elevatorSubsystem the elevator subsystem for elevators
 	 */
-	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem, Structure structure) {
+	public Elevator(int elevatorNumber, ElevatorSubsystem elevatorSubsystem) {
 		this.elevatorNumber = elevatorNumber;
 		this.elevatorSubsystem = elevatorSubsystem;
+		requestQueue = new RequestQueue();
 		motor = new ElevatorMotor();
 		doors = new Doors();
 		currentFloor = 1;
 		serviceDirection = Direction.UP;
-		travelTime = structure.getElevatorTime();
-		doorTime = structure.getDoorsTime();
-		requestQueue = new RequestQueue(travelTime, doorTime);
+		travelTime = -1;
+		doorTime = -1;
 		fault = Fault.NONE;
 		messageTransferEnabled = true;
 		approachEvent = null;
@@ -535,7 +535,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @return a StatusUpdate containing new elevator information.
 	 */
 	public ElevatorMonitor makeElevatorMonitor() {
-		return new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor));
+		return new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor, doorTime*2, travelTime));
 	}
 
 	/**

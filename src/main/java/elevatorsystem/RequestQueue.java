@@ -7,8 +7,6 @@ import systemwide.Direction;
 import java.util.Collections;
 import java.util.TreeSet;
 
-import static elevatorsystem.Elevator.*;
-
 /**
  * RequestQueue maintains queues of serviceRequests that indicate
  * the floors  for an elevator to visit. It also provides methods
@@ -27,17 +25,13 @@ public class RequestQueue {
 	 */
 	private final TreeSet<ServiceRequest> missedRequests;
 
-	private final int travelTime, loadTime;
-
 	/**
 	 * Constructor for RequestQueue.
 	 */
-	public RequestQueue(int travelTime, int loadTime) {
+	public RequestQueue() {
 		currentDirectionQueue = new TreeSet<>();
 		oppositeDirectionQueue = new TreeSet<>(Collections.reverseOrder());
 		missedRequests = new TreeSet<>();
-		this.travelTime = travelTime;
-		this.loadTime = loadTime;
 	}
 
 	/**
@@ -208,13 +202,13 @@ public class RequestQueue {
 	 * @param elevatorFloor the floor the elevator starts at
 	 * @return a double containing the elevator's total expected queue time
 	 */
-	public double getExpectedTime(int elevatorFloor) {
+	public double getExpectedTime(int elevatorFloor, int loadTime, int travelTime) {
 		double queueTime = 0;
 
 		for (ServiceRequest request: currentDirectionQueue) {
 			int floor = request.getFloorNumber();
 			if (elevatorFloor != floor) {
-				queueTime += loadTime + requestTime(elevatorFloor, floor);
+				queueTime += loadTime + requestTime(elevatorFloor, floor, travelTime);
 				elevatorFloor = floor;
 			}
 		}
@@ -222,7 +216,7 @@ public class RequestQueue {
 		for (ServiceRequest request: oppositeDirectionQueue) {
 			int floor = request.getFloorNumber();
 			if (elevatorFloor != floor) {
-				queueTime += loadTime + requestTime(elevatorFloor, floor);
+				queueTime += loadTime + requestTime(elevatorFloor, floor, travelTime);
 				elevatorFloor = floor;
 			}
 		}
@@ -230,7 +224,7 @@ public class RequestQueue {
 		for (ServiceRequest request: missedRequests) {
 			int floor = request.getFloorNumber();
 			if (elevatorFloor != floor) {
-				queueTime += loadTime + requestTime(elevatorFloor, floor);
+				queueTime += loadTime + requestTime(elevatorFloor, floor, travelTime);
 				elevatorFloor = floor;
 			}
 		}
@@ -246,7 +240,7 @@ public class RequestQueue {
 	 * @param finalFloor the destination floor for the elevator to stop at
 	 * @return a double containing the time to fulfil the request
 	 */
-	public double requestTime(int initialFloor, int finalFloor) {
+	public double requestTime(int initialFloor, int finalFloor, int travelTime) {
 		return Math.abs((finalFloor - initialFloor) * travelTime);
 //		double distance = Math.abs(finalFloor - initialFloor) * FLOOR_HEIGHT;
 //		if (distance > ACCELERATION_DISTANCE * 2) {

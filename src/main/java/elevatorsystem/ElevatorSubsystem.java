@@ -87,28 +87,28 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	 * Sends and receives messages for system using UDP packets.
 	 */
 	private void subsystemUDPMethod() {
-		Object object;
-		if (!eventQueue.isEmpty()) {
-			object = server.sendAndReceiveReply(eventQueue.remove());
-		} else {
-			object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
-		}
+			Object object;
+			if (!eventQueue.isEmpty()) {
+				object = server.sendAndReceiveReply(eventQueue.remove());
+			} else {
+				object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
+			}
 
-		if (object instanceof ElevatorRequest elevatorRequest) {
-			Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
-			elevator.addRequest(elevatorRequest);
-			eventQueue.add(elevator.makeElevatorMonitor());
-		} else if (object instanceof ApproachEvent approachEvent) {
-			elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
-		} else if (object instanceof String string) {
-			if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
-				try {
-					Thread.sleep(5);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+			if (object instanceof ElevatorRequest elevatorRequest) {
+				Elevator elevator = elevatorList.get(elevatorRequest.getElevatorNumber() - 1);
+				elevator.addRequest(elevatorRequest);
+				eventQueue.add(elevator.makeElevatorMonitor());
+			} else if (object instanceof ApproachEvent approachEvent) {
+				elevatorList.get(approachEvent.getElevatorNumber() - 1).receiveApproachEvent(approachEvent);
+			} else if (object instanceof String string) {
+				if (string.trim().equals(RequestMessage.EMPTYQUEUE.getMessage())) {
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-		}
 	}
 
 	/**
@@ -119,7 +119,9 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	public void initializeElevators(Structure structure) {
 		// initialize the list of elevators
 		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
-			Elevator elevator = new Elevator(i, this, structure);
+			Elevator elevator = new Elevator(i, this);
+			elevator.setTravelTime(structure.getElevatorTime());
+			elevator.setDoorTime(structure.getDoorsTime());
 			addElevator(elevator);
 		}
 	}
