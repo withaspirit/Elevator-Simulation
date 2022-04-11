@@ -28,7 +28,7 @@ public class SimulationTest {
     private Structure structure;
     private int elevatorTime = 100;
     private int doorsTime = 100;
-    private static final int NUMBER_OF_TESTS = 50;
+    private static final int NUMBER_OF_TESTS = 30;
 
     void setup() {
         structure = new Structure(20, 4, elevatorTime, doorsTime);
