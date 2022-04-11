@@ -143,7 +143,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (travelTime <= 0 && messageTransferEnabled) {
 			while (approachEvent == null) {
 			}
-		} else if (travelTime > 0 ) {
+		} else if (travelTime > 0) {
 
 			synchronized (this) {
 				try {
@@ -198,8 +198,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 		boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
 
 		if (!sameFloorRemovedAsPeeked) {
-			System.out.println("Floor peeked " + requestFloor + ", Floor Removed: " + removedFloor);
-			throw new ConcurrentModificationException("A request was added to Elevator " + elevatorNumber + " while the current request was being processed.");
+			String messageToPrint = "Floor peeked " + requestFloor + ", Floor Removed: " + removedFloor + "\n";
+			messageToPrint += "A request was added to Elevator " + elevatorNumber + " while the current request was being processed.";
+			throw new ConcurrentModificationException(messageToPrint);
 		}
 	}
 
@@ -554,7 +555,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @return a StatusUpdate containing new elevator information.
 	 */
 	public ElevatorMonitor makeElevatorMonitor() {
-		return new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor));
+  		return new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor));
 	}
 
 	/**
