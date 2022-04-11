@@ -99,7 +99,7 @@ public class IntermediateHost {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        messageTransfer.terminate();
+        messageTransfer.closeSocket();
     }
 
     /**

@@ -1,7 +1,6 @@
 package client_server_host;
 
 import requests.SystemEvent;
-import systemwide.Origin;
 
 import java.net.DatagramPacket;
 
@@ -99,7 +98,7 @@ public class Client {
         if (!(object instanceof String string)) {
             messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
         } else if (string.trim().equals(RequestMessage.TERMINATE.getMessage())) {
-            messageTransfer.terminate();
+            messageTransfer.closeSocket();
         }
         return object;
     }
