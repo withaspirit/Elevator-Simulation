@@ -26,7 +26,7 @@ public class MessageTransferTest {
 
 	private MessageTransfer msgTransfer;
 	private ElevatorRequest elevatorRequest;
-	private FloorRequest floorRequest;
+	private ServiceRequest serviceRequest;
 	private ApproachEvent approachEvent;
 	private ElevatorMonitor elevatorMonitor;
 	private Structure structure;
@@ -39,7 +39,8 @@ public class MessageTransferTest {
 		msgTransfer = new MessageTransfer(0);
 		portNumber = msgTransfer.getPortNumber();
 		elevatorRequest = new ElevatorRequest(timeNow, 2, Direction.UP, 4, Origin.FLOOR_SYSTEM);
-		floorRequest = new FloorRequest(timeNow, 7, Direction.DOWN, 0, Origin.SCHEDULER);
+		serviceRequest = new ServiceRequest(timeNow, 7, Direction.DOWN, Origin.SCHEDULER);
+		serviceRequest.setElevatorNumber(0);
 		approachEvent = new ApproachEvent(elevatorRequest, 3, 5);
 		elevatorMonitor = new ElevatorMonitor(0, 1, Direction.UP, MovementState.IDLE, Direction.UP, Doors.State.OPEN, Fault.NONE, true, 0);
 		structure = new Structure(22, 4, 1000, 1000);
@@ -64,16 +65,16 @@ public class MessageTransferTest {
 	}
 
 	@Test
-	void testEncodingWithFloorRequest() {
+	void testEncodingWithServiceRequest() {
 		byte[] requestIn;
-		requestIn = msgTransfer.encodeObject(floorRequest);
+		requestIn = msgTransfer.encodeObject(serviceRequest);
 		SystemEvent systemEventOut = (SystemEvent) msgTransfer.decodeObject(requestIn);
 
 		//Test for correct class instance
-		assertTrue(systemEventOut instanceof FloorRequest);
+		assertTrue(systemEventOut instanceof ServiceRequest);
 
 		//Test for proper attributes
-		FloorRequest requestOut = (FloorRequest) systemEventOut;
+		ServiceRequest requestOut = (ServiceRequest) systemEventOut;
 		assertEquals(requestOut.getOrigin(), Origin.SCHEDULER);
 		assertEquals(requestOut.getTime(), timeNow);
 		assertEquals(requestOut.getFloorNumber(), 7);
@@ -109,7 +110,7 @@ public class MessageTransferTest {
 		byteArray = msgTransfer.encodeObject(elevatorRequest);
 		assertTrue(byteArray.length < maxByteArraySize);
 
-		byteArray = msgTransfer.encodeObject(floorRequest);
+		byteArray = msgTransfer.encodeObject(serviceRequest);
 		assertTrue(byteArray.length < maxByteArraySize);
 
 		byteArray = msgTransfer.encodeObject(elevatorMonitor);

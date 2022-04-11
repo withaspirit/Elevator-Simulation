@@ -71,13 +71,12 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
-	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
+	 * Adds a SystemEvent to a System's queue of events.
 	 *
-	 * @param approachEvent the ApproachEvent for the system
+	 * @param systemEvent the SystemEvent to add
 	 */
-	@Override
-	public void handleApproachEvent(ApproachEvent approachEvent) {
-		eventList.add(approachEvent);
+	public void addEventToQueue(SystemEvent systemEvent) {
+		eventList.add(systemEvent);
 	}
 
 	/**

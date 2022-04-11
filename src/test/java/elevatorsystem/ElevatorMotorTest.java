@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test class for ElevatorMotor methods/
  *
- * @author Julian
+ * @author Julian, Ramit
  */
 public class ElevatorMotorTest {
 
@@ -76,20 +76,6 @@ public class ElevatorMotorTest {
 		motor.stop();
 		assertEquals(motor.getDirection(), Direction.NONE);
 		assertEquals(motor.getMovementState(), MovementState.IDLE);
-	}
-
-	@Test
-	void testMoveUp() {
-		motor.moveUp();
-		assertEquals(motor.getDirection(), Direction.UP);
-		assertEquals(motor.getMovementState(), MovementState.ACTIVE);
-	}
-
-	@Test
-	void testMoveDown() {
-		motor.moveDown();
-		assertEquals(motor.getDirection(), Direction.DOWN);
-		assertEquals(motor.getMovementState(), MovementState.ACTIVE);
 	}
 
 	@Test
