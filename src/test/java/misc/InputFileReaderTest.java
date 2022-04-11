@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class InputFileReaderTest {
 
-    ElevatorRequest elevatorRequest1;
-    ElevatorRequest elevatorRequest2;
-    JSONObject jsonObject;
-    InputFileReader inputFileReader;
-    JSONArray jsonArray;
+    private ElevatorRequest elevatorRequest1;
+    private ElevatorRequest elevatorRequest2;
+    private JSONObject jsonObject;
+    private InputFileReader inputFileReader;
+    private JSONArray jsonArray;
 
     @BeforeEach
     void setUp() {
@@ -53,15 +53,14 @@ public class InputFileReaderTest {
 
             // Test that time is valid
             // This should just throw an exception if the format is invalid
-            LocalTime time = LocalTime.parse(data[0]);
 
             // floorNumber is a valid number ( > 0)
-            int floorNumber = Integer.parseInt(data[1]);
+            int floorNumber = Integer.parseInt(data[0]);
             assertTrue(floorNumber > 0);
 
             // Direction is Up or Down
             // (special cases: no down on first floor)
-            Direction direction = Direction.getDirection(data[2]);
+            Direction direction = Direction.getDirection(data[1]);
             assertNotNull(direction);
             String directionName = direction.getName();
             if (floorNumber == 1) {
@@ -72,7 +71,7 @@ public class InputFileReaderTest {
             }
 
             // floorToVisit is a valid number ( > 0)
-            int floorToVisit = Integer.parseInt(data[3]);
+            int floorToVisit = Integer.parseInt(data[2]);
             assertTrue(floorToVisit > 0);
         }
     }
@@ -89,11 +88,12 @@ public class InputFileReaderTest {
         assertEquals(jsonArray.size(), queue.size());
 
         // Assure contents of each method is the same
+        int localTimePosition = "HH:mm:ss.SSS ".length();
         for (int i = 0; i < queue.size(); i++) {
             elevatorRequest1 = (ElevatorRequest) queue.get(i);
             jsonObject = (JSONObject) jsonArray.get(i);
             elevatorRequest2 = inputFileReader.createElevatorRequest(((String) jsonObject.get("event")).split(" "), LocalTime.now());
-            assertEquals(elevatorRequest1.toString(), elevatorRequest2.toString());
+            assertEquals(elevatorRequest1.toString().substring(localTimePosition), elevatorRequest2.toString().substring(localTimePosition));
         }
     }
 
@@ -106,9 +106,8 @@ public class InputFileReaderTest {
         elevatorRequest1 = inputFileReader.createElevatorRequest(((String) jsonObject.get("event")).split(" "), LocalTime.now());
         String[] data = ((String) jsonObject.get("event")).split(" ");
 
-        assertEquals(LocalTime.MIDNIGHT, LocalTime.parse(data[0])); // midnight = 00:00:00.000
-        assertEquals(1, Integer.parseInt(data[1]));
-        assertEquals(Direction.UP, Direction.getDirection(data[2]));
-        assertEquals(2, Integer.parseInt(data[3]));
+        assertEquals(1, Integer.parseInt(data[0]));
+        assertEquals(Direction.UP, Direction.getDirection(data[1]));
+        assertEquals(2, Integer.parseInt(data[2]));
     }
 }
