@@ -215,6 +215,9 @@ public class ElevatorFaultTest {
         assertTrue(elevator1.doorsAreMalfunctioning());
     }
 
+    /**
+     * Test that closed door stuck handling is done by Elevator.startMovingToFloor().
+     */
     @Test
     void testDoorsStuckOnClosingHandled() {
         // from OPEN to CLOSED
@@ -253,6 +256,9 @@ public class ElevatorFaultTest {
         assertEquals(Fault.NONE, elevator1.getFault());
     }
 
+    /**
+     * Test that open door stuck handling is done by Elevator.stopAtFloor().
+     */
     @Test
     void testDoorsStuckOnOpeningHandled() {
         // test that elevator's stopAtFloor handles getting stuck on opening
