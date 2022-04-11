@@ -49,11 +49,11 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	 */
 	public void run() {
 		Collections.reverse(requestList);
-
-		// TODO: replace with systemActivated
-		while (true) {
+		systemStatus.setSystemActivated(true);
+		while (systemStatus.activated()) {
 			subsystemUDPMethod();
 		}
+		System.out.println(getClass().getSimpleName() + " Thread terminated");
 	}
 
 	/**
@@ -166,8 +166,10 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 						Thread.sleep(5);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-					}
-				}
+          } 
+        } else if (string.trim().equals(RequestMessage.TERMINATE.getMessage())) {
+						systemStatus.setSystemActivated(false);
+        }
 			}
 		}
 	}

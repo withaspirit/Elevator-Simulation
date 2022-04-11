@@ -183,7 +183,7 @@ public class RequestQueue {
 	 * Prints the various queues in RequestQueue.
 	 */
 	@Override
-	public String toString() {
+	public synchronized String toString() {
 		String messageToPrint = "";
 		if (!isCurrentQueueEmpty()) {
 			messageToPrint += "CurrentDirectionQueue: " + currentDirectionQueue.toString() + "\n";
