@@ -75,6 +75,7 @@ public class SimulationTest {
     @Test
     void testSimulationRunsToCompletion() {
         setup();
+        // wait until all threads terminated
         while (schedulerElevatorsToFloors.getSystemStatus().activated() ||
                 schedulerFloorsToElevators.getSystemStatus().activated() ||
                 floorSubsystem.getSystemStatus().activated() ||
@@ -96,12 +97,6 @@ public class SimulationTest {
         for (int i = 0; i < NUMBER_OF_TESTS; i++) {
             testSimulationRunsToCompletion();
             System.out.println("Number of tests: " + i);
-            // add delay for system to set up again?
-            try {
-                TimeUnit.MILLISECONDS.sleep(doorsTime + elevatorTime);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
