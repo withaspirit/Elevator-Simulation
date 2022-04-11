@@ -229,7 +229,7 @@ public class RequestQueue {
 			}
 		}
 
-		return queueTime/1000;
+		return queueTime / 1000;
 	}
 
 	/**
