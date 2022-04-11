@@ -106,6 +106,24 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
+	 * Returns the size of the list of requests.
+	 *
+	 * @return size of the list of requests
+	 */
+	public int getRequestListSize() {
+		return requestList.size();
+	}
+
+	/**
+	 * Adds a ServiceRequest to the list of Requests.
+	 *
+	 * @param serviceRequest serviceRequest to be added to the list of requests.
+	 */
+	public void addRequest(ServiceRequest serviceRequest) {
+		requestList.add(serviceRequest);
+	}
+
+	/**
 	 * Gets the SystemStatus of the System.
 	 *
 	 * @return the SystemStatus of the System
@@ -171,7 +189,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 		int doorsTime = structure.getDoorsTime();
 		// FIXME: unclear if these are sound conditions
 		if (elevatorTime > 0 && doorsTime > 0) {
-			delayToSendRequest = (long) (elevatorTime + doorsTime) / 5;
+			delayToSendRequest = (long) (elevatorTime + doorsTime) / 5 + 100;
 			startTime = System.nanoTime();
 		}
 	}
