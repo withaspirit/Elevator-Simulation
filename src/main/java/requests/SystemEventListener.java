@@ -10,11 +10,11 @@ import systemwide.Structure;
  */
 public interface SystemEventListener {
     /**
-     * Passes an ApproachEvent between a Subsystem component and the Subsystem.
+     * Adds a SystemEvent to a System's queue of events.
      *
-     * @param approachEvent the ApproachEvent for the system
+     * @param systemEvent the SystemEvent to add
      */
-    void handleApproachEvent(ApproachEvent approachEvent);
+    void addEventToQueue(SystemEvent systemEvent);
 
     /**
      * Receives and returns a Structure from the Scheduler.
