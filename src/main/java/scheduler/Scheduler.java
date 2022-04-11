@@ -34,7 +34,6 @@ public class Scheduler implements Runnable {
 	private TimerTask timerTask;
 	private long startTime = -1;
 	private int timerTimeOut = 7000; // milliseconds
-	private static int schedulerThreadsTerminated;
 
 	/**
 	 * Constructor for Scheduler.
@@ -47,7 +46,6 @@ public class Scheduler implements Runnable {
 		systemStatus = new SystemStatus(false);
 		timer = new Timer();
 		presenter = null;
-		schedulerThreadsTerminated = 0;
 	}
 
 	/**
@@ -260,7 +258,6 @@ public class Scheduler implements Runnable {
 					long timeElapsed = (System.nanoTime() - startTime) / 1000000 - timerTimeOut;
 					System.out.println(Thread.currentThread().getName() + " took " + timeElapsed + " milliseconds to complete.");
 					systemStatus.setSystemActivated(false);
-					schedulerThreadsTerminated++;
 					timer.cancel();
 				}
 			};
@@ -271,16 +268,14 @@ public class Scheduler implements Runnable {
 	/**
 	 * Simple message requesting and sending between subsystems.
 	 * Scheduler
-	 * Sends: ApproachEvent, FloorRequest, ElevatorRequest
+	 * Sends: ApproachEvent, ElevatorRequest
 	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
     
 		//Starts the inactivity timer and performance measurement
-		//this.startTime = System.nanoTime();
 		resetTimer();
 
-		// TODO: replace with systemActivated
 		while (systemStatus.activated()) {
 			receiveAndProcessPacket();
 		}
