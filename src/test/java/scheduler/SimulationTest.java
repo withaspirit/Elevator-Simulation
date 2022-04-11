@@ -15,19 +15,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * SimulationTest ensures that the simulation runs to completion.
+ * SimulationTest ensures that the entire simulation runs to completion.
  *
  * @author Liam Tripp
  */
 public class SimulationTest {
 
+    private Scheduler schedulerFloorsToElevators;
+    private Scheduler schedulerElevatorsToFloors;
+    private ElevatorSubsystem elevatorSubsystem;
+    private FloorSubsystem floorSubsystem;
     private Structure structure;
     private int elevatorTime;
     private int doorsTime;
-    private FloorSubsystem floorSubsystem;
-    private ElevatorSubsystem elevatorSubsystem;
-    private Scheduler schedulerFloorsToElevators;
-    private Scheduler schedulerElevatorsToFloors;
 
     @BeforeEach
     void setup() {
