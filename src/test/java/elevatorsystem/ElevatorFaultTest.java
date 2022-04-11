@@ -182,6 +182,40 @@ public class ElevatorFaultTest {
     }
 
     @Test
+    void testDoorsStuckOnOpening() {
+        initNumberOfElevators(1);
+        Elevator elevator1 = elevatorList.get(0);
+        // disable message transfer
+        elevator1.toggleMessageTransfer();
+        // enable door time
+        int doorTime = 300;
+        elevator1.setDoorTime(doorTime);
+
+        Runnable openDoorsRunnable = () -> elevator1.changeDoorState(Doors.State.OPEN);
+        Thread elevatorThread = new Thread(openDoorsRunnable);
+        threads.add(elevatorThread);
+        elevatorThread.start();
+
+        // give elevator time to enter wait statement -> doesn't work without this
+        try {
+            TimeUnit.MILLISECONDS.sleep(doorTime / 3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        elevator1.setDoorsMalfunctioning(true);
+        // time should be the same as the DOOR_TIME
+        try {
+            TimeUnit.MILLISECONDS.sleep(doorTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
+                Doors.State.STUCK + ": " + elevator1.getFault().toString());
+        assertEquals(Doors.State.STUCK, elevator1.getDoors().getState());
+        assertTrue(elevator1.doorsAreMalfunctioning());
+    }
+
+    @Test
     void testDoorsStuckOnClosingHandled() {
         // from OPEN to CLOSED
         initNumberOfElevators(1);
@@ -217,40 +251,6 @@ public class ElevatorFaultTest {
                 Doors.State.STUCK + ": " + elevator1.getFault().toString());
         assertEquals(Doors.State.CLOSED, elevator1.getDoors().getState());
         assertEquals(Fault.NONE, elevator1.getFault());
-    }
-
-    @Test
-    void testDoorsStuckOnOpening() {
-        initNumberOfElevators(1);
-        Elevator elevator1 = elevatorList.get(0);
-        // disable message transfer
-        elevator1.toggleMessageTransfer();
-        // enable door time
-        int doorTime = 300;
-        elevator1.setDoorTime(doorTime);
-
-        Runnable openDoorsRunnable = () -> elevator1.changeDoorState(Doors.State.OPEN);
-        Thread elevatorThread = new Thread(openDoorsRunnable);
-        threads.add(elevatorThread);
-        elevatorThread.start();
-
-        // give elevator time to enter wait statement -> doesn't work without this
-        try {
-            TimeUnit.MILLISECONDS.sleep(doorTime / 3);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        elevator1.setDoorsMalfunctioning(true);
-        // time should be the same as the DOOR_TIME
-        try {
-            TimeUnit.MILLISECONDS.sleep(doorTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Elevator #" + elevator1.getElevatorNumber() + " fault after: " +
-                Doors.State.STUCK + ": " + elevator1.getFault().toString());
-        assertEquals(Doors.State.STUCK, elevator1.getDoors().getState());
-        assertTrue(elevator1.doorsAreMalfunctioning());
     }
 
     @Test
