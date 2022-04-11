@@ -1,7 +1,6 @@
 package client_server_host;
 
 import requests.SystemEvent;
-import systemwide.Origin;
 
 import java.net.DatagramPacket;
 

@@ -1,9 +1,11 @@
 package elevatorsystem;
 
-import requests.*;
+import requests.ApproachEvent;
+import requests.ElevatorMonitor;
+import requests.ServiceRequest;
+import requests.SubsystemPasser;
 import systemwide.Direction;
 import systemwide.Origin;
-import systemwide.Structure;
 
 import java.time.LocalTime;
 import java.util.ConcurrentModificationException;
