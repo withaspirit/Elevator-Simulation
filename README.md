@@ -128,9 +128,9 @@ The multiple programs can be started manually or automatically. To start it manu
 
 #### IntelliJ
 
-As IntelliJ does not allow ordered run configurations, the Multirun plugin is used. 
+- As IntelliJ does not allow ordered run configurations, the Multirun plugin is used. 
 
-Instructions:
+Multirun Instructions:
 1. To install Multirun, click the Setting icon in the top right corner of IntelliJ. Select plugins. 
 2. Search for Multirun in the plugins list. If it does not show up, there should be an option to search aftermarket plugins which you can click. 
 3. Click the install button.
