@@ -217,7 +217,7 @@ public class Scheduler implements Runnable {
 			} else if (state == MovementState.STUCK) {
 				System.err.println("Elevator#" + elevatorNumber + " is stuck");
 
-			} else if (monitor.getDirection() == requestDirection) {
+			} else if (currentDirection == requestDirection) {
 				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
 					if (requestDirection == Direction.DOWN && currentFloor > desiredFloor) {
 						//check if request is in path current floor > directed floor going down
