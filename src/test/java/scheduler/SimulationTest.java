@@ -10,6 +10,7 @@ import systemwide.Structure;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,13 +27,11 @@ public class SimulationTest {
     private ElevatorSubsystem elevatorSubsystem;
     private FloorSubsystem floorSubsystem;
     private Structure structure;
-    private int elevatorTime;
-    private int doorsTime;
+    private int elevatorTime = 100;
+    private int doorsTime = 100;
+    private static final int NUMBER_OF_TEST = 30;
 
-    @BeforeEach
     void setup() {
-        elevatorTime = 100;
-        doorsTime = 100;
         structure = new Structure(20, 4, elevatorTime, doorsTime);
         schedulerFloorsToElevators = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
         schedulerElevatorsToFloors = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
@@ -76,6 +75,7 @@ public class SimulationTest {
      */
     @Test
     void testSimulationRunsToCompletion() {
+        setup();
         while (schedulerElevatorsToFloors.getSystemStatus().activated() ||
                 schedulerFloorsToElevators.getSystemStatus().activated() ||
                 floorSubsystem.getSystemStatus().activated() ||
@@ -88,5 +88,21 @@ public class SimulationTest {
         assertEquals(0, floorSubsystem.getEventListSize());
         assertTrue(schedulerElevatorsToFloors.getIntermediateHost().queueIsEmpty());
         assertTrue(schedulerFloorsToElevators.getIntermediateHost().queueIsEmpty());
+    }
+
+    @Test
+    void testSystemRunsToCompletionMultipleTimes() {
+        elevatorTime = 100;
+        doorsTime = 100;
+        for (int i = 0; i < NUMBER_OF_TEST; i++) {
+            testSimulationRunsToCompletion();
+            System.out.println("Number of tests: " + i);
+            // add delay for system to set up again?
+            try {
+                TimeUnit.MILLISECONDS.sleep(doorsTime + elevatorTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
