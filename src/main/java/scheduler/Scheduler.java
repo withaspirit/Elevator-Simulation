@@ -4,7 +4,9 @@ import client_server_host.IntermediateHost;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import elevatorsystem.MovementState;
-import requests.*;
+import requests.ElevatorMonitor;
+import requests.ElevatorRequest;
+import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
 import systemwide.Structure;
@@ -17,7 +19,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.lang.System;
 
 /**
  * Scheduler handles the requests from all system components.
@@ -307,8 +308,8 @@ public class Scheduler implements Runnable {
 
 		schedulerClient.setPresenter(presenter);
 
-		for (int i = 0; i < structure.getNumberOfElevators(); i++) {
-			schedulerClient.addElevatorMonitor(i + 1);
+		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
+			schedulerClient.addElevatorMonitor(i);
 		}
 
 		try {

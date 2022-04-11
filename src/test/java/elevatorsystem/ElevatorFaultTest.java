@@ -23,6 +23,8 @@ public class ElevatorFaultTest {
     private ArrayList<Elevator> elevatorList;
     private final int numberOfTimesToTest = 20;
     private ArrayList<Thread> threads;
+    private final int travelTime = 300;
+    private final int doorTime = 300;
 
     @BeforeEach
     void setUp() {
@@ -79,7 +81,6 @@ public class ElevatorFaultTest {
         elevator1.addRequest(serviceRequest);
         elevator1.addRequest(serviceRequest2);
         elevator1.toggleMessageTransfer();
-        int travelTime = 300;
         elevator1.setTravelTime(travelTime);
 
         initElevatorThreads();
@@ -128,7 +129,6 @@ public class ElevatorFaultTest {
         elevator1.addRequest(serviceRequest2);
         // include message transfer
         // enable travel time
-        int travelTime = 300;
         elevator1.setTravelTime(travelTime);
 
         initElevatorThreads();
@@ -154,7 +154,6 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        int doorTime = 300;
         elevator1.setDoorTime(doorTime);
         elevator1.setDoorsMalfunctioning(true);
 
@@ -188,7 +187,6 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        int doorTime = 300;
         elevator1.setDoorTime(doorTime);
 
         Runnable openDoorsRunnable = () -> elevator1.changeDoorState(Doors.State.OPEN);
@@ -226,7 +224,6 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        int doorTime = 300;
         elevator1.setDoorTime(doorTime);
         elevator1.setDoorsMalfunctioning(true);
 
@@ -268,7 +265,6 @@ public class ElevatorFaultTest {
         // disable message transfer
         elevator1.toggleMessageTransfer();
         // enable door time
-        int doorTime = 300;
         elevator1.setDoorTime(doorTime);
         elevator1.setDoorsMalfunctioning(true);
 
