@@ -283,6 +283,11 @@ public class Scheduler implements Runnable {
 		//Starts the inactivity timer and performance measurement
 		resetTimer();
 
+		/*
+			Use schedulerThreadsTerminated instead of systemStatus.activated()
+			because sometimes, one thread gets closed too early. Must wait for
+			both to be closed.
+		 */
 		while (schedulerThreadsTerminated < 2) {
 			receiveAndProcessPacket();
 		}
