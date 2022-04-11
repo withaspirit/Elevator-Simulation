@@ -30,11 +30,11 @@ public class Scheduler implements Runnable {
 	private final IntermediateHost intermediateHost;
 	private static Presenter presenter;
 	private final SystemStatus systemStatus;
+	private static int schedulerThreadsTerminated;
 	private final Timer timer;
 	private TimerTask timerTask;
 	private long startTime = -1;
 	private int delayToEndSystem = 7000; // milliseconds
-	private static int schedulerThreadsTerminated;
 
 	/**
 	 * Constructor for Scheduler.
@@ -44,10 +44,10 @@ public class Scheduler implements Runnable {
 	public Scheduler(int portNumber) {
 		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = new IntermediateHost(portNumber);
-		systemStatus = new SystemStatus(false);
-		timer = new Timer();
 		presenter = null;
+		systemStatus = new SystemStatus(false);
 		schedulerThreadsTerminated = 0;
+		timer = new Timer();
 	}
 
 	/**
