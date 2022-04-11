@@ -216,7 +216,7 @@ public class ElevatorFaultTest {
     }
 
     /**
-     * Test that closed door stuck handling is done by Elevator.startMovingToFloor().
+     * Test that CLOSED Doors.STUCK handling is done by Elevator.startMovingToFloor().
      */
     @Test
     void testDoorsStuckOnClosingHandled() {
@@ -257,7 +257,7 @@ public class ElevatorFaultTest {
     }
 
     /**
-     * Test that open door stuck handling is done by Elevator.stopAtFloor().
+     * Test that OPEN Doors.STUCK handling is done by Elevator.stopAtFloor().
      */
     @Test
     void testDoorsStuckOnOpeningHandled() {
