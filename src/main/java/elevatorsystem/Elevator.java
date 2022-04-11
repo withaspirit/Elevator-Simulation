@@ -3,6 +3,7 @@ package elevatorsystem;
 import requests.*;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.SystemStatus;
 
 import java.time.LocalTime;
 import java.util.ConcurrentModificationException;
@@ -17,6 +18,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	// Elevator Subsystem
 	private final ElevatorSubsystem elevatorSubsystem;
+	private final SystemStatus systemStatus;
 	private final RequestQueue requestQueue;
 	private final ElevatorMotor motor;
 	private final Doors doors;
@@ -57,6 +59,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		requestQueue = new RequestQueue();
 		motor = new ElevatorMotor();
 		doors = new Doors();
+		systemStatus = new SystemStatus(false);
 		currentFloor = 1;
 		serviceDirection = Direction.UP;
 		travelTime = -1;
@@ -73,9 +76,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	@Override
 	public void run() {
-		while (true) {
+		systemStatus.setSystemActivated(true);
+		while (systemStatus.activated()) {
 			moveElevatorWhilePossible();
 		}
+		System.out.println(getClass().getSimpleName() + " #" + elevatorNumber + " Thread terminated");
 	}
 
 	/**
@@ -135,11 +140,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// otherwise, wait forever
 		}
 		// FIXME: this is too deeply nested. extract into methods
-		if (travelTime < 0 && messageTransferEnabled) {
+		if (travelTime <= 0 && messageTransferEnabled) {
 			while (approachEvent == null) {
 			}
 		} else if (travelTime > 0) {
-
 			synchronized (this) {
 				try {
 					// wait to simulate movement
@@ -277,10 +281,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Attempts to open the Elevator's Doors. If DoorTime is enabled, the
-	 * elevator waits before taking action on the Doors. If the Doors have
+	 * Attempts to change the state of the Elevator's Doors. If DoorTime is enabled,
+	 * the elevator waits before taking action on the Doors. If the Doors have
 	 * malfunctioned, the Elevator takes action accordingly.
 	 *
+   * @param state the new State of the Doors
 	 * @return true if attempt is successful, false otherwise
 	 */
 	public boolean changeDoorState(Doors.State state) {
@@ -336,6 +341,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public int getElevatorNumber() {
 		return elevatorNumber;
+	}
+
+	/**
+	 * Gets the SystemStatus of the System.
+	 *
+	 * @return the SystemStatus of the System
+	 */
+	public SystemStatus getSystemStatus() {
+		return systemStatus;
 	}
 
 	/**
