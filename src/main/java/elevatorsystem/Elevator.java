@@ -147,7 +147,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 					wait(travelTime);
 
 					if (messageTransferEnabled && approachEvent == null) {
-						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before [travelTime] expired.";
+						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before " + travelTime + " expired.";
 						throw new TimeoutException(errorMessage);
 					}
 				} catch (InterruptedException ie) {
@@ -194,7 +194,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
 
 		if (!sameFloorRemovedAsPeeked) {
-			String messageToPrint = "Floor peeked " + requestFloor + ", Floor Removed: " + removedFloor + "\n";
+			String messageToPrint = "\nFloor peeked " + requestFloor + ", Floor Removed: " + removedFloor + "\n";
 			messageToPrint += "A request was added to Elevator " + elevatorNumber + " while the current request was being processed.";
 			throw new ConcurrentModificationException(messageToPrint);
 		}
@@ -260,10 +260,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 			setDoorsMalfunctioning(false);
 		}
 		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
-
-		if (requestQueue.isEmpty()){
-			serviceDirection = Direction.NONE;
-		}
 	}
 
 	/**

@@ -13,7 +13,7 @@ import java.time.LocalTime;
  */
 public class SystemEvent implements Serializable {
 
-    private final LocalTime time;
+    private LocalTime time;
     private Origin origin;
     private int elevatorNumber;
 
@@ -36,6 +36,15 @@ public class SystemEvent implements Serializable {
      */
     public LocalTime getTime() {
         return time;
+    }
+
+    /**
+     * Changes the time for the SystemEvent.
+     *
+     * @param time the new time value for the SystemEvent
+     */
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 
     /**

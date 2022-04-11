@@ -59,7 +59,7 @@ public class SimulationTest {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        floorSubsystem.initializeFloors(floorSubsystem.receiveStructure().getNumberOfFloors());
+        floorSubsystem.initializeFloors(floorSubsystem.receiveStructure());
         System.out.println("Floors initialized");
         Thread floorSubsystemThread = new Thread(floorSubsystem, floorSubsystem.getClass().getSimpleName());
         floorSubsystemThread.start();
