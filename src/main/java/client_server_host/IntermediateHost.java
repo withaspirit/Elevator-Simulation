@@ -4,6 +4,7 @@ import requests.SystemEvent;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -80,6 +81,24 @@ public class IntermediateHost {
         byte[] acknowledgeMessage = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
         DatagramPacket acknowledgePacket = new DatagramPacket(acknowledgeMessage, acknowledgeMessage.length, packet.getAddress(), packet.getPort());
         messageTransfer.sendMessage(acknowledgePacket);
+    }
+
+    /**
+     * Terminates the ElevatorSubsystem and the FloorSubsystem threads.
+     */
+    public void terminateSystem() {
+        try {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            int portNumber;
+            if (messageTransfer.getPortNumber() == Port.CLIENT_TO_SERVER.getNumber()) {
+                portNumber = Port.SERVER.getNumber();
+            } else {
+                portNumber = Port.CLIENT.getNumber();
+            }
+            sendObject(RequestMessage.TERMINATE.getMessage(), inetAddress, portNumber);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

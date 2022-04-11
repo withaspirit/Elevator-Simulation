@@ -19,6 +19,7 @@ import java.util.Queue;
 public class ElevatorSubsystem implements Runnable, SystemEventListener {
 
 	private final ArrayList<Elevator> elevatorList;
+	private final ArrayList<Thread> elevatorThreads;
 	private final Client server;
 	private final Queue<SystemEvent> eventQueue;
 	private final SystemStatus systemStatus;
@@ -29,6 +30,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	public ElevatorSubsystem() {
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
+		elevatorThreads = new ArrayList<>();
 		eventQueue = new LinkedList<>();
 		systemStatus = new SystemStatus(false);
 	}
@@ -43,16 +45,30 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
+	 * Returns the list of Elevator Threads.
+	 *
+	 * @return the list of Elevator Threads
+	 */
+	public ArrayList<Thread> getElevatorThreads() {
+		return elevatorThreads;
+	}
+
+	/**
 	 * Simple message requesting and sending between subsystems.
 	 * ElevatorSubsystem
 	 * Sends: ApproachEvent, ElevatorMonitor
 	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
-		// TODO: replace with systemActivated
-		while (true) {
+		systemStatus.setSystemActivated(true);
+		while (systemStatus.activated()) {
 			subsystemUDPMethod();
 		}
+		// terminate elevator threads
+		for (Elevator elevator : elevatorList) {
+			elevator.getSystemStatus().setSystemActivated(false);
+		}
+		System.out.println(getClass().getSimpleName() + " Thread terminated");
 	}
 
 	/**
@@ -107,6 +123,8 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+				} else if (string.trim().equals(RequestMessage.TERMINATE.getMessage())) {
+					systemStatus.setSystemActivated(false);
 				}
 			}
 	}
@@ -130,9 +148,13 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	 * Initializes the Elevator threads for the ElevatorSubsystem.
 	 */
 	public void initializeElevatorThreads() {
-		// Start elevator Threads
 		for (Elevator elevator : elevatorList) {
-			(new Thread(elevator, elevator.getClass().getSimpleName())).start();
+			Thread newElevatorThread = new Thread(elevator, elevator.getClass().getSimpleName() + " " + elevator.getElevatorNumber());
+			elevatorThreads.add(newElevatorThread);
+		}
+		// Start elevator Threads
+		for (Thread thread : elevatorThreads) {
+			thread.start();
 		}
 	}
 

@@ -34,6 +34,8 @@ public class Scheduler implements Runnable {
 	private TimerTask timerTask;
 	private long startTime = -1;
 	private final int timerTimeOut = 7000; // milliseconds
+	private static int schedulerThreadsTerminated;
+
 
 	/**
 	 * Constructor for Scheduler.
@@ -46,6 +48,7 @@ public class Scheduler implements Runnable {
 		systemStatus = new SystemStatus(false);
 		timer = new Timer();
 		presenter = null;
+		schedulerThreadsTerminated = 0;
 	}
 
 	/**
@@ -147,7 +150,7 @@ public class Scheduler implements Runnable {
 	public void processData(SystemEvent event) {
 
 		if (event instanceof ElevatorMonitor elevatorMonitor){
-			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
+			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber() - 1).updateMonitor(elevatorMonitor);
 			if (presenter != null){
 				presenter.updateElevatorView(elevatorMonitor);
 			}
@@ -256,6 +259,8 @@ public class Scheduler implements Runnable {
 				public void run() {
 					long timeElapsed = (System.nanoTime() - startTime) / 1000000 - timerTimeOut;
 					System.out.println(Thread.currentThread().getName() + " took " + timeElapsed + " milliseconds to complete.");
+					systemStatus.setSystemActivated(false);
+					schedulerThreadsTerminated++;
 					timer.cancel();
 				}
 			};
@@ -276,9 +281,11 @@ public class Scheduler implements Runnable {
 		resetTimer();
 
 		// TODO: replace with systemActivated
-		while (true) {
+		while (systemStatus.activated()) {
 			receiveAndProcessPacket();
 		}
+		System.out.println(Thread.currentThread().getName() + " terminated");
+		intermediateHost.terminateSystem();
 	}
 
 	public static void main(String[] args) {
@@ -305,7 +312,7 @@ public class Scheduler implements Runnable {
 			e.printStackTrace();
 		}
 
-		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
-		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
+		new Thread(schedulerClient, "Scheduler: FloorToElevator").start();
+		new Thread(schedulerServer, "Scheduler: ElevatorToFloor").start();
 	}
 }
