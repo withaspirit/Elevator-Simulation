@@ -4,7 +4,6 @@ import client_server_host.Port;
 import elevatorsystem.Elevator;
 import elevatorsystem.ElevatorSubsystem;
 import floorsystem.FloorSubsystem;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import systemwide.Structure;
 
@@ -29,7 +28,7 @@ public class SimulationTest {
     private Structure structure;
     private int elevatorTime = 100;
     private int doorsTime = 100;
-    private static final int NUMBER_OF_TEST = 30;
+    private static final int NUMBER_OF_TESTS = 50;
 
     void setup() {
         structure = new Structure(20, 4, elevatorTime, doorsTime);
@@ -92,9 +91,9 @@ public class SimulationTest {
 
     @Test
     void testSystemRunsToCompletionMultipleTimes() {
-        elevatorTime = 100;
-        doorsTime = 100;
-        for (int i = 0; i < NUMBER_OF_TEST; i++) {
+        elevatorTime = 50;
+        doorsTime = 50;
+        for (int i = 0; i < NUMBER_OF_TESTS; i++) {
             testSimulationRunsToCompletion();
             System.out.println("Number of tests: " + i);
             // add delay for system to set up again?
