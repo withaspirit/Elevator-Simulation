@@ -44,6 +44,13 @@ public class MessageTransfer {
     }
 
     /**
+     * Closes the DatagramSocket.
+     */
+    public void terminate() {
+        socket.close();
+    }
+
+    /**
      * Sends a message from this object's socket to the socket corresponding to the
      * packet's destination.
      *
