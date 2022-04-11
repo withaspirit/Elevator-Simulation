@@ -100,13 +100,14 @@ Tests:
 - SchedulerTest: tests related to passing data between the systems
 - DirectionTest: tests the Direction enum's getDirectionByName function
 - ElevatorMotorTest: tests for the proper updating of states in the elevator motor class
-- ElevatorSelectionTest: tests selecting idle elevators and tests adding more requests to active elevators using the selection algorithm. ElevatorSelectionTest must be run independently of other tests as it uses multiple threads with ports to test selecting an appropriate elevator and the port are used in previous tests causing the error "Address already in use: bind" to occur.
+- ElevatorSelectionTest: tests selecting idle elevators and tests adding more requests to active elevators using the selection algorithm. ElevatorSelectionTest must be run independently of other tests as it uses multiple threads with ports to test selecting an appropriate elevator and the port are used in previous tests causing the error "Address already in use: bind" to occur
 - ElevatorFaultTest: tests the fault-handling behavior of the Elevator for the faults: Doors Interrupted, Doors Stuck, Elevator Interrupted, Elevator Stuck
 - RequestQueueTest: tests that the RequestQueue adds ServiceRequests to the correct list and that requests are added and removed in the correct order
 - MessageTransferTest: tests that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
 - FloorTest: tests that the ArrivalSensor correctly modifies an ApproachEvent
 - FloorSubsystemTest: tests that the correct Floor is selected when an ApproachEvent is received
 - PresenterTest: tests that presenter updates the view with the proper values and integration with the system
+- SimulationTest ensures that the entire simulation, without the GUI, runs to completion multiple times
   
 </details>
 
@@ -365,6 +366,9 @@ Instructions:
 
   <details>
     <summary>Show Long Description</summary>
+    <br>
+    
+    * Thread Termination: Introduced conditions to terminate the Threads of the System. Termination is activated by each of the two Scheduler's Timers expiring. Each Scheduler sends a termination message to the the System it communicates with and then terminates itself. The system are terminated by receiving the message.
     
   </details>
 
