@@ -95,8 +95,10 @@ public class Client {
         DatagramPacket receivePacket = messageTransfer.receiveMessage();
         Object object = convertToSystemEvent(receivePacket);
 
-        if (!(object instanceof String)) {
+        if (!(object instanceof String string)) {
             messageTransfer.printReceiveMessage(Thread.currentThread().getName(), receivePacket);
+        } else if (string.trim().equals(RequestMessage.TERMINATE.getMessage())) {
+            messageTransfer.closeSocket();
         }
         return object;
     }
