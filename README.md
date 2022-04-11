@@ -368,7 +368,7 @@ Instructions:
     <summary>Show Long Description</summary>
     <br>
     
-    * Thread Termination: Introduced conditions to terminate the Threads of the System. Termination is activated by each of the two Scheduler's Timers expiring. Each Scheduler sends a termination message to the the System it communicates with and then terminates itself. The system are terminated by receiving the message.
+    * Thread Termination: Introduced conditions to terminate the Threads of the System. Termination is activated by each of the two Scheduler's Timers expiring. Each Scheduler sends a termination message to the the System it communicates with and then terminates itself. The systems are terminated by receiving the message.
     
   </details>
 
