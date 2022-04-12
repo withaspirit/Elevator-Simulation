@@ -235,7 +235,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// try to close doors until successful
 		while (!changeDoorState(Doors.State.CLOSED)) {
-			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
 		motor.startMoving();
 		motor.changeDirection(currentFloor, floorToVisit);
@@ -254,7 +253,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// try to open doors until successful
 		while (!changeDoorState(Doors.State.OPEN)) {
-			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
 		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 	}
@@ -319,6 +317,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 				setFault(Fault.DOOR_STUCK);
 				// turn off doors malfunctioning variable
 				setDoorsMalfunctioning(false);
+				elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 				ise.printStackTrace();
 				return false;
 			}
@@ -523,13 +522,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (doorsAreMalfunctioning) {
 			doors.setToStuck();
 		}
-	}
-
-	/**
-	 * Interrupts Elevator's executing Thread.
-	 */
-	public void interrupt() {
-		Thread.currentThread().interrupt();
 	}
 
 	/**
