@@ -4,13 +4,21 @@ import client_server_host.IntermediateHost;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import elevatorsystem.MovementState;
-import requests.*;
+import requests.ElevatorMonitor;
+import requests.ElevatorRequest;
+import requests.SystemEvent;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.Structure;
+import systemwide.SystemStatus;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Scheduler handles the requests from all system components.
@@ -21,8 +29,13 @@ public class Scheduler implements Runnable {
 
 	private static ArrayList<ElevatorMonitor> elevatorMonitorList;
 	private final IntermediateHost intermediateHost;
-	// private ArrayList<Elevator> elevators;
-	// private ArrayList<Floor> floors;
+	private static Presenter presenter;
+	private final SystemStatus systemStatus;
+	private static int schedulerThreadsTerminated;
+	private final Timer timer;
+	private TimerTask timerTask;
+	private long startTime = -1;
+	private int delayToEndSystem = 7000; // milliseconds
 
 	/**
 	 * Constructor for Scheduler.
@@ -32,6 +45,10 @@ public class Scheduler implements Runnable {
 	public Scheduler(int portNumber) {
 		elevatorMonitorList = new ArrayList<>();
 		intermediateHost = new IntermediateHost(portNumber);
+		presenter = null;
+		systemStatus = new SystemStatus(false);
+		schedulerThreadsTerminated = 0;
+		timer = new Timer();
 	}
 
 	/**
@@ -44,12 +61,35 @@ public class Scheduler implements Runnable {
 	}
 
 	/**
+	 * Sets the Scheduler's presenter to a valid presenter.
+	 * This will allow for output to the GUI's view.
+	 *
+	 * @param presenter a Presenter
+	 */
+	public void setPresenter(Presenter presenter){
+		Scheduler.presenter = presenter;
+	}
+
+	/**
 	 * Get the current static instance of elevatorMonitorList containing a list of elevator monitors.
 	 *
 	 * @return a list of elevator monitors
 	 */
 	public static ArrayList<ElevatorMonitor> getElevatorMonitorList() {
 		return elevatorMonitorList;
+	}
+
+	/**
+	 * Gets the SystemStatus of the System.
+	 *
+	 * @return the SystemStatus of the System
+	 */
+	public SystemStatus getSystemStatus() {
+		return systemStatus;
+	}
+
+	public IntermediateHost getIntermediateHost() {
+		return intermediateHost;
 	}
 
 	/**
@@ -68,6 +108,11 @@ public class Scheduler implements Runnable {
 				// queue is not empty, return data
 				// otherwise, send dummy message notifying empty status
 				if (!intermediateHost.queueIsEmpty()) {
+					if (this.startTime == -1) {
+						this.startTime = System.nanoTime();
+						System.out.print("time started with string");
+					}
+					
 					dataObject = intermediateHost.getPacketFromQueue();
 
 					if (dataObject instanceof ElevatorRequest elevatorRequest) {
@@ -79,6 +124,8 @@ public class Scheduler implements Runnable {
 								elevatorRequest.getClass().getSimpleName() + ": "  + elevatorRequest + ".\n";
 						System.out.println(messageToPrint);
 					}
+					//Resets the inactivity timer when there's activity.
+					resetTimer();
 				} else {
 					dataObject = RequestMessage.EMPTYQUEUE.getMessage();
 				}
@@ -86,9 +133,16 @@ public class Scheduler implements Runnable {
 				intermediateHost.sendObject(dataObject, receivePacket.getAddress(), receivePacket.getPort());
 
 			} else if (object instanceof SystemEvent systemEvent) {
+				if (this.startTime == -1) {
+					this.startTime = System.nanoTime();
+					System.out.print("time started with string");
+				}
+				
 				intermediateHost.acknowledgeDataReception(receivePacket);
 				processData(systemEvent);
-			}
+				//Resets the inactivity timer when there's activity.
+				resetTimer();
+			} 
 	}
 
 	/**
@@ -100,11 +154,27 @@ public class Scheduler implements Runnable {
 	public void processData(SystemEvent event) {
 
 		if (event instanceof ElevatorMonitor elevatorMonitor){
-			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber()-1).updateMonitor(elevatorMonitor);
+			elevatorMonitorList.get(elevatorMonitor.getElevatorNumber() - 1).updateMonitor(elevatorMonitor);
+			if (presenter != null){
+				presenter.updateElevatorView(elevatorMonitor);
+			}
 		} else {
 			event.setOrigin(Origin.changeOrigin(event.getOrigin()));
 			intermediateHost.addEventToQueue(event);
 		}
+	}
+
+	/**
+	 * Enables Scheduler and the other systems.
+	 *
+	 * @param structure contains the information to initialize the other systems
+	 * @param inetAddress the IP address of the destination
+	 * @param portNumber the port the packet is being sent to
+	 */
+	public void enableSystem(Structure structure, InetAddress inetAddress, int portNumber) {
+		systemStatus.setSystemActivated(true);
+		intermediateHost.sendObject(structure, inetAddress, portNumber);
+		delayToEndSystem = (structure.getDoorsTime() + structure.getElevatorTime()) * 3;
 	}
 
 	/**
@@ -148,7 +218,7 @@ public class Scheduler implements Runnable {
 			} else if (state == MovementState.STUCK) {
 				System.err.println("Elevator#" + elevatorNumber + " is stuck");
 
-			} else if (monitor.getDirection() == requestDirection) {
+			} else if (currentDirection == requestDirection) {
 				if (elevatorBestExpectedTime == 0 || elevatorBestExpectedTime > tempExpectedTime) {
 					if (requestDirection == Direction.DOWN && currentFloor > desiredFloor) {
 						//check if request is in path current floor > directed floor going down
@@ -185,23 +255,71 @@ public class Scheduler implements Runnable {
 	}
 
 	/**
+	 * Resets the inactivity timer to show that the scheduler did work 
+	 */
+	public void resetTimer() {
+		if (timerTask == null || timerTask.cancel()) {
+			timerTask = new TimerTask() {
+				@Override
+				public void run() {
+					long timeElapsed = (System.nanoTime() - startTime) / 1000000 - delayToEndSystem;
+					System.out.println(Thread.currentThread().getName() + " took " + timeElapsed + " milliseconds to complete.");
+					systemStatus.setSystemActivated(false);
+					schedulerThreadsTerminated++;
+					timer.cancel();
+				}
+			};
+			timer.schedule(timerTask, delayToEndSystem);
+		}
+	}
+	
+	/**
 	 * Simple message requesting and sending between subsystems.
 	 * Scheduler
-	 * Sends: ApproachEvent, FloorRequest, ElevatorRequest
+	 * Sends: ApproachEvent, ElevatorRequest
 	 * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
 	 */
 	public void run() {
-		while (true) {
+    
+		//Starts the inactivity timer and performance measurement
+		resetTimer();
+		/*
+			Use schedulerThreadsTerminated instead of systemStatus.activated()
+			because sometimes, one scheduler's socket gets closed too early, 
+      causing a SocketException. Must wait for both to be closed.
+		 */
+		while (schedulerThreadsTerminated < 2) {
 			receiveAndProcessPacket();
 		}
+		System.out.println(Thread.currentThread().getName() + " terminated");
+		intermediateHost.terminateSystem();
 	}
 
 	public static void main(String[] args) {
+		Structure structure = new Structure(20, 4, 1000, 1000);
+
+		ElevatorViewContainer elevatorViewContainer = new ElevatorViewContainer(structure.getNumberOfElevators());
+		Presenter presenter = new Presenter();
+		presenter.addView(elevatorViewContainer);
+		presenter.startGUI();
+
 		Scheduler schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
 		Scheduler schedulerServer = new Scheduler(Port.SERVER_TO_CLIENT.getNumber());
-		schedulerClient.addElevatorMonitor(1);
-		schedulerClient.addElevatorMonitor(2);
-		new Thread(schedulerClient, schedulerClient.getClass().getSimpleName()).start();
-		new Thread(schedulerServer, schedulerServer.getClass().getSimpleName()).start();
+
+		schedulerClient.setPresenter(presenter);
+
+		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
+			schedulerClient.addElevatorMonitor(i);
+		}
+
+		try {
+			schedulerClient.enableSystem(structure, InetAddress.getLocalHost(), Port.SERVER.getNumber());
+			schedulerServer.enableSystem(structure, InetAddress.getLocalHost(), Port.CLIENT.getNumber());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+
+		new Thread(schedulerClient, "Scheduler: FloorToElevator").start();
+		new Thread(schedulerServer, "Scheduler: ElevatorToFloor").start();
 	}
 }

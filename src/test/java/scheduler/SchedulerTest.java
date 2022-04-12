@@ -1,9 +1,7 @@
 package scheduler;
 
 import client_server_host.Port;
-import elevatorsystem.Elevator;
-import elevatorsystem.ElevatorSubsystem;
-import elevatorsystem.MovementState;
+import elevatorsystem.*;
 import floorsystem.FloorSubsystem;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,7 +34,8 @@ class SchedulerTest {
     static void setUpOnce() {
         // Request
         elevatorRequest = new ElevatorRequest(LocalTime.now(), 1, Direction.UP, 2, Origin.FLOOR_SYSTEM);
-        elevatorMonitor = new ElevatorMonitor(0.0, MovementState.ACTIVE, 1, Direction.UP, 1, false);
+        //elevatorMonitor = new ElevatorMonitor(0.0, MovementState.ACTIVE, 1, Direction.UP, 1, false);
+        elevatorMonitor = new ElevatorMonitor(1, 1, Direction.UP, MovementState.ACTIVE, Direction.UP, Doors.State.CLOSED, Fault.NONE, false, 0.0);
         elevatorMonitor.setOrigin(Origin.ELEVATOR_SYSTEM);
 
         // Set up systems
@@ -75,8 +74,8 @@ class SchedulerTest {
         assertFalse(elevator1.getRequestQueue().isCurrentQueueEmpty());
 
         // Verify values
-        assertEquals(1, elevator1.getRequestQueue().removeRequest());
-        assertEquals(2, elevator1.getRequestQueue().removeRequest());
+        assertEquals(1, elevator1.getRequestQueue().removeRequest().getFloorNumber());
+        assertEquals(2, elevator1.getRequestQueue().removeRequest().getFloorNumber());
         assertEquals(Direction.UP, elevator1.getServiceDirection());
     }
 
@@ -95,11 +94,6 @@ class SchedulerTest {
     @Test
     void receiveElevatorRequest() {
         floorSubsystem.addEvent(elevatorRequest);
-
-    }
-
-    @Test
-    void receiveFloorRequest() {
 
     }
 }

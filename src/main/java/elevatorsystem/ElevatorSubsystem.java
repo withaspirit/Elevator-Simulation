@@ -3,7 +3,12 @@ package elevatorsystem;
 import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
-import requests.*;
+import requests.ApproachEvent;
+import requests.ElevatorRequest;
+import requests.SystemEvent;
+import requests.SystemEventListener;
+import systemwide.Structure;
+import systemwide.SystemStatus;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -17,8 +22,10 @@ import java.util.Queue;
 public class ElevatorSubsystem implements Runnable, SystemEventListener {
 
 	private final ArrayList<Elevator> elevatorList;
-	private Client server;
+	private final ArrayList<Thread> elevatorThreads;
+	private final Client server;
 	private final Queue<SystemEvent> eventQueue;
+	private final SystemStatus systemStatus;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
@@ -26,7 +33,9 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	public ElevatorSubsystem() {
 		server = new Client(Port.SERVER.getNumber());
 		elevatorList = new ArrayList<>();
+		elevatorThreads = new ArrayList<>();
 		eventQueue = new LinkedList<>();
+		systemStatus = new SystemStatus(false);
 	}
 
 	/**
@@ -39,13 +48,30 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
+	 * Returns the list of Elevator Threads.
+	 *
+	 * @return the list of Elevator Threads
+	 */
+	public ArrayList<Thread> getElevatorThreads() {
+		return elevatorThreads;
+	}
+
+	/**
 	 * Simple message requesting and sending between subsystems.
 	 * ElevatorSubsystem
 	 * Sends: ApproachEvent, ElevatorMonitor
 	 * Receives: ApproachEvent, ElevatorRequest
 	 */
 	public void run() {
-		subsystemUDPMethod();
+		systemStatus.setSystemActivated(true);
+		while (systemStatus.activated()) {
+			subsystemUDPMethod();
+		}
+		// terminate elevator threads
+		for (Elevator elevator : elevatorList) {
+			elevator.getSystemStatus().setSystemActivated(false);
+		}
+		System.out.println(getClass().getSimpleName() + " Thread terminated");
 	}
 
 	/**
@@ -58,32 +84,36 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	}
 
 	/**
-	 * Passes an ApproachEvent between a Subsystem component and the Subsystem.
+	 * Adds a SystemEvent to a System's queue of events.
 	 *
-	 * @param approachEvent the approach event for the system
+	 * @param systemEvent the SystemEvent to add
 	 */
 	@Override
-	public void handleApproachEvent(ApproachEvent approachEvent) {
-		eventQueue.add(approachEvent);
+	public void addEventToQueue(SystemEvent systemEvent) {
+		eventQueue.add(systemEvent);
 	}
 
 	/**
-	 * Sends new updated elevator status information to the scheduler.
+	 * Gets the SystemStatus of the System.
 	 *
-	 * @param elevatorMonitor an elevator monitor containing updated elevator information.
+	 * @return the SystemStatus of the System
 	 */
-	public void handleElevatorMonitorUpdate(ElevatorMonitor elevatorMonitor) {
-		eventQueue.add(elevatorMonitor);
+	public SystemStatus getSystemStatus() {
+		return systemStatus;
 	}
 
 	/**
 	 * Sends and receives messages for system using UDP packets.
 	 */
 	private void subsystemUDPMethod() {
-		while (true) {
 			Object object;
-			if (!eventQueue.isEmpty()) {
-				object = server.sendAndReceiveReply(eventQueue.remove());
+			/*
+				Previous system of (!eventQueue.empty) { eventQueue.remove() } produced
+				NoSuchElementException errors. Using queue.poll() circumvents this
+			 */
+			SystemEvent event = eventQueue.poll();
+			if (event != null) {
+				object = server.sendAndReceiveReply(event);
 			} else {
 				object = server.sendAndReceiveReply(RequestMessage.REQUEST.getMessage());
 			}
@@ -101,25 +131,23 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+				} else if (string.trim().equals(RequestMessage.TERMINATE.getMessage())) {
+					systemStatus.setSystemActivated(false);
 				}
 			}
-		}
 	}
 
 	/**
 	 * Initializes the ElevatorSubsystem with the specified number of Elevators.
 	 *
-	 * @param numberOfElevators the number of Elevators for the ElevatorSubsystem
+	 * @param structure contains the information for initializing the elevators
 	 */
-	public void initializeElevators(int numberOfElevators) {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	public void initializeElevators(Structure structure) {
 		// initialize the list of elevators
-		for (int i = 1; i <= numberOfElevators; i++) {
+		for (int i = 1; i <= structure.getNumberOfElevators(); i++) {
 			Elevator elevator = new Elevator(i, this);
+			elevator.setTravelTime(structure.getElevatorTime());
+			elevator.setDoorTime(structure.getDoorsTime());
 			addElevator(elevator);
 		}
 	}
@@ -128,17 +156,34 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	 * Initializes the Elevator threads for the ElevatorSubsystem.
 	 */
 	public void initializeElevatorThreads() {
-		// Start elevator Threads
 		for (Elevator elevator : elevatorList) {
-			(new Thread(elevator, elevator.getClass().getSimpleName())).start();
+			Thread newElevatorThread = new Thread(elevator, elevator.getClass().getSimpleName() + " " + elevator.getElevatorNumber());
+			elevatorThreads.add(newElevatorThread);
 		}
+		// Start elevator Threads
+		for (Thread thread : elevatorThreads) {
+			thread.start();
+		}
+	}
+
+	/**
+	 * Receives and returns a Structure from the Scheduler.
+	 *
+	 * @return Structure contains information to initialize the floors and elevators
+	 */
+	@Override
+	public Structure receiveStructure() {
+		return (Structure) server.receive();
 	}
 
 	public static void main(String[] args) {
 		ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-		elevatorSubsystem.initializeElevators(2);
+		Structure structure = elevatorSubsystem.receiveStructure();
+		elevatorSubsystem.initializeElevators(structure);
+
 		Thread elevatorSubsystemThread = new Thread(elevatorSubsystem, elevatorSubsystem.getClass().getSimpleName());
 		elevatorSubsystemThread.start();
+		System.out.println("ElevatorSubsystem initialized");
 		elevatorSubsystem.initializeElevatorThreads();
 	}
 }

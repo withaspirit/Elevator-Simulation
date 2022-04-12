@@ -4,7 +4,6 @@ import misc.InputFileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
-import requests.FloorRequest;
 import requests.ServiceRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
@@ -191,7 +190,7 @@ class ElevatorTest {
 
         // add different request
         elevator.addRequest(serviceRequest2);
-        elevator.moveToNextFloor(requestFloor1);
+        elevator.moveToNextFloor(serviceRequest1);
 
         if (!elevator.getMotor().isIdle()) {
             elevator.compareFloors(requestFloor1);
