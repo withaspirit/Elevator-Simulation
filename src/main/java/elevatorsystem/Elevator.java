@@ -1,8 +1,12 @@
 package elevatorsystem;
 
-import requests.*;
+import requests.ApproachEvent;
+import requests.ElevatorMonitor;
+import requests.ServiceRequest;
+import requests.SubsystemPasser;
 import systemwide.Direction;
 import systemwide.Origin;
+import systemwide.SystemStatus;
 
 import java.time.LocalTime;
 import java.util.ConcurrentModificationException;
@@ -17,6 +21,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 	// Elevator Subsystem
 	private final ElevatorSubsystem elevatorSubsystem;
+	private final SystemStatus systemStatus;
 	private final RequestQueue requestQueue;
 	private final ElevatorMotor motor;
 	private final Doors doors;
@@ -48,6 +53,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		requestQueue = new RequestQueue();
 		motor = new ElevatorMotor();
 		doors = new Doors();
+		systemStatus = new SystemStatus(false);
 		currentFloor = 1;
 		serviceDirection = Direction.UP;
 		travelTime = -1;
@@ -64,9 +70,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	@Override
 	public void run() {
-		while (true) {
+		systemStatus.setSystemActivated(true);
+		while (systemStatus.activated()) {
 			moveElevatorWhilePossible();
 		}
+		System.out.println(getClass().getSimpleName() + " #" + elevatorNumber + " Thread terminated");
 	}
 
 	/**
@@ -126,18 +134,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 			// otherwise, wait forever
 		}
 		// FIXME: this is too deeply nested. extract into methods
-		if (travelTime < 0 && messageTransferEnabled) {
+		if (travelTime <= 0 && messageTransferEnabled) {
 			while (approachEvent == null) {
 			}
-		} else if (travelTime >= 0 ) {
-
+		} else if (travelTime > 0) {
 			synchronized (this) {
 				try {
 					// wait to simulate movement
 					wait(travelTime);
 
 					if (messageTransferEnabled && approachEvent == null) {
-						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before [travelTime] expired.";
+						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before " + travelTime + " expired.";
 						throw new TimeoutException(errorMessage);
 					}
 				} catch (InterruptedException ie) {
@@ -184,8 +191,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 		boolean sameFloorRemovedAsPeeked = removedFloor == requestFloor;
 
 		if (!sameFloorRemovedAsPeeked) {
-			System.out.println("Floor peeked " + requestFloor + ", Floor Removed: " + removedFloor);
-			throw new ConcurrentModificationException("A request was added to Elevator " + elevatorNumber + " while the current request was being processed.");
+			String messageToPrint = "\nFloor peeked " + requestFloor + ", Floor Removed: " + removedFloor + "\n";
+			messageToPrint += "A request was added to Elevator " + elevatorNumber + " while the current request was being processed.";
+			throw new ConcurrentModificationException(messageToPrint);
 		}
 	}
 
@@ -212,7 +220,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 			}
 			// do nothing if floorToVisit == requestFloor || floorToVisit != requestFloor
 		}
-		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 	}
 
 	/**
@@ -221,20 +229,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param floorToVisit the next floor the elevator will visit
 	 */
 	public void startMovingToFloor(int floorToVisit) {
-		// proceed only if door closing successful
-		if (attemptToCloseDoors()) {
-			motor.startMoving();
-			motor.changeDirection(currentFloor, floorToVisit);
-			// if doors opening also unsuccessful, shut down elevator
-		} else if (fault == Fault.DOORS_INTERRUPTED) {
-			if (!attemptToOpenDoors()) {
-				doors.setToStuck();
-				shutDownElevator();
-			}
-		} else if (fault == Fault.DOORS_STUCK) {
-			// door malfunction behavior
-			shutDownElevator();
+
+		// proceed until door closing successful
+		while (!changeDoorState(Doors.State.CLOSED)) {
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+			setDoorsMalfunctioning(false);
 		}
+		System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
+		motor.startMoving();
+		motor.changeDirection(currentFloor, floorToVisit);
 	}
 
 	/**
@@ -245,20 +248,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void stopAtFloor(int requestFloor) {
 		attemptToRemoveFloor(requestFloor);
 		motor.stop();
-		elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " reached its destination");
 
-		// proceed only if door opening successful
-		if (attemptToOpenDoors()) {
-			System.out.println("Elevator #" + elevatorNumber + " reached destination");
-		} else {
-			// door malfunction behavior
-			doors.setToStuck();
-			shutDownElevator();
+		// try to open doors until successful
+		while (!changeDoorState(Doors.State.OPEN)) {
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+			setDoorsMalfunctioning(false);
 		}
-
-		if (requestQueue.isEmpty()){
-			serviceDirection = Direction.NONE;
-		}
+		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
 	}
 
 	/**
@@ -274,66 +272,42 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Attempts to open the Elevator's Doors. If DoorTime is enabled, the
-	 * elevator waits before taking action on the Doors. If the Doors have
-	 * malfunctioned, the Elevator takes action accordingly.
+	 * Attempts to open or close the door depending on the state provided.
+	 * If DoorTime is enabled, the elevator waits before acting on the Doors.
+	 * If the Doors have malfunctioned, the Elevator corrects it.
 	 *
-	 * @return true if attempt is successful, false otherwise
+	 * @param state the new State of the Doors
+	 * @return true if the change is successful, false if door was set to stuck
 	 */
-	// FIXME: attemptToOpenDoors and attemptToCloseDoors are very similar
-	public boolean attemptToOpenDoors() {
+	public boolean changeDoorState(Doors.State state) {
+		// throw error invalid argument
+		if (!state.equals(Doors.State.OPEN) && !state.equals(Doors.State.CLOSED)) {
+			System.err.println("Invalid argument for Doors State in changeDoorState");
+			System.exit(1);
+		}
+		// process door change
 		synchronized (this) {
 			try {
-				if (doorTime >= 0) {
+				if (doorTime > 0) {
 					wait(doorTime);
 				}
 
 				if (!doorsMalfunctioning) {
-					doors.open();
+					if (state == Doors.State.OPEN) {
+						doors.open();
+					} else {
+						doors.close();
+					}
 					return true;
 				} else {
 					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
 					throw new IllegalStateException(messageToPrint);
 				}
 			} catch (InterruptedException e) {
-				// do nothing. doors opening can never be interrupted
-				return true;
+				// if interrupted, try to change state again
+				return changeDoorState(state);
 			} catch (IllegalStateException ise) {
-				setFault(Fault.DOORS_STUCK);
-				ise.printStackTrace();
-				return false;
-			}
-		}
-	}
-
-	/**
-	 * Attempts to close the Elevator's Doors. If DoorTime is enabled, the
-	 * elevator waits before taking action on the Doors. If the Doors have
-	 * malfunctioned, the Elevator takes action accordingly. If the Doors
-	 * are interrupted, the doors reverse course.
-	 *
-	 * @return true if attempt is successful, false otherwise
-	 */
-	public boolean attemptToCloseDoors() {
-		synchronized (this) {
-			try {
-				if (doorTime >= 0) {
-					wait(doorTime);
-				}
-
-				if (!doorsMalfunctioning) {
-					doors.close();
-					return true;
-				} else {
-					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
-					throw new IllegalStateException(messageToPrint);
-				}
-			} catch (InterruptedException ie) {
-				setFault(Fault.DOORS_INTERRUPTED);
-				ie.printStackTrace();
-				return false;
-			} catch (IllegalStateException ise) {
-				setFault(Fault.DOORS_STUCK);
+				doors.setToStuck();
 				ise.printStackTrace();
 				return false;
 			}
@@ -358,6 +332,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public int getElevatorNumber() {
 		return elevatorNumber;
+	}
+
+	/**
+	 * Gets the SystemStatus of the System.
+	 *
+	 * @return the SystemStatus of the System
+	 */
+	public SystemStatus getSystemStatus() {
+		return systemStatus;
 	}
 
 	/**
@@ -474,7 +457,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	@Override
 	public void passApproachEvent(ApproachEvent approachEvent) {
-		elevatorSubsystem.handleApproachEvent(approachEvent);
+		elevatorSubsystem.addEventToQueue(approachEvent);
 	}
 
 	/**
@@ -506,15 +489,29 @@ public class Elevator implements Runnable, SubsystemPasser {
 		System.out.println("Elevator #" + elevatorNumber + " Fault: " + this.fault.toString() + ".");
 		if (fault == Fault.ELEVATOR_STUCK) {
 			motor.setMovementState(MovementState.STUCK);
-			elevatorSubsystem.handleElevatorMonitorUpdate(makeElevatorMonitor());
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
 	}
 
 	/**
-	 * Toggles the Door Malfunction flag of the Elevator.
+	 * Indicates whether the Elevator's doors are malfunctioning.
+	 *
+	 * @return true if the doors are malfunctioning, false otherwise
 	 */
-	public void toggleDoorMalfunction() {
-		doorsMalfunctioning = !doorsMalfunctioning;
+	public boolean doorsAreMalfunctioning() {
+		return doorsMalfunctioning;
+	}
+
+	/**
+	 * Sets the toggle for the Elevator's Doors malfunctioning.
+	 *
+	 * @param doorsAreMalfunctioning true if the doors are malfunctioning, false otherwise
+	 */
+	public void setDoorsMalfunctioning(boolean doorsAreMalfunctioning) {
+		doorsMalfunctioning = doorsAreMalfunctioning;
+		if (doorsAreMalfunctioning) {
+			doors.setToStuck();
+		}
 	}
 
 	/**
@@ -531,7 +528,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @return a StatusUpdate containing new elevator information.
 	 */
 	public ElevatorMonitor makeElevatorMonitor() {
-		return new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor));
+		return new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor, doorTime * 2, travelTime));
 	}
 
 	/**
@@ -549,4 +546,5 @@ public class Elevator implements Runnable, SubsystemPasser {
 		messageToPrint += "RequestQueue: " + requestQueue;
 		System.out.println(messageToPrint);
 	}
+
 }

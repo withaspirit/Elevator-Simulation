@@ -7,8 +7,6 @@ import scheduler.Scheduler;
 import java.io.*;
 import java.net.*;
 import java.time.LocalTime;
-import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * MessageTransfer provides methods for other classes to send, receive, and
@@ -41,6 +39,13 @@ public class MessageTransfer {
      */
     public int getPortNumber() {
         return socket.getLocalPort();
+    }
+
+    /**
+     * Closes the DatagramSocket.
+     */
+    public void closeSocket() {
+        socket.close();
     }
 
     /**
