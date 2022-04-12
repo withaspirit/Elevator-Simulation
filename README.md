@@ -395,6 +395,13 @@ Multirun Instructions:
   ### Diagrams
 
   #### UML Class Diagram
+
+  <details>
+    <summary>Reflection</summary>
+    
+    This project is mostly a success as it meets most of the requirements. 
+
+  </details>
   
   <details>
     <summary>Performance Testing</summary>
