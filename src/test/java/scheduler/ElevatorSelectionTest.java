@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;
 import requests.SystemEvent;
 import systemwide.Direction;
+import systemwide.Structure;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -31,6 +32,8 @@ public class ElevatorSelectionTest {
     static Thread schedulerClientThread, schedulerServerThread, elevatorSubsystemThread;
     private final InputFileReader inputFileReader = new InputFileReader();
     private final ArrayList<SystemEvent> eventList = inputFileReader.readInputFile(InputFileReader.INPUTS_FILENAME);
+    private final static int loadTIme = 100;
+    private final static int travelTIme = 1000;
 
     @BeforeAll
     static void oneSetUp() {
@@ -51,6 +54,11 @@ public class ElevatorSelectionTest {
         elevator2 = new Elevator(2, elevatorSubsystem);
         elevatorSubsystem.addElevator(elevator1);
         elevatorSubsystem.addElevator(elevator2);
+
+        for (Elevator elevator: elevatorSubsystem.getElevatorList()){
+            elevator.setTravelTime(travelTIme);
+            elevator.setDoorTime(loadTIme);
+        }
 
         // Setup and start Scheduler Threads to send to ElevatorSubsystem
         schedulerClient = new Scheduler(Port.CLIENT_TO_SERVER.getNumber());
@@ -116,23 +124,21 @@ public class ElevatorSelectionTest {
         assertTrue(elevator2.getRequestQueue().isEmpty());
 
         //Both elevators expected time to completion with new requests are 0.0
-        assertEquals(elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor()), 0.0);
-        assertEquals(elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor()), 0.0);
+        assertEquals(elevator1.getRequestQueue().getExpectedTime(elevator1.getCurrentFloor(), loadTIme, travelTIme), 0.0);
+        assertEquals(elevator2.getRequestQueue().getExpectedTime(elevator2.getCurrentFloor(), loadTIme, travelTIme), 0.0);
 
         sendEvent(eventList.get(0));
         assertEquals(monitorList.get(0).getElevatorNumber(), 1);
         assertFalse(monitorList.get(0).getHasNoRequests());
         assertFalse(elevator1.getRequestQueue().isEmpty());
-        assertEquals(14.57185228514697, monitorList.get(0).getQueueTime());
+        assertEquals(1.2, monitorList.get(0).getQueueTime());
         // Elevator move from floor 1 to 2 elevator was idle
 
         sendEvent(eventList.get(1));
         assertEquals(monitorList.get(1).getElevatorNumber(), 2);
         assertFalse(monitorList.get(1).getHasNoRequests());
         assertFalse(elevator2.getRequestQueue().isEmpty());
-        assertEquals(31.24453457315479, monitorList.get(1).getQueueTime());
-
-        System.out.println("success");
+        assertEquals(3.4, monitorList.get(1).getQueueTime());
         // Elevator move from floor 2 to 4 elevator was idle
     }
 
@@ -142,42 +148,39 @@ public class ElevatorSelectionTest {
         assertEquals(monitorList.get(0).getElevatorNumber(), 1);
         assertFalse(monitorList.get(0).getHasNoRequests());
         assertFalse(elevator1.getRequestQueue().isEmpty());
-        assertEquals(14.57185228514697, monitorList.get(0).getQueueTime());
+        assertEquals(1.2, monitorList.get(0).getQueueTime());
         // Elevator 1 move from floor 1 to 2 elevator was idle
 
         sendEvent(eventList.get(1));
         assertEquals(monitorList.get(1).getElevatorNumber(), 2);
         assertFalse(monitorList.get(1).getHasNoRequests());
         assertFalse(elevator1.getRequestQueue().isEmpty());
-        assertEquals(31.24453457315479, monitorList.get(1).getQueueTime());
+        assertEquals(3.4, monitorList.get(1).getQueueTime());
         // Elevator 2 move from floor 2 to 4 elevator was idle
 
         sendEvent(eventList.get(2));
         assertEquals(monitorList.get(1).getElevatorNumber(), 2);
-        assertEquals(49.52924050879059, monitorList.get(1).getQueueTime());
+        assertEquals(6.6, monitorList.get(1).getQueueTime());
         // Elevator 2 move from floor 4 to 1 elevator 2 traveling to floor 4
 
         sendEvent(eventList.get(3));
         assertEquals(monitorList.get(0).getElevatorNumber(), 1);
-        assertEquals(34.21555685544091, monitorList.get(0).getQueueTime());
+        assertEquals(5.4, monitorList.get(0).getQueueTime());
         // Elevator 1 move from floor 2 to 6 elevator 1 traveling to floor 2
 
         sendEvent(eventList.get(4));
         assertEquals(monitorList.get(1).getElevatorNumber(), 2);
-        assertEquals(99.05848101758119, monitorList.get(1).getQueueTime());
+        assertEquals(13.2, monitorList.get(1).getQueueTime());
         // Elevator 2 move from floor 7 to 3 elevator 2 less time to complete its queue, so it was picked
 
         sendEvent(eventList.get(5));
         assertEquals(monitorList.get(0).getElevatorNumber(), 1);
-        assertEquals(60.38823914344873, monitorList.get(0).getQueueTime());
+        assertEquals(5.8, monitorList.get(0).getQueueTime());
         // Elevator 1 move from floor 3 to 5 elevator 1 traveling passing floor 3 to destination floor 4 takes priority
 
         sendEvent(eventList.get(6));
         assertEquals(monitorList.get(1).getElevatorNumber(), 2);
-        assertEquals(99.05848101758119, monitorList.get(1).getQueueTime());
-        // Elevator 2 traveling in same direction has higher priority and Elevator 2 has 3 and 1 in queue
-
-        //Elevator 1 floor requests up [1, 2, 3, 5, 6]
-        //Elevator 2 floor requests up [2, 4], down [7, 4, 3, 1]
+        assertEquals(13.2, monitorList.get(1).getQueueTime());
+        // Elevator 2 traveling in same direction has higher priority and Elevator 2 has 3 and 1 already in queue
     }
 }

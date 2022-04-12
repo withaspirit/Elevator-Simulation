@@ -1,15 +1,6 @@
 package systemwide;
 
-import client_server_host.Port;
-import elevatorsystem.Elevator;
-import elevatorsystem.ElevatorSubsystem;
-import floorsystem.Floor;
-import floorsystem.FloorSubsystem;
-import scheduler.Presenter;
-import scheduler.Scheduler;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Structure contains information to initialize the simulation.
