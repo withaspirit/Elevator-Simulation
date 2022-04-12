@@ -16,7 +16,7 @@ public class ElevatorView {
 
     private final JPanel elevatorPanel;
     private final JTextPane[] statusPanes;
-    private final static int NUMBER_OF_STATUS_PANES = 9;
+    private final static int NUMBER_OF_STATUS_PANES = 7;
 
     /**
      * Constructor for ElevatorView.
@@ -62,11 +62,7 @@ public class ElevatorView {
             } else if (i == 5) {
                 labelText = "Fault:";
             } else if (i == 6) {
-                labelText = "Request Creation Time:";
-            } else if (i == 7) {
-                labelText = "Request Floor:";
-            } else if (i == 8) {
-                labelText = "Request Direction:";
+                labelText = "Current Request:";
             }
             // TODO: add currentRequest?
             JLabel label = new JLabel();
@@ -115,15 +111,12 @@ public class ElevatorView {
      */
     public void updateStatusPanes(ElevatorMonitor elevatorMonitor) {
         String[] elevatorProperties = elevatorMonitor.propertiesToStringArray();
-        String[] currentRequestProperties = elevatorMonitor.currentRequestToStringArray();
-
+        String currentRequestProperties = elevatorMonitor.currentRequestToString();
+        // Iterate over elevator properties
         for (int i = 0; i < elevatorProperties.length; i++) {
             statusPanes[i].setText(elevatorProperties[i]);
         }
-
-        for (int i = 0; i < currentRequestProperties.length; i++) {
-            statusPanes[i+6].setText(currentRequestProperties[i]);
-        }
+        statusPanes[6].setText(currentRequestProperties);
 
         elevatorPanel.repaint();
         elevatorPanel.revalidate();

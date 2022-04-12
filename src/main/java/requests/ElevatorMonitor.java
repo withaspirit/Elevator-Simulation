@@ -147,7 +147,9 @@ public class ElevatorMonitor extends SystemEvent {
      *
      * @return ServiceRequest currentRequest
      */
-    public ServiceRequest getCurrentRequest() { return currentRequest; }
+    public ServiceRequest getCurrentRequest() {
+        return currentRequest;
+    }
 
     /**
      * Sets the currentRequest to the ServiceRequest passed
@@ -213,19 +215,12 @@ public class ElevatorMonitor extends SystemEvent {
      *
      * @return a String array containing 3 elevator
      */
-    public String[] currentRequestToStringArray() {
-        String[] requestProperties = new String[3];
+    public String currentRequestToString() {
 
         if (getCurrentRequest() == null) {
-            requestProperties[0] = "n/a";
-            requestProperties[1] = "n/a";
-            requestProperties[2] = "n/a";
+            return "N/A";
         } else {
-            requestProperties[0] = String.valueOf(getCurrentRequest().getTime());
-            requestProperties[2] = getCurrentRequest().getDirection().toString();
-            requestProperties[1] = String.valueOf(getCurrentRequest().getFloorNumber());
+            return getCurrentRequest().toString();
         }
-
-        return requestProperties;
     }
 }
