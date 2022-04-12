@@ -17,14 +17,16 @@ public class FaultButton implements ActionListener {
 	private JPanel faultPanel;
 	private JToggleButton doorFaultButton;
 	private Elevator elevator;
+	private String name;
 	private boolean malfunction;
 	
-	public FaultButton(Elevator elevator) {
+	public FaultButton(Elevator elevator, String name) {
+		this.name = name;
 		this.elevator = elevator;
 		this.malfunction = false;
 		int elevatorNumber = elevator.getElevatorNumber();
 		faultPanel = new JPanel();
-		doorFaultButton = new JToggleButton("Door Fault");
+		doorFaultButton = new JToggleButton(name);
 		
         faultPanel.add(doorFaultButton);
         doorFaultButton.addActionListener(this);
@@ -49,6 +51,11 @@ public class FaultButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
     	malfunction = !malfunction;
-    	elevator.setDoorsMalfunctioning(malfunction);
+    	if(name == "Door Fault") {
+    		elevator.setDoorsMalfunctioning(malfunction);
+    	} else if (name == "Cart Fault") {
+    		elevator.setCartMalfunctioning(malfunction);
+    	}
+    	
     }
 }

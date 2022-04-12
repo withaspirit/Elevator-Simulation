@@ -39,6 +39,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private int travelTime;
 	private int doorTime;
 	private volatile boolean doorsMalfunctioning;
+	private volatile boolean cartMalfunctioning;
 
 	// Elevator Measurements
 	private float speed;
@@ -65,6 +66,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		messageTransferEnabled = true;
 		approachEvent = null;
 		doorsMalfunctioning = false;
+		cartMalfunctioning = false;
 	}
 
 	/**
@@ -149,6 +151,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 					if (messageTransferEnabled && approachEvent == null) {
 						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before " + travelTime + " expired.";
 						throw new TimeoutException(errorMessage);
+					} else if(cartMalfunctioning) {
+						String errorMessage = "Elevator #" + elevatorNumber + " is stuck... The cart is malfunctioning.";
+						throw new InterruptedException(errorMessage);
 					}
 				} catch (InterruptedException ie) {
 					setFault(Fault.ELEVATOR_STUCK);
@@ -541,6 +546,24 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (doorsAreMalfunctioning) {
 			doors.setToStuck();
 		}
+	}
+	
+	/**
+	 * Indicates whether the Elevator's doors are malfunctioning.
+	 *
+	 * @return true if the doors are malfunctioning, false otherwise
+	 */
+	public boolean cartIsMalfunctioning() {
+		return cartMalfunctioning;
+	}
+
+	/**
+	 * Sets the toggle for the Elevator's Doors malfunctioning.
+	 *
+	 * @param doorsAreMalfunctioning true if the doors are malfunctioning, false otherwise
+	 */
+	public void setCartMalfunctioning(boolean cartIsMalfunctioning) {
+		cartMalfunctioning = cartIsMalfunctioning;
 	}
 
 	/**
