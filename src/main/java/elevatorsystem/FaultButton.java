@@ -6,6 +6,11 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+/**
+ *  FaultButton is the button class used to inject door stuck faults.
+ * 
+ * @author Julian
+ * */
 public class FaultButton implements ActionListener {
 
 	//For each elevator
@@ -45,6 +50,5 @@ public class FaultButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
     	malfunction = !malfunction;
     	elevator.setDoorsMalfunctioning(malfunction);
-    	//System.out.println("Button was pressed in elevator: " + Integer.toString(elevatorNumber));
     }
 }
