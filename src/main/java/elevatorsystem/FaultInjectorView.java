@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 /**
- *  FaultInjector is the GUI that helps to inject Door Stuck faults using a push button
+ *  FaultInjectorView is the GUI that helps to inject Door Stuck faults using a push button
  * 
  * @author Julian
- * */
-public class FaultInjector {
+ */
+public class FaultInjectorView {
 
 	//For elevator subsystem
     private ArrayList<FaultButton> faultButtons;
     private JPanel buttonListPanel;
     private JPanel containerPanel;
-	
-	public FaultInjector(ArrayList<Elevator> elevatorList) {
+
+	public FaultInjectorView(ArrayList<Elevator> elevatorList) {
         int numberOfElevators = elevatorList.size();
         //Initializing the buttons
 		this.faultButtons = new ArrayList<>();

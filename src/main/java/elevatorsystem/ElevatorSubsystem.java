@@ -26,7 +26,6 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	private final Client server;
 	private final Queue<SystemEvent> eventQueue;
 	private final SystemStatus systemStatus;
-	private FaultInjector faultInjector;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
@@ -186,8 +185,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 		elevatorSubsystemThread.start();
 		System.out.println("ElevatorSubsystem initialized");
 		elevatorSubsystem.initializeElevatorThreads();
-		
-		
-		FaultInjector faultInjector = new FaultInjector (elevatorSubsystem.getElevatorList());
+		// create view for injecting DOOR_STUCK faults
+		FaultInjectorView faultInjectorView = new FaultInjectorView(elevatorSubsystem.getElevatorList());
 	}
 }
