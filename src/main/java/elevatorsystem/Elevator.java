@@ -158,18 +158,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 				} catch (InterruptedException ie) {
 					setFault(Fault.ELEVATOR_STUCK);
 					// shut down elevator
-					motor.setMovementState(MovementState.STUCK);
-					motor.setDirection(Direction.NONE);
 					shutDownElevator();
-					approachEvent = null;
 					return;
 				} catch (TimeoutException te) {
 					setFault(Fault.ARRIVAL_SENSOR_FAIL);
 					// shut down elevator
-					motor.setMovementState(MovementState.STUCK);
-					motor.setDirection(Direction.NONE);
 					shutDownElevator();
-					approachEvent = null;
 					return;
 				}
 			}
@@ -286,11 +280,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void shutDownElevator() {
 		// empty the request queue
+		motor.setMovementState(MovementState.STUCK);
+		motor.setDirection(Direction.NONE);
+		approachEvent = null;
 		ServiceRequest removeRequest;
 		do {
 			removeRequest = requestQueue.removeRequest();
 		} while (removeRequest != null);
 		motor.setDirection(Direction.NONE);
+		systemStatus.setSystemActivated(false);
 	}
 
 	/**
