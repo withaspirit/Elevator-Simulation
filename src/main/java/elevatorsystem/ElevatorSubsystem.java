@@ -3,7 +3,10 @@ package elevatorsystem;
 import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
-import requests.*;
+import requests.ApproachEvent;
+import requests.ElevatorRequest;
+import requests.SystemEvent;
+import requests.SystemEventListener;
 import systemwide.Structure;
 import systemwide.SystemStatus;
 

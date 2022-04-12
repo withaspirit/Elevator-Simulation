@@ -2,8 +2,8 @@ package requests;
 
 import systemwide.Origin;
 
-import java.time.LocalTime;
 import java.io.Serializable;
+import java.time.LocalTime;
 
 /**
  * SystemEvent is a generic event that indicates the time an event occurred
