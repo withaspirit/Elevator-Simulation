@@ -12,7 +12,8 @@ public enum RequestMessage {
     LIGHTON("Light is ON"),
     LIGHTOFF("Light is OFF"),
     DOOROPENED("Door is open"),
-    DOORCLOSED("Door is closed");
+    DOORCLOSED("Door is closed"),
+    TERMINATE("Terminate Threads");
 
     private final String msg;
 

@@ -165,7 +165,7 @@ public class ElevatorMonitor extends SystemEvent {
     @Override
     public String toString() {
         String formattedString = "[ElevatorNumber, queueTime, MovementState, CurrFloor, CurrDirxn]:\n";
-        formattedString += getElevatorNumber() + " " + String.format("%.2f", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection();
+        formattedString += getElevatorNumber() + " " + String.format("%.2fs", getQueueTime()) + " " + getState().toString() + " " + getCurrentFloor() + " " + getDirection();
         return formattedString;
     }
 

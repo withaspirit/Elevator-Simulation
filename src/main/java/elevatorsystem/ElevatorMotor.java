@@ -5,7 +5,7 @@ import systemwide.Direction;
 /**
  * ElevatorMotor is the mechanism that moves an Elevator.
  *
- * @author Liam Tripp, Brady Norton
+ * @author Liam Tripp, Brady Norton, Ramit Mahajan
  */
 public class ElevatorMotor {
 
@@ -102,28 +102,6 @@ public class ElevatorMotor {
 	 */
 	public void startMoving() {
 		setMovementState(MovementState.ACTIVE);
-	}
-
-	/**
-	 * Simulates the elevator moving up.
-	 */
-	// TODO: remove
-	public void moveUp() {
-		setMovementState(MovementState.ACTIVE);
-		this.setDirection(Direction.UP);
-		// setCurrentFloor(currentFloor + Math.abs(currentFloor - requestFloor));
-	}
-
-	/**
-	 * Simulates the elevator moving down.
-	 */
-	// TODO: remove
-	public void moveDown() {
-		// Set state and direction
-		setMovementState(MovementState.ACTIVE);
-		setDirection(Direction.DOWN);
-		// Update location
-		//setCurrentFloor(getCurrentFloor() - Math.abs(getCurrentFloor() - requestFloor));
 	}
 
 	/**
