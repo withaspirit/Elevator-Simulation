@@ -233,19 +233,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void startMovingToFloor(int floorToVisit) {
 
-//		// proceed until door closing successful
-//		while (!changeDoorState(Doors.State.CLOSED)) {
-//			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-//			setDoorsMalfunctioning(false);
-//		}
-		
-		if(changeDoorState(Doors.State.CLOSED)) {
-			System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
-		} else {
-			System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " tried closing the doors but are still stuck open");
+		// try to close doors until successful
+		while (!changeDoorState(Doors.State.CLOSED)) {
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
-		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-		
 		motor.startMoving();
 		motor.changeDirection(currentFloor, floorToVisit);
 	}
@@ -261,19 +252,11 @@ public class Elevator implements Runnable, SubsystemPasser {
 		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " reached its destination");
 
-//		// try to open doors until successful
-//		while (!changeDoorState(Doors.State.OPEN)) {
-//			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-//			setDoorsMalfunctioning(false);
-//		}
-		
-		if(changeDoorState(Doors.State.OPEN)) {
-			System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
-		} else {
-			System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " tried to open the doors but are already open and stuck");
+		// try to open doors until successful
+		while (!changeDoorState(Doors.State.OPEN)) {
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
 		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-		
 	}
 
 	/**
@@ -299,7 +282,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public boolean changeDoorState(Doors.State state) {
 		// throw error invalid argument
 		if (!state.equals(Doors.State.OPEN) && !state.equals(Doors.State.CLOSED)) {
-			System.err.println("Invalid argument for Doors State in changeDoorState");
+			System.err.println("Invalid argument for Doors State in changeDoorState().");
 			System.exit(1);
 		}
 		// process door change
@@ -310,33 +293,32 @@ public class Elevator implements Runnable, SubsystemPasser {
 				}
 
 				if (!doorsMalfunctioning) {
+					// correct Doors STUCK transient fault
+					if (doors.getState() == Doors.State.STUCK) {
+						setFault(Fault.NONE);
+						System.out.println("Elevator #" + elevatorNumber + " correcting Door Fault.");
+					}
+					// change doors state
 					if (state == Doors.State.OPEN) {
 						doors.open();
 					} else {
 						doors.close();
 					}
-					//Updating that doors are not malfunctioning anymore
-					if (fault == Fault.DOOR_STUCK) {
-						this.setFault(Fault.NONE);
-					}
 					return true;
 				} else {
 					String messageToPrint;
-					if (!(fault == Fault.DOOR_STUCK)) {
-						//Soft Fault: door are open to continue operation
-						doors.open();
-						this.setFault(Fault.DOOR_STUCK);
-						messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
-						throw new IllegalStateException(messageToPrint);
-					} else {
-						messageToPrint = "Elevator #" + elevatorNumber + "'s doors are STILL malfunctioning.";
-						throw new IllegalStateException(messageToPrint);
-					}
+					// transient (soft) Fault: make door try to change state again
+					messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
+					throw new IllegalStateException(messageToPrint);
 				}
 			} catch (InterruptedException e) {
 				// if interrupted, try to change state again
 				return changeDoorState(state);
 			} catch (IllegalStateException ise) {
+				doors.setToStuck();
+				setFault(Fault.DOOR_STUCK);
+				// turn off doors malfunctioning variable
+				setDoorsMalfunctioning(false);
 				ise.printStackTrace();
 				return false;
 			}
