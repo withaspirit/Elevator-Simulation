@@ -558,7 +558,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Sets the toggle for the Elevator's Doors malfunctioning.
+	 * Sets the toggle for the cart malfunctioning.
 	 *
 	 * @param doorsAreMalfunctioning true if the doors are malfunctioning, false otherwise
 	 */
