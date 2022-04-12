@@ -26,6 +26,7 @@ public class ElevatorMonitor extends SystemEvent {
     private Fault fault;
     private boolean hasNoRequests;
     private double queueTime;
+    private ServiceRequest currentRequest;
 
     /**
      * Main Constructor for ElevatorMonitor.
@@ -140,6 +141,20 @@ public class ElevatorMonitor extends SystemEvent {
     public boolean getHasNoRequests() {
         return hasNoRequests;
     }
+
+    /**
+     * Gets the currentRequest that the elevator is serving
+     *
+     * @return ServiceRequest currentRequest
+     */
+    public ServiceRequest getCurrentRequest() { return currentRequest; }
+
+    /**
+     * Sets the currentRequest to the ServiceRequest passed
+     *
+     * @param currentRequest the currentRequest of the elevator as a ServiceRequest
+     */
+    public void setCurrentRequest(ServiceRequest currentRequest) { this.currentRequest = currentRequest;  }
 
     /**
      * Updates the ElevatorMonitor with the latest ElevatorMonitor information.

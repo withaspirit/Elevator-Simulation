@@ -32,6 +32,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private Direction serviceDirection;
 	// FIXME: should we allow for there to be one or more faults?
 	private Fault fault;
+	private ServiceRequest currentRequest;
 
 	// toggles for Elevator sending messages and taking time to move
 	private boolean messageTransferEnabled;
@@ -65,6 +66,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		messageTransferEnabled = true;
 		approachEvent = null;
 		doorsMalfunctioning = false;
+		currentRequest = null;
 	}
 
 	/**
@@ -85,6 +87,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void moveElevatorWhilePossible() {
 		while (!requestQueue.isEmpty()) {
+			// Set currentRequest to null when no requests
+			currentRequest = null;
 			// Swap service direction check
 			swapServiceDirectionIfNecessary();
 			// Loop until the active queue is empty
@@ -103,6 +107,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 		ServiceRequest nextRequest = requestQueue.peekNextRequest();
 		int requestFloor = nextRequest.getFloorNumber();
 
+		// Set currentRequest
+		currentRequest = nextRequest;
 		// Print status
 		printStatus(requestFloor);
 		// Compare the request floor and the next floor
@@ -356,6 +362,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
+	 * Gets the currentRequest the elevator is service
+	 *
+	 * @return ServiceRequest currentRequest
+	 */
+	public ServiceRequest getCurrentRequest() { return currentRequest; }
+
+	/**
 	 * Returns whether the RequestQueue is empty.
 	 *
 	 * @return true if the RequestQueue is empty, false otherwise
@@ -531,7 +544,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @return a StatusUpdate containing new elevator information.
 	 */
 	public ElevatorMonitor makeElevatorMonitor() {
-		return new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor, doorTime * 2, travelTime));
+		ElevatorMonitor elevatorMonitor = new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor, doorTime * 2, travelTime));
+		elevatorMonitor.setCurrentRequest(currentRequest);
+		return elevatorMonitor;
 	}
 
 	/**
