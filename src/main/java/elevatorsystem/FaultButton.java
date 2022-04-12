@@ -19,6 +19,10 @@ public class FaultButton implements ActionListener {
     private Elevator elevator;
     private JToggleButton doorFaultButton;
 
+    /**
+     * FaultButton constructor with elevator reference
+     *
+     */
     public FaultButton(Elevator elevator) {
         this.elevator = elevator;
         int elevatorNumber = elevator.getElevatorNumber();
@@ -36,9 +40,9 @@ public class FaultButton implements ActionListener {
     }
 
     /**
-     * Returns the JPanel of ElevatorView.
+     * Returns the JPanel of FaultButton.
      *
-     * @return the ElevatorView's JPanel
+     * @return the FaultButton's JPanel
      */
     public JPanel getPanel() {
         return faultPanel;
