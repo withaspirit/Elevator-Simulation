@@ -51,5 +51,6 @@ public class FaultButton implements ActionListener {
         if (malfunction) {
             elevator.setDoorsMalfunctioning(true);
         }
+        doorFaultButton.setSelected(false);
     }
 }
