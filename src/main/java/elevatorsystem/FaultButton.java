@@ -30,18 +30,17 @@ public class FaultButton implements ActionListener {
 		
         faultPanel.add(doorFaultButton);
         doorFaultButton.addActionListener(this);
-        
         Border border = BorderFactory.createLineBorder(Color.BLACK);
         TitledBorder titledBorder = BorderFactory.createTitledBorder(border, "Elevator " + elevatorNumber);
         titledBorder.setTitleJustification(TitledBorder.CENTER);
         titledBorder.setTitlePosition(TitledBorder.ABOVE_TOP);
         faultPanel.setBorder(titledBorder);
-	}
-	
+    }
+
     /**
-     * Returns the JPanel of ElevatorView.
+     * Returns the JPanel of FaultButton.
      *
-     * @return the ElevatorView's JPanel
+     * @return the FaultButton's JPanel
      */
     public JPanel getPanel() {
         return faultPanel;
@@ -56,6 +55,5 @@ public class FaultButton implements ActionListener {
     	} else if (name == Fault.ELEVATOR_STUCK.getName()) {
     		elevator.setCartMalfunctioning(malfunction);
     	}
-    	
     }
 }
