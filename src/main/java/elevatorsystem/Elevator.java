@@ -313,11 +313,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 				// if interrupted, try to change state again
 				return changeDoorState(state);
 			} catch (IllegalStateException ise) {
-				doors.setToStuck();
-				setFault(Fault.DOOR_STUCK);
 				// turn off doors malfunctioning variable
 				setDoorsMalfunctioning(false);
-				elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 				ise.printStackTrace();
 				return false;
 			}
@@ -519,8 +516,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void setDoorsMalfunctioning(boolean doorsAreMalfunctioning) {
 		doorsMalfunctioning = doorsAreMalfunctioning;
-		if (doorsAreMalfunctioning) {
+		if (doorsAreMalfunctioning && doors.getState() != Doors.State.STUCK) {
+			setFault(Fault.DOOR_STUCK);
 			doors.setToStuck();
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
 	}
 

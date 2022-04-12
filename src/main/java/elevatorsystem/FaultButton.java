@@ -17,12 +17,13 @@ public class FaultButton implements ActionListener {
     //For each elevator
     private JPanel faultPanel;
     private Elevator elevator;
+    private JToggleButton doorFaultButton;
 
     public FaultButton(Elevator elevator) {
         this.elevator = elevator;
         int elevatorNumber = elevator.getElevatorNumber();
         faultPanel = new JPanel();
-        JToggleButton doorFaultButton = new JToggleButton("Door Fault");
+        doorFaultButton = new JToggleButton("Door Fault");
 
         faultPanel.add(doorFaultButton);
         doorFaultButton.addActionListener(this);
