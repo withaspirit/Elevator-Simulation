@@ -11,10 +11,13 @@ public class FaultButton implements ActionListener {
 	//For each elevator
 	private JPanel faultPanel;
 	private JToggleButton doorFaultButton;
-	private int elevatorNumber;
+	private Elevator elevator;
+	private boolean malfunction;
 	
 	public FaultButton(Elevator elevator) {
-		elevatorNumber = elevator.getElevatorNumber();
+		this.elevator = elevator;
+		this.malfunction = false;
+		int elevatorNumber = elevator.getElevatorNumber();
 		faultPanel = new JPanel();
 		doorFaultButton = new JToggleButton("Door Fault");
 		
@@ -40,6 +43,8 @@ public class FaultButton implements ActionListener {
     //Overriding actionPerformed() method
     @Override
     public void actionPerformed(ActionEvent e) {
-    	System.out.println("Button was pressed in elevator: " + Integer.toString(elevatorNumber));
+    	malfunction = !malfunction;
+    	elevator.setDoorsMalfunctioning(malfunction);
+    	//System.out.println("Button was pressed in elevator: " + Integer.toString(elevatorNumber));
     }
 }
