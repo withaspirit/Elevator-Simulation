@@ -233,12 +233,19 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void startMovingToFloor(int floorToVisit) {
 
-		// proceed until door closing successful
-		while (!changeDoorState(Doors.State.CLOSED)) {
-			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-			setDoorsMalfunctioning(false);
+//		// proceed until door closing successful
+//		while (!changeDoorState(Doors.State.CLOSED)) {
+//			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+//			setDoorsMalfunctioning(false);
+//		}
+		
+		if(changeDoorState(Doors.State.CLOSED)) {
+			System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
+		} else {
+			System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " tried closing the doors but are still stuck open");
 		}
-		System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+		
 		motor.startMoving();
 		motor.changeDirection(currentFloor, floorToVisit);
 	}
@@ -254,12 +261,19 @@ public class Elevator implements Runnable, SubsystemPasser {
 		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " reached its destination");
 
-		// try to open doors until successful
-		while (!changeDoorState(Doors.State.OPEN)) {
-			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-			setDoorsMalfunctioning(false);
+//		// try to open doors until successful
+//		while (!changeDoorState(Doors.State.OPEN)) {
+//			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+//			setDoorsMalfunctioning(false);
+//		}
+		
+		if(changeDoorState(Doors.State.OPEN)) {
+			System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
+		} else {
+			System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " tried to open the doors but are already open and stuck");
 		}
-		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+		
 	}
 
 	/**
@@ -301,16 +315,28 @@ public class Elevator implements Runnable, SubsystemPasser {
 					} else {
 						doors.close();
 					}
+					//Updating that doors are not malfunctioning anymore
+					if (fault == Fault.DOOR_STUCK) {
+						this.setFault(Fault.NONE);
+					}
 					return true;
 				} else {
-					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
-					throw new IllegalStateException(messageToPrint);
+					String messageToPrint;
+					if (!(fault == Fault.DOOR_STUCK)) {
+						//Soft Fault: door are open to continue operation
+						doors.open();
+						this.setFault(Fault.DOOR_STUCK);
+						messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
+						throw new IllegalStateException(messageToPrint);
+					} else {
+						messageToPrint = "Elevator #" + elevatorNumber + "'s doors are STILL malfunctioning.";
+						throw new IllegalStateException(messageToPrint);
+					}
 				}
 			} catch (InterruptedException e) {
 				// if interrupted, try to change state again
 				return changeDoorState(state);
 			} catch (IllegalStateException ise) {
-				doors.setToStuck();
 				ise.printStackTrace();
 				return false;
 			}
