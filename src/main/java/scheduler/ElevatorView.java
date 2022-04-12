@@ -111,12 +111,10 @@ public class ElevatorView {
      */
     public void updateStatusPanes(ElevatorMonitor elevatorMonitor) {
         String[] elevatorProperties = elevatorMonitor.propertiesToStringArray();
-        String currentRequestProperties = elevatorMonitor.currentRequestToString();
         // Iterate over elevator properties
         for (int i = 0; i < elevatorProperties.length; i++) {
             statusPanes[i].setText(elevatorProperties[i]);
         }
-        statusPanes[6].setText(currentRequestProperties);
 
         elevatorPanel.repaint();
         elevatorPanel.revalidate();
