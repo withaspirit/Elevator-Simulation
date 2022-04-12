@@ -518,13 +518,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 	}
 
 	/**
-	 * Interrupts Elevator's executing Thread.
-	 */
-	public void interrupt() {
-		Thread.currentThread().interrupt();
-	}
-
-	/**
 	 * Create a status response when a rew elevator request is added
 	 * that will change the status.
 	 *
