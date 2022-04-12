@@ -205,6 +205,8 @@ public class ElevatorMonitor extends SystemEvent {
         properties[5] = fault.getName();
         if (currentRequest != null) {
             properties[6] = currentRequest.toString();
+        } else {
+            properties[6] = "none";
         }
 
         return properties;
