@@ -51,9 +51,9 @@ public class FaultButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
     	malfunction = !malfunction;
-    	if(name == "Door Fault") {
+    	if(name == Fault.DOOR_STUCK.getName()) {
     		elevator.setDoorsMalfunctioning(malfunction);
-    	} else if (name == "Cart Fault") {
+    	} else if (name == Fault.ELEVATOR_STUCK.getName()) {
     		elevator.setCartMalfunctioning(malfunction);
     	}
     	

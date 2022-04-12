@@ -23,8 +23,8 @@ public class FaultInjector {
 		this.cartFaultButtons = new ArrayList<>();
         buttonListPanel = new JPanel();
         for (int i = 0; i < numberOfElevators; i++) {
-            doorFaultButtons.add(new FaultButton(elevatorList.get(i), "Door Fault"));
-            cartFaultButtons.add(new FaultButton(elevatorList.get(i), "Cart Fault"));
+            doorFaultButtons.add(new FaultButton(elevatorList.get(i), Fault.DOOR_STUCK.getName()));
+            cartFaultButtons.add(new FaultButton(elevatorList.get(i), Fault.ELEVATOR_STUCK.getName()));
             buttonListPanel.add(doorFaultButtons.get(i).getPanel());
             buttonListPanel.add(cartFaultButtons.get(i).getPanel());
         }
