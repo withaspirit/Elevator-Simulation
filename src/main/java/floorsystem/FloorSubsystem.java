@@ -118,11 +118,10 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
 	 * Adds a ServiceRequest to the list of Requests.
 	 *
 	 * @param serviceRequest serviceRequest to be added to the list of requests.
-
+	 */
 	public void addRequest(ServiceRequest serviceRequest) {
 		requestList.add(serviceRequest);
 	}
-	**/
 
 	/**
 	 * Gets the SystemStatus of the System.
