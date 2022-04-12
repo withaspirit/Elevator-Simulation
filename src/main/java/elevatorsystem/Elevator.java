@@ -230,12 +230,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void startMovingToFloor(int floorToVisit) {
 
-		// proceed until door closing successful
+		// try to close doors until successful
 		while (!changeDoorState(Doors.State.CLOSED)) {
-			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-			setDoorsMalfunctioning(false);
 		}
-		System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
 		motor.startMoving();
 		motor.changeDirection(currentFloor, floorToVisit);
 	}
@@ -253,10 +250,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// try to open doors until successful
 		while (!changeDoorState(Doors.State.OPEN)) {
-			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-			setDoorsMalfunctioning(false);
 		}
-		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 	}
 
 	/**
@@ -282,7 +277,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public boolean changeDoorState(Doors.State state) {
 		// throw error invalid argument
 		if (!state.equals(Doors.State.OPEN) && !state.equals(Doors.State.CLOSED)) {
-			System.err.println("Invalid argument for Doors State in changeDoorState");
+			System.err.println("Invalid argument for Doors State in changeDoorState().");
 			System.exit(1);
 		}
 		// process door change
@@ -293,6 +288,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 				}
 
 				if (!doorsMalfunctioning) {
+					// correct Doors STUCK transient fault
+					if (doors.getState() == Doors.State.STUCK) {
+						setFault(Fault.NONE);
+						System.out.println("Elevator #" + elevatorNumber + " correcting Door Fault.");
+					}
+					// change doors state
 					if (state == Doors.State.OPEN) {
 						doors.open();
 					} else {
@@ -300,14 +301,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 					}
 					return true;
 				} else {
-					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
+					String messageToPrint;
+					// transient (soft) Fault: make door try to change state again
+					messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
 					throw new IllegalStateException(messageToPrint);
 				}
 			} catch (InterruptedException e) {
 				// if interrupted, try to change state again
 				return changeDoorState(state);
 			} catch (IllegalStateException ise) {
-				doors.setToStuck();
+				// turn off doors malfunctioning variable
+				setDoorsMalfunctioning(false);
 				ise.printStackTrace();
 				return false;
 			}
@@ -509,8 +513,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void setDoorsMalfunctioning(boolean doorsAreMalfunctioning) {
 		doorsMalfunctioning = doorsAreMalfunctioning;
-		if (doorsAreMalfunctioning) {
+		if (doorsAreMalfunctioning && doors.getState() != Doors.State.STUCK) {
+			setFault(Fault.DOOR_STUCK);
 			doors.setToStuck();
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
 	}
 
