@@ -430,7 +430,7 @@ The calculations were made using Excel MS.
 - Standard Deviation was calculated using =STDEV.S()
 - Confidential interval value for 95% was calculated using the formula: 
 
-      mean±(std.deviation*z_(95%))/(√(# samples))     
+      mean±(std.deviation*z_(95%))/(√(# samples)),   where  z_(95%) = 1.96 (constant value)     
 
 - Time to process a request = Total elapsed time / 17 requests 
 
