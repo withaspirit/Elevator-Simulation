@@ -539,5 +539,4 @@ public class Elevator implements Runnable, SubsystemPasser {
 		messageToPrint += "RequestQueue: " + requestQueue;
 		System.out.println(messageToPrint);
 	}
-
 }
