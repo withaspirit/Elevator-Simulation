@@ -16,7 +16,7 @@ public class ElevatorView {
 
     private final JPanel elevatorPanel;
     private final JTextPane[] statusPanes;
-    private final static int NUMBER_OF_STATUS_PANES = 6;
+    private final static int NUMBER_OF_STATUS_PANES = 9;
 
     /**
      * Constructor for ElevatorView.
@@ -24,9 +24,19 @@ public class ElevatorView {
      * @param elevatorNumber the number of the Elevator that this View corresponds to
      */
     public ElevatorView(int elevatorNumber) {
+        // Initiate Panel
         elevatorPanel = new JPanel();
+        //elevatorPanel.setLayout(new GridLayout(1,2));
+
+        // Create Elevator Panels
         JPanel statusPanelContainer = new JPanel(new GridLayout(1, NUMBER_OF_STATUS_PANES));
+        //JPanel currentRequestPanelContainer = new JPanel(new GridLayout(1,3));
+
+        // Add Panels to main Panel
         elevatorPanel.add(statusPanelContainer);
+        //elevatorPanel.add(currentRequestPanelContainer);
+
+        // Config statusPanelContainer
         JPanel[] statusPanels = new JPanel[NUMBER_OF_STATUS_PANES];
         statusPanes = new JTextPane[NUMBER_OF_STATUS_PANES];
 
@@ -51,6 +61,12 @@ public class ElevatorView {
                 labelText = "Door State:";
             } else if (i == 5) {
                 labelText = "Fault:";
+            } else if (i == 6) {
+                labelText = "Request Creation Time:";
+            } else if (i == 7) {
+                labelText = "Request Floor:";
+            } else if (i == 8) {
+                labelText = "Request Direction:";
             }
             // TODO: add currentRequest?
             JLabel label = new JLabel();
@@ -99,10 +115,16 @@ public class ElevatorView {
      */
     public void updateStatusPanes(ElevatorMonitor elevatorMonitor) {
         String[] elevatorProperties = elevatorMonitor.propertiesToStringArray();
+        String[] currentRequestProperties = elevatorMonitor.currentRequestToStringArray();
 
         for (int i = 0; i < elevatorProperties.length; i++) {
             statusPanes[i].setText(elevatorProperties[i]);
         }
+
+        for (int i = 0; i < currentRequestProperties.length; i++) {
+            statusPanes[i+6].setText(currentRequestProperties[i]);
+        }
+
         elevatorPanel.repaint();
         elevatorPanel.revalidate();
     }

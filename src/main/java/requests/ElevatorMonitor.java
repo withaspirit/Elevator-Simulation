@@ -204,4 +204,28 @@ public class ElevatorMonitor extends SystemEvent {
 
         return properties;
     }
+
+    /**
+     * Returns a String array of size 3 containing the elevator's current request properties.
+     *
+     * The properties in order from position 1 to position 3 in the array:
+     * Request Time, Request Floor, Request Direction
+     *
+     * @return a String array containing 3 elevator
+     */
+    public String[] currentRequestToStringArray() {
+        String[] requestProperties = new String[3];
+
+        if (getCurrentRequest() == null) {
+            requestProperties[0] = "n/a";
+            requestProperties[1] = "n/a";
+            requestProperties[2] = "n/a";
+        } else {
+            requestProperties[0] = String.valueOf(getCurrentRequest().getTime());
+            requestProperties[2] = getCurrentRequest().getDirection().toString();
+            requestProperties[1] = String.valueOf(getCurrentRequest().getFloorNumber());
+        }
+
+        return requestProperties;
+    }
 }
