@@ -380,7 +380,9 @@ Multirun Instructions:
       - ARRIVAL_SENSOR_FAIL: hard fault that occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
       - DOORS_STUCK: soft fault that occurs when the Doors malfunction while opening or closing. Triggered by pushing a "Door Stuck" button in the GUI.
 
-    * Simulation Initialization and Termination: The simulation is initialized using information contained in the Structure class. ElevatorSubsystem and FloorSubsystem are initialized and wait for the Scheduler to pass them a Structure. The Structure is initialized in Scheduler's main method. Each of the two Scheduler threads, one for passing information between ElevatorSubsystem and FloorSubsystem, the other vice-versa, pass Structure to FloorSubsystem and ElevatorSubsystem, respectively. Introduced conditions to terminate the Threads of the Simulation. This was done with a SystemStatus class for Scheduler, ElevatorSubsystem, FloorSubsystem, and each of the Elevators. The termination condition of the threads is when SystemStatus.activated() is false, except for Scheduler, which requires both Scheduler threads to be inactive. A Scheduler's termination is achieved by its Timer expiring. Each Scheduler sends a termination message to the System it communicates with and then terminates itself. The systems are then terminated by receiving the message, which indicates to the SystemStatus that the class’s thread should end.
+    * Simulation Initialization and Termination: The simulation is initialized using information contained in the Structure class. ElevatorSubsystem and FloorSubsystem are initialized and wait for the Scheduler to pass them a Structure. The Structure is initialized in Scheduler's main method. Each of the two Scheduler threads, one for passing information between ElevatorSubsystem and FloorSubsystem, the other vice-versa, pass Structure to FloorSubsystem and ElevatorSubsystem, respectively. 
+
+   * Simulation Termination: Introduced conditions to terminate the Threads of the Simulation. This was done with a SystemStatus class for Scheduler, ElevatorSubsystem, FloorSubsystem, and each of the Elevators. The termination condition of the threads is when SystemStatus.activated() is false, except for Scheduler, which requires both Scheduler threads to be inactive. A Scheduler's termination is achieved by its Timer expiring. Each Scheduler sends a termination message to the System it communicates with and then terminates itself. The systems are then terminated by receiving the message, which indicates to the SystemStatus that the class’s thread should end.
     
   </details>
 
@@ -400,12 +402,12 @@ Multirun Instructions:
 
   ![UML Class Diagram](https://user-images.githubusercontent.com/61635007/163095931-c9f438ef-46c2-4290-9ba9-9e798060d626.png)
 
-
   #### UML State Machine Diagram
   - Elevator Movement (With faults)
   ![Elevator Movement State Machine Diagram](https://user-images.githubusercontent.com/61635007/163073011-82bdddf8-4c09-477f-abd6-da9f8a81f000.png)
 
-
+  <br>
+  
   <details>
     <summary>Reflection</summary>
     
@@ -424,7 +426,7 @@ Multirun Instructions:
 
     A consistent problem throughout the project was team members not completing coding work until the day of the deadline. This could be solved by members being proactive and engaged with the project instead of passive, or by more deadlines being set. The deadlines would require more involvement from the team during the design phase. Proactive members would allow for ongoing development and issues to be addressed earlier rather than later. 
 
-    There was also a problem where the most proactive members did most of the work while passive members did work close to the iteration submission dates. This was often due to there not being enough set deadlines. The person who did the most Requirements Analysis was also tasked with assigning work to team members. This often resulted in burnout, work not being assigned, and iteration requirements not being met. There was an attempt to solve this by creating starting from Iteration 2, as seen in [#54](/../../issues/54), [#75](/../../issues/75), [#105](/../../issues/105), and [#151](/../../issues/151). Most of the work to be done for the project was laid out in these documents. However, it did not result in work being done earlier. Deadlines were still not created because it was assumed the existence of the WBS would result in team members being more proactive. This mostly false, as passive members remained passive. The biggest difference was that the work-to-do was clearer.
+    There was also a problem where the most proactive members did most of the work while passive members did work close to the iteration submission dates. This was often due to there not being enough set deadlines. The person who did the most Requirements Analysis was also tasked with assigning work to team members. This often resulted in burnout, work not being assigned, and iteration requirements not being met. There was an attempt to solve this by creating starting from Iteration 2, as seen in [#54](/../../issues/54), [#75](/../../issues/75), [#105](/../../issues/105), and [#151](/../../issues/151). Most of the work to be done for the project was laid out in these documents. However, it did not result in work being done earlier. Deadlines were still not created because it was assumed the existence of the WBS would result in team members being more proactive. However, most passive members remained passive. The biggest difference was that the work-to-do was clearer.
 
   </details>
   
