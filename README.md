@@ -370,7 +370,13 @@ Multirun Instructions:
     
     * GUI Design Pattern: The design pattern that was selected is the [Model-Presenter-View](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is static in Scheduler, so it's shared by both.
     
-    [IMAGE OF THE GUI]
+    ![GUI](https://user-images.githubusercontent.com/61635007/163075152-23db6387-42a7-49d9-8973-f9499136c20e.png)
+
+    * Changes to faults: The two door faults were reduced to one, as seen below. Soft faults are handled by acknowledging of the fault in the system and clearing it, so that the system can continue its operation. Hard faults are handled by shutting down the elevator altogether and emptying out its requests queue.
+
+      - ELEVATOR_STUCK: hard fault that occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). Triggered by pressing an "Elevator Stuck" button in the GUI.
+      - ARRIVAL_SENSOR_FAIL: hard fault taht occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
+      - DOORS_STUCK: soft fault that occurs when the Doors malfunction while opening or closing. Triggered by pushing a "Door Stuck" button in the GUI.
 
     * Timing Scheduler:
 
@@ -405,38 +411,8 @@ Multirun Instructions:
   <details>
     <summary>Reflection</summary>
     
-    This project is mostly a success as it meets most of the requirements. 
+    This project is mostly a success as it meets most of the requirements. However,
 
-  </details>
-  
-  <details>
-    <summary>Fault Handling</summary>
-
-  #### Hard Faults:
-
-  These faults are handled by shutting down the elevator altogether and emptying out its requests queue.
-
-  - Arrival Sensor Fail:
-    - Triggered by time out from the UPD message since a failure from the arrival sensor could be catastrophic.
-  - Elevator Stuck Fail
-    - Triggered by the elevator cart itself.
-      - Injected during testing using a GUI with push buttons.
-
-  #### Soft Faults:
-
-  This fault is handled by acknowledging of the fault in the system and clearing it, so that the system can continue its operation.
-
-  - Door Stuck
-    - Triggered by the doors.
-      - Injected during testing using a GUI with push buttons.
-
-  #### Fault Injection:
-
-  Using the GUI the Elevator and Door Stuck fail can be triggered by pushing
-
-  ![image](https://user-images.githubusercontent.com/71390371/163074823-eb416847-2cd3-47c0-8523-1ed131a3ceda.png)
-
-  - Clicking the button will trigger such fault.
   </details>
   
   <details>
