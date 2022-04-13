@@ -419,6 +419,36 @@ Multirun Instructions:
   </details>
   
   <details>
+    <summary>Fault Handling</summary>
+
+    #### Hard Faults:
+
+    These faults are handled by shutting down the elevator altogether and emptying out its requests queue.
+
+    - Arrival Sensor Fail:
+      - Triggered by time out from the UPD message since a failure from the arrival sensor could be catastrophic.
+    - Elevator Stuck Fail
+      - Triggered by the elevator cart itself.
+        - Injected during testing using a GUI with push buttons.
+
+    #### Soft Faults:
+
+    This fault is handled by acknowledging of the fault in the system and clearing it, so that the system can continue its operation.
+
+    - Door Stuck
+      - Triggered by the doors.
+        - Injected during testing using a GUI with push buttons.
+
+    #### Fault Injection:
+
+    Using the GUI the Elevator Stuck fail can be triggered by pushing
+
+    ![image](https://user-images.githubusercontent.com/71390371/163076733-fabbf414-1907-4813-9105-561f3d551613.png)
+
+    - Clicking the button will trigger such a fault.
+  </details>
+  
+  <details>
     <summary>Performance Testing</summary>
 
     #### Testing Description
