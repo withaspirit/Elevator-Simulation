@@ -10,19 +10,22 @@ import java.util.ArrayList;
  */
 public class FaultInjectorView {
 
-    //For elevator subsystem
-    private ArrayList<FaultButton> faultButtons;
+    private ArrayList<FaultButton> doorFaultButtons;
+    private ArrayList<FaultButton> cartFaultButtons;
     private JPanel buttonListPanel;
     private JPanel containerPanel;
 
     public FaultInjectorView(ArrayList<Elevator> elevatorList) {
         int numberOfElevators = elevatorList.size();
         //Initializing the buttons
-        faultButtons = new ArrayList<>();
+        this.doorFaultButtons = new ArrayList<>();
+        this.cartFaultButtons = new ArrayList<>();
         buttonListPanel = new JPanel();
         for (int i = 0; i < numberOfElevators; i++) {
-            faultButtons.add(new FaultButton(elevatorList.get(i)));
-            buttonListPanel.add(faultButtons.get(i).getPanel());
+            doorFaultButtons.add(new FaultButton(elevatorList.get(i), Fault.DOOR_STUCK.getName()));
+            cartFaultButtons.add(new FaultButton(elevatorList.get(i), Fault.ELEVATOR_STUCK.getName()));
+            buttonListPanel.add(doorFaultButtons.get(i).getPanel());
+            buttonListPanel.add(cartFaultButtons.get(i).getPanel());
         }
 
         JScrollPane scrollPane = new JScrollPane(buttonListPanel);
