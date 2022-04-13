@@ -32,6 +32,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private Direction serviceDirection;
 	// FIXME: should we allow for there to be one or more faults?
 	private Fault fault;
+	private ServiceRequest currentRequest;
 
 	// toggles for Elevator sending messages and taking time to move
 	private boolean messageTransferEnabled;
@@ -63,6 +64,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		messageTransferEnabled = true;
 		approachEvent = null;
 		doorsMalfunctioning = false;
+		currentRequest = null;
 		cartMalfunctioning = false;
 	}
 
@@ -84,11 +86,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void moveElevatorWhilePossible() {
 		while (!requestQueue.isEmpty()) {
+			currentRequest = null;
 			// Swap service direction check
 			swapServiceDirectionIfNecessary();
 			// Loop until the active queue is empty
 			while (!requestQueue.isCurrentQueueEmpty()) {
 				respondToRequest();
+				elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 			}
 		}
 	}
@@ -102,6 +106,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 		ServiceRequest nextRequest = requestQueue.peekNextRequest();
 		int requestFloor = nextRequest.getFloorNumber();
 
+		// Set currentRequest
+		currentRequest = nextRequest;
 		// Print status
 		printStatus(requestFloor);
 		// Compare the request floor and the next floor
@@ -192,7 +198,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (!sameFloorRemovedAsPeeked) {
 			String messageToPrint = "\nFloor peeked " + requestFloor + ", Floor Removed: " + removedFloor + "\n";
 			messageToPrint += "A request was added to Elevator " + elevatorNumber + " while the current request was being processed.";
+			shutDownElevator();
 			throw new ConcurrentModificationException(messageToPrint);
+		} else {
+			currentRequest = null;
 		}
 	}
 
@@ -262,6 +271,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * Shuts down the elevator by removing all Requests from its RequestQueue.
 	 */
 	public void shutDownElevator() {
+		System.out.println("\nElevator " + elevatorNumber + " was shut down.");
 		// empty the request queue
 		motor.setMovementState(MovementState.STUCK);
 		motor.setDirection(Direction.NONE);
@@ -270,8 +280,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 		do {
 			removeRequest = requestQueue.removeRequest();
 		} while (removeRequest != null);
+		currentRequest = null;
 		motor.setDirection(Direction.NONE);
 		systemStatus.setSystemActivated(false);
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 	}
 
 	/**
@@ -363,6 +375,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public RequestQueue getRequestQueue() {
 		return requestQueue;
 	}
+
+	/**
+	 * Gets the currentRequest the elevator is service
+	 *
+	 * @return ServiceRequest currentRequest
+	 */
+	public ServiceRequest getCurrentRequest() { return currentRequest; }
 
 	/**
 	 * Returns whether the RequestQueue is empty.
@@ -553,7 +572,9 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @return a StatusUpdate containing new elevator information.
 	 */
 	public ElevatorMonitor makeElevatorMonitor() {
-		return new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor, doorTime * 2, travelTime));
+		ElevatorMonitor elevatorMonitor = new ElevatorMonitor(elevatorNumber, currentFloor, serviceDirection, motor.getMovementState(), motor.getDirection(), doors.getState(), fault , requestQueue.isEmpty(), requestQueue.getExpectedTime(currentFloor, doorTime * 2, travelTime));
+		elevatorMonitor.setCurrentRequest(currentRequest);
+		return elevatorMonitor;
 	}
 
 	/**

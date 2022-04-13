@@ -3,6 +3,7 @@ package elevatorsystem;
 import misc.InputFileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import requests.ElevatorMonitor;
 import requests.ElevatorRequest;
 import requests.ServiceRequest;
 import requests.SystemEvent;
@@ -12,8 +13,7 @@ import systemwide.Origin;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests an Elevator's Service Algorithm without transferring messages.
@@ -196,5 +196,32 @@ class ElevatorTest {
             elevator.compareFloors(requestFloor1);
         }
         // assertEquals(requestFloor1, elevator.getCurrentFloor());
+    }
+
+    @Test
+    void elevatorTest2() {
+        ServiceRequest serviceRequest = new ServiceRequest(LocalTime.now(), 1, Direction.UP, Origin.ELEVATOR_SYSTEM);
+        //ServiceRequest serviceRequest2 = new ServiceRequest(LocalTime.now(), 2, Direction.UP, Origin.ELEVATOR_SYSTEM);
+
+        initNumberOfElevators(1);
+
+        assertTrue(elevatorList.get(0).hasNoRequests());
+        elevatorList.get(0).addRequest(serviceRequest);
+        assertFalse(elevatorList.get(0).hasNoRequests());
+
+        //
+        ElevatorMonitor monitor = elevatorList.get(0).makeElevatorMonitor();
+        monitor.setCurrentRequest(elevatorList.get(0).getRequestQueue().removeRequest());
+        ServiceRequest currentRequest = monitor.getCurrentRequest();
+
+        assertEquals(serviceRequest.getElevatorNumber(), currentRequest.getElevatorNumber());
+        assertEquals(serviceRequest.getTime(), currentRequest.getTime());
+        assertEquals(serviceRequest.getDirection(), currentRequest.getDirection());
+        assertEquals(serviceRequest.getFloorNumber(), currentRequest.getFloorNumber());
+        assertEquals(serviceRequest.getOrigin(),currentRequest.getOrigin());
+
+        elevatorList.get(0).moveElevatorWhilePossible();
+
+        assertNull(elevatorList.get(0).getCurrentRequest());
     }
 }
