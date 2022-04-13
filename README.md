@@ -398,9 +398,12 @@ Multirun Instructions:
 
   #### UML Class Diagram
 
+  ![UML Class Diagram](https://user-images.githubusercontent.com/61635007/163095931-c9f438ef-46c2-4290-9ba9-9e798060d626.png)
+
+
   #### UML State Machine Diagram
   - Elevator Movement (With faults)
-  ![Elevator Movement](https://user-images.githubusercontent.com/61635007/163073011-82bdddf8-4c09-477f-abd6-da9f8a81f000.png)
+  ![Elevator Movement State Machine Diagram](https://user-images.githubusercontent.com/61635007/163073011-82bdddf8-4c09-477f-abd6-da9f8a81f000.png)
 
 
   <details>
