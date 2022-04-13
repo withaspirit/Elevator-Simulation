@@ -40,10 +40,8 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private int travelTime;
 	private int doorTime;
 	private volatile boolean doorsMalfunctioning;
+	private volatile boolean cartMalfunctioning;
 
-	// Elevator Measurements
-	private float speed;
-	public static final float ACCELERATION = 0.304f; // meters/second^2
 	/**
 	 * Constructor for Elevator.
 	 * Instantiates subsystem, currentFloor, speed, displacement, and status
@@ -67,6 +65,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		approachEvent = null;
 		doorsMalfunctioning = false;
 		currentRequest = null;
+		cartMalfunctioning = false;
 	}
 
 	/**
@@ -155,22 +154,19 @@ public class Elevator implements Runnable, SubsystemPasser {
 					if (messageTransferEnabled && approachEvent == null) {
 						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before " + travelTime + " expired.";
 						throw new TimeoutException(errorMessage);
+					} else if (cartMalfunctioning) {
+						String errorMessage = "Elevator #" + elevatorNumber + " is stuck... The cart is malfunctioning.";
+						throw new InterruptedException(errorMessage);
 					}
 				} catch (InterruptedException ie) {
 					setFault(Fault.ELEVATOR_STUCK);
 					// shut down elevator
-					motor.setMovementState(MovementState.STUCK);
-					motor.setDirection(Direction.NONE);
 					shutDownElevator();
-					approachEvent = null;
 					return;
 				} catch (TimeoutException te) {
 					setFault(Fault.ARRIVAL_SENSOR_FAIL);
 					// shut down elevator
-					motor.setMovementState(MovementState.STUCK);
-					motor.setDirection(Direction.NONE);
 					shutDownElevator();
-					approachEvent = null;
 					return;
 				}
 			}
@@ -242,12 +238,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void startMovingToFloor(int floorToVisit) {
 
-		// proceed until door closing successful
+		// try to close doors until successful
 		while (!changeDoorState(Doors.State.CLOSED)) {
-			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-			setDoorsMalfunctioning(false);
+			System.out.println("Elevator #" + elevatorNumber + " failed to make doors " + Doors.State.CLOSED + ". Trying again...");
 		}
-		System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
 		motor.startMoving();
 		motor.changeDirection(currentFloor, floorToVisit);
 	}
@@ -265,10 +259,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// try to open doors until successful
 		while (!changeDoorState(Doors.State.OPEN)) {
-			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-			setDoorsMalfunctioning(false);
+			System.out.println("Elevator #" + elevatorNumber + " failed to make doors " + Doors.State.OPEN + ". Trying again...");
 		}
-		System.out.println("\n" + LocalTime.now() + "\n Elevator #" + elevatorNumber + " opened its doors");
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+
 	}
 
 	/**
@@ -277,12 +271,16 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public void shutDownElevator() {
 		System.out.println("\nElevator " + elevatorNumber + " was shut down.");
 		// empty the request queue
+		motor.setMovementState(MovementState.STUCK);
+		motor.setDirection(Direction.NONE);
+		approachEvent = null;
 		ServiceRequest removeRequest;
 		do {
 			removeRequest = requestQueue.removeRequest();
 		} while (removeRequest != null);
 		currentRequest = null;
 		motor.setDirection(Direction.NONE);
+		systemStatus.setSystemActivated(false);
 		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 	}
 
@@ -297,7 +295,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	public boolean changeDoorState(Doors.State state) {
 		// throw error invalid argument
 		if (!state.equals(Doors.State.OPEN) && !state.equals(Doors.State.CLOSED)) {
-			System.err.println("Invalid argument for Doors State in changeDoorState");
+			System.err.println("Invalid argument for Doors State in changeDoorState().");
 			System.exit(1);
 		}
 		// process door change
@@ -308,6 +306,12 @@ public class Elevator implements Runnable, SubsystemPasser {
 				}
 
 				if (!doorsMalfunctioning) {
+					// correct Doors STUCK transient fault
+					if (doors.getState() == Doors.State.STUCK) {
+						setFault(Fault.NONE);
+						System.out.println("Elevator #" + elevatorNumber + " correcting Door Fault.");
+					}
+					// change doors state
 					if (state == Doors.State.OPEN) {
 						doors.open();
 					} else {
@@ -315,14 +319,17 @@ public class Elevator implements Runnable, SubsystemPasser {
 					}
 					return true;
 				} else {
-					String messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
+					String messageToPrint;
+					// transient (soft) Fault: make door try to change state again
+					messageToPrint = "Elevator #" + elevatorNumber + "'s doors are malfunctioning.";
 					throw new IllegalStateException(messageToPrint);
 				}
 			} catch (InterruptedException e) {
 				// if interrupted, try to change state again
 				return changeDoorState(state);
 			} catch (IllegalStateException ise) {
-				doors.setToStuck();
+				// turn off doors malfunctioning variable
+				setDoorsMalfunctioning(false);
 				ise.printStackTrace();
 				return false;
 			}
@@ -531,16 +538,29 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void setDoorsMalfunctioning(boolean doorsAreMalfunctioning) {
 		doorsMalfunctioning = doorsAreMalfunctioning;
-		if (doorsAreMalfunctioning) {
+		if (doorsAreMalfunctioning && doors.getState() != Doors.State.STUCK) {
+			setFault(Fault.DOOR_STUCK);
 			doors.setToStuck();
+			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
+	}
+	
+	/**
+	 * Indicates whether the Elevator's doors are malfunctioning.
+	 *
+	 * @return true if the cart is malfunctioning, false otherwise
+	 */
+	public boolean cartIsMalfunctioning() {
+		return cartMalfunctioning;
 	}
 
 	/**
-	 * Interrupts Elevator's executing Thread.
+	 * Sets the toggle for the cart malfunctioning.
+	 *
+	 * @param cartIsMalfunctioning true if the cart malfunctioning, false otherwise
 	 */
-	public void interrupt() {
-		Thread.currentThread().interrupt();
+	public void setCartMalfunctioning(boolean cartIsMalfunctioning) {
+		cartMalfunctioning = cartIsMalfunctioning;
 	}
 
 	/**
@@ -569,52 +589,5 @@ public class Elevator implements Runnable, SubsystemPasser {
 				" " + motor.getDirection() + " " + doors.getState() + " " + fault.getName() + "]\n";
 		messageToPrint += "RequestQueue: " + requestQueue;
 		System.out.println(messageToPrint);
-	}
-
-	/**
-	 * Gets the speed of the elevator.
-	 *
-	 * @return the speed as a float
-	 */
-	public float getSpeed() {
-		return speed;
-	}
-
-	/**
-	 * Sets the speed of the elevator.
-	 *
-	 * @param speed the speed of the elevator
-	 */
-	public void setSpeed(float speed) {
-		this.speed = speed;
-	}
-
-	/**
-	 * Calculates the amount of time it will take for the elevator to stop at it's current speed
-	 *
-	 * @return total time it will take to stop as a float
-	 */
-	public float stopTime() {
-		float numerator = 0 - speed;
-		return numerator / ACCELERATION;
-	}
-
-	/**
-	 * Gets the distance until the next floor as a float.
-	 *
-	 * @return distance until next floor
-	 */
-	public float getDistanceUntilNextFloor() {
-		float distance = 0;
-		float stopTime = stopTime();
-
-		// Using Kinematics equation: d = vt + (1/2)at^2
-		float part1 = speed * stopTime;
-		// System.out.println("Part 1: " + part1);
-
-		float part2 = (float) ((0.5) * (ACCELERATION) * (Math.pow(stopTime, 2)));
-		// System.out.println("Part 2: " + part2);
-
-		return part1 - part2;
 	}
 }
