@@ -8,30 +8,32 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * FaultButton is the button class used to inject door stuck faults.
+ * FaultButton is the button class used to inject faults.
  *
  * @author Julian
  */
 public class FaultButton implements ActionListener {
 
-    //For each elevator
     private JPanel faultPanel;
-    private Elevator elevator;
     private JToggleButton doorFaultButton;
+    private Elevator elevator;
+    private String name;
 
     /**
      * FaultButton constructor with elevator reference
      *
+     * @param elevator that the button is reference to
+     * @param name of the fault that the button triggers
      */
-    public FaultButton(Elevator elevator) {
+    public FaultButton(Elevator elevator, String name) {
+        this.name = name;
         this.elevator = elevator;
         int elevatorNumber = elevator.getElevatorNumber();
         faultPanel = new JPanel();
-        doorFaultButton = new JToggleButton("Door Fault");
+        doorFaultButton = new JToggleButton(name);
 
         faultPanel.add(doorFaultButton);
         doorFaultButton.addActionListener(this);
-
         Border border = BorderFactory.createLineBorder(Color.BLACK);
         TitledBorder titledBorder = BorderFactory.createTitledBorder(border, "Elevator " + elevatorNumber);
         titledBorder.setTitleJustification(TitledBorder.CENTER);
@@ -48,12 +50,18 @@ public class FaultButton implements ActionListener {
         return faultPanel;
     }
 
-    //Overriding actionPerformed() method
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean malfunction = !elevator.doorsAreMalfunctioning();
-        if (malfunction) {
-            elevator.setDoorsMalfunctioning(true);
+        if (name.equals(Fault.DOOR_STUCK.getName())) {
+            boolean doorIsMalfunctioning = !elevator.doorsAreMalfunctioning();
+            if (doorIsMalfunctioning) {
+                elevator.setDoorsMalfunctioning(true);
+            }
+        } else if (name.equals(Fault.ELEVATOR_STUCK.getName())) {
+            boolean cartIsMalfunctioning = !elevator.cartIsMalfunctioning();
+            if (cartIsMalfunctioning) {
+                elevator.setCartMalfunctioning(true);
+            }
         }
         doorFaultButton.setSelected(false);
     }

@@ -39,6 +39,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	private int travelTime;
 	private int doorTime;
 	private volatile boolean doorsMalfunctioning;
+	private volatile boolean cartMalfunctioning;
 
 	/**
 	 * Constructor for Elevator.
@@ -62,6 +63,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 		messageTransferEnabled = true;
 		approachEvent = null;
 		doorsMalfunctioning = false;
+		cartMalfunctioning = false;
 	}
 
 	/**
@@ -146,22 +148,19 @@ public class Elevator implements Runnable, SubsystemPasser {
 					if (messageTransferEnabled && approachEvent == null) {
 						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before " + travelTime + " expired.";
 						throw new TimeoutException(errorMessage);
+					} else if (cartMalfunctioning) {
+						String errorMessage = "Elevator #" + elevatorNumber + " is stuck... The cart is malfunctioning.";
+						throw new InterruptedException(errorMessage);
 					}
 				} catch (InterruptedException ie) {
 					setFault(Fault.ELEVATOR_STUCK);
 					// shut down elevator
-					motor.setMovementState(MovementState.STUCK);
-					motor.setDirection(Direction.NONE);
 					shutDownElevator();
-					approachEvent = null;
 					return;
 				} catch (TimeoutException te) {
 					setFault(Fault.ARRIVAL_SENSOR_FAIL);
 					// shut down elevator
-					motor.setMovementState(MovementState.STUCK);
-					motor.setDirection(Direction.NONE);
 					shutDownElevator();
-					approachEvent = null;
 					return;
 				}
 			}
@@ -232,6 +231,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// try to close doors until successful
 		while (!changeDoorState(Doors.State.CLOSED)) {
+			System.out.println("Elevator #" + elevatorNumber + " failed to make doors " + Doors.State.CLOSED + ". Trying again...");
 		}
 		motor.startMoving();
 		motor.changeDirection(currentFloor, floorToVisit);
@@ -250,8 +250,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// try to open doors until successful
 		while (!changeDoorState(Doors.State.OPEN)) {
+			System.out.println("Elevator #" + elevatorNumber + " failed to make doors " + Doors.State.OPEN + ". Trying again...");
 		}
 		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
+
 	}
 
 	/**
@@ -259,11 +261,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void shutDownElevator() {
 		// empty the request queue
+		motor.setMovementState(MovementState.STUCK);
+		motor.setDirection(Direction.NONE);
+		approachEvent = null;
 		ServiceRequest removeRequest;
 		do {
 			removeRequest = requestQueue.removeRequest();
 		} while (removeRequest != null);
 		motor.setDirection(Direction.NONE);
+		systemStatus.setSystemActivated(false);
 	}
 
 	/**
@@ -518,6 +524,24 @@ public class Elevator implements Runnable, SubsystemPasser {
 			doors.setToStuck();
 			elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 		}
+	}
+	
+	/**
+	 * Indicates whether the Elevator's doors are malfunctioning.
+	 *
+	 * @return true if the cart is malfunctioning, false otherwise
+	 */
+	public boolean cartIsMalfunctioning() {
+		return cartMalfunctioning;
+	}
+
+	/**
+	 * Sets the toggle for the cart malfunctioning.
+	 *
+	 * @param cartIsMalfunctioning true if the cart malfunctioning, false otherwise
+	 */
+	public void setCartMalfunctioning(boolean cartIsMalfunctioning) {
+		cartMalfunctioning = cartIsMalfunctioning;
 	}
 
 	/**
