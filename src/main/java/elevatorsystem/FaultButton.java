@@ -22,8 +22,8 @@ public class FaultButton implements ActionListener {
     /**
      * FaultButton constructor with elevator reference
      *
-     * @param
-     * @param
+     * @param elevator that the button is reference to
+     * @param name of the fault that the button triggers
      */
     public FaultButton(Elevator elevator, String name) {
         this.name = name;
@@ -50,6 +50,10 @@ public class FaultButton implements ActionListener {
         return faultPanel;
     }
 
+    /**
+     * Action lister that initiates the proper fault handling
+     *
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (name.equals(Fault.DOOR_STUCK.getName())) {

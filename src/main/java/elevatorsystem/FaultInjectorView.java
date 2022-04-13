@@ -15,6 +15,10 @@ public class FaultInjectorView {
     private JPanel buttonListPanel;
     private JPanel containerPanel;
 
+    /**
+     * Class constructor with reference to elevator list. 
+     *
+     */
     public FaultInjectorView(ArrayList<Elevator> elevatorList) {
         int numberOfElevators = elevatorList.size();
         //Initializing the buttons
