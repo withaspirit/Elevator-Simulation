@@ -1,5 +1,4 @@
-import elevatorsystem.Elevator;
-import elevatorsystem.Fault;
+package elevatorsystem;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -52,10 +51,8 @@ public class FaultButton implements ActionListener {
 		return faultPanel;
 	}
 
-	//Overriding actionPerformed() method
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
 		if (name.equals(Fault.DOOR_STUCK.getName())) {
 			boolean doorIsMalfunctioning = !elevator.doorsAreMalfunctioning();
 			if (doorIsMalfunctioning) {

@@ -148,7 +148,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 					if (messageTransferEnabled && approachEvent == null) {
 						String errorMessage = "Elevator #" + elevatorNumber + " did not receive ApproachEvent before " + travelTime + " expired.";
 						throw new TimeoutException(errorMessage);
-					} else if(cartMalfunctioning) {
+					} else if (cartMalfunctioning) {
 						String errorMessage = "Elevator #" + elevatorNumber + " is stuck... The cart is malfunctioning.";
 						throw new InterruptedException(errorMessage);
 					}
