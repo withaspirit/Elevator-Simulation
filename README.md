@@ -368,7 +368,7 @@ Multirun Instructions:
     <summary>Show Long Description</summary>
     <br>
     
-    * GUI Design Pattern: The design pattern that was selected is the [Model-Presenter-View](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is static in Scheduler, so it's shared by both. ElevatorView is the Panel for displaying each elevator while ElevatorViewContainer contains all the ElevatorViews. Presenter updates the ElevatorViews when it's passed an ElevatorMonitor from Scheduler. 
+    * GUI Design Pattern: The design pattern that was selected is the [Model-Presenter-View](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is static in Scheduler, so it's shared by both. ElevatorView is the Panel for displaying each elevator while ElevatorViewContainer contains all the ElevatorViews. Presenter updates an ElevatorView when it's passed an ElevatorMonitor from Scheduler.
     <br>
     
     ![GUI](https://user-images.githubusercontent.com/61635007/163075152-23db6387-42a7-49d9-8973-f9499136c20e.png)    
@@ -380,11 +380,7 @@ Multirun Instructions:
       - ARRIVAL_SENSOR_FAIL: hard fault taht occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
       - DOORS_STUCK: soft fault that occurs when the Doors malfunction while opening or closing. Triggered by pushing a "Door Stuck" button in the GUI.
 
-    * Thread Initialization: 
-    
-    * Thread Termination: Introduced conditions to terminate the Threads of the Simulation. Termination is activated by each of the two Scheduler's Timers expiring. Each Scheduler sends a termination message to the the System it communicates with and then terminates itself. The systems are terminated by receiving the message.
-
-    * Other changes:
+    * Simulation Initialization and Termination: The simulation is initialized using information contained in the Structure class. ElevatorSubsystem and FloorSubsystem are initialized and wait for the Scheduler to pass them a Structure. The Structure is initialized in Scheduler's main method. Each of the two Scheduler threads, one for passing information between ElevatorSubsystem and FloorSubsystem, the other vice-versa, pass Structure to FloorSubsystem and ElevatorSubsystem, respectively. Introduced conditions to terminate the Threads of the Simulation. This was done with a SystemStatus class for Scheduler, ElevatorSubsystem, FloorSubsystem, and each of the Elevators. The termination condition of the threads are when SystemStatus.activated() is false, except for Scheduler, which requires both Scheduler Threads to be inactive. A Scheduler's termination is achieved by its Timer expiring. Each Scheduler sends a termination message to the the System it communicates with and then terminates itself. The systems are then terminated by receiving the message, which indicates to the SystemStatus that the class' thread should end.
     
   </details>
 
@@ -414,15 +410,18 @@ Multirun Instructions:
     This project is mostly a success as it meets most of the requirements. 
 
     ### Successes
-    The README design is excellent. The UML Class Diagram is the most complete diagram in the project. Virtually all methods and classes have Javadocs and have consitent formatting. The 
+    The README design is excellent. The UML Class Diagram is the most complete diagram in the project. Virtually all methods and classes have Javadocs and have consitent formatting.
 
     ### Areas for Improvement
 
+    #### Design
     The requirements could be better met by having the RequestQueue in the Scheduler. This would allow Scheduler to have more awareness Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView. A state machine pattern for the Elevator was not implemented due to not enough people working on the design. More contributions from team members during the design phase of the project could have helped alleviate pressure during system design. There were also bugs left in the code as seen in #43 that were not addressed in time for iteration submissions. Completing the project at least a day before the deadline would helped solve that. 
+
+    #### Team
 
     A consistent problem throughout the project was team members not completing coding work until the day of the deadline. This could be solved by members being proactive and engaged with the project instead of passive, or by more deadlines being set. The deadlines would require more involvement from the team during the design phase. Proactive members would allow for ongoing development and issues to be addressed earlier rather than later. 
 
-    There was a problem where the most proactive members did most of the work while passive members did work little work close to the iteration submission  dates. There was an attempt to solve this by creating Work Breakdown Structures (WBS) starting from Iteration 2, as seen in #54, #75, #105, and #151. Most of the work to be done for the project was laid out in these documents. However, it did not result in work being done earier. Deadlines were not created because it was assumed team members would be more proactive. This assumption was false, as passive members remained passive. The only difference was that the work-to-do were more clear.
+    There was also a problem where the most proactive members did most of the work while passive members did work close to the iteration submission dates. This was often due to there not being enough set deadlines. The person who did the most Requirements Analysis was also tasked with assigning work to team members. This often resulted in burnout, work not being assigned, and iteration requirements not being met. There was an attempt to solve this by creating starting from Iteration 2, as seen in #54, #75, #105, and #151. Most of the work to be done for the project was laid out in these documents. However, it did not result in work being done earlier. Deadlines were still not created because it was assumed the existence of the WBS would result in team members being more proactive. This mostly false, as passive members remained passive. The biggest difference was that the work-to-do was clearer.
 
   </details>
   
