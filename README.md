@@ -388,16 +388,15 @@ Multirun Instructions:
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | Fix ElevatorSelectionTest, Fix elevator door status updating incorrectly | Update UML diagram | Brainstorming, Code Review
-  | Ramit Mahajan | Updated FloorsQueue and client class | UML Diagram| Code Review
-  | Brady Norton | Updating ElevatorMonitor Properties, Added Current Request to GUI, (Unfinished) ArrivalSensor integration testing, Fixing FloorSubsystem and Floor tests | README | Code Review
+  | Ryan Dash | Fix ElevatorSelectionTest, Fix elevator door status updating incorrectly, (Unimplemented) Many-to-two Elevator-to-Scheduler, Elevator and Floor Buttons | | Update UML diagram | Brainstorming, Code Review
+  | Ramit Mahajan | Updated ElevatorMotor | UML Class Diagram | Code Review
+  | Brady Norton | Updating ElevatorMonitor Properties, Added Current Request to GUI, (Unfinished) ArrivalSensor Integration Testing, Fixing FloorSubsystem and Floor Tests | README | Code Review
   | Julian Obando Velez | Fault Injection GUI, Fault Handling, Implemented Performance Instrumentation | Final Project Presentation, Video Recording, Performance Testing README, Faults README | Scheduler Performance Testing and Measurements, Brainstorming, Code Review
   | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, README, Final Project Presentation, Reflection | Brainstorming, Code Review
   
   ### Diagrams
 
   #### UML Class Diagram
-
 
   #### UML State Machine Diagram
   - Elevator Movement (With faults)
@@ -415,8 +414,9 @@ Multirun Instructions:
     ### Areas for Improvement
 
     #### Design
-    The requirements could be better met by having the RequestQueue in the Scheduler. This would allow Scheduler to have more awareness Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView. A state machine pattern for the Elevator was not implemented due to not enough people working on the design. More contributions from team members during the design phase of the project could have helped alleviate pressure during system design. There were also bugs left in the code as seen in #43 that were not addressed in time for iteration submissions. Completing the project at least a day before the deadline would helped solve that. 
-
+    The Elevator has too much intelligence. One solution explored was having the RequestQueue in the Scheduler. This would allow Scheduler to have more awareness Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView, and meet the project requirements better.
+    A state machine pattern for the Elevator was not implemented due to not enough people working on the design. More contributions from team members during the design phase of the project could have helped alleviate pressure during system design. There were also bugs left in the code as seen in #43 that were not addressed in time for iteration submissions. Completing the project at least a day before the deadline would helped solve that. 
+    
     #### Team
 
     A consistent problem throughout the project was team members not completing coding work until the day of the deadline. This could be solved by members being proactive and engaged with the project instead of passive, or by more deadlines being set. The deadlines would require more involvement from the team during the design phase. Proactive members would allow for ongoing development and issues to be addressed earlier rather than later. 
