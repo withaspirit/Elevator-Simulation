@@ -310,10 +310,6 @@ public class Elevator implements Runnable, SubsystemPasser {
 					} else {
 						doors.close();
 					}
-					//Updating that doors are not malfunctioning anymore
-					if (fault == Fault.DOOR_STUCK) {
-						this.setFault(Fault.NONE);
-					}
 					return true;
 				} else {
 					String messageToPrint;
