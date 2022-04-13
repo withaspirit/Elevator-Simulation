@@ -14,13 +14,15 @@ public class FaultInjectorView {
     private ArrayList<FaultButton> cartFaultButtons;
     private JPanel buttonListPanel;
     private JPanel containerPanel;
+    private ArrayList<Elevator> elevatorList;
 
     /**
      * Class constructor with reference to elevator list. 
      *
      */
     public FaultInjectorView(ArrayList<Elevator> elevatorList) {
-        int numberOfElevators = elevatorList.size();
+        this.elevatorList = elevatorList;
+    	int numberOfElevators = elevatorList.size();
         //Initializing the buttons
         this.doorFaultButtons = new ArrayList<>();
         this.cartFaultButtons = new ArrayList<>();
