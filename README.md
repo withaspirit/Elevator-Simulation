@@ -328,7 +328,7 @@ Multirun Instructions:
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
   | Ryan Dash | Moved elevator selection to Scheduler, Reworked IntermediateHost for Elevator Selection, Improved Elevator Monitors | Updating README | Code Review
-  | Ramit Mahajan | Doors Upgrade, Doors State Changes in Elevator | UML Class Diagram |
+  | Ramit Mahajan | Doors Upgrade, Doors State Changes in Elevator | UML Class Diagram | Code Review 
   | Brady Norton | ArrivalSensor Integration, ApproachEvent Changes | README Contribution | Code Review, Some Fault Type Ideas
   | Julian Obando Velez | | Timing Diagrams | Code Review
   | Liam Tripp | ElevatorFaultTest, Fault enum, Elevator Faults, Elevator Movement Tests, changed RequestQueue from PriorityQueue to TreeSet, Improved Console Output Statements, Movement bug fixes | Work Breakdown Structure, Updated Movement State Machine Diagram, Updating README | Code Review
@@ -389,7 +389,7 @@ Multirun Instructions:
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
   | Ryan Dash | | | Brainstorming, Code Review
-  | Ramit Mahajan |Updated FloorsQueue and client class | UML Diagram|
+  | Ramit Mahajan |Updated FloorsQueue and client class | UML Diagram| Code Review
   | Brady Norton | Updating ElevatorMonitor Properties, Added Current Request to GUI, (Unfinished) ArrivalSensor integration testing, Fixing FloorSubsystem and Floor tests | README | Code Review
   | Julian Obando Velez | Fault Injection GUI, Fault Handling, Implemented Performance Instrumentation | Final Project Presentation, Video Recording, Performance Testing README, Faults README | Scheduler Performance Testing and Measurements, Brainstorming, Code Review
   | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, README, Final Project Presentation, Reflection | Brainstorming, Code Review
