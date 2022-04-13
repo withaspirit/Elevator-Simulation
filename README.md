@@ -398,7 +398,7 @@ Multirun Instructions:
   | Ryan Dash | | | Brainstorming, Code Review
   | Ramit Mahajan | | |
   | Brady Norton | | | Code Review
-  | Julian Obando Velez | | Final Project Presentation | Brainstorming, Code Review
+  | Julian Obando Velez | Fault Injection GUI, Fault Handling, Implemented Performance Instrumentation | Final Project Presentation, Video Recording, Performance Testing | Brainstorming, Code Review
   | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, README, Final Project Presentation | Brainstorming, Code Review
   
   ### Diagrams
