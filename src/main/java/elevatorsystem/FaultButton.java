@@ -50,10 +50,6 @@ public class FaultButton implements ActionListener {
         return faultPanel;
     }
 
-    /**
-     * Action lister that initiates the proper fault handling
-     *
-     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (name.equals(Fault.DOOR_STUCK.getName())) {

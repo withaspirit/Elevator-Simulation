@@ -534,7 +534,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Indicates whether the Elevator's doors are malfunctioning.
 	 *
-	 * @return true if the doors are malfunctioning, false otherwise
+	 * @return true if the cart is malfunctioning, false otherwise
 	 */
 	public boolean cartIsMalfunctioning() {
 		return cartMalfunctioning;
@@ -543,7 +543,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 	/**
 	 * Sets the toggle for the cart malfunctioning.
 	 *
-	 * @param doorsAreMalfunctioning true if the doors are malfunctioning, false otherwise
+	 * @param cartIsMalfunctioning true if the cart malfunctioning, false otherwise
 	 */
 	public void setCartMalfunctioning(boolean cartIsMalfunctioning) {
 		cartMalfunctioning = cartIsMalfunctioning;
