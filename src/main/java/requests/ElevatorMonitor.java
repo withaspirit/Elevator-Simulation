@@ -206,7 +206,7 @@ public class ElevatorMonitor extends SystemEvent {
         if (currentRequest != null) {
             properties[6] = currentRequest.toString();
         } else {
-            properties[6] = "none";
+            properties[6] = "None";
         }
 
         return properties;
