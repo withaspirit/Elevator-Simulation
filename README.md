@@ -368,11 +368,14 @@ Multirun Instructions:
     <summary>Show Long Description</summary>
     <br>
     
-    * GUI Design Pattern: The design pattern that was selected is the [Model-Presenter-View](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is static in Scheduler, so it's shared by both.
+    * GUI Design Pattern: The design pattern that was selected is the [Model-Presenter-View](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is static in Scheduler, so it's shared by both. ElevatorView is the Panel for displaying each elevator while ElevatorViewContainer contains all the ElevatorViews. Presenter updates the ElevatorViews when it's passed an ElevatorMonitor from Scheduler. 
     
     ![GUI](https://user-images.githubusercontent.com/61635007/163075152-23db6387-42a7-49d9-8973-f9499136c20e.png)
 
-    * Changes to faults: The two door faults were reduced to one, as seen below. Soft faults are handled by acknowledging of the fault in the system and clearing it, so that the system can continue its operation. Hard faults are handled by shutting down the elevator altogether and emptying out its requests queue.
+    
+
+    * Changes to faults: As seen above, the window for the Fault buttons are separate from the Elevator window. This is because there was not enough time to add the buttons directly to each ElevatorView. There were also concerns about data concurrency between the ElevatorView and Elevator if it the buttons were in the ElevatorView. Instead, the Fault window is created in the ElevatorSubsystem.
+   The two door faults were reduced to one, as seen below. Soft faults are handled by acknowledging of the fault in the system and clearing it, so that the system can continue its operation. Hard faults are handled by shutting down the elevator altogether and emptying out its requests queue.
 
       - ELEVATOR_STUCK: hard fault that occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). Triggered by pressing an "Elevator Stuck" button in the GUI.
       - ARRIVAL_SENSOR_FAIL: hard fault taht occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
@@ -411,7 +414,7 @@ Multirun Instructions:
   <details>
     <summary>Reflection</summary>
     
-    This project is mostly a success as it meets most of the requirements. However,
+    This project is mostly a success as it meets most of the requirements. The requirements could be better met by having the RequestQueue in the Scheduler. This would allow Scheduler to have more awareness Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView.
 
   </details>
   
