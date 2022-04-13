@@ -19,6 +19,7 @@ public class FaultInjectorView {
     /**
      * Class constructor with reference to elevator list. 
      *
+     * @ param elevatorList is the reference to all of the elevator from the elevator subsystem
      */
     public FaultInjectorView(ArrayList<Elevator> elevatorList) {
         this.elevatorList = elevatorList;
