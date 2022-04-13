@@ -78,10 +78,10 @@ This is for importing the project and its entire branch history.
 2. From the next window, select "Clone URI" as the repository source and press Next>
 3. Enter the URL of the git repository in this window which can be found by pressing the "Code" button and selecting the preferred connection protocol on the project's GitHub page
 4. Paste the information obtained from the project page into the window. It may prefill some of the information in the window. Enter any required information
-5. Due to an update in GitHub, account authentication with Eclipse via HTTPS might not work. It is not offically supported for security reasons. To overcome that error, follow the guide [here](https://stackoverflow.com/a/68802292)
-6. After over coming the erorr, press Next> and it will show you the branches of the repository, do not make any changes to the default selected branches.
+5. Due to an update in GitHub, account authentication with Eclipse via HTTPS might not work. It is not officially supported for security reasons. To overcome that error, follow the guide [here](https://stackoverflow.com/a/68802292)
+6. After over coming the error, press Next> and it will show you the branches of the repository, do not make any changes to the default selected branches.
 7. It will open the Local Destination window in which you can select the location of the folder where you want clone the repository. Press Next> 
-8. In the next window, Select "Import as general project" as the wizard from import and press Next>. This will load the project
+8. In the next window, select "Import as general project" as the wizard from import and press Next>. This will load the project
 9. From the project explorer window, right click the project folder and from the popup menu, select "Configure", then "Convert to Maven Project". This will convert the project into a Maven project.
 
 </details>
@@ -157,7 +157,7 @@ Multirun Instructions:
   | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer Implementation and Bug Fixes | Project Requirements Summary, UML Diagram Contributions | Code Review
   | Ramit Mahajan | Data Structure abstraction for the Request Systems / Subsystems | README Editing Instructions |
   | Brady Norton | Message transfer tests, InputFileReaderTest | README Testing + Installation Instructions, UML Sequence Diagram | Code Review
-  | Julian Obando Velez | Message Transfer, Bounded Buffer, Bounded Buffer Test | UML Diagram Feedback, GitHub Releases  | Code Review
+  | Julian Obando Velez | Message Transfer, Bounded Buffer, Bounded Buffer Test | UML Diagram Feedback, GitHub Releases | Code Review
   | Liam Tripp | Project Skeleton, Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Design, Early Design Diagrams, Design Document, Requirements Analysis | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead, Instruction documents + videos 
   
   #### UML Class Diagram
@@ -214,15 +214,15 @@ Multirun Instructions:
   
   #### UML Class Diagram
   ![image](https://user-images.githubusercontent.com/56605453/154828075-8269786d-84cd-4a64-8c7a-4cdaa294ca0e.png)
-  
+
   #### UML State Machine Diagram for Service Algorithm
 
   ![Elevator_Service_Algorithm drawio](https://user-images.githubusercontent.com/56605453/154823993-ff5cb3f7-f500-4696-9f78-be6f628d8068.png)
-  
+
   #### UML State Machine Diagram for Movement Algorithm
 
   ![Iteration_2_-_Elevator_State_Machine](https://user-images.githubusercontent.com/56605453/154823989-936bc6f0-0ebe-435c-99ae-941525b7de60.png)
-  
+
   </details>
 
 - ## Iteration 3
@@ -250,18 +250,18 @@ Multirun Instructions:
 
     * Added serviceDirection to Elevator to distinguish between the direction the Elevator is moving (i.e. ElevatorMotor's direction) and what direction the Elevator is servicing requests in. 
 
-    * Created Client/Server scheme similar to Assignment 2 and 3 of this class. MessageTransfer class holds DatagramSockets and a Queue of datagramPackets. 
+    * Created Client/Server scheme like Assignment 2 and 3 of this class. MessageTransfer class holds DatagramSockets and a Queue of datagramPackets. 
 
     * The Client and IntermediateHost class each have a MessageTransfer. ElevatorSubsystem and FloorSubsystem, and Scheduler interact with the two classes each. 
 
     * For UDP data transfer, there are two Scheduler threads, one for sending messages from FloorSubsystem to ElevatorSubsytem, and another for vice-versa. Both FloorSubsystem and ElevatorSubsystem are still threads. Elevators are also threads.
-    
+
     * The Client systems either request data or send data. FloorSubsystem's client requests and receives data from ElevatorToFloorHost. It sends data to FloorToElevatorHost. ElevatorSubystem requests and receives data from FloorToElevatorHost. It sends data to ElevatorToFloorHost.
 
     * To see output in the console, or to see how many times the elevator moves, search "moved"
-    
+
     * MessageTransfer is the class that wraps the methods to handle packets for UDP communication, such as sending, receiving, queueing, decoding/encoding and printing the results of each message transfer.  
-    
+
     * To solve the deadlock issues from Iteration 2, sending and receiving with the BoundedBuffer was changed from a busy-waiting scheme to an infinite loop checking a conditional statement. Although this prevents deadlock and allows the program to run successfully, it also causes considerable lag. 
 
     * To fix size issues with BoundedBuffer, an unbounded list was implemented - ConcurrentLinkedDeque, essentially an UnboundedBuffer.
@@ -269,18 +269,18 @@ Multirun Instructions:
     * Added ElevatorMonitor to Scheduler to allow the scheduler to quickly access all elevator data. An ElevatorMonitor is stored for each elevator in the scheduler.
   
     * Each Elevator monitor is updated by the elevator subsystem after a request that changes the properties and contents of the elevator has completed.
-         
+
   </details>
 
   ### Contributions
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | Elevator Seletion Algorithm. Client, FloorSubsystem, ElevatorSubsystem Implementation. ElevatorSelectionTest | Diagram Review | Code review
+  | Ryan Dash | Elevator Selection Algorithm. Client, FloorSubsystem, ElevatorSubsystem Implementation, ElevatorSelectionTest | Diagram Review | Code review
   | Ramit Mahajan | Integrating Doors class | UML Diagram, README | Code review
   | Brady Norton | Elevator Movement Algorithm, Elevator Movement Properties Modification, Integrating Floors Queue into Movement, Movement Tests | Movement Design | Code review
   | Julian Obando Velez | Message Encoding/Decoding, Client for UDP, JUnit testing | Diagram Review | TA contact, Code review
-  | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integrationm, FloorTest, RequestQueueTest | Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML CLass Diagram | Code review
+  | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integration, FloorTest, RequestQueueTest | Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML CLass Diagram | Code review
 
   ### Diagrams
    
@@ -299,10 +299,10 @@ Multirun Instructions:
 
   ### Description
 
-  In this iteration, fault detecting and handling is implemented. The simulation now shows faults for elevators.
+  In this iteration, fault detection and handling is implemented. The simulation now shows faults for elevators.
 
   #### Major Changes
-  - Added configuration files to automate running multiple main methods with a single button in Intellij
+  - Added configuration files to automate running multiple main methods with a single button in IntelliJ
   - Introduced Fault Handling for Elevator
   - Removed BoundedBuffer, BoundedBufferTest
   - Fixed elevator selection algorithm to meet requirements
@@ -312,13 +312,13 @@ Multirun Instructions:
     <summary>Show Long Description</summary>
     <br>
   
-    * Faults: There are four different types of Faults. It is assumed only one can occur at a time. All are hard faults except DOORS_INTERRUPTED, which is a soft fault. For the hard faults, the Elevator shuts down. For the soft faults, the Elevator is corrected so that it may continue. It is assumed that opening the doors is uninterruptable and that Doors may only be opened or closed when the Elevator is stopped.There is no fault handling for when a packet is lost, as that was not in the Iteration requirements itself. 
+    * Faults: There are four different types of Faults. It is assumed only one can occur at a time. All are hard faults except DOORS_INTERRUPTED, which is a soft fault. For the hard faults, the Elevator shuts down. For the soft faults, the Elevator is corrected so that it may continue. It is assumed that opening the doors is uninterruptable and that Doors may only be opened or closed when the Elevator is stopped. There is no fault handling for when a packet is lost, as that was not in the Iteration requirements itself. 
       - ELEVATOR_STUCK occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). 
       - ARRIVAL_SENSOR_FAIL occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
       - DOORS_STUCK occurs when the Doors malfunction while opening or closing.
       - DOORS_INTERRUPTED occurs when the Doors are interrupted while closing. 
     * Faults are tested using the ElevatorFaultTest file.
-    * Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This allows for fast testing in Intellij. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
+    * Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This allows for fast testing in IntelliJ. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
     * Moved Elevator Selection to Scheduler and reworked IntermediateHost to allow for selection of elevators to work properly
     * Note that there is currently an unhandled case where an Elevator is at floor 1 and moving to floor 3. If it receives an request to move to floor 2 just before it is about to pass floor 2, it might not have enough time to stop or send and receive an approachEvent. This problem has yet to be dealt with.
   </details>
@@ -362,7 +362,7 @@ Multirun Instructions:
 
   ### Description
 
-  In this iteration, a GUI was implemented to display Elevator information in real time. Measurements were also done to determine the peformance of the Scheduler. Methods to initialize and terminate the system were also added. Iteration and general requirements not met in previous iterations were addressed. 
+  In this iteration, a GUI was implemented to display Elevator information in real time. Measurements were also done to determine the performance of the Scheduler. Methods to initialize and terminate the system were also added. Iteration and general requirements not met in previous iterations were addressed. 
 
   <details>
     <summary>Show Long Description</summary>
@@ -377,10 +377,10 @@ Multirun Instructions:
    The two door faults were reduced to one, as seen below. Soft faults are handled by acknowledging of the fault in the system and clearing it, so that the system can continue its operation. Hard faults are handled by shutting down the elevator altogether and emptying out its requests queue.
 
       - ELEVATOR_STUCK: hard fault that occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). Triggered by pressing an "Elevator Stuck" button in the GUI.
-      - ARRIVAL_SENSOR_FAIL: hard fault taht occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
+      - ARRIVAL_SENSOR_FAIL: hard fault that occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
       - DOORS_STUCK: soft fault that occurs when the Doors malfunction while opening or closing. Triggered by pushing a "Door Stuck" button in the GUI.
 
-    * Simulation Initialization and Termination: The simulation is initialized using information contained in the Structure class. ElevatorSubsystem and FloorSubsystem are initialized and wait for the Scheduler to pass them a Structure. The Structure is initialized in Scheduler's main method. Each of the two Scheduler threads, one for passing information between ElevatorSubsystem and FloorSubsystem, the other vice-versa, pass Structure to FloorSubsystem and ElevatorSubsystem, respectively. Introduced conditions to terminate the Threads of the Simulation. This was done with a SystemStatus class for Scheduler, ElevatorSubsystem, FloorSubsystem, and each of the Elevators. The termination condition of the threads are when SystemStatus.activated() is false, except for Scheduler, which requires both Scheduler Threads to be inactive. A Scheduler's termination is achieved by its Timer expiring. Each Scheduler sends a termination message to the the System it communicates with and then terminates itself. The systems are then terminated by receiving the message, which indicates to the SystemStatus that the class' thread should end.
+    * Simulation Initialization and Termination: The simulation is initialized using information contained in the Structure class. ElevatorSubsystem and FloorSubsystem are initialized and wait for the Scheduler to pass them a Structure. The Structure is initialized in Scheduler's main method. Each of the two Scheduler threads, one for passing information between ElevatorSubsystem and FloorSubsystem, the other vice-versa, pass Structure to FloorSubsystem and ElevatorSubsystem, respectively. Introduced conditions to terminate the Threads of the Simulation. This was done with a SystemStatus class for Scheduler, ElevatorSubsystem, FloorSubsystem, and each of the Elevators. The termination condition of the threads is when SystemStatus.activated() is false, except for Scheduler, which requires both Scheduler threads to be inactive. A Scheduler's termination is achieved by its Timer expiring. Each Scheduler sends a termination message to the System it communicates with and then terminates itself. The systems are then terminated by receiving the message, which indicates to the SystemStatus that the class’s thread should end.
     
   </details>
 
@@ -410,7 +410,7 @@ Multirun Instructions:
     This project is mostly a success as it meets most of the requirements. 
 
     ### Successes
-    The README design is excellent. The UML Class Diagram is the most complete diagram in the project. Virtually all methods and classes have Javadocs and have consitent formatting.
+    The README design is excellent. The UML Class Diagram is the most complete diagram in the project. Virtually all methods and classes have Javadocs and have consistent formatting.
 
     ### Areas for Improvement
 
