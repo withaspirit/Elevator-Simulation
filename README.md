@@ -388,7 +388,7 @@ Multirun Instructions:
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | Fix ElevatorSelectionTest, Fix elevator door status updating incorrectly, (Unimplemented) Many-to-two Elevator-to-Scheduler, Elevator and Floor Buttons| UML Class Diagram | Brainstorming, Code Review
+  | Ryan Dash | Fix ElevatorSelectionTest, Fix elevator door status updating incorrectly, (Unimplemented) Many-to-two Elevator-to-Scheduler, Elevator and Floor Buttons | UML Class Diagram | Brainstorming, Code Review
   | Ramit Mahajan | Updated ElevatorMotor | UML Class Diagram | Code Review
   | Brady Norton | Updating ElevatorMonitor Properties, Added Current Request to GUI, (Unfinished) ArrivalSensor Integration Testing, Fixing FloorSubsystem and Floor Tests | README | Code Review
   | Julian Obando Velez | Fault Injection GUI, Fault Handling, Implemented Performance Instrumentation | Final Project Presentation, Video Recording, Performance Testing README, Faults README | Scheduler Performance Testing and Measurements, Brainstorming, Code Review
