@@ -388,11 +388,11 @@ Multirun Instructions:
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | Fix ElevatorSelectionTest, Fix elevator door status updating incorrectly, (Unimplemented) Many-to-two Elevator-to-Scheduler, Elevator and Floor Buttons | | Update UML diagram | Brainstorming, Code Review
+  | Ryan Dash | Fix ElevatorSelectionTest, Fix elevator door status updating incorrectly, (Unimplemented) Many-to-two Elevator-to-Scheduler, Elevator and Floor Buttons | | UML Class Diagram | Brainstorming, Code Review
   | Ramit Mahajan | Updated ElevatorMotor | UML Class Diagram | Code Review
   | Brady Norton | Updating ElevatorMonitor Properties, Added Current Request to GUI, (Unfinished) ArrivalSensor Integration Testing, Fixing FloorSubsystem and Floor Tests | README | Code Review
   | Julian Obando Velez | Fault Injection GUI, Fault Handling, Implemented Performance Instrumentation | Final Project Presentation, Video Recording, Performance Testing README, Faults README | Scheduler Performance Testing and Measurements, Brainstorming, Code Review
-  | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, README, Final Project Presentation, Reflection | Brainstorming, Code Review
+  | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | UML Class Diagram, README Reflection, Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, README, Final Project Presentation | Brainstorming, Code Review
   
   ### Diagrams
 
