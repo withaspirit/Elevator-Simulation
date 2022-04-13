@@ -228,16 +228,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * @param floorToVisit the next floor the elevator will visit
 	 */
 	public void startMovingToFloor(int floorToVisit) {
-		
-		if(changeDoorState(Doors.State.CLOSED)) {
-			System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " closed its doors");
-		} else {
-			System.out.println("\n" + LocalTime.now() + "\nElevator #" + elevatorNumber + " tried closing the doors but are still stuck open");
-		}
-		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
-		
+
 		// try to close doors until successful
 		while (!changeDoorState(Doors.State.CLOSED)) {
+			System.out.println("Elevator #" + elevatorNumber + " failed to make doors " + Doors.State.CLOSED + ". Trying again...");
 		}
 		motor.startMoving();
 		motor.changeDirection(currentFloor, floorToVisit);
@@ -256,6 +250,7 @@ public class Elevator implements Runnable, SubsystemPasser {
 
 		// try to open doors until successful
 		while (!changeDoorState(Doors.State.OPEN)) {
+			System.out.println("Elevator #" + elevatorNumber + " failed to make doors " + Doors.State.OPEN + ". Trying again...");
 		}
 		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 
