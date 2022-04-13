@@ -63,6 +63,6 @@ public class FaultButton implements ActionListener {
                 elevator.setCartMalfunctioning(true);
             }
         }
-		doorFaultButton.setSelected(false);
-	}
+        doorFaultButton.setSelected(false);
+    }
 }

@@ -26,7 +26,6 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
 	private final Client server;
 	private final Queue<SystemEvent> eventQueue;
 	private final SystemStatus systemStatus;
-	private FaultInjector faultInjector;
 
 	/**
 	 * Constructor for ElevatorSubsystem.
