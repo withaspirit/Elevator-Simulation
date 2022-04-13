@@ -388,8 +388,8 @@ Multirun Instructions:
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | | | Brainstorming, Code Review
-  | Ramit Mahajan |Updated FloorsQueue and client class | UML Diagram| Code Review
+  | Ryan Dash | Fix ElevatorSelectionTest, Fix elevator door status updating incorrectly | Update UML diagram | Brainstorming, Code Review
+  | Ramit Mahajan | Updated FloorsQueue and client class | UML Diagram| Code Review
   | Brady Norton | Updating ElevatorMonitor Properties, Added Current Request to GUI, (Unfinished) ArrivalSensor integration testing, Fixing FloorSubsystem and Floor tests | README | Code Review
   | Julian Obando Velez | Fault Injection GUI, Fault Handling, Implemented Performance Instrumentation | Final Project Presentation, Video Recording, Performance Testing README, Faults README | Scheduler Performance Testing and Measurements, Brainstorming, Code Review
   | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, README, Final Project Presentation, Reflection | Brainstorming, Code Review
