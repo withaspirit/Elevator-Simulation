@@ -87,60 +87,62 @@ public class MessageTransfer {
 
     /**
      * Prints the contents of a packet and what class is sending the packet.
+     * (Please uncomment this method for adding messages with UPD details.)
      *
      * @param name   the name of the class sending the packet
      * @param packet the DatagramPacket containing data
      */
     public void printSendMessage(String name, DatagramPacket packet) {
-        // Form a String from the byte array.
-        Object object = decodeObject(packet.getData());
-        String messageToPrint = LocalTime.now().toString() + "\n";
-        messageToPrint += name + " sending to ";
-        if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
-            messageToPrint += Scheduler.class.getSimpleName();
-        } else if (packet.getPort() == Port.CLIENT.getNumber()) {
-            messageToPrint += FloorSubsystem.class.getSimpleName();
-        } else if (packet.getPort() == Port.SERVER.getNumber()) {
-            messageToPrint += ElevatorSubsystem.class.getSimpleName();
-        }
-        messageToPrint += ": \n";
-        if (object instanceof String string) {
-            messageToPrint += string;
-        } else {
-            messageToPrint += object.getClass().getSimpleName() + " Packet: ";
-        }
-        messageToPrint += "Host port: " + packet.getPort() + ", ";
-        messageToPrint += "Length: " + packet.getLength() + "\n";
-        messageToPrint += object + "\n";
-        System.out.println(messageToPrint);
+//        // Form a String from the byte array.
+//        Object object = decodeObject(packet.getData());
+//        String messageToPrint = LocalTime.now().toString() + "\n";
+//        messageToPrint += name + " sending to ";
+//        if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
+//            messageToPrint += Scheduler.class.getSimpleName();
+//        } else if (packet.getPort() == Port.CLIENT.getNumber()) {
+//            messageToPrint += FloorSubsystem.class.getSimpleName();
+//        } else if (packet.getPort() == Port.SERVER.getNumber()) {
+//            messageToPrint += ElevatorSubsystem.class.getSimpleName();
+//        }
+//        messageToPrint += ": \n";
+//        if (object instanceof String string) {
+//            messageToPrint += string;
+//        } else {
+//            messageToPrint += object.getClass().getSimpleName() + " Packet: ";
+//        }
+//        messageToPrint += "Host port: " + packet.getPort() + ", ";
+//        messageToPrint += "Length: " + packet.getLength() + "\n";
+//        messageToPrint += object + "\n";
+//        System.out.println(messageToPrint);
     }
 
     /**
      * Prints the contents of a packet and what class is receiving the packet.
-     *
+     * (Please uncomment this method for adding messages with UPD details.)
+     *  
      * @param name the name of the class receiving the packet
      * @param packet the DatagramPacket containing data
      */
     public void printReceiveMessage(String name, DatagramPacket packet) {
-        // Form a String from the byte array.
-        Object object = decodeObject(packet.getData());
-        if (!(object instanceof String)) {
-            String messageToPrint = LocalTime.now().toString() + "\n";
-            messageToPrint += name + " received from ";
-            if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
-                messageToPrint += Scheduler.class.getSimpleName();
-            } else if (packet.getPort() == Port.CLIENT.getNumber()) {
-                messageToPrint += FloorSubsystem.class.getSimpleName();
-            } else if (packet.getPort() == Port.SERVER.getNumber()) {
-                messageToPrint += ElevatorSubsystem.class.getSimpleName();
-            }
-            messageToPrint += ": \n";
-            messageToPrint += object.getClass().getSimpleName() + " Packet: ";
-            messageToPrint += "Host port: " + packet.getPort() + ", ";
-            messageToPrint += "Length: " + packet.getLength() + "\n";
-            messageToPrint += object + "\n";
-            System.out.println(messageToPrint);
-        }
+//        // Form a String from the byte array.
+//        Object object = decodeObject(packet.getData());
+//        if (!(object instanceof String)) {
+//            String messageToPrint = LocalTime.now().toString() + "\n";
+//            messageToPrint += name + " received from ";
+//            if (packet.getPort() == Port.CLIENT_TO_SERVER.getNumber() || packet.getPort() == Port.SERVER_TO_CLIENT.getNumber()) {
+//                messageToPrint += Scheduler.class.getSimpleName();
+//            } else if (packet.getPort() == Port.CLIENT.getNumber()) {
+//                messageToPrint += FloorSubsystem.class.getSimpleName();
+//            } else if (packet.getPort() == Port.SERVER.getNumber()) {
+//                messageToPrint += ElevatorSubsystem.class.getSimpleName();
+//            }
+//            messageToPrint += ": \n";
+//            messageToPrint += object.getClass().getSimpleName() + " Packet: ";
+//            messageToPrint += "Host port: " + packet.getPort() + ", ";
+//            messageToPrint += "Length: " + packet.getLength() + "\n";
+//            messageToPrint += object + "\n";
+//            System.out.println(messageToPrint);
+//        }
     }
 
     // FIXME: this could be easily be removed

@@ -26,6 +26,7 @@ public class ElevatorMonitor extends SystemEvent {
     private Fault fault;
     private boolean hasNoRequests;
     private double queueTime;
+    private ServiceRequest currentRequest;
 
     /**
      * Main Constructor for ElevatorMonitor.
@@ -142,6 +143,22 @@ public class ElevatorMonitor extends SystemEvent {
     }
 
     /**
+     * Gets the currentRequest that the elevator is serving
+     *
+     * @return ServiceRequest currentRequest
+     */
+    public ServiceRequest getCurrentRequest() {
+        return currentRequest;
+    }
+
+    /**
+     * Sets the currentRequest to the ServiceRequest passed
+     *
+     * @param currentRequest the currentRequest of the elevator as a ServiceRequest
+     */
+    public void setCurrentRequest(ServiceRequest currentRequest) { this.currentRequest = currentRequest;  }
+
+    /**
      * Updates the ElevatorMonitor with the latest ElevatorMonitor information.
      *
      * @param elevatorMonitor an elevator monitor containing new elevator information
@@ -178,14 +195,18 @@ public class ElevatorMonitor extends SystemEvent {
      * @return a String array containing 6 elevator properties
      */
     public String[] propertiesToStringArray() {
-        String[] properties = new String[6];
-        //{"CurrentFloor", "ServiceDirection", "MovementState", "MovementDirection", "DoorState", "Fault"};
+        String[] properties = new String[7];
         properties[0] = String.valueOf(getCurrentFloor());
         properties[1] = getDirection().toString();
         properties[2] = state.getName();
         properties[3] = movementDirection.getName();
         properties[4] = doorsState.toString();
         properties[5] = fault.getName();
+        if (currentRequest != null) {
+            properties[6] = currentRequest.toString().substring("HH:MM:ss.SSS ".length());
+        } else {
+            properties[6] = "None";
+        }
 
         return properties;
     }
