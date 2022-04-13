@@ -414,38 +414,8 @@ Multirun Instructions:
   <details>
     <summary>Reflection</summary>
     
-    This project is mostly a success as it meets most of the requirements. The requirements could be better met by having the RequestQueue in the Scheduler. This would allow Scheduler to have more awareness Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView.
+    This project is mostly a success as it meets most of the requirements. The requirements could be better met by having the RequestQueue in the Scheduler. This would allow Scheduler to have more awareness Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView. A consistent problem thorughout the project was team members not completing work until the day of or before the deadline. This could be solved by members being proactive and engaged with the project instead of passive. There was also a problem where the most proactive members did most of the work while passive members did work late into the timeline. There was an attempt to solve this by creating Work Breakdown Structures (WBS) starting from Iteration 3. Most of the work to be done for the project was laid out in these documents. However, it did not result in work being done earier. Deadlines were not created because it was assumed team members would be more proactive. This assumption was false, as passive members remained passive. The only difference was that instructions were more clear. 
 
-  </details>
-  
-  <details>
-    <summary>Fault Handling</summary>
-
-    #### Hard Faults:
-
-    These faults are handled by shutting down the elevator altogether and emptying out its requests queue.
-
-    - Arrival Sensor Fail:
-      - Triggered by time out from the UPD message since a failure from the arrival sensor could be catastrophic.
-    - Elevator Stuck Fail
-      - Triggered by the elevator cart itself.
-        - Injected during testing using a GUI with push buttons.
-
-    #### Soft Faults:
-
-    This fault is handled by acknowledging of the fault in the system and clearing it, so that the system can continue its operation.
-
-    - Door Stuck
-      - Triggered by the doors.
-        - Injected during testing using a GUI with push buttons.
-
-    #### Fault Injection:
-
-    Using the GUI the Elevator Stuck fail can be triggered by pushing
-
-    ![image](https://user-images.githubusercontent.com/71390371/163076733-fabbf414-1907-4813-9105-561f3d551613.png)
-
-    - Clicking the button will trigger such a fault.
   </details>
   
   <details>
