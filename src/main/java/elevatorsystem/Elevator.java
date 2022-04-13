@@ -87,13 +87,13 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 */
 	public void moveElevatorWhilePossible() {
 		while (!requestQueue.isEmpty()) {
-			// Set currentRequest to null when no requests
 			currentRequest = null;
 			// Swap service direction check
 			swapServiceDirectionIfNecessary();
 			// Loop until the active queue is empty
 			while (!requestQueue.isCurrentQueueEmpty()) {
 				respondToRequest();
+				elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 			}
 		}
 	}
@@ -202,7 +202,10 @@ public class Elevator implements Runnable, SubsystemPasser {
 		if (!sameFloorRemovedAsPeeked) {
 			String messageToPrint = "\nFloor peeked " + requestFloor + ", Floor Removed: " + removedFloor + "\n";
 			messageToPrint += "A request was added to Elevator " + elevatorNumber + " while the current request was being processed.";
+			shutDownElevator();
 			throw new ConcurrentModificationException(messageToPrint);
+		} else {
+			currentRequest = null;
 		}
 	}
 
@@ -272,12 +275,15 @@ public class Elevator implements Runnable, SubsystemPasser {
 	 * Shuts down the elevator by removing all Requests from its RequestQueue.
 	 */
 	public void shutDownElevator() {
+		System.out.println("\nElevator " + elevatorNumber + " was shut down.");
 		// empty the request queue
 		ServiceRequest removeRequest;
 		do {
 			removeRequest = requestQueue.removeRequest();
 		} while (removeRequest != null);
+		currentRequest = null;
 		motor.setDirection(Direction.NONE);
+		elevatorSubsystem.addEventToQueue(makeElevatorMonitor());
 	}
 
 	/**

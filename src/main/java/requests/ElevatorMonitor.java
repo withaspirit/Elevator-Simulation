@@ -196,7 +196,6 @@ public class ElevatorMonitor extends SystemEvent {
      */
     public String[] propertiesToStringArray() {
         String[] properties = new String[7];
-        //{"CurrentFloor", "ServiceDirection", "MovementState", "MovementDirection", "DoorState", "Fault"};
         properties[0] = String.valueOf(getCurrentFloor());
         properties[1] = getDirection().toString();
         properties[2] = state.getName();
@@ -204,7 +203,7 @@ public class ElevatorMonitor extends SystemEvent {
         properties[4] = doorsState.toString();
         properties[5] = fault.getName();
         if (currentRequest != null) {
-            properties[6] = currentRequest.toString();
+            properties[6] = currentRequest.toString().substring("HH:MM:ss.SSS ".length());
         } else {
             properties[6] = "None";
         }
