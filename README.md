@@ -397,9 +397,9 @@ Multirun Instructions:
   | ------ | ------ | ------------- | ----
   | Ryan Dash | | | Brainstorming, Code Review
   | Ramit Mahajan | | |
-  | Brady Norton | Fixed FloorSubsystem and Floor tests, Updating ElevatorMonitor Properties, ArrivalSensor integration testing, Added Current Request to GUI | README Modification | Code Review
-  | Julian Obando Velez | Fault Injection GUI, Fault Handling, Implemented Performance Instrumentation | Final Project Presentation, Video Recording, Performance Testing | Brainstorming, Code Review
-  | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, README, Final Project Presentation | Brainstorming, Code Review
+  | Brady Norton | Updating ElevatorMonitor Properties, Added Current Request to GUI, (Unfinished) ArrivalSensor integration testing, Fixing FloorSubsystem and Floor tests | README | Code Review
+  | Julian Obando Velez | Fault Injection GUI, Fault Handling, Implemented Performance Instrumentation | Final Project Presentation, Video Recording, Performance Testing README, Faults README | Performance Testing, Brainstorming, Code Review
+  | Liam Tripp | Presenter, ElevatorView, ElevatorViewContainer, RequestQueue with ServiceRequests, System Initialization and Termination, SimulationTest, Refactor Elevator, Refactor Scheduler | Iteration 5 Requirements Analysis and Work Breakdown Structure, System Design README Installation instructions, README, Final Project Presentation, Reflection | Brainstorming, Code Review
   
   ### Diagrams
 
@@ -414,7 +414,18 @@ Multirun Instructions:
   <details>
     <summary>Reflection</summary>
     
-    This project is mostly a success as it meets most of the requirements. The requirements could be better met by having the RequestQueue in the Scheduler. This would allow Scheduler to have more awareness Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView. A consistent problem thorughout the project was team members not completing work until the day of or before the deadline. This could be solved by members being proactive and engaged with the project instead of passive. There was also a problem where the most proactive members did most of the work while passive members did work late into the timeline. There was an attempt to solve this by creating Work Breakdown Structures (WBS) starting from Iteration 3. Most of the work to be done for the project was laid out in these documents. However, it did not result in work being done earier. Deadlines were not created because it was assumed team members would be more proactive. This assumption was false, as passive members remained passive. The only difference was that instructions were more clear. 
+    This project is mostly a success as it meets most of the requirements. 
+
+    ### Successes
+    The README design is excellent. The UML Class Diagram is the most complete diagram in the project. Virtually all methods and classes have Javadocs and have consitent formatting. The 
+
+    ### Areas for Improvement
+
+    The requirements could be better met by having the RequestQueue in the Scheduler. This would allow Scheduler to have more awareness Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView. A state machine pattern for the Elevator was not implemented due to not enough people working on the design. More contributions from team members during the design phase of the project could have helped alleviate pressure during system design. There were also bugs left in the code as seen in #43 that were not addressed in time for iteration submissions. Completing the project at least a day before the deadline would helped solve that. 
+
+    A consistent problem throughout the project was team members not completing coding work until the day of the deadline. This could be solved by members being proactive and engaged with the project instead of passive, or by more deadlines being set. The deadlines would require more involvement from the team during the design phase. Proactive members would allow for ongoing development and issues to be addressed earlier rather than later. 
+
+    There was a problem where the most proactive members did most of the work while passive members did work little work close to the iteration submission  dates. There was an attempt to solve this by creating Work Breakdown Structures (WBS) starting from Iteration 2, as seen in #54, #75, #105, and #151. Most of the work to be done for the project was laid out in these documents. However, it did not result in work being done earier. Deadlines were not created because it was assumed team members would be more proactive. This assumption was false, as passive members remained passive. The only difference was that the work-to-do were more clear.
 
   </details>
   
