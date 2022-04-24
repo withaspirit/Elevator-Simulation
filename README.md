@@ -62,7 +62,7 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 
   </details>
 
-10. In the popup menu, select "Finish." This downloads all dependencies from Maven automatically. They are locally stored in the directory "C:\Users\[your name]\.m2"
+10. In the popup menu, select "Finish." This downloads all dependencies from Maven automatically. They are locally stored in the directory "C:\Users\\[your name]\\.m2"
 11. You should now be able to run the project.
 
 </details>
