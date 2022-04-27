@@ -54,14 +54,14 @@ public class PresenterTest {
 
         ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber());
         JTextPane[] panes = elevatorView.getStatusPanes();
-        assertEquals(panes[0].getText(), Integer.toString(currentFloor));
-        assertEquals(panes[1].getText(), currentDirection.toString());
-        assertEquals(panes[2].getText(), movementState.getName());
-        assertEquals(panes[3].getText(), movementDirection.getName());
-        assertEquals(panes[4].getText(), doorsState.toString());
-        assertEquals(panes[5].getText(), fault.getName());
+        assertEquals(Integer.toString(currentFloor), panes[0].getText());
+        assertEquals(currentDirection.toString(), panes[1].getText());
+        assertEquals(movementState.getName(), panes[2].getText());
+        assertEquals( movementDirection.getName(), panes[3].getText());
+        assertEquals(doorsState.toString(), panes[4].getText());
+        assertEquals( fault.getName(), panes[5].getText());
         // exclude time from request.toString()
         int localTimeCutoffIndex = "HH:mm:ss.SSS ".length();
-        assertEquals(panes[6].getText(), currentRequest.toString().substring(localTimeCutoffIndex));
+        assertEquals(currentRequest.toString().substring(localTimeCutoffIndex), panes[6].getText());
     }
 }
