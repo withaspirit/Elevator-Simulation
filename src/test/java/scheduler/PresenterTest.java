@@ -41,7 +41,7 @@ public class PresenterTest {
 
     @Test
     void testUpdateElevatorView() {
-        //Updating first view
+        // Updating first view
         int elevatorNumber = 1;
         int currentFloor = 2;
         Direction currentDirection = Direction.DOWN;
@@ -59,6 +59,7 @@ public class PresenterTest {
 
         ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber());
         JTextPane[] statusPanes = elevatorView.getStatusPanes();
+
         assertEquals(Integer.toString(currentFloor), statusPanes[0].getText());
         assertEquals(currentDirection.toString(), statusPanes[1].getText());
         assertEquals(movementState.getName(), statusPanes[2].getText());
