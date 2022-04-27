@@ -33,6 +33,11 @@ public class PresenterTest {
     }
 
     @Test
+    void testElevatorViewDefaultStatus() {
+        // TODO: ensure the default status of each elevator view is correct.
+    }
+
+    @Test
     void testUpdateElevatorView() {
         presenter.addView(elevatorViewContainer);
 
