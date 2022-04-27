@@ -53,15 +53,15 @@ public class PresenterTest {
         presenter.updateElevatorView(elevatorMonitor);
 
         ElevatorView elevatorView = elevatorViewContainer.getElevatorView(elevatorMonitor.getElevatorNumber());
-        JTextPane[] panes = elevatorView.getStatusPanes();
-        assertEquals(Integer.toString(currentFloor), panes[0].getText());
-        assertEquals(currentDirection.toString(), panes[1].getText());
-        assertEquals(movementState.getName(), panes[2].getText());
-        assertEquals( movementDirection.getName(), panes[3].getText());
-        assertEquals(doorsState.toString(), panes[4].getText());
-        assertEquals( fault.getName(), panes[5].getText());
+        JTextPane[] statusPanes = elevatorView.getStatusPanes();
+        assertEquals(Integer.toString(currentFloor), statusPanes[0].getText());
+        assertEquals(currentDirection.toString(), statusPanes[1].getText());
+        assertEquals(movementState.getName(), statusPanes[2].getText());
+        assertEquals( movementDirection.getName(), statusPanes[3].getText());
+        assertEquals(doorsState.toString(), statusPanes[4].getText());
+        assertEquals( fault.getName(), statusPanes[5].getText());
         // exclude time from request.toString()
         int localTimeCutoffIndex = "HH:mm:ss.SSS ".length();
-        assertEquals(currentRequest.toString().substring(localTimeCutoffIndex), panes[6].getText());
+        assertEquals(currentRequest.toString().substring(localTimeCutoffIndex), statusPanes[6].getText());
     }
 }
