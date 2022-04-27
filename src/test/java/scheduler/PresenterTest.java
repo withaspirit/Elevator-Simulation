@@ -25,11 +25,12 @@ public class PresenterTest {
 
     private Presenter presenter;
     private ElevatorViewContainer elevatorViewContainer;
+    private static final int NUMBER_OF_ELEVATORS = 20;
 
     @BeforeEach
     void setUp() {
         presenter = new Presenter();
-        elevatorViewContainer = new ElevatorViewContainer(20);
+        elevatorViewContainer = new ElevatorViewContainer(NUMBER_OF_ELEVATORS);
     }
 
     @Test
