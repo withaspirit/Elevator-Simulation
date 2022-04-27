@@ -419,7 +419,7 @@ Multirun Instructions:
     ### Areas for Improvement
 
     #### Design
-    The Elevator has too much responsibility. One solution explored was having the RequestQueue in the Scheduler. This would allow Scheduler to have more awareness Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView, and meet the project requirements better.
+    The Elevator has too much responsibility. As discussed in (/../../issues/184), one solution was putting a RequestQueue for each Elevator in the Scheduler. That could increase Scheduler's awareness of Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView and  be more faithful to the project requirements.
     
     A state machine pattern for the Elevator was not implemented due to lack of effort on the system design. Increased collaboration and shared responsibility for the design amongst group members could have helped alleviate pressure.
 
