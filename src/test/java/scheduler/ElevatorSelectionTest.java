@@ -4,14 +4,13 @@ import client_server_host.MessageTransfer;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import elevatorsystem.*;
-import misc.InputFileReader;
+import systemwide.InputFileReader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;
 import requests.SystemEvent;
 import systemwide.Direction;
-import systemwide.Structure;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;

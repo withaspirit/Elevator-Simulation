@@ -3,7 +3,7 @@ package floorsystem;
 import client_server_host.Client;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
-import misc.InputFileReader;
+import systemwide.InputFileReader;
 import requests.*;
 import systemwide.Structure;
 import systemwide.SystemStatus;
