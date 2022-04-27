@@ -31,6 +31,7 @@ public class PresenterTest {
     void setUp() {
         presenter = new Presenter();
         elevatorViewContainer = new ElevatorViewContainer(NUMBER_OF_ELEVATORS);
+        presenter.addView(elevatorViewContainer);
     }
 
     @Test
@@ -40,8 +41,6 @@ public class PresenterTest {
 
     @Test
     void testUpdateElevatorView() {
-        presenter.addView(elevatorViewContainer);
-
         //Updating first view
         int elevatorNumber = 1;
         int currentFloor = 2;
