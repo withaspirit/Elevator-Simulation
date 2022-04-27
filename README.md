@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a group project for designing, creating, and simulating an elevator system.
+This is a group project for designing, creating, and simulating a multithreaded elevator system.
 
 ## Team (Group 4)
 
