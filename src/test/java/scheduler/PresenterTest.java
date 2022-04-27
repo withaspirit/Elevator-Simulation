@@ -40,7 +40,7 @@ public class PresenterTest {
     }
 
     @Test
-    void testUpdateElevatorView() {
+    void testElevatorViewUpdate() {
         // Updating first view
         int elevatorNumber = 1;
         int currentFloor = 2;
