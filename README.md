@@ -373,7 +373,7 @@ Multirun Instructions:
     
     ![GUI](https://user-images.githubusercontent.com/61635007/163075152-23db6387-42a7-49d9-8973-f9499136c20e.png)    
 
-    * Changes to faults: As seen above, the window for the Fault buttons are separate from the Elevator window. This is because there was not enough time to add the buttons directly to each ElevatorView. There were also concerns about data concurrency between the ElevatorView and Elevator if it the buttons were in the ElevatorView. Instead, the Fault window is created in the ElevatorSubsystem.
+    * Changes to faults: As seen above, the window for the Fault buttons are separate from the Elevator window. This is because there was not enough time to add the buttons directly to each ElevatorView. There were also concerns about data concurrency between the ElevatorView and Elevator if it the buttons to trigger faults were in the Scheduler. The Fault window was generated in the ElevatorSubsystem accordingly.
    The two door faults were reduced to one, as seen below. Soft faults are handled by acknowledging of the fault in the system and clearing it, so that the system can continue its operation. Hard faults are handled by shutting down the elevator altogether and emptying out its requests queue.
 
       - ELEVATOR_STUCK: hard fault that occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). Triggered by pressing an "Elevator Stuck" button in the GUI.
@@ -419,11 +419,12 @@ Multirun Instructions:
     ### Areas for Improvement
 
     #### Design
+
     The Elevator has too much responsibility. As discussed in (/../../issues/184), one solution was putting a RequestQueue for each Elevator in the Scheduler. That could increase Scheduler's awareness of Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView and  be more faithful to the project requirements.
     
     A state machine pattern for the Elevator was not implemented due to lack of effort on the system design. Increased collaboration and shared responsibility for the design amongst group members could have helped alleviate pressure.
 
-    The ArrivalSensor was not properly integrated into the simulation. There were also bugs not addressed in time for iteration submission, as seen in [#43](/../../issues/43). Better time management and completing the project objectives at least a day before the deadline would have left time to address unresovled issues.
+    The ArrivalSensor was not properly integrated into the simulation. There were also bugs not addressed in time for iteration submission, as seen in [#43](/../../issues/43). Finally, the GUI for the Elevator lacks buttons to trigger the ELEVATOR_STUCK and ARRIVAL_SENSOR_FAIL faults. Better time management and completing the project objectives at least a day before the deadline would have left time to address unresovled issues.
     
     #### Team
 
