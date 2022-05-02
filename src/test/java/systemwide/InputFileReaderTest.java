@@ -1,4 +1,4 @@
-package misc;
+package systemwide;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorRequest;
 import requests.SystemEvent;
-import systemwide.Direction;
 
 import java.time.LocalTime;
 import java.util.ArrayList;

@@ -66,6 +66,6 @@ public class ElevatorViewContainer {
                     "than the actual number of ElevatorViews, " + elevatorViews.size() + ".";
             throw new IllegalArgumentException(exceptionMessage);
         }
-        return elevatorViews.get(elevatorNumber);
+        return elevatorViews.get(elevatorNumber - 1);
     }
 }

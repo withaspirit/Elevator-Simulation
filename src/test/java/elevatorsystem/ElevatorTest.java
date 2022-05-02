@@ -1,6 +1,6 @@
 package elevatorsystem;
 
-import misc.InputFileReader;
+import systemwide.InputFileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;

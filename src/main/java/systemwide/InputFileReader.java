@@ -1,12 +1,10 @@
-package misc;
+package systemwide;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import requests.ElevatorRequest;
 import requests.SystemEvent;
-import systemwide.Direction;
-import systemwide.Origin;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
