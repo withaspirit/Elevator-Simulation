@@ -35,7 +35,6 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 
 <details>
   <summary>Installation</summary>
-  <br>
 
 #### Eclipse:
 
@@ -91,7 +90,6 @@ This is for importing the project and its entire branch history.
 
 <details>
   <summary>Testing</summary>
-  <br>
 
 #### In Eclipse:
 
@@ -117,7 +115,6 @@ Tests:
 
 <details>
   <summary>Running</summary>
-  <br>
 
 #### Description
 
