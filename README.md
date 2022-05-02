@@ -18,6 +18,7 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 
 <details>
   <summary>Downloading a Release / Iteration Code</summary>
+    <br>
 
 1. Choose the tag for the iteration. For example v0.1 refers to iteration 1.  
   
@@ -34,6 +35,7 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 
 <details>
   <summary>Installation</summary>
+  <br>
 
 #### Eclipse:
 
@@ -69,6 +71,7 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 
 <details>
   <summary>Editing</summary>
+  <br>
 
 This is for importing the project and its entire branch history.
 
@@ -88,6 +91,7 @@ This is for importing the project and its entire branch history.
 
 <details>
   <summary>Testing</summary>
+  <br>
 
 #### In Eclipse:
 
@@ -113,8 +117,7 @@ Tests:
 
 <details>
   <summary>Running</summary>
-
-<br>
+  <br>
 
 #### Description
 
