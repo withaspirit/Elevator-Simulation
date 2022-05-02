@@ -410,6 +410,7 @@ Multirun Instructions:
   
   <details>
     <summary>Reflection</summary>
+    <br>
     
     This project is mostly a success as it meets most of the requirements. 
 
@@ -436,6 +437,7 @@ Multirun Instructions:
   
   <details>
     <summary>Performance Testing</summary>
+    <br>
 
     #### Testing Description
     The performance of the system is measured based on the time that the scheduler takes to handle all the requests that it receives from the input file. This was implemented by saving the start time and end time, and then comparing them to each other. The start time is measured as soon as the scheduler system is started, while the end time is recorded when the scheduler handles the last request. 
