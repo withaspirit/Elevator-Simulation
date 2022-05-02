@@ -139,7 +139,7 @@ Multirun Instructions:
 
 ## Iterations
 
-This section contains information about each of the iteration submissions for this project. If the images look blurry when opened in browser, zoom in. Alternatively, download and open them. They should appear clearly.
+This section contains information about each of the iteration submissions for this project. If images in any of the iterations look blurry when opened in browser, try zooming in. Alternatively, download and open them. They will appear clearly.
 
 - ## Iteration 1
 
