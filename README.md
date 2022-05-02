@@ -118,9 +118,7 @@ Tests:
 
 #### Description
 
-The program can be run as one program with the class Structure. The program can also be run as multiple separate programs with the classes Scheduler, ElevatorSubsystem, and FloorSubsystem.
-
-The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: ElevatorSubsystem, FloorSubsystem and Scheduler. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
+The program is run as multiple separate programs with the classes Scheduler, ElevatorSubsystem, and FloorSubsystem. The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: ElevatorSubsystem, FloorSubsystem and Scheduler. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
 
 #### Eclipse
 
@@ -141,7 +139,7 @@ Multirun Instructions:
 
 ## Iterations
 
-If the images look blurry when opened in browser, download and then open them in any image viewer. They should appear clearly.
+This section contains information about each of the iteration submissions for this project. If the images look blurry when opened in browser, zoom in. Alternatively, download and open them. They should appear clearly.
 
 - ## Iteration 1
 
