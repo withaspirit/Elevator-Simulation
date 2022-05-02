@@ -141,6 +141,8 @@ Multirun Instructions:
 
 ## Iterations
 
+If the images look blurry when opened in browser, download and then open them in any image viewer. They should appear clearly.
+
 - ## Iteration 1
 
   <details>
