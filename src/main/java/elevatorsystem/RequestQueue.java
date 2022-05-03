@@ -65,8 +65,8 @@ public class RequestQueue {
                 // elevator can serve requests
                 // case: requestFloor is above elevatorFloor and request direction is Up
                 // OR requestFloor is below elevatorFloor and serviceDirection is DOwn
-                if ((floorNumber < elevatorFloorNumber && serviceDirection == Direction.DOWN) ||
-                        (floorNumber > elevatorFloorNumber && serviceDirection == Direction.UP)) {
+                if (floorNumber < elevatorFloorNumber && serviceDirection == Direction.DOWN ||
+                        floorNumber > elevatorFloorNumber && serviceDirection == Direction.UP) {
                     queueToAddTo = currentDirectionQueue;
                 } else {
                     // elevator can't serve request this cycle
