@@ -212,7 +212,7 @@ public class Scheduler implements Runnable {
                 currentFloor -= 1;
             }
 
-            if (monitor.getHasNoRequests()) {
+            if (monitor.hasNoRequests()) {
                 return elevatorNumber;
 
             } else if (state == MovementState.STUCK) {

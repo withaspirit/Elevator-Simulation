@@ -128,14 +128,14 @@ public class ElevatorSelectionTest {
 
         sendEvent(eventList.get(0));
         assertEquals(monitorList.get(0).getElevatorNumber(), 1);
-        assertFalse(monitorList.get(0).getHasNoRequests());
+        assertFalse(monitorList.get(0).hasNoRequests());
         assertFalse(elevator1.getRequestQueue().isEmpty());
         assertEquals(1.2, monitorList.get(0).getQueueTime());
         // Elevator move from floor 1 to 2 elevator was idle
 
         sendEvent(eventList.get(1));
         assertEquals(monitorList.get(1).getElevatorNumber(), 2);
-        assertFalse(monitorList.get(1).getHasNoRequests());
+        assertFalse(monitorList.get(1).hasNoRequests());
         assertFalse(elevator2.getRequestQueue().isEmpty());
         assertEquals(3.4, monitorList.get(1).getQueueTime());
         // Elevator move from floor 2 to 4 elevator was idle
@@ -145,14 +145,14 @@ public class ElevatorSelectionTest {
     void testSelectingActiveElevators() {
         sendEvent(eventList.get(0));
         assertEquals(monitorList.get(0).getElevatorNumber(), 1);
-        assertFalse(monitorList.get(0).getHasNoRequests());
+        assertFalse(monitorList.get(0).hasNoRequests());
         assertFalse(elevator1.getRequestQueue().isEmpty());
         assertEquals(1.2, monitorList.get(0).getQueueTime());
         // Elevator 1 move from floor 1 to 2 elevator was idle
 
         sendEvent(eventList.get(1));
         assertEquals(monitorList.get(1).getElevatorNumber(), 2);
-        assertFalse(monitorList.get(1).getHasNoRequests());
+        assertFalse(monitorList.get(1).hasNoRequests());
         assertFalse(elevator1.getRequestQueue().isEmpty());
         assertEquals(3.4, monitorList.get(1).getQueueTime());
         // Elevator 2 move from floor 2 to 4 elevator was idle
