@@ -278,6 +278,7 @@ public class Scheduler implements Runnable {
      * Sends: ApproachEvent, ElevatorRequest
      * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
      */
+    @Override
     public void run() {
 
         //Starts the inactivity timer and performance measurement
