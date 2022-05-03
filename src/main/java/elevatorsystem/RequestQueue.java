@@ -58,31 +58,30 @@ public class RequestQueue {
             } else {
                 queueToAddTo = oppositeDirectionQueue;
             }
-        } else {
+        } else if (serviceDirection == requestDirection) {
             // request is in same direction as elevator
-            if (serviceDirection == requestDirection) {
+            // elevator can serve requests
 
-                // elevator can serve requests
-                // case: requestFloor is above elevatorFloor and request direction is Up
-                // OR requestFloor is below elevatorFloor and serviceDirection is DOwn
-                if (floorNumber < elevatorFloorNumber && serviceDirection == Direction.DOWN ||
-                        floorNumber > elevatorFloorNumber && serviceDirection == Direction.UP) {
-                    queueToAddTo = currentDirectionQueue;
-                } else {
-                    // elevator can't serve request this cycle
-                    queueToAddTo = missedRequests;
-                }
+            // case: requestFloor is above elevatorFloor and requestDirection is Up
+            // OR requestFloor is below elevatorFloor and serviceDirection is DOwn
+            if (floorNumber < elevatorFloorNumber && serviceDirection == Direction.DOWN ||
+                    floorNumber > elevatorFloorNumber && serviceDirection == Direction.UP) {
+                queueToAddTo = currentDirectionQueue;
             } else {
-                // serviceDirection is opposite direction to elevatorDirection
-                queueToAddTo = oppositeDirectionQueue;
+                // elevator can't serve request this cycle
+                queueToAddTo = missedRequests;
             }
+        } else {
+            // serviceDirection is opposite direction to requestDirection
+            queueToAddTo = oppositeDirectionQueue;
         }
+
         // add to selected queue
         if (request instanceof ElevatorRequest elevatorRequest) {
-            ServiceRequest serviceRequest1 = new ServiceRequest(request.getTime(), elevatorRequest.getDesiredFloor(), request.getDirection(), request.getOrigin());
-            ServiceRequest serviceRequest2 = new ServiceRequest(request.getTime(), request.getFloorNumber(), request.getDirection(), request.getOrigin());
-            queueToAddTo.add(serviceRequest1);
-            queueToAddTo.add(serviceRequest2);
+            ServiceRequest requestAtFloor = new ServiceRequest(request.getTime(), elevatorRequest.getDesiredFloor(), request.getDirection(), request.getOrigin());
+            ServiceRequest requestInElevator = new ServiceRequest(request.getTime(), request.getFloorNumber(), request.getDirection(), request.getOrigin());
+            queueToAddTo.add(requestAtFloor);
+            queueToAddTo.add(requestInElevator);
         } else {
             queueToAddTo.add(request);
         }
