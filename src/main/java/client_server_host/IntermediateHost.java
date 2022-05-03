@@ -26,7 +26,7 @@ public class IntermediateHost {
      */
     public IntermediateHost(int portNumber) {
         messageTransfer = new MessageTransfer(portNumber);
-        messageQueue = new LinkedList<SystemEvent>();
+        messageQueue = new LinkedList<>();
     }
 
     /**
