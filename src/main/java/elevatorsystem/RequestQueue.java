@@ -241,11 +241,11 @@ public class RequestQueue {
      */
     public double requestTime(int initialFloor, int finalFloor, int travelTime) {
         return Math.abs((finalFloor - initialFloor) * travelTime);
-//		double distance = Math.abs(finalFloor - initialFloor) * FLOOR_HEIGHT;
-//		if (distance > ACCELERATION_DISTANCE * 2) {
-//			return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
-//		} else {
-//			return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
-//		}
+//        double distance = Math.abs(finalFloor - initialFloor) * FLOOR_HEIGHT;
+//        if (distance > ACCELERATION_DISTANCE * 2) {
+//            return (distance - ACCELERATION_DISTANCE * 2) / MAX_SPEED + ACCELERATION_TIME * 2;
+//        } else {
+//            return Math.sqrt(distance * 2 / ACCELERATION); // elevator accelerates and decelerates continuously
+//        }
     }
 }
