@@ -11,7 +11,6 @@ import systemwide.Direction;
 import systemwide.Origin;
 
 import javax.swing.*;
-
 import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -63,9 +62,9 @@ public class PresenterTest {
         assertEquals(Integer.toString(currentFloor), statusPanes[0].getText());
         assertEquals(currentDirection.toString(), statusPanes[1].getText());
         assertEquals(movementState.getName(), statusPanes[2].getText());
-        assertEquals( movementDirection.getName(), statusPanes[3].getText());
+        assertEquals(movementDirection.getName(), statusPanes[3].getText());
         assertEquals(doorsState.toString(), statusPanes[4].getText());
-        assertEquals( fault.getName(), statusPanes[5].getText());
+        assertEquals(fault.getName(), statusPanes[5].getText());
         // exclude time from request.toString()
         int localTimeCutoffIndex = "HH:mm:ss.SSS ".length();
         assertEquals(currentRequest.toString().substring(localTimeCutoffIndex), statusPanes[6].getText());

@@ -80,6 +80,6 @@ public class SystemEvent implements Serializable {
      * @param elevatorNumber the number of the elevator corresponding to the request
      */
     public void setElevatorNumber(int elevatorNumber) {
-        this.elevatorNumber =  elevatorNumber;
+        this.elevatorNumber = elevatorNumber;
     }
 }

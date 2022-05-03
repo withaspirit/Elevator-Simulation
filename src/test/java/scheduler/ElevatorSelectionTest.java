@@ -4,13 +4,13 @@ import client_server_host.MessageTransfer;
 import client_server_host.Port;
 import client_server_host.RequestMessage;
 import elevatorsystem.*;
-import systemwide.InputFileReader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;
 import requests.SystemEvent;
 import systemwide.Direction;
+import systemwide.InputFileReader;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -54,7 +54,7 @@ public class ElevatorSelectionTest {
         elevatorSubsystem.addElevator(elevator1);
         elevatorSubsystem.addElevator(elevator2);
 
-        for (Elevator elevator: elevatorSubsystem.getElevatorList()){
+        for (Elevator elevator : elevatorSubsystem.getElevatorList()) {
             elevator.setTravelTime(travelTIme);
             elevator.setDoorTime(loadTIme);
         }
@@ -74,15 +74,15 @@ public class ElevatorSelectionTest {
     }
 
     @AfterEach
-    void cleanUP(){
-        while (!elevator1.getRequestQueue().isEmpty()){
-            if (elevator1.getRequestQueue().removeRequest() == null){
+    void cleanUP() {
+        while (!elevator1.getRequestQueue().isEmpty()) {
+            if (elevator1.getRequestQueue().removeRequest() == null) {
                 break;
             }
         }
 
-        while (!elevator2.getRequestQueue().isEmpty()){
-            if (elevator2.getRequestQueue().removeRequest() == null){
+        while (!elevator2.getRequestQueue().isEmpty()) {
+            if (elevator2.getRequestQueue().removeRequest() == null) {
                 break;
             }
         }
@@ -90,7 +90,7 @@ public class ElevatorSelectionTest {
         elevator2.getMotor().setMovementState(MovementState.IDLE);
 
 
-        for (ElevatorMonitor elevatorMonitor: monitorList){
+        for (ElevatorMonitor elevatorMonitor : monitorList) {
             elevatorMonitor.updateMonitor(new ElevatorMonitor(elevatorMonitor.getElevatorNumber(), 1, Direction.UP, MovementState.IDLE, Direction.NONE, Doors.State.OPEN, Fault.NONE, true, 0.0));
         }
     }
@@ -100,7 +100,7 @@ public class ElevatorSelectionTest {
      *
      * @param event a SystemEvent containing a request
      */
-    private void sendEvent(SystemEvent event){
+    private void sendEvent(SystemEvent event) {
         messageElevator = messageTransfer.encodeObject(event);
         try {
             elevatorPacket = new DatagramPacket(messageElevator, messageElevator.length, InetAddress.getLocalHost(), Port.CLIENT_TO_SERVER.getNumber());
@@ -142,7 +142,7 @@ public class ElevatorSelectionTest {
     }
 
     @Test
-    void testSelectingActiveElevators(){
+    void testSelectingActiveElevators() {
         sendEvent(eventList.get(0));
         assertEquals(monitorList.get(0).getElevatorNumber(), 1);
         assertFalse(monitorList.get(0).getHasNoRequests());
