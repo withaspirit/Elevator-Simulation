@@ -212,8 +212,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
      */
     @Override
     public Structure receiveStructure() {
-        Structure structure = (Structure) client.receive();
-        return structure;
+        return (Structure) client.receive();
     }
 
     public static void main(String[] args) {
