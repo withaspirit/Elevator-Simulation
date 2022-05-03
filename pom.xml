@@ -47,7 +47,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>systemwide.Structure</mainClass>
+                            <mainClass>scheduler.Scheduler</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
