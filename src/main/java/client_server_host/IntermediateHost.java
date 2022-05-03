@@ -17,7 +17,7 @@ import java.util.Queue;
 public class IntermediateHost {
 
     private final MessageTransfer messageTransfer;
-    private Queue<SystemEvent> messageQueue;
+    private final Queue<SystemEvent> messageQueue;
 
     /**
      * Constructor for IntermediateHost.
@@ -77,7 +77,7 @@ public class IntermediateHost {
      *
      * @param packet a packet received from a scheduler
      */
-    public void acknowledgeDataReception(DatagramPacket packet){
+    public void acknowledgeDataReception(DatagramPacket packet) {
         byte[] acknowledgeMessage = RequestMessage.ACKNOWLEDGE.getMessage().getBytes();
         DatagramPacket acknowledgePacket = new DatagramPacket(acknowledgeMessage, acknowledgeMessage.length, packet.getAddress(), packet.getPort());
         messageTransfer.sendMessage(acknowledgePacket);
