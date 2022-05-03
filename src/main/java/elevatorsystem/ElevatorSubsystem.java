@@ -62,6 +62,7 @@ public class ElevatorSubsystem implements Runnable, SystemEventListener {
      * Sends: ApproachEvent, ElevatorMonitor
      * Receives: ApproachEvent, ElevatorRequest
      */
+    @Override
     public void run() {
         systemStatus.setSystemActivated(true);
         while (systemStatus.activated()) {
