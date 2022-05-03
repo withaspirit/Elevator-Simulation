@@ -101,7 +101,7 @@ public class ElevatorView {
      * @return a JTextPane array containing information about the Elevator's status
      */
     public JTextPane[] getStatusPanes() {
-        return statusPanes;
+        return statusPanes.clone();
     }
 
     /**
