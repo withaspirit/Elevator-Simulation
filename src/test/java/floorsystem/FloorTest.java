@@ -43,4 +43,4 @@ public class FloorTest {
         floor.receiveApproachEvent(approachEvent);
         assertTrue(approachEvent.elevatorMayStop());
     }
- }
+}

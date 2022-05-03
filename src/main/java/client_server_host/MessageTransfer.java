@@ -1,12 +1,7 @@
 package client_server_host;
 
-import elevatorsystem.ElevatorSubsystem;
-import floorsystem.FloorSubsystem;
-import scheduler.Scheduler;
-
 import java.io.*;
 import java.net.*;
-import java.time.LocalTime;
 
 /**
  * MessageTransfer provides methods for other classes to send, receive, and
@@ -89,7 +84,7 @@ public class MessageTransfer {
      * Prints the contents of a packet and what class is sending the packet.
      * (Please uncomment this method for adding messages with UPD details.)
      *
-     * @param name   the name of the class sending the packet
+     * @param name the name of the class sending the packet
      * @param packet the DatagramPacket containing data
      */
     public void printSendMessage(String name, DatagramPacket packet) {
@@ -119,7 +114,7 @@ public class MessageTransfer {
     /**
      * Prints the contents of a packet and what class is receiving the packet.
      * (Please uncomment this method for adding messages with UPD details.)
-     *  
+     *
      * @param name the name of the class receiving the packet
      * @param packet the DatagramPacket containing data
      */
@@ -193,7 +188,7 @@ public class MessageTransfer {
         } catch (Exception ex) {
             // ignore exception
         }
-        if (object == null){
+        if (object == null) {
             object = new String(objectBytes);
         }
         return object;

@@ -10,20 +10,20 @@ import java.util.ArrayList;
  */
 public class FaultInjectorView {
 
-    private ArrayList<FaultButton> doorFaultButtons;
-    private ArrayList<FaultButton> cartFaultButtons;
-    private JPanel buttonListPanel;
-    private JPanel containerPanel;
-    private ArrayList<Elevator> elevatorList;
+    private final ArrayList<FaultButton> doorFaultButtons;
+    private final ArrayList<FaultButton> cartFaultButtons;
+    private final JPanel buttonListPanel;
+    private final JPanel containerPanel;
+    private final ArrayList<Elevator> elevatorList;
 
     /**
-     * Class constructor with reference to elevator list. 
+     * Class constructor with reference to elevator list.
      *
      * @ param elevatorList is the reference to all of the elevator from the elevator subsystem
      */
     public FaultInjectorView(ArrayList<Elevator> elevatorList) {
         this.elevatorList = elevatorList;
-    	int numberOfElevators = elevatorList.size();
+        int numberOfElevators = elevatorList.size();
         //Initializing the buttons
         this.doorFaultButtons = new ArrayList<>();
         this.cartFaultButtons = new ArrayList<>();

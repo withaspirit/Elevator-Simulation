@@ -34,18 +34,18 @@ public class InputFileReader {
      * @param name the name of the file for reading inputs
      * @return an ArrayList containing ElevatorRequests for the FloorSubsystem
      */
-    public ArrayList<SystemEvent> readInputFile(String name){
+    public ArrayList<SystemEvent> readInputFile(String name) {
         ArrayList<SystemEvent> queue = new ArrayList<>();
         JSONArray jsonArray = createJSONArray(name);
 
-        for (Object obj: jsonArray) {
+        for (Object obj : jsonArray) {
             JSONObject inputObject = (JSONObject) obj;
             String[] data;
             LocalTime time = LocalTime.now();
-            if (inputObject.containsKey("event")){
+            if (inputObject.containsKey("event")) {
                 data = ((String) inputObject.get("event")).split(" ");
                 queue.add(createElevatorRequest(data, time));
-            } else if (inputObject.containsKey("fault")){
+            } else if (inputObject.containsKey("fault")) {
                 data = ((String) inputObject.get("fault")).split(" ");
                 queue.add(createFaultRequest(data, time));
             }
@@ -74,7 +74,7 @@ public class InputFileReader {
             JSONParser parser = new JSONParser();
             Object obj = parser.parse(inputStreamReader);
             return (JSONObject) obj;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -119,7 +119,7 @@ public class InputFileReader {
             assert inputStream != null;
             // Specify CharSet as UTF-8
             return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.err.println(name + " was not found.");
             e.printStackTrace();
             return null;

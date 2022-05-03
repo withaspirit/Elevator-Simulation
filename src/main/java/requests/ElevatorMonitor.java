@@ -156,7 +156,9 @@ public class ElevatorMonitor extends SystemEvent {
      *
      * @param currentRequest the currentRequest of the elevator as a ServiceRequest
      */
-    public void setCurrentRequest(ServiceRequest currentRequest) { this.currentRequest = currentRequest;  }
+    public void setCurrentRequest(ServiceRequest currentRequest) {
+        this.currentRequest = currentRequest;
+    }
 
     /**
      * Updates the ElevatorMonitor with the latest ElevatorMonitor information.

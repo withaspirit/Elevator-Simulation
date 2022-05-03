@@ -32,7 +32,8 @@ public class InputFileReaderTest {
     }
 
     @AfterEach
-    void tearDown() {}
+    void tearDown() {
+    }
 
     /**
      * Initializes the JSONArray for a test to the "inputs" file.

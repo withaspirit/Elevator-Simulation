@@ -14,10 +14,10 @@ import java.awt.event.ActionListener;
  */
 public class FaultButton implements ActionListener {
 
-    private JPanel faultPanel;
-    private JToggleButton doorFaultButton;
-    private Elevator elevator;
-    private String name;
+    private final JPanel faultPanel;
+    private final JToggleButton doorFaultButton;
+    private final Elevator elevator;
+    private final String name;
 
     /**
      * FaultButton constructor with elevator reference

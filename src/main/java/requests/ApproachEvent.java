@@ -71,7 +71,9 @@ public class ApproachEvent extends ServiceRequest {
      *
      * @return int floorToVisit
      */
-    public int getFloorToVisit() { return floorToVisit; }
+    public int getFloorToVisit() {
+        return floorToVisit;
+    }
 
     /**
      * Convert ApproachEvent to a String.
