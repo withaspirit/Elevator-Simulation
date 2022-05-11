@@ -47,6 +47,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
      * Sends: ApproachEvent, ElevatorRequest
      * Receives: ApproachEvent
      */
+    @Override
     public void run() {
         Collections.reverse(requestList);
 
@@ -83,6 +84,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
      *
      * @param systemEvent the SystemEvent to add
      */
+    @Override
     public void addEventToQueue(SystemEvent systemEvent) {
         eventList.add(systemEvent);
     }
@@ -212,8 +214,7 @@ public class FloorSubsystem implements Runnable, SystemEventListener {
      */
     @Override
     public Structure receiveStructure() {
-        Structure structure = (Structure) client.receive();
-        return structure;
+        return (Structure) client.receive();
     }
 
     public static void main(String[] args) {

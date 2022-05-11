@@ -138,7 +138,7 @@ public class ElevatorMonitor extends SystemEvent {
      *
      * @return true if the elevator has no requests, false otherwise
      */
-    public boolean getHasNoRequests() {
+    public boolean hasNoRequests() {
         return hasNoRequests;
     }
 
@@ -173,7 +173,7 @@ public class ElevatorMonitor extends SystemEvent {
         movementDirection = elevatorMonitor.getMovementDirection();
         doorsState = elevatorMonitor.getDoorsState();
         fault = elevatorMonitor.getFault();
-        this.hasNoRequests = elevatorMonitor.getHasNoRequests();
+        this.hasNoRequests = elevatorMonitor.hasNoRequests();
     }
 
     /**

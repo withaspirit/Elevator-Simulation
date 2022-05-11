@@ -212,7 +212,7 @@ public class Scheduler implements Runnable {
                 currentFloor -= 1;
             }
 
-            if (monitor.getHasNoRequests()) {
+            if (monitor.hasNoRequests()) {
                 return elevatorNumber;
 
             } else if (state == MovementState.STUCK) {
@@ -278,15 +278,16 @@ public class Scheduler implements Runnable {
      * Sends: ApproachEvent, ElevatorRequest
      * Receives: ApproachEvent, ElevatorRequest, ElevatorMonitor
      */
+    @Override
     public void run() {
 
         //Starts the inactivity timer and performance measurement
         resetTimer();
-		/*
-			Use schedulerThreadsTerminated instead of systemStatus.activated()
-			because sometimes, one scheduler's socket gets closed too early, 
-      causing a SocketException. Must wait for both to be closed.
-		 */
+        /*
+            Use schedulerThreadsTerminated instead of systemStatus.activated()
+            because sometimes, one scheduler's socket gets closed too early, 
+            causing a SocketException. Must wait for both to be closed.
+         */
         while (schedulerThreadsTerminated < 2) {
             receiveAndProcessPacket();
         }

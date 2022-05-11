@@ -54,12 +54,11 @@ public enum Direction {
      */
     public static Direction swapDirection(Direction direction) {
         if (direction == Direction.UP) {
-            direction = Direction.DOWN;
+            return Direction.DOWN;
         } else if (direction == Direction.DOWN) {
-            direction = Direction.UP;
+            return Direction.UP;
         } else {
             throw new IllegalArgumentException("Direction provided is not valid.");
         }
-        return direction;
     }
 }
