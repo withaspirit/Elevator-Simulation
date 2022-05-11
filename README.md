@@ -407,31 +407,34 @@ This section contains information about each of the iteration submissions for th
   ![Elevator Movement State Machine Diagram](https://user-images.githubusercontent.com/61635007/163073011-82bdddf8-4c09-477f-abd6-da9f8a81f000.png)
 
   <br>
-  
+
   <details>
     <summary>Reflection</summary>
     <br>
-    
-    This project is mostly a success as it meets most of the requirements. 
+
+    This project is mostly a success as it meets almost all of the iteration requirements and most of the general requirements. 
 
     ### Successes
-    The README design is excellent. The UML Class Diagram is the most complete diagram in the project. Virtually all methods and classes have Javadocs and have consistent formatting.
+
+    The fundamental requirements for each iteration were prioritized and completed by the project deadline.
+
+    The UML Class Diagram is the most complete diagram in the project. Virtually all methods and classes have Javadocs and consistent formatting. The commit history on GitHub is easy to read due to established contribution standards. The README also has a strong design. Its contents illustrate the visual and written communication skills of the team members. The RequestQueue class in particular well-design and tested.
 
     ### Areas for Improvement
 
     #### Design
 
-    The Elevator has too much responsibility. As discussed in (/../../issues/184), one solution was putting a RequestQueue for each Elevator in the Scheduler. That could increase Scheduler's awareness of Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView and  be more faithful to the project requirements.
-    
-    A state machine pattern for the Elevator was not implemented due to lack of effort on the system design. Increased collaboration and shared responsibility for the design amongst group members could have helped alleviate pressure.
+    The Elevator has too much responsibility. As discussed in [#184](/../../issues/184), one solution was putting a RequestQueue for each Elevator in the Scheduler. That could increase Scheduler's awareness of each Elevator's current and future state. It would also solve the data concurrency problem between the Elevators and ElevatorViews and be more faithful to the general requirements.
 
-    The ArrivalSensor was not properly integrated into the simulation. There were also bugs not addressed in time for iteration submission, as seen in [#43](/../../issues/43). Finally, the GUI for the Elevator lacks buttons to trigger the ELEVATOR_STUCK and ARRIVAL_SENSOR_FAIL faults. Better time management and completing the project objectives at least a day before the deadline would have left time to address unresovled issues.
-    
+    A state machine pattern for the Elevator was not implemented due to the system designers being busy with other parts of the project. Increased collaboration and shared responsibility for the design amongst group members could have helped alleviate pressure on designers.
+
+    The ArrivalSensor was not properly integrated into the simulation. There were also bugs not addressed in time for iteration submission, as seen in [#43](/../../issues/43). Finally, the GUI for the Elevator lacks buttons to trigger the ELEVATOR_STUCK and ARRIVAL_SENSOR_FAIL faults. Better time management and completing the project objectives at least a day before the deadline could have left time to address these unresolved issues.
+
     #### Team
 
-    A consistent problem throughout the project was team members not completing coding work until the day of the deadline. This could be solved by members being proactive and engaged with the project instead of passive, or by more deadlines being set. The deadlines would require more involvement from the team during the design phase. Proactive members would allow for ongoing development and issues to be addressed earlier rather than later. 
+    A consistent problem throughout the project was team members not completing coding work until the day of the deadline. This could be solved by members being proactive and engaged with the project instead of passive, or by more deadlines being set. The deadlines would require more involvement from the team during the design phase. Proactive members would allow for ongoing development and issues to be addressed earlier rather than later.
 
-    There was also a problem where the most proactive members did most of the work while passive members did work close to the iteration submission dates. This was often due to there not being enough set deadlines. The person who did the most Requirements Analysis was also tasked with assigning work to team members. This often resulted in burnout, work not being assigned, and iteration requirements not being met. There was an attempt to solve this by creating starting from Iteration 2, as seen in [#54](/../../issues/54), [#75](/../../issues/75), [#105](/../../issues/105), and [#151](/../../issues/151). Most of the work to be done for the project was laid out in these documents. However, it did not result in work being done earlier. Deadlines were still not created because it was assumed the existence of the WBS would result in team members being more proactive. That did not happen.
+    There was also a problem where proactive members did more work than passive members. Passive members did work close to the iteration submission dates where it was often too late to make major design decisions. This was often due to a lack of set deadlines. An attempt to solve the issue of members crunching before the deadline was made by creating Work Breakdown Structures (WBS) starting from Iteration 2, as seen in [#54](/../../issues/54), [#75](/../../issues/75), [#105](/../../issues/105), and [#151](/../../issues/151). Most of the work to be done for the project was laid out in these documents. It was partially effective as it increased the visibility of the work to be done. However, there was a lack of feedback and discussion around these WBSs. It was only partially effective in prompting team members to self-assign work and complete it as soon as possible in the way it was intended. Increasing the involvement of team members in the project could remedy this issue.
 
   </details>
   
@@ -440,6 +443,7 @@ This section contains information about each of the iteration submissions for th
     <br>
 
     #### Testing Description
+
     The performance of the system is measured based on the time that the scheduler takes to handle all the requests that it receives from the input file. This was implemented by saving the start time and end time, and then comparing them to each other. The start time is measured as soon as the scheduler system is started, while the end time is recorded when the scheduler handles the last request. 
 
     However, knowing the last request is not trivial, so it was necessary to implement an inactivity timer. This timer checks for inactivity in the scheduler to determine when it has finished. Every time the scheduler does work it resets the timer, however, if the timer reaches a time out time it assumes that the scheduler is finished and records this time as the end time. Finally, the total performance time is calculated by subtracting the start time and timeout time from the end time.     
