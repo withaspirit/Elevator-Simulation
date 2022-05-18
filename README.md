@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a group project for designing, creating, and simulating an elevator system.
+This is a group project for designing, creating, and simulating a multithreaded elevator system.
 
 ## Team (Group 4)
 
@@ -14,10 +14,11 @@ This is a group project for designing, creating, and simulating an elevator syst
 
 ## Instructions
 
-Note that this project is set up as a Maven project. In Eclipse, it requires the [M2Eclipse](https://www.eclipse.org/m2e/) plugin. Most Eclipse downloads already include M2Eclipse, but if your system does not have it, download instructions can be found [here](https://stackoverflow.com/a/13640110).
+This project requires at least [JDK17](https://www.oracle.com/java/technologies/downloads/) to run. Note that this project is set up as a Maven project. In Eclipse, it requires the [M2Eclipse](https://www.eclipse.org/m2e/) plugin. Most Eclipse downloads already include M2Eclipse, but if your system does not have it, download instructions can be found [here](https://stackoverflow.com/a/13640110).
 
 <details>
   <summary>Downloading a Release / Iteration Code</summary>
+    <br>
 
 1. Choose the tag for the iteration. For example v0.1 refers to iteration 1.  
   
@@ -62,13 +63,14 @@ Note that this project is set up as a Maven project. In Eclipse, it requires the
 
   </details>
 
-10. In the popup menu, select "Finish." This downloads all dependencies from Maven automatically. They are locally stored in the directory "C:\Users\[your name]\.m2"
+10. In the popup menu, select "Finish." This downloads all dependencies from Maven automatically. They are locally stored in the directory "C:\Users\\[your name]\\.m2"
 11. You should now be able to run the project.
 
 </details>
 
 <details>
   <summary>Editing</summary>
+  <br>
 
 This is for importing the project and its entire branch history.
 
@@ -114,13 +116,9 @@ Tests:
 <details>
   <summary>Running</summary>
 
-<br>
-
 #### Description
 
-The program can be run as one program with the class Structure. The program can also be run as multiple separate programs with the classes Scheduler, ElevatorSubsystem, and FloorSubsystem.
-
-The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: ElevatorSubsystem, FloorSubsystem and Scheduler. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
+The program is run as multiple separate programs with the classes Scheduler, ElevatorSubsystem, and FloorSubsystem. The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: ElevatorSubsystem, FloorSubsystem and Scheduler. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
 
 #### Eclipse
 
@@ -140,6 +138,8 @@ Multirun Instructions:
 </details>
 
 ## Iterations
+
+This section contains information about each of the iteration submissions for this project. If images in any of the iterations look blurry when opened in browser, try zooming in. Alternatively, download and open them. They will appear clearly.
 
 - ## Iteration 1
 
@@ -373,14 +373,16 @@ Multirun Instructions:
     
     ![GUI](https://user-images.githubusercontent.com/61635007/163075152-23db6387-42a7-49d9-8973-f9499136c20e.png)    
 
-    * Changes to faults: As seen above, the window for the Fault buttons are separate from the Elevator window. This is because there was not enough time to add the buttons directly to each ElevatorView. There were also concerns about data concurrency between the ElevatorView and Elevator if it the buttons were in the ElevatorView. Instead, the Fault window is created in the ElevatorSubsystem.
+    * Changes to faults: As seen above, the window for the Fault buttons are separate from the Elevator window. This is because there was not enough time to add the buttons directly to each ElevatorView. There were also concerns about data concurrency between the ElevatorView and Elevator if it the buttons to trigger faults were in the Scheduler. The Fault window was generated in the ElevatorSubsystem accordingly.
    The two door faults were reduced to one, as seen below. Soft faults are handled by acknowledging of the fault in the system and clearing it, so that the system can continue its operation. Hard faults are handled by shutting down the elevator altogether and emptying out its requests queue.
 
       - ELEVATOR_STUCK: hard fault that occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). Triggered by pressing an "Elevator Stuck" button in the GUI.
       - ARRIVAL_SENSOR_FAIL: hard fault that occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
       - DOORS_STUCK: soft fault that occurs when the Doors malfunction while opening or closing. Triggered by pushing a "Door Stuck" button in the GUI.
 
-    * Simulation Initialization and Termination: The simulation is initialized using information contained in the Structure class. ElevatorSubsystem and FloorSubsystem are initialized and wait for the Scheduler to pass them a Structure. The Structure is initialized in Scheduler's main method. Each of the two Scheduler threads, one for passing information between ElevatorSubsystem and FloorSubsystem, the other vice-versa, pass Structure to FloorSubsystem and ElevatorSubsystem, respectively. Introduced conditions to terminate the Threads of the Simulation. This was done with a SystemStatus class for Scheduler, ElevatorSubsystem, FloorSubsystem, and each of the Elevators. The termination condition of the threads is when SystemStatus.activated() is false, except for Scheduler, which requires both Scheduler threads to be inactive. A Scheduler's termination is achieved by its Timer expiring. Each Scheduler sends a termination message to the System it communicates with and then terminates itself. The systems are then terminated by receiving the message, which indicates to the SystemStatus that the class’s thread should end.
+    * Simulation Initialization and Termination: The simulation is initialized using information contained in the Structure class. ElevatorSubsystem and FloorSubsystem are initialized and wait for the Scheduler to pass them a Structure. The Structure is initialized in Scheduler's main method. Each of the two Scheduler threads, one for passing information between ElevatorSubsystem and FloorSubsystem, the other vice-versa, pass Structure to FloorSubsystem and ElevatorSubsystem, respectively. 
+
+   * Simulation Termination: Introduced conditions to terminate the Threads of the Simulation. This was done with a SystemStatus class for Scheduler, ElevatorSubsystem, FloorSubsystem, and each of the Elevators. The termination condition of the threads is when SystemStatus.activated() is false, except for Scheduler, which requires both Scheduler threads to be inactive. A Scheduler's termination is achieved by its Timer expiring. Each Scheduler sends a termination message to the System it communicates with and then terminates itself. The systems are then terminated by receiving the message, which indicates to the SystemStatus that the class’s thread should end.
     
   </details>
 
@@ -388,7 +390,7 @@ Multirun Instructions:
 
   | Member | Coding | Documentation | Misc 
   | ------ | ------ | ------------- | ----
-  | Ryan Dash | Fix ElevatorSelectionTest, Fix elevator door status updating incorrectly, (Unimplemented) Many-to-two Elevator-to-Scheduler, Elevator and Floor Buttons | UML Class Diagram | Brainstorming, Code Review
+  | Ryan Dash | Fix ElevatorSelectionTest, Fix elevator door status updating incorrectly, Unimplemented: (Many-to-two Elevator-to-Scheduler, Elevator and Floor Buttons, Faults in inputs.json, Elevator Action Requests for Door and Lamp) | UML Class Diagram | Brainstorming, Code Review
   | Ramit Mahajan | Updated ElevatorMotor | UML Class Diagram | Code Review
   | Brady Norton | Updating ElevatorMonitor Properties, Added Current Request to GUI, (Unfinished) ArrivalSensor Integration Testing, Fixing FloorSubsystem and Floor Tests | README | Code Review
   | Julian Obando Velez | Fault Injection GUI, Fault Handling, Implemented Performance Instrumentation | Final Project Presentation, Video Recording, Performance Testing README, Faults README | Scheduler Performance Testing and Measurements, Brainstorming, Code Review
@@ -400,38 +402,48 @@ Multirun Instructions:
 
   ![UML Class Diagram](https://user-images.githubusercontent.com/61635007/163095931-c9f438ef-46c2-4290-9ba9-9e798060d626.png)
 
-
   #### UML State Machine Diagram
   - Elevator Movement (With faults)
   ![Elevator Movement State Machine Diagram](https://user-images.githubusercontent.com/61635007/163073011-82bdddf8-4c09-477f-abd6-da9f8a81f000.png)
 
+  <br>
 
   <details>
     <summary>Reflection</summary>
-    
-    This project is mostly a success as it meets most of the requirements. 
+    <br>
+
+    This project is mostly a success as it meets almost all of the iteration requirements and most of the general requirements. 
 
     ### Successes
-    The README design is excellent. The UML Class Diagram is the most complete diagram in the project. Virtually all methods and classes have Javadocs and have consistent formatting.
+
+    The fundamental requirements for each iteration were prioritized and completed by the project deadline.
+
+    The UML Class Diagram is the most complete diagram in the project. Virtually all methods and classes have Javadocs and consistent formatting. The commit history on GitHub is easy to read due to established contribution standards. The README also has a strong design. Its contents illustrate the visual and written communication skills of the team members. The RequestQueue class in particular well-design and tested.
 
     ### Areas for Improvement
 
     #### Design
-    The Elevator has too much intelligence. One solution explored was having the RequestQueue in the Scheduler. This would allow Scheduler to have more awareness Elevator's current and future state. It would also solve the data concurrency problem between Elevator and ElevatorView, and meet the project requirements better.
-    A state machine pattern for the Elevator was not implemented due to not enough people working on the design. More contributions from team members during the design phase of the project could have helped alleviate pressure during system design. There were also bugs left in the code as seen in #43 that were not addressed in time for iteration submissions. Completing the project at least a day before the deadline would helped solve that. 
-    
+
+    The Elevator has too much responsibility. As discussed in [#184](/../../issues/184), one solution was putting a RequestQueue for each Elevator in the Scheduler. That could increase Scheduler's awareness of each Elevator's current and future state. It would also solve the data concurrency problem between the Elevators and ElevatorViews and be more faithful to the general requirements.
+
+    A state machine pattern for the Elevator was not implemented due to the system designers being busy with other parts of the project. Increased collaboration and shared responsibility for the design amongst group members could have helped alleviate pressure on designers.
+
+    The ArrivalSensor was not properly integrated into the simulation. There were also bugs not addressed in time for iteration submission, as seen in [#43](/../../issues/43). Finally, the GUI for the Elevator lacks buttons to trigger the ELEVATOR_STUCK and ARRIVAL_SENSOR_FAIL faults. Better time management and completing the project objectives at least a day before the deadline could have left time to address these unresolved issues.
+
     #### Team
 
-    A consistent problem throughout the project was team members not completing coding work until the day of the deadline. This could be solved by members being proactive and engaged with the project instead of passive, or by more deadlines being set. The deadlines would require more involvement from the team during the design phase. Proactive members would allow for ongoing development and issues to be addressed earlier rather than later. 
+    A consistent problem throughout the project was team members not completing coding work until the day of the deadline. This could be solved by members being proactive and engaged with the project instead of passive, or by more deadlines being set. The deadlines would require more involvement from the team during the design phase. Proactive members would allow for ongoing development and issues to be addressed earlier rather than later.
 
-    There was also a problem where the most proactive members did most of the work while passive members did work close to the iteration submission dates. This was often due to there not being enough set deadlines. The person who did the most Requirements Analysis was also tasked with assigning work to team members. This often resulted in burnout, work not being assigned, and iteration requirements not being met. There was an attempt to solve this by creating starting from Iteration 2, as seen in #54, #75, #105, and #151. Most of the work to be done for the project was laid out in these documents. However, it did not result in work being done earlier. Deadlines were still not created because it was assumed the existence of the WBS would result in team members being more proactive. This mostly false, as passive members remained passive. The biggest difference was that the work-to-do was clearer.
+    There was also a problem where proactive members did more work than passive members. Passive members did work close to the iteration submission dates where it was often too late to make major design decisions. This was often due to a lack of set deadlines. An attempt to solve the issue of members crunching before the deadline was made by creating Work Breakdown Structures (WBS) starting from Iteration 2, as seen in [#54](/../../issues/54), [#75](/../../issues/75), [#105](/../../issues/105), and [#151](/../../issues/151). Most of the work to be done for the project was laid out in these documents. It was partially effective as it increased the visibility of the work to be done. However, there was a lack of feedback and discussion around these WBSs. It was only partially effective in prompting team members to self-assign work and complete it as soon as possible in the way it was intended. Increasing the involvement of team members in the project could remedy this issue.
 
   </details>
   
   <details>
     <summary>Performance Testing</summary>
+    <br>
 
     #### Testing Description
+
     The performance of the system is measured based on the time that the scheduler takes to handle all the requests that it receives from the input file. This was implemented by saving the start time and end time, and then comparing them to each other. The start time is measured as soon as the scheduler system is started, while the end time is recorded when the scheduler handles the last request. 
 
     However, knowing the last request is not trivial, so it was necessary to implement an inactivity timer. This timer checks for inactivity in the scheduler to determine when it has finished. Every time the scheduler does work it resets the timer, however, if the timer reaches a time out time it assumes that the scheduler is finished and records this time as the end time. Finally, the total performance time is calculated by subtracting the start time and timeout time from the end time.     
