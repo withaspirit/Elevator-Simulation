@@ -1,6 +1,5 @@
 package elevatorsystem;
 
-import systemwide.InputFileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.ElevatorMonitor;
@@ -8,6 +7,7 @@ import requests.ElevatorRequest;
 import requests.ServiceRequest;
 import requests.SystemEvent;
 import systemwide.Direction;
+import systemwide.InputFileReader;
 import systemwide.Origin;
 
 import java.time.LocalTime;
@@ -218,7 +218,7 @@ class ElevatorTest {
         assertEquals(serviceRequest.getTime(), currentRequest.getTime());
         assertEquals(serviceRequest.getDirection(), currentRequest.getDirection());
         assertEquals(serviceRequest.getFloorNumber(), currentRequest.getFloorNumber());
-        assertEquals(serviceRequest.getOrigin(),currentRequest.getOrigin());
+        assertEquals(serviceRequest.getOrigin(), currentRequest.getOrigin());
 
         elevatorList.get(0).moveElevatorWhilePossible();
 

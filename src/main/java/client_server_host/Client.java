@@ -34,14 +34,14 @@ public class Client {
 
         //Determine type of message
         if (object instanceof SystemEvent) {
-            if (portNumber == Port.CLIENT.getNumber()){
+            if (portNumber == Port.CLIENT.getNumber()) {
                 tempPort = Port.CLIENT_TO_SERVER;
             } else {
                 tempPort = Port.SERVER_TO_CLIENT;
             }
             newByteArray = messageTransfer.encodeObject(object);
         } else if (object instanceof String) {
-            if (portNumber == Port.CLIENT.getNumber()){
+            if (portNumber == Port.CLIENT.getNumber()) {
                 tempPort = Port.SERVER_TO_CLIENT;
             } else {
                 tempPort = Port.CLIENT_TO_SERVER;
@@ -52,7 +52,7 @@ public class Client {
             throw new IllegalArgumentException("Error: Invalid Object");
         }
 
-        if (tempPort == null){
+        if (tempPort == null) {
             throw new IllegalArgumentException("Error: Invalid PortNumber");
         }
 
@@ -103,13 +103,13 @@ public class Client {
         return object;
     }
 
-   /**
-    * Converts a packet into it's corresponding SystemEvent object
-    *
-    * @param packet to convert to event
-    * @return event of packet
-    */
-   public Object convertToSystemEvent(DatagramPacket packet) {
-       return messageTransfer.decodeObject(packet.getData());
-   }
+    /**
+     * Converts a packet into it's corresponding SystemEvent object
+     *
+     * @param packet to convert to event
+     * @return event of packet
+     */
+    public Object convertToSystemEvent(DatagramPacket packet) {
+        return messageTransfer.decodeObject(packet.getData());
+    }
 }

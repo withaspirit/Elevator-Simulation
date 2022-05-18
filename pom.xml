@@ -47,7 +47,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>systemwide.Structure</mainClass>
+                            <mainClass>scheduler.Scheduler</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -57,7 +57,9 @@
             </plugin>
             <!-- Avoid using maven-jar-plugin, which creates jar without dependencies -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
                 <executions>
                     <execution>
                         <id>default-jar</id>

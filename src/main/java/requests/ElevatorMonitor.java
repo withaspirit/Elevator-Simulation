@@ -138,7 +138,7 @@ public class ElevatorMonitor extends SystemEvent {
      *
      * @return true if the elevator has no requests, false otherwise
      */
-    public boolean getHasNoRequests() {
+    public boolean hasNoRequests() {
         return hasNoRequests;
     }
 
@@ -156,7 +156,9 @@ public class ElevatorMonitor extends SystemEvent {
      *
      * @param currentRequest the currentRequest of the elevator as a ServiceRequest
      */
-    public void setCurrentRequest(ServiceRequest currentRequest) { this.currentRequest = currentRequest;  }
+    public void setCurrentRequest(ServiceRequest currentRequest) {
+        this.currentRequest = currentRequest;
+    }
 
     /**
      * Updates the ElevatorMonitor with the latest ElevatorMonitor information.
@@ -171,7 +173,7 @@ public class ElevatorMonitor extends SystemEvent {
         movementDirection = elevatorMonitor.getMovementDirection();
         doorsState = elevatorMonitor.getDoorsState();
         fault = elevatorMonitor.getFault();
-        this.hasNoRequests = elevatorMonitor.getHasNoRequests();
+        this.hasNoRequests = elevatorMonitor.hasNoRequests();
     }
 
     /**

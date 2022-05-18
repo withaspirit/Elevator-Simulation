@@ -13,59 +13,59 @@ import java.time.format.DateTimeFormatter;
  */
 public class ServiceRequest extends SystemEvent implements Comparable<ServiceRequest> {
 
-	private final int floorNumber;
-	private Direction direction;
+    private final int floorNumber;
+    private Direction direction;
 
-	/**
-	 * Constructor for ServiceRequest.
-	 *
-	 * @param time the time the request was made
-	 * @param floorNumber the number of the floor on which the request was made
-	 * @param direction the direction selected by the user
-	 * @param origin the system from which the message originated
-	 */
-	public ServiceRequest(LocalTime time, int floorNumber, Direction direction, Origin origin) {
-		super(time, origin);
-		this.floorNumber = floorNumber;
-		this.direction = direction;
-	}
+    /**
+     * Constructor for ServiceRequest.
+     *
+     * @param time the time the request was made
+     * @param floorNumber the number of the floor on which the request was made
+     * @param direction the direction selected by the user
+     * @param origin the system from which the message originated
+     */
+    public ServiceRequest(LocalTime time, int floorNumber, Direction direction, Origin origin) {
+        super(time, origin);
+        this.floorNumber = floorNumber;
+        this.direction = direction;
+    }
 
-	/**
-	 * Returns the number of the floor the request was made on.
-	 *
-	 * @return number of the floor the request was made on
-	 */
-	public int getFloorNumber() {
-		return floorNumber;
-	}
+    /**
+     * Returns the number of the floor the request was made on.
+     *
+     * @return number of the floor the request was made on
+     */
+    public int getFloorNumber() {
+        return floorNumber;
+    }
 
-	/**
-	 * Returns the direction indicated by the request.
-	 *
-	 * @return direction indicated by the request
-	 */
-	public Direction getDirection() {
-		return direction;
-	}
+    /**
+     * Returns the direction indicated by the request.
+     *
+     * @return direction indicated by the request
+     */
+    public Direction getDirection() {
+        return direction;
+    }
 
-	/**
-	 * Sets the request's direction to the provided one.
-	 *
-	 * @param direction the direction to be changed for the request
-	 */
-	public void setDirection(Direction direction) {
-		this.direction = direction;
-	}
+    /**
+     * Sets the request's direction to the provided one.
+     *
+     * @param direction the direction to be changed for the request
+     */
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
 
-	@Override
-	public String toString() {
-		DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-		String formattedDate = getTime().format(dateTimeFormat);
-		return formattedDate + " " + getFloorNumber() + " " + getDirection().getName();
-	}
+    @Override
+    public String toString() {
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+        String formattedDate = getTime().format(dateTimeFormat);
+        return formattedDate + " " + getFloorNumber() + " " + getDirection().getName();
+    }
 
-	@Override
-	public int compareTo(ServiceRequest request) {
-		return Integer.compare(this.getFloorNumber(), request.getFloorNumber());
-	}
+    @Override
+    public int compareTo(ServiceRequest request) {
+        return Integer.compare(this.getFloorNumber(), request.getFloorNumber());
+    }
 }
