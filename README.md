@@ -1,16 +1,26 @@
-# SYSC-3303-Project
+# Elevator Simulation Project
 
 ## Description
 
-This is a group project for designing, creating, and simulating a multithreaded elevator system.
+This is a group project for designing, creating, and simulating an elevator system. It was programmed with Java and was developed remotely by a team of five.
 
 ## Team (Group 4)
 
-  - [Ryan Dash](https://github.com/ryandash)
-  - [Ramit Mahajan](https://github.com/RamitMahajan)
-  - [Brady Norton](https://github.com/Bnortron)
-  - [Julian Obando Velez](https://github.com/julian-carleton)
-  - [Liam Tripp](https://github.com/cyberphoria)
+- [Ryan Dash](https://github.com/ryandash)
+- [Ramit Mahajan](https://github.com/RamitMahajan)
+- [Brady Norton](https://github.com/Bnortron)
+- [Julian Obando Velez](https://github.com/julian-carleton)
+- [Liam Tripp](https://github.com/cyberphoria)
+
+## Concepts
+
+- [Threading](https://en.wikipedia.org/wiki/Thread_(computing)) and multithreading
+- The [elevator algorithm](https://en.wikipedia.org/wiki/Elevator_algorithm)
+- The [client-server model](https://en.wikipedia.org/wiki/Client%E2%80%93server_model)
+- Internet protocols, specifically [UDP](https://en.wikipedia.org/wiki/User_Datagram_Protocol)
+- [Unit testing](https://en.wikipedia.org/wiki/Unit_testing) with JUnit
+- Design patterns such as [Model-View-Presenter](https://en.wikipedia.org/wiki/Model-view-presenter)
+- [Iterative and incremental development](https://en.wikipedia.org/wiki/Iterative_and_incremental_development)
 
 ## Instructions
 
@@ -36,12 +46,12 @@ This project requires at least [JDK17](https://www.oracle.com/java/technologies/
 <details>
   <summary>Installation</summary>
 
-#### Eclipse:
+  #### Eclipse:
 
-1. Download the ZIP file for the project. (In GitHub, found under "Code" button).
-2. Extract the ZIP file. Remember where you put the extracted folder.
-3. Open Eclipse. In the upper left corner, select File -> Import -> Maven -> Existing Maven Project. Click "Next" to continue.
-4. [See "Import Maven Projects"] On the new popup screen, for "Root Directory," select the extracted project folder. Ignore the folder within the extracted project folder.
+  1. Download the ZIP file for the project. (In GitHub, found under "Code" button).
+  2. Extract the ZIP file. Remember where you put the extracted folder.
+  3. Open Eclipse. In the upper left corner, select File -> Import -> Maven -> Existing Maven Project. Click "Next" to continue.
+  4. [See "Import Maven Projects"] On the new popup screen, for "Root Directory," select the extracted project folder. Ignore the folder within the extracted project folder.
 
   <details>
   <summary>Show "Import Maven Projects"</summary>
@@ -50,11 +60,11 @@ This project requires at least [JDK17](https://www.oracle.com/java/technologies/
 
   </details>
 
-5. Once the root directory is selected, in Eclipse, activate the "Advanced" dropdown. For the "Name Template" options, select [groupId].[artifactId]-[version].
-6. Make sure "Resolve Workplace Projects" is checked under "Advanced."
-7. Check the box where the project is. Select "Finish." The project should be added to the Project Explorer in Eclipse.
-8. At this point there may be unresolved dependencies. To resolve this, in the Project Explorer, right click the project folder, or "pom.xml." From the context menu that pops up, select Maven -> Update Maven Project.
-9. [See "Update Maven Project"]. A popup menu appears. Ensure the project checkbox is selected. Ensure the three checkboxes at the bottom of the popup menu are also checked.
+  5. Once the root directory is selected, in Eclipse, activate the "Advanced" dropdown. For the "Name Template" options, select [groupId].[artifactId]-[version].
+  6. Make sure "Resolve Workplace Projects" is checked under "Advanced."
+  7. Check the box where the project is. Select "Finish." The project should be added to the Project Explorer in Eclipse.
+  8. At this point there may be unresolved dependencies. To resolve this, in the Project Explorer, right click the project folder, or "pom.xml." From the context menu that pops up, select Maven -> Update Maven Project.
+  9. [See "Update Maven Project"]. A popup menu appears. Ensure the project checkbox is selected. Ensure the three checkboxes at the bottom of the popup menu are also checked.
 
   <details>
   <summary>Show "Update Maven Project"</summary>
@@ -368,7 +378,7 @@ This section contains information about each of the iteration submissions for th
     <summary>Show Long Description</summary>
     <br>
     
-    * GUI Design Pattern: The design pattern that was selected is the [Model-Presenter-View](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is static in Scheduler, so it's shared by both. ElevatorView is the Panel for displaying each elevator while ElevatorViewContainer contains all the ElevatorViews. Presenter updates an ElevatorView when it's passed an ElevatorMonitor from Scheduler.
+    * GUI Design Pattern: The design pattern that was selected is the [Model-View-Presenter](https://en.wikipedia.org/wiki/Model-view-presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is shared by both the FloorSubsystemToElevatorSubsystem and ElevatorSubsystemToFloorSubsystem schedulers. ElevatorView is the Panel for displaying each elevator while ElevatorViewContainer contains all the ElevatorViews. Presenter updates an ElevatorView when it's passed an ElevatorMonitor from Scheduler.
     <br>
     
     ![GUI](https://user-images.githubusercontent.com/61635007/163075152-23db6387-42a7-49d9-8973-f9499136c20e.png)    
