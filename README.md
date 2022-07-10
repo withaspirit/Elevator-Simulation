@@ -27,7 +27,7 @@ This is a group project for designing, creating, and simulating an elevator syst
 This project requires at least [JDK17](https://www.oracle.com/java/technologies/downloads/) to run. Note that this project is set up as a Maven project. In Eclipse, it was developed with version [4.22.0](https://projects.eclipse.org/projects/eclipse/releases/4.22.0) and requires the [M2Eclipse](https://www.eclipse.org/m2e/) plugin. Most Eclipse downloads already include M2Eclipse, but if your system does not have it, download instructions can be found [here](https://stackoverflow.com/a/13640110).
 
 <details>
-  <summary>Downloading a Release / Iteration Code</summary>
+  <summary>Downloading a Release</summary>
     <br>
 
 1. Choose the tag for the iteration. For example, v0.1 refers to iteration 1.  
