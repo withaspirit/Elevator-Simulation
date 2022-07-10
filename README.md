@@ -46,12 +46,12 @@ This project requires at least [JDK17](https://www.oracle.com/java/technologies/
 <details>
   <summary>Installation</summary>
 
-  #### Eclipse:
+#### Eclipse:
 These instructions work with as of Eclipse version [4.22.0](https://projects.eclipse.org/projects/eclipse/releases/4.22.0).
-  1. Download the ZIP file for the project. (In GitHub, found under "Code" button).
-  2. Extract the ZIP file. Remember where you put the extracted folder.
-  3. Open Eclipse. In the upper left corner, select File -> Import -> Maven -> Existing Maven Project. Click "Next" to continue.
-  4. [See "Import Maven Projects"] On the new popup screen, for "Root Directory," select the extracted project folder. Ignore the folder within the extracted project folder.
+1. Download the ZIP file for the project. (In GitHub, found under "Code" button).
+2. Extract the ZIP file. Remember where you put the extracted folder.
+3. Open Eclipse. In the upper left corner, select File -> Import -> Maven -> Existing Maven Project. Click "Next" to continue.
+4. [See "Import Maven Projects"] On the new popup screen, for "Root Directory," select the extracted project folder. Ignore the folder within the extracted project folder.
 
   <details>
   <summary>Show "Import Maven Projects"</summary>
@@ -60,11 +60,11 @@ These instructions work with as of Eclipse version [4.22.0](https://projects.ecl
 
   </details>
 
-  5. Once the root directory is selected, in Eclipse, activate the "Advanced" dropdown. For the "Name Template" options, select [groupId].[artifactId]-[version].
-  6. Make sure "Resolve Workplace Projects" is checked under "Advanced."
-  7. Check the box where the project is. Select "Finish." The project should be added to the Project Explorer in Eclipse.
-  8. At this point there may be unresolved dependencies. To resolve this, in the Project Explorer, right click the project folder, or "pom.xml." From the context menu that pops up, select Maven -> Update Maven Project.
-  9. [See "Update Maven Project"]. A popup menu appears. Ensure the project checkbox is selected. Ensure the three checkboxes at the bottom of the popup menu are also checked.
+5. Once the root directory is selected, in Eclipse, activate the "Advanced" dropdown. For the "Name Template" options, select [groupId].[artifactId]-[version].
+6. Make sure "Resolve Workplace Projects" is checked under "Advanced."
+7. Check the box where the project is. Select "Finish." The project should be added to the Project Explorer in Eclipse.
+8. At this point there may be unresolved dependencies. To resolve this, in the Project Explorer, right click the project folder, or "pom.xml." From the context menu that pops up, select Maven -> Update Maven Project.
+9. [See "Update Maven Project"]. A popup menu appears. Ensure the project checkbox is selected. Ensure the three checkboxes at the bottom of the popup menu are also checked.
 
   <details>
   <summary>Show "Update Maven Project"</summary>
