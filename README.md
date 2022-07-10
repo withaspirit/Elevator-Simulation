@@ -1,26 +1,36 @@
-# SYSC-3303-Project
+# Elevator System Simulation
 
 ## Description
 
-This is a group project for designing, creating, and simulating a multithreaded elevator system.
+This is a group project for designing, creating, and simulating an elevator system. It was programmed with Java and was developed remotely by a team of five.
 
 ## Team (Group 4)
 
-  - [Ryan Dash](https://github.com/ryandash)
-  - [Ramit Mahajan](https://github.com/RamitMahajan)
-  - [Brady Norton](https://github.com/Bnortron)
-  - [Julian Obando Velez](https://github.com/julian-carleton)
-  - [Liam Tripp](https://github.com/cyberphoria)
+- [Ryan Dash](https://github.com/ryandash)
+- [Ramit Mahajan](https://github.com/RamitMahajan)
+- [Brady Norton](https://github.com/Bnortron)
+- [Julian Obando Velez](https://github.com/julian-carleton)
+- [Liam Tripp](https://github.com/cyberphoria)
+
+## Concepts
+
+- [Threading](https://en.wikipedia.org/wiki/Thread_(computing)) and multithreading
+- The [elevator algorithm](https://en.wikipedia.org/wiki/Elevator_algorithm)
+- The [client-server model](https://en.wikipedia.org/wiki/Client%E2%80%93server_model)
+- Internet protocols, specifically [UDP](https://en.wikipedia.org/wiki/User_Datagram_Protocol)
+- [Unit testing](https://en.wikipedia.org/wiki/Unit_testing) with JUnit
+- Design patterns such as [Model-View-Presenter](https://en.wikipedia.org/wiki/Model-view-presenter)
+- [Iterative and incremental development](https://en.wikipedia.org/wiki/Iterative_and_incremental_development)
 
 ## Instructions
 
-This project requires at least [JDK17](https://www.oracle.com/java/technologies/downloads/) to run. Note that this project is set up as a Maven project. In Eclipse, it requires the [M2Eclipse](https://www.eclipse.org/m2e/) plugin. Most Eclipse downloads already include M2Eclipse, but if your system does not have it, download instructions can be found [here](https://stackoverflow.com/a/13640110).
+This project requires at least [JDK17](https://www.oracle.com/java/technologies/downloads/) to run. Note that this project is set up as a Maven project. In Eclipse, it was developed with version [4.22.0](https://projects.eclipse.org/projects/eclipse/releases/4.22.0) and requires the [M2Eclipse](https://www.eclipse.org/m2e/) plugin. Most Eclipse downloads already include M2Eclipse, but if your system does not have it, download instructions can be found [here](https://stackoverflow.com/a/13640110).
 
 <details>
-  <summary>Downloading a Release / Iteration Code</summary>
+  <summary>Downloading a Release</summary>
     <br>
 
-1. Choose the tag for the iteration. For example v0.1 refers to iteration 1.  
+1. Choose the tag for the iteration. For example, v0.1 refers to iteration 1.  
   
 ![Picture1](https://user-images.githubusercontent.com/71390371/152629966-a56e28e7-1c0d-4dca-a3f3-d64325755f05.png)
 
@@ -37,6 +47,8 @@ This project requires at least [JDK17](https://www.oracle.com/java/technologies/
   <summary>Installation</summary>
 
 #### Eclipse:
+
+These instructions work with as of Eclipse version [4.22.0](https://projects.eclipse.org/projects/eclipse/releases/4.22.0).
 
 1. Download the ZIP file for the project. (In GitHub, found under "Code" button).
 2. Extract the ZIP file. Remember where you put the extracted folder.
@@ -101,7 +113,7 @@ Tests:
 - InputFileReaderTest: tests related to reading the JSON input file
 - SchedulerTest: tests related to passing data between the systems
 - DirectionTest: tests the Direction enum's getDirectionByName function
-- ElevatorMotorTest: tests for the proper updating of states in the elevator motor class
+- ElevatorMotorTest: tests for the proper updating of states in the ElevatorMotor class
 - ElevatorSelectionTest: tests selecting idle elevators and tests adding more requests to active elevators using the selection algorithm. ElevatorSelectionTest must be run independently of other tests as it uses multiple threads with ports to test selecting an appropriate elevator and the port are used in previous tests causing the error "Address already in use: bind" to occur
 - ElevatorFaultTest: tests the fault-handling behavior of the Elevator for the faults: Doors Interrupted, Doors Stuck, Elevator Interrupted, Elevator Stuck
 - RequestQueueTest: tests that the RequestQueue adds ServiceRequests to the correct list and that requests are added and removed in the correct order
@@ -280,7 +292,7 @@ This section contains information about each of the iteration submissions for th
   | Ramit Mahajan | Integrating Doors class | UML Diagram, README | Code review
   | Brady Norton | Elevator Movement Algorithm, Elevator Movement Properties Modification, Integrating Floors Queue into Movement, Movement Tests | Movement Design | Code review
   | Julian Obando Velez | Message Encoding/Decoding, Client for UDP, JUnit testing | Diagram Review | TA contact, Code review
-  | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integration, FloorTest, RequestQueueTest | Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML CLass Diagram | Code review
+  | Liam Tripp | Elevator Movement + FloorsQueue updates and Integration, Message passing bug fix, UnboundedBuffer, ApproachEvent Integration, MessageTransfer, Client-Host outline, Scheduler-Host Integration, FloorTest, RequestQueueTest | Design, Work Breakdown Structure, Dependency Diagram, UML Sequence Diagram, UML Class Diagram | Code review
 
   ### Diagrams
    
@@ -368,7 +380,7 @@ This section contains information about each of the iteration submissions for th
     <summary>Show Long Description</summary>
     <br>
     
-    * GUI Design Pattern: The design pattern that was selected is the [Model-Presenter-View](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is static in Scheduler, so it's shared by both. ElevatorView is the Panel for displaying each elevator while ElevatorViewContainer contains all the ElevatorViews. Presenter updates an ElevatorView when it's passed an ElevatorMonitor from Scheduler.
+    * GUI Design Pattern: The design pattern that was selected is the [Model-View-Presenter](https://en.wikipedia.org/wiki/Model-view-presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is shared by both the FloorSubsystemToElevatorSubsystem and ElevatorSubsystemToFloorSubsystem schedulers. ElevatorView is the Panel for displaying each elevator while ElevatorViewContainer contains all the ElevatorViews. Presenter updates an ElevatorView when it's passed an ElevatorMonitor from Scheduler.
     <br>
     
     ![GUI](https://user-images.githubusercontent.com/61635007/163075152-23db6387-42a7-49d9-8973-f9499136c20e.png)    
