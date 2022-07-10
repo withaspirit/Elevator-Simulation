@@ -24,7 +24,7 @@ This is a group project for designing, creating, and simulating an elevator syst
 
 ## Instructions
 
-This project requires at least [JDK17](https://www.oracle.com/java/technologies/downloads/) to run. Note that this project is set up as a Maven project. In Eclipse, it was developed with version [4.22.0]( https://projects.eclipse.org/projects/eclipse/releases/4.22.0). It requires the [M2Eclipse](https://www.eclipse.org/m2e/) plugin. Most Eclipse downloads already include M2Eclipse, but if your system does not have it, download instructions can be found [here](https://stackoverflow.com/a/13640110).
+This project requires at least [JDK17](https://www.oracle.com/java/technologies/downloads/) to run. Note that this project is set up as a Maven project. In Eclipse, it was developed with version [4.22.0](https://projects.eclipse.org/projects/eclipse/releases/4.22.0) and requires the [M2Eclipse](https://www.eclipse.org/m2e/) plugin. Most Eclipse downloads already include M2Eclipse, but if your system does not have it, download instructions can be found [here](https://stackoverflow.com/a/13640110).
 
 <details>
   <summary>Downloading a Release / Iteration Code</summary>
@@ -47,7 +47,9 @@ This project requires at least [JDK17](https://www.oracle.com/java/technologies/
   <summary>Installation</summary>
 
 #### Eclipse:
+
 These instructions work with as of Eclipse version [4.22.0](https://projects.eclipse.org/projects/eclipse/releases/4.22.0).
+
 1. Download the ZIP file for the project. (In GitHub, found under "Code" button).
 2. Extract the ZIP file. Remember where you put the extracted folder.
 3. Open Eclipse. In the upper left corner, select File -> Import -> Maven -> Existing Maven Project. Click "Next" to continue.
