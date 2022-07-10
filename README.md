@@ -26,57 +26,57 @@ This is a group project for designing, creating, and simulating an elevator syst
 
 This project requires at least [JDK17](https://www.oracle.com/java/technologies/downloads/) to run. Note that this project is set up as a Maven project. In Eclipse, it was developed with version [4.22.0](https://projects.eclipse.org/projects/eclipse/releases/4.22.0) and requires the [M2Eclipse](https://www.eclipse.org/m2e/) plugin. Most Eclipse downloads already include M2Eclipse, but if your system does not have it, download instructions can be found [here](https://stackoverflow.com/a/13640110).
 
+These instructions may become dated due to updates to Eclipse and IntelliJ. The versions for Eclipse and IntelliJ used were [4.22.0](https://projects.eclipse.org/projects/eclipse/releases/4.22.0) and [2022.1.1](https://www.jetbrains.com/idea/download/other.html), respectively.
+
 <details>
   <summary>Downloading a Release</summary>
-    <br>
+  <br>
 
-1. Choose the tag for the iteration. For example, v0.1 refers to iteration 1.  
-  
-![Picture1](https://user-images.githubusercontent.com/71390371/152629966-a56e28e7-1c0d-4dca-a3f3-d64325755f05.png)
+  1. Choose the tag for the iteration. For example, v0.1 refers to iteration 1.  
 
-2. Go to the Code tab and Download Zip
-  
-![Picture2](https://user-images.githubusercontent.com/71390371/152629981-84ec3fa3-29d4-42db-82a5-b4ed0a5f4e82.png)
+  ![Picture1](https://user-images.githubusercontent.com/71390371/152629966-a56e28e7-1c0d-4dca-a3f3-d64325755f05.png)
 
-3. Unzip the folder and import the project into the IDE.
-4. Proceed to step 9. of "Editing."
+  2. Go to the Code tab and Download Zip
+
+  ![Picture2](https://user-images.githubusercontent.com/71390371/152629981-84ec3fa3-29d4-42db-82a5-b4ed0a5f4e82.png)
+
+  3. Unzip the folder and import the project into the IDE.
+  4. Proceed to step 9. of "Editing."
   
 </details>
 
 <details>
   <summary>Installation</summary>
 
-#### Eclipse:
+  These instructions detail how the project is installed in Eclipse.
 
-These instructions work with as of Eclipse version [4.22.0](https://projects.eclipse.org/projects/eclipse/releases/4.22.0).
-
-1. Download the ZIP file for the project. (In GitHub, found under "Code" button).
-2. Extract the ZIP file. Remember where you put the extracted folder.
-3. Open Eclipse. In the upper left corner, select File -> Import -> Maven -> Existing Maven Project. Click "Next" to continue.
-4. [See "Import Maven Projects"] On the new popup screen, for "Root Directory," select the extracted project folder. Ignore the folder within the extracted project folder.
+  1. Download the ZIP file for the project. (In GitHub, found under "Code" button).
+  2. Extract the ZIP file. Remember where you put the extracted folder.
+  3. Open Eclipse. In the upper left corner, select File -> Import -> Maven -> Existing Maven Project. Click "Next" to continue.
+  4. [See "Import Maven Projects"] On the new popup screen, for "Root Directory," select the extracted project folder. Ignore the folder within the extracted project folder.
 
   <details>
-  <summary>Show "Import Maven Projects"</summary>
+    <summary>Show "Import Maven Projects"</summary>
 
   ![Import Maven Project](https://user-images.githubusercontent.com/61635007/161658503-5c94a77e-a862-4493-b24d-2ecfe9fbe226.png)
 
   </details>
 
-5. Once the root directory is selected, in Eclipse, activate the "Advanced" dropdown. For the "Name Template" options, select [groupId].[artifactId]-[version].
-6. Make sure "Resolve Workplace Projects" is checked under "Advanced."
-7. Check the box where the project is. Select "Finish." The project should be added to the Project Explorer in Eclipse.
-8. At this point there may be unresolved dependencies. To resolve this, in the Project Explorer, right click the project folder, or "pom.xml." From the context menu that pops up, select Maven -> Update Maven Project.
-9. [See "Update Maven Project"]. A popup menu appears. Ensure the project checkbox is selected. Ensure the three checkboxes at the bottom of the popup menu are also checked.
+  5. Once the root directory is selected, in Eclipse, activate the "Advanced" dropdown. For the "Name Template" options, select [groupId].[artifactId]-[version].
+  6. Make sure "Resolve Workplace Projects" is checked under "Advanced."
+  7. Check the box where the project is. Select "Finish." The project should be added to the Project Explorer in Eclipse.
+  8. At this point there may be unresolved dependencies. To resolve this, in the Project Explorer, right click the project folder, or "pom.xml." From the context menu that pops up, select Maven -> Update Maven Project.
+  9. [See "Update Maven Project"]. A popup menu appears. Ensure the project checkbox is selected. Ensure the three checkboxes at the bottom of the popup menu are also checked.
 
   <details>
-  <summary>Show "Update Maven Project"</summary>
+    <summary>Show "Update Maven Project"</summary>
 
   ![Update_Maven_Project](https://user-images.githubusercontent.com/61635007/161658707-fa88dcad-5d5e-4871-abc7-fd34c2e69011.png)
 
   </details>
 
-10. In the popup menu, select "Finish." This downloads all dependencies from Maven automatically. They are locally stored in the directory "C:\Users\\[your name]\\.m2"
-11. You should now be able to run the project.
+  10. In the popup menu, select "Finish." This downloads all dependencies from Maven automatically. They are locally stored in the directory "C:\Users\\[your name]\\.m2"
+  11. You should now be able to run the project.
 
 </details>
 
@@ -84,68 +84,66 @@ These instructions work with as of Eclipse version [4.22.0](https://projects.ecl
   <summary>Editing</summary>
   <br>
 
-This is for importing the project and its entire branch history.
+  This details how to import the project and its entire branch history into Eclipse.
 
-#### Eclipse:
-  
-1. Open Eclipse. Open the File menu and select "Import". This will open the "Import" window. From there select "Git"->"Projects from Git" as the import wizard and press Next>
-2. From the next window, select "Clone URI" as the repository source and press Next>
-3. Enter the URL of the git repository in this window which can be found by pressing the "Code" button and selecting the preferred connection protocol on the project's GitHub page
-4. Paste the information obtained from the project page into the window. It may prefill some of the information in the window. Enter any required information
-5. Due to an update in GitHub, account authentication with Eclipse via HTTPS might not work. It is not officially supported for security reasons. To overcome that error, follow the guide [here](https://stackoverflow.com/a/68802292)
-6. After over coming the error, press Next> and it will show you the branches of the repository, do not make any changes to the default selected branches.
-7. It will open the Local Destination window in which you can select the location of the folder where you want clone the repository. Press Next> 
-8. In the next window, select "Import as general project" as the wizard from import and press Next>. This will load the project
-9. From the project explorer window, right click the project folder and from the popup menu, select "Configure", then "Convert to Maven Project". This will convert the project into a Maven project.
+  1. Open Eclipse. Open the File menu and select "Import". This will open the "Import" window. From there select "Git"->"Projects from Git" as the import wizard and press Next>
+  2. From the next window, select "Clone URI" as the repository source and press Next>
+  3. Enter the URL of the git repository in this window which can be found by pressing the "Code" button and selecting the preferred connection protocol on the project's GitHub page
+  4. Paste the information obtained from the project page into the window. It may prefill some of the information in the window. Enter any required information
+  5. Due to an update in GitHub, account authentication with Eclipse via HTTPS might not work. It is not officially supported for security reasons. To overcome that error, follow the guide [here](https://stackoverflow.com/a/68802292)
+  6. After over coming the error, press Next> and it will show you the branches of the repository, do not make any changes to the default selected branches.
+  7. It will open the Local Destination window in which you can select the location of the folder where you want clone the repository. Press Next> 
+  8. In the next window, select "Import as general project" as the wizard from import and press Next>. This will load the project
+  9. From the project explorer window, right click the project folder and from the popup menu, select "Configure", then "Convert to Maven Project". This will convert the project into a Maven project.
 
 </details>
 
 <details>
   <summary>Testing</summary>
 
-#### In Eclipse:
+  This details how the project is tested in Eclipse.
 
-1. Ensure the project is loaded as a Maven project (instructions contained in Installation if downloaded via ZIP, or in the Editing section if connected to repository via Git)
-2. Locate the test directory "src/test/java" in the workspace
-3. Right click on the directory and select "Run As" -> "JUnit Test". This runs all the unit tests
+  1. Ensure the project is loaded as a Maven project (instructions contained in Installation if downloaded via ZIP, or in the Editing section if connected to repository via Git)
+  2. Locate the test directory "src/test/java" in the workspace
+  3. Right click on the directory and select "Run As" -> "JUnit Test". This runs all the unit tests
 
-Tests: 
-- InputFileReaderTest: tests related to reading the JSON input file
-- SchedulerTest: tests related to passing data between the systems
-- DirectionTest: tests the Direction enum's getDirectionByName function
-- ElevatorMotorTest: tests for the proper updating of states in the ElevatorMotor class
-- ElevatorSelectionTest: tests selecting idle elevators and tests adding more requests to active elevators using the selection algorithm. ElevatorSelectionTest must be run independently of other tests as it uses multiple threads with ports to test selecting an appropriate elevator and the port are used in previous tests causing the error "Address already in use: bind" to occur
-- ElevatorFaultTest: tests the fault-handling behavior of the Elevator for the faults: Doors Interrupted, Doors Stuck, Elevator Interrupted, Elevator Stuck
-- RequestQueueTest: tests that the RequestQueue adds ServiceRequests to the correct list and that requests are added and removed in the correct order
-- MessageTransferTest: tests that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
-- FloorTest: tests that the ArrivalSensor correctly modifies an ApproachEvent
-- FloorSubsystemTest: tests that the correct Floor is selected when an ApproachEvent is received
-- PresenterTest: tests that presenter updates the view with the proper values and integration with the system
-- SimulationTest ensures that the entire simulation, without the GUI, runs to completion multiple times
+  Tests: 
+  - InputFileReaderTest: tests related to reading the JSON input file
+  - SchedulerTest: tests related to passing data between the systems
+  - DirectionTest: tests the Direction enum's getDirectionByName function
+  - ElevatorMotorTest: tests for the proper updating of states in the ElevatorMotor class
+  - ElevatorSelectionTest: tests selecting idle elevators and tests adding more requests to active elevators using the selection algorithm. ElevatorSelectionTest must be run independently of other tests as it uses multiple threads with ports to test selecting an appropriate elevator and the port are used in previous tests causing the error "Address already in use: bind" to occur
+  - ElevatorFaultTest: tests the fault-handling behavior of the Elevator for the faults: Doors Interrupted, Doors Stuck, Elevator Interrupted, Elevator Stuck
+  - RequestQueueTest: tests that the RequestQueue adds ServiceRequests to the correct list and that requests are added and removed in the correct order
+  - MessageTransferTest: tests that objects are encoded/decoded properly, and that DatagramPackets are transferred between DatagramSockets
+  - FloorTest: tests that the ArrivalSensor correctly modifies an ApproachEvent
+  - FloorSubsystemTest: tests that the correct Floor is selected when an ApproachEvent is received
+  - PresenterTest: tests that presenter updates the view with the proper values and integration with the system
+  - SimulationTest ensures that the entire simulation, without the GUI, runs to completion multiple times
   
 </details>
 
 <details>
   <summary>Running</summary>
 
-#### Description
+  #### Description
 
-The program is run as multiple separate programs with the classes Scheduler, ElevatorSubsystem, and FloorSubsystem. The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: ElevatorSubsystem, FloorSubsystem and Scheduler. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
+  The program is run as multiple separate programs with the classes Scheduler, ElevatorSubsystem, and FloorSubsystem. The multiple programs can be started manually or automatically. To start it manually, run the main methods of the following classes in order: ElevatorSubsystem, FloorSubsystem and Scheduler. Running them all automatically with a single button press depends on the IDE used. See instructions below for details. 
 
-#### Eclipse
+  #### Eclipse
 
-- Set the Run Configuration to run these classes in order: ElevatorSubsystem, FloorSubsystem, and Scheduler.
+  - Set the Run Configuration to run these classes in order: ElevatorSubsystem, FloorSubsystem, and Scheduler.
 
-#### IntelliJ
+  #### IntelliJ
 
-- As IntelliJ does not allow ordered run configurations, the Multirun plugin is used. 
+  - As IntelliJ does not allow ordered run configurations, the Multirun plugin is used. 
 
-Multirun Instructions:
-1. To install Multirun, click the Setting icon in the top right corner of IntelliJ. Select plugins. 
-2. Search for Multirun in the plugins list. If it does not show up, there should be an option to search aftermarket plugins which you can click. 
-3. Click the install button.
-4. Multirun should now be installed and ready to use.
-5. The run option should now be available in IntelliJ's run configurations.
+  Multirun Instructions:
+  1. To install Multirun, click the Setting icon in the top right corner of IntelliJ. Select plugins. 
+  2. Search for Multirun in the plugins list. If it does not show up, there should be an option to search aftermarket plugins which you can click. 
+  3. Click the install button.
+  4. Multirun should now be installed and ready to use.
+  5. The run option should now be available in IntelliJ's run configurations.
 
 </details>
 
