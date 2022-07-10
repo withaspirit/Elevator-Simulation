@@ -458,68 +458,68 @@ This section contains information about each of the iteration submissions for th
       <summary>Performance Testing</summary>
       <br>
 
-      #### Testing Description
+    #### Testing Description
 
-      The performance of the system is measured based on the time that the scheduler takes to handle all the requests that it receives from the input file. This was implemented by saving the start time and end time, and then comparing them to each other. The start time is measured as soon as the scheduler system is started, while the end time is recorded when the scheduler handles the last request. 
+    The performance of the system is measured based on the time that the scheduler takes to handle all the requests that it receives from the input file. This was implemented by saving the start time and end time, and then comparing them to each other. The start time is measured as soon as the scheduler system is started, while the end time is recorded when the scheduler handles the last request. 
 
-      However, knowing the last request is not trivial, so it was necessary to implement an inactivity timer. This timer checks for inactivity in the scheduler to determine when it has finished. Every time the scheduler does work it resets the timer, however, if the timer reaches a time out time it assumes that the scheduler is finished and records this time as the end time. Finally, the total performance time is calculated by subtracting the start time and timeout time from the end time.     
+    However, knowing the last request is not trivial, so it was necessary to implement an inactivity timer. This timer checks for inactivity in the scheduler to determine when it has finished. Every time the scheduler does work it resets the timer, however, if the timer reaches a time out time it assumes that the scheduler is finished and records this time as the end time. Finally, the total performance time is calculated by subtracting the start time and timeout time from the end time.     
 
-      Elapsed time=end time-start time-timeout
+    Elapsed time=end time-start time-timeout
 
-      #### Where were the measuring instruments placed?
+    #### Where were the measuring instruments placed?
 
-      - Start time: Measured just before the system goes live. 
-      - End time: Measured as soon as the timer goes off.
-      - Reset: Every time the scheduler finishes a task. 
+    - Start time: Measured just before the system goes live. 
+    - End time: Measured as soon as the timer goes off.
+    - Reset: Every time the scheduler finishes a task. 
 
-      #### Measurements
+    #### Measurements
 
-      The system was measured using two of these timers, one timer per thread communicating with the elevator subsystem and floor subsystem. The longer measurement is used for calculations since this is the one that reflects the actual last activity of the scheduler. And the system was not inputted with fault during these measurements.
+    The system was measured using two of these timers, one timer per thread communicating with the elevator subsystem and floor subsystem. The longer measurement is used for calculations since this is the one that reflects the actual last activity of the scheduler. And the system was not inputted with fault during these measurements.
 
-      Also, the measurements were taken for the inputs of: 
+    Also, the measurements were taken for the inputs of: 
 
-      1. 2000 ms time between floors 
-      1. 500 ms time to open or close doors
-      1. Four elevators
-      1. 20 floors
+    1. 2000 ms time between floors 
+    1. 500 ms time to open or close doors
+    1. Four elevators
+    1. 20 floors
 
-      #### Calculations:
+    #### Calculations:
 
-      The calculations were made using Excel MS. 
+    The calculations were made using Excel MS. 
 
-      - Mean was calculated using =AVERAGE() function
-      - Standard Deviation was calculated using =STDEV.S()
-      - Confidential interval value for 95% was calculated using the formula: 
+    - Mean was calculated using =AVERAGE() function
+    - Standard Deviation was calculated using =STDEV.S()
+    - Confidential interval value for 95% was calculated using the formula: 
 
-            mean±(std.deviation*z_(95%))/(√(# samples)),   where  z_(95%) = 1.96 (constant value)     
-      - Time to process a request = Total elapsed time / 17 requests 
+          mean±(std.deviation*z_(95%))/(√(# samples)),   where  z_(95%) = 1.96 (constant value)     
+    - Time to process a request = Total elapsed time / 17 requests 
 
-      #### Measurements
+    #### Measurements
 
-      |Trial #|Elapsed Time msecs|
-      | :- | :- |
-      |1|82216|
-      |2|82212|
-      |3|82217|
-      |4|82208|
-      |5|82226|
-      |6|82242|
-      |7|82215|
-      |8|82221|
-      |9|82237|
-      |10|82231|
-      |11|82219|
-      |12|82254|
+    |Trial #|Elapsed Time msecs|
+    | :- | :- |
+    |1|82216|
+    |2|82212|
+    |3|82217|
+    |4|82208|
+    |5|82226|
+    |6|82242|
+    |7|82215|
+    |8|82221|
+    |9|82237|
+    |10|82231|
+    |11|82219|
+    |12|82254|
 
-      #### Results
+    #### Results
 
-      |Mean|82225|
-      | :- | -: |
-      |Std. Deviation|14|
-      |Interval Value (95%)|8|
+    |Mean|82225|
+    | :- | -: |
+    |Std. Deviation|14|
+    |Interval Value (95%)|8|
 
-      - The total time it takes to process all request is (82225 +- 8) ms, with 95% confidence.
-      - The time it takes to process a request is (4836 +- 0.47) ms, with 95% confidence.
+    - The total time it takes to process all request is (82225 +- 8) ms, with 95% confidence.
+    - The time it takes to process a request is (4836 +- 0.47) ms, with 95% confidence.
 
     </details>
 </details>
