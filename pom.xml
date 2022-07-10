@@ -6,7 +6,7 @@
 
     <groupId>l4g4</groupId>
     <artifactId>elevatorsim</artifactId>
-    <version>5.0.2</version>
+    <version>5.0.3</version>
 
     <properties>
     	<!-- if running a different JDK, change this -->
