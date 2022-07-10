@@ -156,28 +156,28 @@ This section contains information about each of the iteration submissions for th
   <details>
     <summary>Display</summary>
 
-  ### Description
+    ### Description
 
-  This iteration of the project implements a multi-threaded system where all active subsystems, the Elevator Subsystem, the Floor Subsystem, and the Scheduler, act as both [Consumers and Producers](https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem). Two buffers exist to achieve this, one for message passing between Scheduler and Elevator Subsystem and another for between Floor Subsystem and Scheduler. 
+    This iteration of the project implements a multi-threaded system where all active subsystems, the Elevator Subsystem, the Floor Subsystem, and the Scheduler, act as both [Consumers and Producers](https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem). Two buffers exist to achieve this, one for message passing between Scheduler and Elevator Subsystem and another for between Floor Subsystem and Scheduler. 
 
-  ### Contributions
+    ### Contributions
 
-  | Member | Coding | Documentation | Misc
-  | ------ | ------ | ------------- | ----
-  | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer Implementation and Bug Fixes | Project Requirements Summary, UML Diagram Contributions | Code Review
-  | Ramit Mahajan | Data Structure abstraction for the Request Systems / Subsystems | README Editing Instructions |
-  | Brady Norton | Message transfer tests, InputFileReaderTest | README Testing + Installation Instructions, UML Sequence Diagram | Code Review
-  | Julian Obando Velez | Message Transfer, Bounded Buffer, Bounded Buffer Test | UML Diagram Feedback, GitHub Releases | Code Review
-  | Liam Tripp | Project Skeleton, Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Design, Early Design Diagrams, Design Document, Requirements Analysis | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead, Instruction documents + videos 
-  
-  #### UML Class Diagram
-  ![UML Class Diagram](https://user-images.githubusercontent.com/61635007/152667157-df45fbf8-6c48-430f-b47d-c82156e23872.png)
+    | Member | Coding | Documentation | Misc
+    | ------ | ------ | ------------- | ----
+    | Ryan Dash | InputFileReader, JSON files, JSON File to data structure conversion, Message Transfer Implementation and Bug Fixes | Project Requirements Summary, UML Diagram Contributions | Code Review
+    | Ramit Mahajan | Data Structure abstraction for the Request Systems / Subsystems | README Editing Instructions |
+    | Brady Norton | Message transfer tests, InputFileReaderTest | README Testing + Installation Instructions, UML Sequence Diagram | Code Review
+    | Julian Obando Velez | Message Transfer, Bounded Buffer, Bounded Buffer Test | UML Diagram Feedback, GitHub Releases | Code Review
+    | Liam Tripp | Project Skeleton, Data Structures, InputFileReader, Direction, Message Transfer, Unit Testing | README Design, Early Design Diagrams, Design Document, Requirements Analysis | Discord Server, Google Drive, GitHub repo, Code reviews, Group lead, Instruction documents + videos 
 
-  #### UML Sequence Diagram
+    #### UML Class Diagram
+    ![UML Class Diagram](https://user-images.githubusercontent.com/61635007/152667157-df45fbf8-6c48-430f-b47d-c82156e23872.png)
 
-  ![UML Sequence Diagram](https://user-images.githubusercontent.com/61635007/154827908-c74e2fc4-68de-45b6-9b32-b8b85e857fe9.png)
-  
-  </details>
+    #### UML Sequence Diagram
+
+    ![UML Sequence Diagram](https://user-images.githubusercontent.com/61635007/154827908-c74e2fc4-68de-45b6-9b32-b8b85e857fe9.png)
+
+    </details>
 
 - ## Iteration 2
   <details>
@@ -190,25 +190,25 @@ This section contains information about each of the iteration submissions for th
   <details>
     <summary>Show Long Description</summary>
 
-  - The ElevatorSubsystem acts as an ElevatorController. It acts as intermediary between Elevators and the Scheduler. It also selects which elevator takes a request. It sends ApproachEvents and receives ElevatorRequests and ApproachEvents. 
+    - The ElevatorSubsystem acts as an ElevatorController. It acts as intermediary between Elevators and the Scheduler. It also selects which elevator takes a request. It sends ApproachEvents and receives ElevatorRequests and ApproachEvents. 
 
-  - A SystemEvent class was created as a parent for all messages. This is because each message has a Thread from which they originated and a Time at which they occurred.
+    - A SystemEvent class was created as a parent for all messages. This is because each message has a Thread from which they originated and a Time at which they occurred.
 
-  - The Scheduler is an intermediary between the ElevatorSubsystem and the FloorSubsystem. It can receive any type of SystemEvent.
+    - The Scheduler is an intermediary between the ElevatorSubsystem and the FloorSubsystem. It can receive any type of SystemEvent.
 
-  - The FloorSubsystem sends the ElevatorRequests obtained from the input file. It also receives ElevatorRequests back and sends ApproachEvents. All of which are sent through the scheduler.   
+    - The FloorSubsystem sends the ElevatorRequests obtained from the input file. It also receives ElevatorRequests back and sends ApproachEvents. All of which are sent through the scheduler.   
 
-  - The elevator receives new requests from the elevator Subsystem to perform actions on other parts of the elevator. With the current implementation a list of requests is stored in the elevator for any type on new request. Requests that are stored in the elevator are sent to the FloorQueue, elevator motor, or handled by the elevator if they involve the elevator's status. Once a request is complete, the elevator uses the elevatorSubsystem to send information to the floorSubsystem and necessary information involving the request.
+    - The elevator receives new requests from the elevator Subsystem to perform actions on other parts of the elevator. With the current implementation a list of requests is stored in the elevator for any type on new request. Requests that are stored in the elevator are sent to the FloorQueue, elevator motor, or handled by the elevator if they involve the elevator's status. Once a request is complete, the elevator uses the elevatorSubsystem to send information to the floorSubsystem and necessary information involving the request.
 
-   - ApproachEvent is a SystemEvent with a true/false value indicating whether an Elevator should stop at a Floor. The ApproachEvents are passed from Elevator to FloorSubsystem each time an Elevator is about to stop at a FLoor. An ArrivalSensor in Floor confirms whether the elevator should stop. The ApproachEvent is then sent back to the Elevator, which proceeds depending on whether the ApproachEvent allows it to stop.
+     - ApproachEvent is a SystemEvent with a true/false value indicating whether an Elevator should stop at a Floor. The ApproachEvents are passed from Elevator to FloorSubsystem each time an Elevator is about to stop at a FLoor. An ArrivalSensor in Floor confirms whether the elevator should stop. The ApproachEvent is then sent back to the Elevator, which proceeds depending on whether the ApproachEvent allows it to stop.
 
-  - The Elevator Motor simulates movement and keeps track of the Elevator's direction and state of movement.
-  
-  - The FloorsQueue is the data structure used to store the floors to visit by an elevator. It uses two priority queues, one in ascending order and one in descending order for the floors to visit in the corresponding direction. Also, it has an extra queue, which temporarily saves the floors that were missed when going in a direction and swaps them to this direction queue when this queue has visited all of its floors.
+    - The Elevator Motor simulates movement and keeps track of the Elevator's direction and state of movement.
 
-  - The ElevatorSelectAlgorithm is an algorithm to select the best elevator to perform a new elevator request. The current implementation first checks for idle elevators and makes them perform requests. If all elevators are active then it will prioritize elevators based on expected completion of each elevator's queue time, the direction that the elevator is traveling, and if the new request is in between the current floor and destination floor of each elevator.
-    
-  - The ElevatorServiceAlgorithm is an algorithm to perform appropriate actions for each type of request that the elevator receives.
+    - The FloorsQueue is the data structure used to store the floors to visit by an elevator. It uses two priority queues, one in ascending order and one in descending order for the floors to visit in the corresponding direction. Also, it has an extra queue, which temporarily saves the floors that were missed when going in a direction and swaps them to this direction queue when this queue has visited all of its floors.
+
+    - The ElevatorSelectAlgorithm is an algorithm to select the best elevator to perform a new elevator request. The current implementation first checks for idle elevators and makes them perform requests. If all elevators are active then it will prioritize elevators based on expected completion of each elevator's queue time, the direction that the elevator is traveling, and if the new request is in between the current floor and destination floor of each elevator.
+
+    - The ElevatorServiceAlgorithm is an algorithm to perform appropriate actions for each type of request that the elevator receives.
     
   </details>
 
@@ -258,27 +258,27 @@ This section contains information about each of the iteration submissions for th
   <details>
     <summary>Show Long Description</summary>
 
-    * Added serviceDirection to Elevator to distinguish between the direction the Elevator is moving (i.e. ElevatorMotor's direction) and what direction the Elevator is servicing requests in. 
+    - Added serviceDirection to Elevator to distinguish between the direction the Elevator is moving (i.e. ElevatorMotor's direction) and what direction the Elevator is servicing requests in. 
 
-    * Created Client/Server scheme like Assignment 2 and 3 of this class. MessageTransfer class holds DatagramSockets and a Queue of datagramPackets. 
+    - Created Client/Server scheme like Assignment 2 and 3 of this class. MessageTransfer class holds DatagramSockets and a Queue of datagramPackets. 
 
-    * The Client and IntermediateHost class each have a MessageTransfer. ElevatorSubsystem and FloorSubsystem, and Scheduler interact with the two classes each. 
+    - The Client and IntermediateHost class each have a MessageTransfer. ElevatorSubsystem and FloorSubsystem, and Scheduler interact with the two classes each. 
 
-    * For UDP data transfer, there are two Scheduler threads, one for sending messages from FloorSubsystem to ElevatorSubsytem, and another for vice-versa. Both FloorSubsystem and ElevatorSubsystem are still threads. Elevators are also threads.
+    - For UDP data transfer, there are two Scheduler threads, one for sending messages from FloorSubsystem to ElevatorSubsytem, and another for vice-versa. Both FloorSubsystem and ElevatorSubsystem are still threads. Elevators are also threads.
 
-    * The Client systems either request data or send data. FloorSubsystem's client requests and receives data from ElevatorToFloorHost. It sends data to FloorToElevatorHost. ElevatorSubystem requests and receives data from FloorToElevatorHost. It sends data to ElevatorToFloorHost.
+    - The Client systems either request data or send data. FloorSubsystem's client requests and receives data from ElevatorToFloorHost. It sends data to FloorToElevatorHost. ElevatorSubystem requests and receives data from FloorToElevatorHost. It sends data to ElevatorToFloorHost.
 
-    * To see output in the console, or to see how many times the elevator moves, search "moved"
+    - To see output in the console, or to see how many times the elevator moves, search "moved"
 
-    * MessageTransfer is the class that wraps the methods to handle packets for UDP communication, such as sending, receiving, queueing, decoding/encoding and printing the results of each message transfer.  
+    - MessageTransfer is the class that wraps the methods to handle packets for UDP communication, such as sending, receiving, queueing, decoding/encoding and printing the results of each message transfer.  
 
-    * To solve the deadlock issues from Iteration 2, sending and receiving with the BoundedBuffer was changed from a busy-waiting scheme to an infinite loop checking a conditional statement. Although this prevents deadlock and allows the program to run successfully, it also causes considerable lag. 
+    - To solve the deadlock issues from Iteration 2, sending and receiving with the BoundedBuffer was changed from a busy-waiting scheme to an infinite loop checking a conditional statement. Although this prevents deadlock and allows the program to run successfully, it also causes considerable lag. 
 
-    * To fix size issues with BoundedBuffer, an unbounded list was implemented - ConcurrentLinkedDeque, essentially an UnboundedBuffer.
+    - To fix size issues with BoundedBuffer, an unbounded list was implemented - ConcurrentLinkedDeque, essentially an UnboundedBuffer.
   
-    * Added ElevatorMonitor to Scheduler to allow the scheduler to quickly access all elevator data. An ElevatorMonitor is stored for each elevator in the scheduler.
+    - Added ElevatorMonitor to Scheduler to allow the scheduler to quickly access all elevator data. An ElevatorMonitor is stored for each elevator in the scheduler.
   
-    * Each Elevator monitor is updated by the elevator subsystem after a request that changes the properties and contents of the elevator has completed.
+    - Each Elevator monitor is updated by the elevator subsystem after a request that changes the properties and contents of the elevator has completed.
 
   </details>
 
@@ -322,15 +322,15 @@ This section contains information about each of the iteration submissions for th
     <summary>Show Long Description</summary>
     <br>
   
-    * Faults: There are four different types of Faults. It is assumed only one can occur at a time. All are hard faults except DOORS_INTERRUPTED, which is a soft fault. For the hard faults, the Elevator shuts down. For the soft faults, the Elevator is corrected so that it may continue. It is assumed that opening the doors is uninterruptable and that Doors may only be opened or closed when the Elevator is stopped. There is no fault handling for when a packet is lost, as that was not in the Iteration requirements itself. 
+    - Faults: There are four different types of Faults. It is assumed only one can occur at a time. All are hard faults except DOORS_INTERRUPTED, which is a soft fault. For the hard faults, the Elevator shuts down. For the soft faults, the Elevator is corrected so that it may continue. It is assumed that opening the doors is uninterruptable and that Doors may only be opened or closed when the Elevator is stopped. There is no fault handling for when a packet is lost, as that was not in the Iteration requirements itself. 
       - ELEVATOR_STUCK occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). 
       - ARRIVAL_SENSOR_FAIL occurs when the ArrivalSensor at a Floor fails to return an ApproachEvent to Scheduler before Elevator's movement timer has expired.
       - DOORS_STUCK occurs when the Doors malfunction while opening or closing.
       - DOORS_INTERRUPTED occurs when the Doors are interrupted while closing. 
-    * Faults are tested using the ElevatorFaultTest file.
-    * Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This allows for fast testing in IntelliJ. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
-    * Moved Elevator Selection to Scheduler and reworked IntermediateHost to allow for selection of elevators to work properly
-    * Note that there is currently an unhandled case where an Elevator is at floor 1 and moving to floor 3. If it receives an request to move to floor 2 just before it is about to pass floor 2, it might not have enough time to stop or send and receive an approachEvent. This problem has yet to be dealt with.
+    - Faults are tested using the ElevatorFaultTest file.
+    - Added multirun configuration as well as FloorSubsystem, ElevatorSubsystem, and Scheduler configurations to allow multiple main methods to be run at once without needing to run each main method one at a time. This allows for fast testing in IntelliJ. This is not required to run multiple main methods in Eclipse as Eclipse already has this functionality built in.
+    - Moved Elevator Selection to Scheduler and reworked IntermediateHost to allow for selection of elevators to work properly
+    - Note that there is currently an unhandled case where an Elevator is at floor 1 and moving to floor 3. If it receives an request to move to floor 2 just before it is about to pass floor 2, it might not have enough time to stop or send and receive an approachEvent. This problem has yet to be dealt with.
   </details>
 
   ### Contributions
@@ -378,12 +378,12 @@ This section contains information about each of the iteration submissions for th
     <summary>Show Long Description</summary>
     <br>
     
-    * GUI Design Pattern: The design pattern that was selected is the [Model-View-Presenter](https://en.wikipedia.org/wiki/Model-view-presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is shared by both the FloorSubsystemToElevatorSubsystem and ElevatorSubsystemToFloorSubsystem schedulers. ElevatorView is the Panel for displaying each elevator while ElevatorViewContainer contains all the ElevatorViews. Presenter updates an ElevatorView when it's passed an ElevatorMonitor from Scheduler.
+    - GUI Design Pattern: The design pattern that was selected is the [Model-View-Presenter](https://en.wikipedia.org/wiki/Model-view-presenter) pattern, with the Scheduler for FloorSubsystemToElevatorSubsystem acting as the Model. The Presenter is shared by both the FloorSubsystemToElevatorSubsystem and ElevatorSubsystemToFloorSubsystem schedulers. ElevatorView is the Panel for displaying each elevator while ElevatorViewContainer contains all the ElevatorViews. Presenter updates an ElevatorView when it's passed an ElevatorMonitor from Scheduler.
     <br>
     
     ![GUI](https://user-images.githubusercontent.com/61635007/163075152-23db6387-42a7-49d9-8973-f9499136c20e.png)    
 
-    * Changes to faults: As seen above, the window for the Fault buttons are separate from the Elevator window. This is because there was not enough time to add the buttons directly to each ElevatorView. There were also concerns about data concurrency between the ElevatorView and Elevator if it the buttons to trigger faults were in the Scheduler. The Fault window was generated in the ElevatorSubsystem accordingly.
+    - Changes to faults: As seen above, the window for the Fault buttons are separate from the Elevator window. This is because there was not enough time to add the buttons directly to each ElevatorView. There were also concerns about data concurrency between the ElevatorView and Elevator if it the buttons to trigger faults were in the Scheduler. The Fault window was generated in the ElevatorSubsystem accordingly.
    The two door faults were reduced to one, as seen below. Soft faults are handled by acknowledging of the fault in the system and clearing it, so that the system can continue its operation. Hard faults are handled by shutting down the elevator altogether and emptying out its requests queue.
 
       - ELEVATOR_STUCK: hard fault that occurs when an Elevator gets stuck between Floors (when Moving) or gets stuck at a Floor (when stopped). Triggered by pressing an "Elevator Stuck" button in the GUI.
