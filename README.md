@@ -10,7 +10,7 @@ This is a group project for designing, creating, and simulating an elevator syst
 - [Ramit Mahajan](https://github.com/RamitMahajan)
 - [Brady Norton](https://github.com/Bnortron)
 - [Julian Obando Velez](https://github.com/julian-carleton)
-- [Liam Tripp](https://github.com/liamtripp)
+- [Liam Tripp](https://github.com/withaspirit)
 
 ## Concepts
 
